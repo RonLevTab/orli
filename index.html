@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Orli is an add-on for clinics running Optima. Its calendar was never open to patients, so they still call or walk in. Orli adds online booking to your website, and every appointment goes straight into Optima." />
+  <title>Orli · Online booking for Optima clinics</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Heebo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=25" />
+  <link rel="stylesheet" href="widget.css?v=23" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f8a86'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Georgia' text-anchor='middle' fill='%23f7f5f0'%3EO%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- TOP NAV -->
+  <header class="nav" id="top">
+    <div class="wrap">
+      <div class="nav-pill">
+        <a href="#top" class="brand" aria-label="Orli home">
+          <span class="brand-mark">O</span>
+          <span class="brand-name">Orli <span class="brand-sub" data-i18n="brand.sub">· for Optima</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#demo" data-i18n="nav.demo">Live demo</a>
+          <a href="#how" data-i18n="nav.how">How it works</a>
+          <a href="#compare" data-i18n="nav.why">Why Orli</a>
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#security" data-i18n="nav.security">Security</a>
+          <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="nav-cta">
+          <button class="icon-btn lang-toggle" id="langToggle" aria-label="Switch language">עב</button>
+          <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+          <a href="#contact" class="btn-dark" data-i18n="nav.book">Book a demo</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <canvas class="hero-canvas" id="heroGradient" aria-hidden="true"></canvas>
+      <div class="hero-veil" aria-hidden="true"></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow" data-i18n="hero.eyebrow">An add-on for clinics running Optima</span>
+          <h1 class="display" data-i18n="hero.h1">
+            The moment a patient<br />wants an appointment,<br />
+            <span class="ital">Orli books it.</span>
+          </h1>
+          <p class="lead" data-i18n="hero.lead">
+            Optima runs your clinic, but its calendar was never open to patients, so they
+            still call or walk in to book. Orli is the <em>add-on that fixes that</em>. A
+            simple booking tool on your clinic's website lets patients book online, and
+            every appointment goes straight into Optima. Nothing to replace, nothing new
+            for your front desk to learn.
+          </p>
+          <div class="hero-actions">
+            <a href="#demo" class="btn-dark lg" data-i18n="hero.btnDemo">Try the live demo</a>
+            <a href="#how" class="btn-line lg" data-i18n="hero.btnHow">See how it works →</a>
+          </div>
+          <ul class="hero-trust">
+            <li data-i18n="hero.trust1"><strong>No re-typing.</strong> Bookings go straight into Optima.</li>
+            <li data-i18n="hero.trust2"><strong>No patient accounts.</strong> Just a code to their phone.</li>
+            <li data-i18n="hero.trust3"><strong>No upkeep.</strong> Add it once, it stays current.</li>
+          </ul>
+        </div>
+
+        <!-- Widget mockup in browser chrome -->
+        <div class="hero-visual" aria-hidden="true">
+          <div class="browser">
+            <div class="browser-bar">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="browser-url">your-clinic.co.il</span>
+            </div>
+            <div class="widget-body">
+              <p class="widget-label" data-i18n="mock.service">Choose a service</p>
+              <div class="chip-row">
+                <span class="chip active" data-i18n="mock.checkup">Check-up</span>
+                <span class="chip" data-i18n="mock.cleaning">Cleaning</span>
+                <span class="chip" data-i18n="mock.consult">Consultation</span>
+              </div>
+              <p class="widget-label" data-i18n="mock.date">Tuesday, 28 July</p>
+              <div class="slot-grid">
+                <span class="slot">09:00</span>
+                <span class="slot slot-on">10:30</span>
+                <span class="slot">11:15</span>
+                <span class="slot">14:00</span>
+                <span class="slot">15:45</span>
+                <span class="slot muted">16:30</span>
+              </div>
+              <button class="widget-book" data-i18n="mock.confirm">Confirm 10:30 →</button>
+              <p class="widget-foot" data-i18n="mock.verified">Verified by a code sent to your phone</p>
+            </div>
+          </div>
+          <div class="float-badge badge-1" data-i18n="mock.badge1">✓ Written to Optima</div>
+          <div class="float-badge badge-2" data-i18n="mock.badge2">🔒 Credentials never leave the server</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAT STRIP -->
+    <section class="stats">
+      <div class="wrap stats-grid">
+        <div class="stat"><span class="stat-num">&lt;60s</span><span class="stat-cap" data-i18n="stat.1">from "I need an appointment" to a confirmed slot</span></div>
+        <div class="stat"><span class="stat-num">24/7</span><span class="stat-cap" data-i18n="stat.2">booking, long after the front desk goes home</span></div>
+        <div class="stat"><span class="stat-num">0</span><span class="stat-cap" data-i18n="stat.3">manual re-keying into Optima</span></div>
+        <div class="stat"><span class="stat-num">1</span><span class="stat-cap" data-i18n="stat.4">line of code to embed on any clinic site</span></div>
+      </div>
+    </section>
+
+    <!-- LIVE DEMO — scroll-pinned (Vectrix-style scrollytelling) -->
+    <section class="section scrolly" id="demo">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="scrolly.eyebrow">See it in action</span>
+          <h2 class="display" data-i18n="scrolly.h2">Watch a booking happen, <span class="ital">live.</span></h2>
+          <p class="section-lead" data-i18n="scrolly.lead">Scroll, and the real widget books an appointment step by step, exactly as your patients would. It's live, so you can try it yourself too.</p>
+        </div>
+      </div>
+      <div class="wrap scrolly-grid">
+        <div class="scrolly-steps">
+          <article class="scrolly-step" data-scene="0">
+            <span class="scrolly-idx" data-i18n="scrolly.0.idx">01 · Pick</span>
+            <h3 data-i18n="scrolly.0.h">Choose a treatment</h3>
+            <p data-i18n="scrolly.0.p">The patient opens your website and picks a treatment under the right practitioner. The list comes live from Optima.</p>
+          </article>
+          <article class="scrolly-step" data-scene="1">
+            <span class="scrolly-idx" data-i18n="scrolly.1.idx">02 · Date</span>
+            <h3 data-i18n="scrolly.1.h">Pick a day</h3>
+            <p data-i18n="scrolly.1.p">Orli shows only days with real openings, following each doctor's hours and days off, so it's never a time that isn't truly free.</p>
+          </article>
+          <article class="scrolly-step" data-scene="2">
+            <span class="scrolly-idx" data-i18n="scrolly.2.idx">03 · Time</span>
+            <h3 data-i18n="scrolly.2.h">Choose a time</h3>
+            <p data-i18n="scrolly.2.p">Available slots for that day appear instantly, straight from the live calendar.</p>
+          </article>
+          <article class="scrolly-step" data-scene="3">
+            <span class="scrolly-idx" data-i18n="scrolly.3.idx">04 · Details</span>
+            <h3 data-i18n="scrolly.3.h">Who's booking</h3>
+            <p data-i18n="scrolly.3.p">Name and phone, once. The phone number is all the ID they need, so there's no account to create and nothing to remember.</p>
+          </article>
+          <article class="scrolly-step" data-scene="4">
+            <span class="scrolly-idx" data-i18n="scrolly.4.idx">05 · Verify</span>
+            <h3 data-i18n="scrolly.4.h">Verify by code</h3>
+            <p data-i18n="scrolly.4.p">A quick code confirms the patient right before Orli books anything. It keeps out spam and is where consent is captured.</p>
+          </article>
+          <article class="scrolly-step" data-scene="5">
+            <span class="scrolly-idx" data-i18n="scrolly.5.idx">06 · Booked</span>
+            <h3 data-i18n="scrolly.5.h">Written to Optima</h3>
+            <p data-i18n="scrolly.5.p">The appointment lands in your real calendar and the patient gets a confirmation. No re-typing, no phone tag. Done.</p>
+          </article>
+        </div>
+
+        <div class="scrolly-sticky">
+          <div class="browser demo-browser demo-browser--bare">
+            <div data-orli-widget data-scrolly></div>
+          </div>
+          <p class="demo-caption" data-i18n="scrolly.caption">Live &amp; interactive. Scroll, or tap the widget yourself.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="section problem">
+      <div class="wrap narrow center">
+        <span class="eyebrow" data-i18n="prob.eyebrow">The problem</span>
+        <h2 class="display" data-i18n="prob.h2">Optima runs the clinic.<br /><span class="ital">It just doesn't talk to patients.</span></h2>
+        <p class="section-lead" data-i18n="prob.lead">
+          Optima's calendar was built for your staff, not for patients online. So they still
+          phone the clinic or walk in to book, and the front desk types every appointment in
+          by hand. Orli opens that same calendar to your website, without replacing anything
+          you already run.
+        </p>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS (numbered panels, Petaron-style) -->
+    <section class="section" id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="how.eyebrow">How it works</span>
+          <h2 class="display" data-i18n="how.h2">One booking engine, <span class="ital">two front doors.</span></h2>
+          <p class="section-lead" data-i18n="how.lead">Every path ends the same way: a proposed slot, a patient confirmation, a real write to Optima, and a confirmation message. That's it.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="step-idx" data-i18n="how.s1.idx">01 / PICK</span>
+            <h3 data-i18n="how.s1.h">Patient picks an open time</h3>
+            <p data-i18n="how.s1.p">The booking tool shows real openings from Optima, the same ones your staff see.</p>
+          </div>
+          <div class="step">
+            <span class="step-idx" data-i18n="how.s2.idx">02 / VERIFY</span>
+            <h3 data-i18n="how.s2.h">Confirms with a phone code</h3>
+            <p data-i18n="how.s2.p">A quick code sent to their phone confirms the patient. No passwords, no accounts to manage.</p>
+          </div>
+          <div class="step">
+            <span class="step-idx" data-i18n="how.s3.idx">03 / WRITE</span>
+            <h3 data-i18n="how.s3.h">Orli books it in Optima</h3>
+            <p data-i18n="how.s3.p">The appointment goes straight into your calendar. If anything goes wrong, it asks the patient to try again, so you never get a mistaken booking.</p>
+          </div>
+          <div class="step">
+            <span class="step-idx" data-i18n="how.s4.idx">04 / CONFIRM</span>
+            <h3 data-i18n="how.s4.h">Everyone gets confirmation</h3>
+            <p data-i18n="how.s4.p">The patient gets a confirmation and your calendar is already up to date. Reschedules and cancellations work the same way.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON (Without / With — Petaron pattern) -->
+    <section class="section alt" id="compare">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="cmp.eyebrow">From phone tag to booked</span>
+          <h2 class="display" data-i18n="cmp.h2">The manual way <span class="ital">versus Orli.</span></h2>
+          <p class="section-lead" data-i18n="cmp.lead">Same clinic, same Optima calendar. One of these has your front desk on the phone all morning.</p>
+        </div>
+        <div class="compare">
+          <div class="compare-col without">
+            <div class="compare-head" data-i18n="cmp.without.head">Without Orli</div>
+            <ul>
+              <li data-i18n="cmp.without.1">Patients call during opening hours, or not at all</li>
+              <li data-i18n="cmp.without.2">Front desk reads out times, writes them down, types them into Optima</li>
+              <li data-i18n="cmp.without.3">Every reschedule means another call and another edit by hand</li>
+              <li data-i18n="cmp.without.4">After-hours requests sit in voicemail</li>
+              <li data-i18n="cmp.without.5">No record of who tried to book and gave up</li>
+            </ul>
+          </div>
+          <div class="compare-col with">
+            <div class="compare-head" data-i18n="cmp.with.head">With Orli</div>
+            <ul>
+              <li data-i18n="cmp.with.1">Patients book online in under a minute, any hour</li>
+              <li data-i18n="cmp.with.2">The time goes straight into Optima, with no re-typing</li>
+              <li data-i18n="cmp.with.3">Patients reschedule and cancel themselves, confirmed by code</li>
+              <li data-i18n="cmp.with.4">Bookings are handled the moment they arrive, 24/7</li>
+              <li data-i18n="cmp.with.5">Every booking is saved for you from day one</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="feat.eyebrow">What you get</span>
+          <h2 class="display" data-i18n="feat.h2">Everything the front desk <span class="ital">wishes Optima already did.</span></h2>
+        </div>
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="feature-ico">📅</div>
+            <h3 data-i18n="feat.1.h">Always up to date</h3>
+            <p data-i18n="feat.1.p">Times come straight from Optima, following each doctor's hours and days off. Patients only ever see openings that are genuinely free.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico">🔁</div>
+            <h3 data-i18n="feat.2.h">Patients help themselves</h3>
+            <p data-i18n="feat.2.p">They can book, reschedule, and cancel on their own, confirmed by a phone code. Fewer calls, fewer no-shows, fewer edits on the whiteboard.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico">🧩</div>
+            <h3 data-i18n="feat.3.h">Add it in minutes</h3>
+            <p data-i18n="feat.3.p">Your web person adds it once. It fits any clinic site and won't clash with your design.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico">🏥</div>
+            <h3 data-i18n="feat.4.h">One clinic or many</h3>
+            <p data-i18n="feat.4.p">Run a single practice or a whole group, each with its own calendar, from the same place.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico">📊</div>
+            <h3 data-i18n="feat.5.h">Every booking, saved</h3>
+            <p data-i18n="feat.5.p">Every appointment is recorded for you from day one, so you can see how your clinic is really doing.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico">⚡</div>
+            <h3 data-i18n="feat.6.h">Fast and reliable</h3>
+            <p data-i18n="feat.6.p">Booking stays quick and dependable for your patients, even on your busiest day.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMBED SNIPPET -->
+    <section class="section alt embed">
+      <div class="wrap embed-grid">
+        <div class="embed-copy">
+          <span class="eyebrow" data-i18n="emb.eyebrow">Easy to add</span>
+          <h2 class="display" data-i18n="emb.h2">On your site <span class="ital">in minutes.</span></h2>
+          <p class="section-lead" data-i18n="emb.lead">
+            Your web person adds Orli to your site once. After that, updates happen on
+            their own, so there's nothing for you to maintain.
+          </p>
+          <ul class="check-list">
+            <li data-i18n="emb.li1">Works with any clinic website</li>
+            <li data-i18n="emb.li2">Won't change how the rest of your site looks</li>
+            <li data-i18n="emb.li3">Locked to your clinic, protected from abuse</li>
+          </ul>
+        </div>
+        <div class="code-card">
+          <div class="code-head">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="code-file">your-clinic.co.il · index.html</span>
+          </div>
+<pre class="code-body"><code><span class="c-com">&lt;!-- Orli booking widget --&gt;</span>
+<span class="c-tag">&lt;script</span>
+  <span class="c-attr">src</span>=<span class="c-str">"https://cdn.orli.health/widget.js"</span>
+  <span class="c-attr">data-clinic</span>=<span class="c-str">"pk_live_9f2c...a17"</span>
+  <span class="c-attr">defer</span><span class="c-tag">&gt;&lt;/script&gt;</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECURITY -->
+    <section class="section" id="security">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="sec.eyebrow">Trust &amp; privacy</span>
+          <h2 class="display" data-i18n="sec.h2">Built to keep patient <span class="ital">details safe.</span></h2>
+          <p class="section-lead" data-i18n="sec.lead">Orli handles patient information with care. Here's what that means for you, in plain terms.</p>
+        </div>
+        <div class="sec-grid">
+          <div class="sec-item">
+            <h3 data-i18n="sec.1.h">🔐 Patient data stays private</h3>
+            <p data-i18n="sec.1.p">Patient details are never exposed on your public website. Everything sensitive is handled securely behind the scenes.</p>
+          </div>
+          <div class="sec-item">
+            <h3 data-i18n="sec.2.h">📱 No accounts, no passwords</h3>
+            <p data-i18n="sec.2.p">Patients confirm with a quick code sent to their phone. Nothing to sign up for, no password to forget, and it keeps out spam.</p>
+          </div>
+          <div class="sec-item">
+            <h3 data-i18n="sec.3.h">🚧 Never a double booking</h3>
+            <p data-i18n="sec.3.p">If anything goes wrong, Orli asks the patient to try again rather than risk a mistaken or duplicated appointment.</p>
+          </div>
+          <div class="sec-item">
+            <h3 data-i18n="sec.4.h">🧾 Only what's needed</h3>
+            <p data-i18n="sec.4.p">Orli asks for just enough to book the appointment, and follows Israeli healthcare privacy rules.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="section alt" id="roadmap">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="road.eyebrow">Where it's going</span>
+          <h2 class="display" data-i18n="road.h2">A proven pipeline first. <span class="ital">Intelligence on top.</span></h2>
+          <p class="section-lead" data-i18n="road.lead">Orli gets everyday booking working first. Smarter, AI-assisted features come later, once real bookings are flowing.</p>
+        </div>
+        <ol class="ladder">
+          <li class="rung done">
+            <span class="rung-tag" data-i18n="road.tag.live">Live</span>
+            <h3 data-i18n="road.r1.h">Patients book themselves</h3>
+            <p data-i18n="road.r1.p">Patients book real openings online and it lands in Optima. This is the foundation everything else builds on.</p>
+          </li>
+          <li class="rung done">
+            <span class="rung-tag" data-i18n="road.tag.live2">Live</span>
+            <h3 data-i18n="road.r2.h">Reschedule &amp; cancel</h3>
+            <p data-i18n="road.r2.p">Patients change or cancel their own appointments, confirmed by the same phone code. No work for the front desk.</p>
+          </li>
+          <li class="rung next">
+            <span class="rung-tag" data-i18n="road.tag.next">Next</span>
+            <h3 data-i18n="road.r3.h">Follow-ups in plain words</h3>
+            <p data-i18n="road.r3.p">"See her back in 3 weeks for a check-up." The doctor types it in plain words, checks Orli's suggestion at a glance, and the patient picks a time.</p>
+          </li>
+          <li class="rung soon">
+            <span class="rung-tag" data-i18n="road.tag.later">Later</span>
+            <h3 data-i18n="road.r4.h">Standing rules &amp; insights</h3>
+            <p data-i18n="road.r4.p">"Root canals always get a follow-up a week later." Set it once and it happens on its own, with reports on how the clinic really runs.</p>
+          </li>
+        </ol>
+        <p class="ladder-note" data-i18n="road.note">The AI never books anything by itself. It only suggests, and a person confirms every time.</p>
+      </div>
+    </section>
+
+    <!-- FAQ (Petaron accordion) -->
+    <section class="section" id="faq">
+      <div class="wrap narrow">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="faq.eyebrow">Frequently asked</span>
+          <h2 class="display" data-i18n="faq.h2">A few things teams ask <span class="ital">before getting started.</span></h2>
+        </div>
+        <div class="faq">
+          <details class="faq-item" open>
+            <summary><span data-i18n="faq.q1">Do we have to replace Optima?</span><span class="faq-tag" data-i18n="faq.tag1">Integration</span></summary>
+            <p data-i18n="faq.a1">No. Orli sits on top of the Optima calendar you already run. Nothing changes for your staff. The manual booking work simply disappears.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q2">How long does it take to get started?</span><span class="faq-tag" data-i18n="faq.tag2">Onboarding</span></summary>
+            <p data-i18n="faq.a2">Days, not months. We connect to your Optima, set up your services and doctors, and give you a simple snippet to add to your site.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q3">Does the front desk lose control of the calendar?</span><span class="faq-tag" data-i18n="faq.tag3">Control</span></summary>
+            <p data-i18n="faq.a3">Never. Patients only ever book into real, available slots your rules already allow. Staff keep working in Optima exactly as they do today.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q4">Is patient data safe on a public website?</span><span class="faq-tag" data-i18n="faq.tag4">Security</span></summary>
+            <p data-i18n="faq.a4">Yes. Patient details are never exposed on your public site. Every booking is confirmed by a code sent to the patient's phone, and saved for you.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q5">What if two patients grab the same slot?</span><span class="faq-tag" data-i18n="faq.tag5">Reliability</span></summary>
+            <p data-i18n="faq.a5">If two people reach for the same time, Orli notices and offers the next opening, so no one walks away thinking they're booked when they're not.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA — teal full-bleed band (nod to Iris on the Move) -->
+    <section class="cta-band" id="contact">
+      <div class="wrap narrow center">
+        <span class="eyebrow light" data-i18n="cta.eyebrow">Ready when you are</span>
+        <h2 class="display" data-i18n="cta.h2">Turn your Optima calendar <span class="ital">into a booking engine.</span></h2>
+        <p class="cta-lead" data-i18n="cta.lead">See Orli book a real appointment into a live calendar in under a minute. Tell us about your clinic and we'll set up a walkthrough.</p>
+        <form class="cta-form" id="demoForm" novalidate>
+          <div class="field">
+            <label for="clinic" data-i18n="cta.clinicLabel">Clinic name</label>
+            <input id="clinic" name="clinic" type="text" dir="auto" placeholder="Hatosafim Dental" data-i18n-ph="cta.clinicPh" required />
+          </div>
+          <div class="field">
+            <label for="email" data-i18n="cta.emailLabel">Work email</label>
+            <input id="email" name="email" type="email" dir="auto" placeholder="you@clinic.co.il" data-i18n-ph="cta.emailPh" required />
+          </div>
+          <button type="submit" class="btn-cream lg" data-i18n="cta.btn">Request a demo</button>
+        </form>
+        <p class="form-note" id="formNote" role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <a href="#top" class="brand">
+          <span class="brand-mark">O</span>
+          <span class="brand-name">Orli</span>
+        </a>
+        <p data-i18n="foot.tagline">Effortless online booking for clinics running Optima. From your website, straight into the calendar.</p>
+      </div>
+      <nav class="footer-cols" aria-label="Footer">
+        <div class="footer-col">
+          <h4 data-i18n="foot.col1.h">Product</h4>
+          <a href="#how" data-i18n="foot.col1.1">How it works</a>
+          <a href="#features" data-i18n="foot.col1.2">Features</a>
+          <a href="#roadmap" data-i18n="foot.col1.3">Roadmap</a>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="foot.col2.h">Trust</h4>
+          <a href="#security" data-i18n="foot.col2.1">Security</a>
+          <a href="#faq" data-i18n="foot.col2.2">FAQ</a>
+          <a href="#contact" data-i18n="foot.col2.3">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="foot.col3.h">Get started</h4>
+          <a href="#contact" data-i18n="foot.col3.1">Book a demo</a>
+          <a href="#compare" data-i18n="foot.col3.2">Why Orli</a>
+        </div>
+      </nav>
+    </div>
+    <div class="wrap footer-bottom">
+      <span data-i18n="foot.bottom1">© <span id="year"></span> Orli. Built on the Optima booking platform.</span>
+      <span data-i18n="foot.bottom2">Made for Israeli clinics · Bridging legacy, gently.</span>
+    </div>
+  </footer>
+
+  <script src="site-i18n.js?v=14"></script>
+  <script src="script.js?v=9"></script>
+  <script src="widget.js?v=12"></script>
+  <script src="hero-gradient.js?v=13"></script>
+  <script src="scrolly.js?v=19"></script>
+</body>
+</html>
