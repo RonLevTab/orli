@@ -22,28 +22,6 @@
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-[data-theme="dark"] {
-  --cream: #0c1513;
-  --cream-2: #101d1a;
-  --surface: #12201d;
-  --ink: #eef4f1;
-  --ink-soft: #9db3ad;
-  --line: #1e332e;
-  --dark: #05100e;
-  --shadow-sm: 0 6px 20px -10px rgba(0, 0, 0, 0.6);
-  --shadow: 0 18px 45px -22px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 40px 80px -32px rgba(0, 0, 0, 0.75);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --cream: #0c1513; --cream-2: #101d1a; --surface: #12201d;
-    --ink: #eef4f1; --ink-soft: #9db3ad; --line: #1e332e; --dark: #05100e;
-    --shadow-sm: 0 6px 20px -10px rgba(0,0,0,.6);
-    --shadow: 0 18px 45px -22px rgba(0,0,0,.7);
-    --shadow-lg: 0 40px 80px -32px rgba(0,0,0,.75);
-  }
-}
-
 /* Hebrew: Fraunces/Inter have no Hebrew glyphs, so switch the type stack to
    Heebo, and drop synthetic italics (Hebrew has no real italic — colour alone
    carries the emphasis). Triggered purely by the <html lang="he"> flip. */
@@ -238,7 +216,7 @@ html[dir="rtl"] .hero-veil {
 
 /* ---------- stats ---------- */
 .stats { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--cream-2); }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 38px 24px; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 38px 24px; }
 .stat { text-align: center; }
 .stat-num { display: block; font-family: var(--serif); font-size: 2.5rem; font-weight: 500; color: var(--teal); letter-spacing: -.02em; }
 .stat-cap { display: block; font-size: .9rem; color: var(--ink-soft); margin-top: 4px; }
@@ -305,7 +283,7 @@ html[dir="rtl"] .hero-veil {
 .step h3 { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; }
 .step p { color: var(--ink-soft); font-size: .95rem; margin: 0; }
 
-/* comparison */
+/* comparisonn */
 .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
 .compare-col { border-radius: var(--radius); padding: 30px 28px; border: 1px solid var(--line); }
 .compare-col.without { background: var(--surface); }
@@ -422,6 +400,74 @@ html[dir="rtl"] .hero-veil {
   .hero-actions .btn-dark, .hero-actions .btn-line { flex: 1; }
   .brand-sub { display: none; }
 }
+/* ===== Language-switch loading veil ===== */
+.lang-loader { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; background: var(--cream); opacity: 0; pointer-events: none; transition: opacity .32s ease; }
+.lang-loader.on { opacity: 1; pointer-events: auto; }
+.lang-loader-box { position: relative; display: grid; place-items: center; width: 60px; height: 60px; }
+.lang-loader-mark { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 15px; background: linear-gradient(140deg, var(--teal), var(--teal-bright)); color: #f4fffe; font-family: var(--serif); font-weight: 600; font-size: 1.7rem; }
+.lang-loader-ring { position: absolute; inset: -7px; border-radius: 50%; border: 2.5px solid color-mix(in srgb, var(--teal) 20%, transparent); border-top-color: var(--teal); animation: lang-spin .7s linear infinite; }
+@keyframes lang-spin { to { transform: rotate(360deg); } }
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
+  .lang-loader { transition: opacity .2s ease !important; }
+}
+
+/* ===== How it works — framed glow cards (Petaron ProcessFlow) ===== */
+.hiw-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.hiw-card { position: relative; list-style: none; border-radius: 20px; border: 1px solid var(--line); padding: 7px; background: var(--cream-2); }
+/* Glowing border that follows the cursor (like Petaron's GlowingEffect). */
+.hiw-card::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: radial-gradient(150px circle at var(--mx, 50%) var(--my, 50%), var(--teal), color-mix(in srgb, var(--teal) 35%, transparent) 32%, transparent 66%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity .3s ease;
+}
+.hiw-card:hover::before { opacity: 1; }
+.hiw-inner { height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 28px 22px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow-sm); }
+.hiw-ico { display: grid; place-items: center; width: 46px; height: 46px; font-size: 1.4rem; border-radius: 12px; border: 1px solid var(--line); background: var(--cream-2); }
+.hiw-inner h3 { font-family: var(--serif); font-weight: 500; font-size: 1.18rem; margin: 4px 0 0; }
+.hiw-inner p { color: var(--ink-soft); font-size: .95rem; margin: 0; }
+.hiw-chips { margin-top: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding-top: 8px; }
+.hiw-chip { font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, transparent); border: 1px solid color-mix(in srgb, var(--teal) 22%, transparent); padding: 4px 10px; border-radius: 999px; }
+
+/* ===== Comparison table (Petaron BeforeAfterTable) ===== */
+.cmp-table { max-width: 900px; margin: 0 auto; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
+.cmp-thead { display: grid; grid-template-columns: 1fr 1fr; }
+.cmp-th { padding: 16px 26px; font-size: .72rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.cmp-th--with { color: var(--teal); background: color-mix(in srgb, var(--teal) 6%, transparent); border-inline-start: 1px solid var(--line); }
+.cmp-rows { display: grid; grid-template-columns: 1fr 1fr; }
+.cmp-cell { display: flex; align-items: flex-start; gap: 12px; padding: 16px 26px; border-top: 1px solid var(--line); font-size: .96rem; color: var(--ink-soft); }
+.cmp-cell.with { background: color-mix(in srgb, var(--teal) 6%, transparent); border-inline-start: 1px solid var(--line); color: var(--ink); font-weight: 500; }
+.cmp-mark { flex: 0 0 auto; font-weight: 800; line-height: 1.5; }
+.cmp-cell.without .cmp-mark { color: #c98b7f; }
+.cmp-cell.with .cmp-mark { color: var(--teal); }
+
+/* ===== FAQ accordion (Petaron animation: grid-rows expand + rotating +) ===== */
+.faq { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.faq-item { padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); overflow: hidden; transition: transform .3s ease, box-shadow .3s ease; }
+.faq-item:hover { transform: translateY(-2px); }
+.faq-btn { width: 100%; display: flex; align-items: flex-start; gap: 16px; padding: 20px 22px; background: none; border: none; text-align: start; cursor: pointer; font: inherit; }
+.faq-plus { position: relative; flex: 0 0 auto; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--cream-2); color: var(--ink); font-size: 1.35rem; font-weight: 300; line-height: 1; transition: transform .5s ease; }
+.faq-item.open .faq-plus { transform: rotate(45deg); }
+.faq-ring { position: absolute; inset: -1px; border-radius: 50%; border: 1px solid var(--teal); opacity: 0; }
+.faq-item.open .faq-ring { animation: faq-ping .9s cubic-bezier(0, 0, .2, 1); }
+@keyframes faq-ping { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(1.7); opacity: 0; } }
+.faq-q { flex: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding-top: 7px; }
+.faq-q > span:first-child { font-weight: 600; font-size: 1.02rem; color: var(--ink); }
+.faq-q .faq-tag { margin-inline-start: auto; font-size: .64rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+.faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
+.faq-item.open .faq-panel { grid-template-rows: 1fr; }
+.faq-panel-inner { overflow: hidden; }
+.faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; margin: 0; padding: 0 22px 20px 76px; }
+
+@media (max-width: 900px) {
+  .hiw-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .cmp-thead { display: none; }
+  .cmp-rows { grid-template-columns: 1fr; }
+  .cmp-cell.with, .cmp-th--with { border-inline-start: none; }
+  .faq-panel-inner p { padding: 0 22px 20px; }
 }

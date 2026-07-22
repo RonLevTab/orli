@@ -3,30 +3,7 @@
 // Current year in footer
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Theme toggle (persisted, respects system default)
-const root = document.documentElement;
-const toggle = document.getElementById('themeToggle');
-const stored = localStorage.getItem('orli-theme');
-if (stored) root.setAttribute('data-theme', stored);
-
-function currentTheme() {
-  const attr = root.getAttribute('data-theme');
-  if (attr) return attr;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-function syncIcon() {
-  toggle.textContent = currentTheme() === 'dark' ? '☀️' : '🌙';
-}
-syncIcon();
-
-toggle.addEventListener('click', () => {
-  const next = currentTheme() === 'dark' ? 'light' : 'dark';
-  root.setAttribute('data-theme', next);
-  localStorage.setItem('orli-theme', next);
-  syncIcon();
-});
-
-// Demo request form (front-end only — wires to a real endpoint later)
+// Demo request form (front-end only; wires to a real endpoint later)
 const form = document.getElementById('demoForm');
 const note = document.getElementById('formNote');
 form.addEventListener('submit', (e) => {
@@ -41,13 +18,13 @@ form.addEventListener('submit', (e) => {
     return;
   }
   note.style.color = '';
-  note.textContent = `Thanks — we'll reach out to ${clinic} at ${email} to set up a walkthrough.`;
+  note.textContent = `Thanks. We'll reach out to ${clinic} at ${email} to set up a walkthrough.`;
   form.reset();
 });
 
 // Reveal-on-scroll for cards and sections
 const revealables = document.querySelectorAll(
-  '.step, .feature, .sec-item, .rung, .stat, .code-card, .widget-card'
+  '.hiw-card, .feature, .sec-item, .rung, .stat, .code-card'
 );
 if ('IntersectionObserver' in window) {
   revealables.forEach((el) => {
@@ -69,3 +46,28 @@ if ('IntersectionObserver' in window) {
   }, { threshold: 0.12 });
   revealables.forEach((el) => io.observe(el));
 }
+
+// Cursor-following glow border on the how-it-works cards (Petaron GlowingEffect)
+document.querySelectorAll('[data-glow]').forEach((card) => {
+  card.addEventListener('pointermove', (e) => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    card.style.setProperty('--my', `${e.clientY - r.top}px`);
+  });
+});
+
+// FAQ accordion: one open at a time, smooth grid-rows expand (Petaron animation)
+document.querySelectorAll('.faq-item').forEach((item) => {
+  const btn = item.querySelector('.faq-btn');
+  btn.addEventListener('click', () => {
+    const willOpen = !item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach((o) => {
+      if (o !== item) {
+        o.classList.remove('open');
+        o.querySelector('.faq-btn').setAttribute('aria-expanded', 'false');
+      }
+    });
+    item.classList.toggle('open', willOpen);
+    btn.setAttribute('aria-expanded', String(willOpen));
+  });
+});

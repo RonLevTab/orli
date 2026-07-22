@@ -113,9 +113,10 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
-  // Active language drives BOTH which string is primary and the widget's
-  // direction (he → rtl, en → ltr). One value, whole layout follows.
-  var LANG = 'he';
+  // The widget follows the SITE language (the <html lang> the nav toggle sets).
+  // he → rtl, en → ltr. One value, the whole layout follows.
+  function siteLang() { return document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'he'; }
+  var LANG = siteLang();
   function dir() { return LANG === 'he' ? 'rtl' : 'ltr'; }
 
   function bi(pair) {
@@ -144,6 +145,7 @@
   function mount(root) {
     var st = null;
     function reset() {
+      LANG = siteLang();
       st = {
         step: 'catalog', card: null, treatment: null, practitioner: null,
         monthOffset: 0, day: null, time: '',
@@ -184,16 +186,13 @@
         for (var n = 0; n < 5; n++) segs += '<span class="obw-progress-seg' + (n <= idx ? ' is-on' : '') + '"></span>';
         progress = '<div class="obw-progress" aria-hidden="true">' + segs + '</div>';
       }
-      // The single source of truth for direction: flip the attribute and the
-      // logical-property CSS mirrors the entire widget automatically.
+      // Follow the site language, and mirror direction to match (rtl for
+      // Hebrew) so the widget reads naturally too.
+      LANG = siteLang();
       root.setAttribute('dir', dir());
       root.innerHTML =
         '<div class="obw-widget">' +
-          '<header class="obw-header"><span class="obw-brand">Orli</span>' +
-          '<div class="obw-langs" role="group" aria-label="Language">' +
-            '<button class="obw-lang' + (LANG === 'he' ? ' is-on' : '') + '" data-lang="he">עברית</button>' +
-            '<button class="obw-lang' + (LANG === 'en' ? ' is-on' : '') + '" data-lang="en">EN</button>' +
-          '</div></header>' +
+          '<header class="obw-header"><span class="obw-brand">Orli</span></header>' +
           progress +
           '<main class="obw-step">' + stepHtml() + '</main>' +
         '</div>';
@@ -315,9 +314,6 @@
 
     // ---- event wiring ----
     function wire() {
-      root.querySelectorAll('[data-lang]').forEach(function (b) {
-        b.addEventListener('click', function () { LANG = b.getAttribute('data-lang'); render(); });
-      });
       root.querySelectorAll('[data-offering]').forEach(function (b) {
         b.addEventListener('click', function () {
           var p = b.getAttribute('data-offering').split(':');
@@ -423,10 +419,16 @@
   }
 
   function init() {
-    document.querySelectorAll('[data-orli-widget]').forEach(function (el) {
+    var widgets = [].slice.call(document.querySelectorAll('[data-orli-widget]'));
+    widgets.forEach(function (el) {
       el.classList.add('orli-live');
       el.__orli = mount(el);
     });
+    // Re-render whenever the site language changes (<html lang> flips).
+    var mo = new MutationObserver(function () {
+      widgets.forEach(function (el) { if (el.__orli) el.__orli.render(); });
+    });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

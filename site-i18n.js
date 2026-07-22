@@ -76,25 +76,25 @@
     'scrolly.5.p': 'התור נוחת ביומן האמיתי שלכם והמטופל מקבל אישור. בלי הקלדה מחדש, בלי טלפונים חוזרים. זהו.',
     'scrolly.caption': 'חי ואינטראקטיבי. גללו, או הקישו על הוידג׳ט בעצמכם.',
 
-    'prob.eyebrow': 'הבעיה',
-    'prob.h2': 'Optima מנהלת את המרפאה.<br /><span class="ital">היא פשוט לא מדברת עם המטופלים.</span>',
+    'prob.eyebrow': 'צוואר הבקבוק',
+    'prob.h2': 'כל תור עובר<br /><span class="ital">דרך המזכירה.</span>',
     'prob.lead': 'היומן של Optima נבנה לצוות שלכם, לא למטופלים אונליין. אז הם עדיין מתקשרים או מגיעים פיזית כדי לקבוע תור, והמזכירה מקלידה כל תור ביד. Orli פותחת את אותו יומן לאתר שלכם, בלי להחליף שום דבר שאתם כבר מריצים.',
 
     'how.eyebrow': 'איך זה עובד',
-    'how.h2': 'מנוע קביעת תורים אחד, <span class="ital">שתי דלתות כניסה.</span>',
-    'how.lead': 'כל מסלול מסתיים באותו אופן: הצעת תור, אישור המטופל, כתיבה אמיתית ל‑Optima, והודעת אישור. זהו.',
-    'how.s1.idx': '01 / בחירה',
+    'how.h2': 'שלושה צעדים, <span class="ital">בלי טלפון.</span>',
+    'how.lead': 'ממטופל שלוחץ "לקביעת תור" ועד תור אמיתי ב‑Optima. זה כל המסלול.',
     'how.s1.h': 'המטופל בוחר שעה פנויה',
     'how.s1.p': 'כלי הקביעה מציג שעות פנויות אמיתיות מ‑Optima, אותן שעות שהצוות רואה.',
-    'how.s2.idx': '02 / אימות',
+    'how.s1.c1': 'זמינות חיה',
+    'how.s1.c2': 'תורים אמיתיים',
     'how.s2.h': 'מאשר בקוד לנייד',
-    'how.s2.p': 'קוד חד‑פעמי מאמת את המטופל והופך לעוגן הזהות שלו. בלי סיסמאות, בלי חשבונות לנהל.',
-    'how.s3.idx': '03 / כתיבה',
-    'how.s3.h': 'Orli קובעת את התור ב‑Optima',
-    'how.s3.p': 'התור נכנס ישירות ליומן שלכם. אם משהו משתבש, הוא מבקש מהמטופל לנסות שוב, כך שלעולם לא נוצר תור שגוי.',
-    'how.s4.idx': '04 / אישור',
-    'how.s4.h': 'כולם מקבלים אישור',
-    'how.s4.p': 'המטופל מקבל הודעה; היומן שלכם כבר מעודכן. שינויי מועד וביטולים עוברים באותו מסלול בדיוק.',
+    'how.s2.p': 'קוד מהיר שנשלח לנייד מאמת את המטופל. בלי סיסמאות, בלי חשבונות לנהל.',
+    'how.s2.c1': 'קוד חד‑פעמי',
+    'how.s2.c2': 'בלי חשבון',
+    'how.s3.h': 'נקבע ב‑Optima',
+    'how.s3.p': 'התור נכנס ישירות ליומן שלכם, וכולם מקבלים אישור.',
+    'how.s3.c1': 'ישר ל‑Optima',
+    'how.s3.c2': 'אישור נשלח',
 
     'cmp.eyebrow': 'מטלפונים חוזרים לתור סגור',
     'cmp.h2': 'הדרך הידנית <span class="ital">מול Orli.</span>',
@@ -146,22 +146,22 @@
     'sec.4.h': '🧾 רק מה שצריך',
     'sec.4.p': 'Orli מבקשת רק את מה שצריך כדי לקבוע את התור, ופועלת לפי כללי הפרטיות של מערכת הבריאות בישראל.',
 
-    'road.eyebrow': 'לאן זה הולך',
-    'road.h2': 'קודם צינור מוכח. <span class="ital">בינה מלאכותית מעל.</span>',
-    'road.lead': 'Orli מריצה קודם את קביעת התורים היומיומית. יכולות חכמות בעזרת AI מגיעות בהמשך, כשכבר זורמים תורים אמיתיים.',
-    'road.tag.live': 'חי',
-    'road.tag.live2': 'חי',
-    'road.tag.next': 'הבא',
-    'road.tag.later': 'בהמשך',
+    'road.eyebrow': 'בקרוב',
+    'road.h2': 'בקרוב תנהלו את Optima <span class="ital">פשוט בדיבור.</span>',
+    'road.lead': 'וידג׳ט קביעת התורים כבר חי היום. בשלב הבא: עוזר AI וצ׳אטבוט שיאפשרו לצוות ולמטופלים לנהל את כל היומן ב‑Optima בשפה חופשית.',
+    'road.tag.live': 'חי עכשיו',
+    'road.tag.live2': 'חי עכשיו',
+    'road.tag.next': 'בקרוב',
+    'road.tag.later': 'בקרוב',
     'road.r1.h': 'המטופלים קובעים בעצמם',
-    'road.r1.p': 'המטופלים קובעים שעות פנויות אמיתיות אונליין וזה נוחת ב‑Optima. זה הבסיס שכל השאר נבנה עליו.',
+    'road.r1.p': 'המטופלים קובעים שעות פנויות אמיתיות אונליין וזה נוחת ב‑Optima. הבסיס המוכח שכל השאר נבנה עליו.',
     'road.r2.h': 'שינוי מועד וביטול',
-    'road.r2.p': 'המטופלים משנים או מבטלים את התורים שלהם בעצמם, עם אישור באותו קוד לנייד. בלי עבודה למזכירה.',
-    'road.r3.h': 'מעקבים בשפה חופשית',
-    'road.r3.p': '״שיראה אותה שוב בעוד 3 שבועות לבדיקה.״ הרופא מקליד בשפה חופשית, בודק את ההצעה של Orli במבט, והמטופל בוחר שעה.',
-    'road.r4.h': 'כללים קבועים ותובנות',
-    'road.r4.p': '״טיפולי שורש תמיד עם מעקב אחרי שבוע.״ מגדירים פעם אחת וזה קורה לבד, עם דוחות על איך המרפאה באמת עובדת.',
-    'road.note': 'ה‑AI לעולם לא קובע תור בעצמו. הוא רק מציע, ואדם מאשר בכל פעם.',
+    'road.r2.p': 'המטופלים משנים או מבטלים את התורים שלהם בעצמם, עם אישור בקוד לנייד. בלי עבודה למזכירה.',
+    'road.r3.h': '🤖 מדברים אל היומן',
+    'road.r3.p': 'הרופאים והצוות פשוט אומרים מה שצריך, למשל ״תקבע לה בדיקה בעוד שלושה שבועות״, והעוזר החכם מסדר את זה ב‑Optima. בלי טפסים, בלי קליקים.',
+    'road.r4.h': '💬 צ׳אטבוט שקובע תורים למטופלים',
+    'road.r4.p': 'המטופלים משוחחים בשפה חופשית כדי לקבוע, לשנות או לבטל תור בכל שעה, וזה זורם ישר ל‑Optima.',
+    'road.note': 'כל היומן ב‑Optima, מנוהל בשפה חופשית גם על ידי הצוות וגם על ידי המטופלים. רוצים גישה מוקדמת כשזה יוצא? <a href="#contact">דברו איתנו.</a>',
 
     'faq.eyebrow': 'שאלות נפוצות',
     'faq.h2': 'כמה דברים שצוותים שואלים <span class="ital">לפני שמתחילים.</span>',
@@ -234,6 +234,8 @@
       if (val != null) el.setAttribute('placeholder', val);
     });
     html.setAttribute('lang', lang);
+    // Proper RTL for Hebrew so it reads naturally (right-aligned). The layout
+    // flip is hidden by the loading animation on toggle, so it isn't jarring.
     html.setAttribute('dir', lang === 'he' ? 'rtl' : 'ltr');
     setYear(); // innerHTML swap re-created the year span; refill it.
 
@@ -249,10 +251,31 @@
   try { start = localStorage.getItem('orli-lang') || 'en'; } catch (e) {}
   apply(start);
 
+  // ---- language-switch loading animation ----
+  // A brief (~1s) veil fades in, the swap + direction flip happen while hidden,
+  // then it fades out — so the layout change never flashes in front of the user.
+  var loader = document.createElement('div');
+  loader.className = 'lang-loader';
+  loader.setAttribute('aria-hidden', 'true');
+  loader.innerHTML =
+    '<div class="lang-loader-box"><span class="lang-loader-ring"></span>' +
+    '<span class="lang-loader-mark">O</span></div>';
+  document.body.appendChild(loader);
+
+  var switching = false;
+  function switchLang(next) {
+    if (switching) return;
+    switching = true;
+    loader.classList.add('on');                                    // veil fades in
+    setTimeout(function () { apply(next); }, 340);                  // swap while covered
+    setTimeout(function () { loader.classList.remove('on'); }, 980);// reveal
+    setTimeout(function () { switching = false; }, 1300);
+  }
+
   var btn = document.getElementById('langToggle');
   if (btn) {
     btn.addEventListener('click', function () {
-      apply(html.getAttribute('lang') === 'he' ? 'en' : 'he');
+      switchLang(html.getAttribute('lang') === 'he' ? 'en' : 'he');
     });
   }
 })();
