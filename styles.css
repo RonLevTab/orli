@@ -275,6 +275,7 @@ html[dir="rtl"] .hero-veil {
 .demo-browser { max-width: 460px; width: 100%; box-shadow: var(--shadow-lg); }
 .demo-browser [data-orli-widget] { display: block; }
 .demo-caption { margin: 16px 0 0; font-family: var(--serif); font-style: italic; color: var(--teal); font-size: 1rem; }
+.section.scrolly { padding-bottom: 140px; }
 
 /* how it works — numbered panels */
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
