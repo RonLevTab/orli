@@ -126,7 +126,7 @@ h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
   color: #f4fffe; font-family: var(--serif); font-weight: 600; font-size: 1.15rem;
 }
 .brand-sub { color: var(--ink-soft); font-weight: 500; font-size: .8rem; }
-.nav-links { display: flex; gap: 26px; margin-inline-start: auto; }
+.nav-links { display: flex; gap: 26px; flex: 1; justify-content: center; }
 .nav-links a { color: var(--ink-soft); font-weight: 500; font-size: .93rem; transition: color .15s; }
 .nav-links a:hover { color: var(--teal); }
 .nav-cta { display: flex; align-items: center; gap: 8px; }
@@ -222,7 +222,7 @@ html[dir="rtl"] .hero-veil {
 .stat-cap { display: block; font-size: .9rem; color: var(--ink-soft); margin-top: 4px; }
 
 /* ---------- sections ---------- */
-.section { padding: 92px 0; }
+.section { padding: 70px 0; }
 .section.alt { background: var(--cream-2); }
 .section-head { max-width: 760px; margin: 0 auto 56px; text-align: center; }
 .section-lead { font-size: 1.12rem; color: var(--ink-soft); }
@@ -322,6 +322,8 @@ html[dir="rtl"] .hero-veil {
 .sec-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow-sm); }
 .sec-item h3 { font-family: var(--serif); font-weight: 500; font-size: 1.18rem; }
 .sec-item p { color: var(--ink-soft); margin: 0; font-size: .96rem; }
+.sec-ico { width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(15, 138, 134, 0.1); color: var(--teal); margin-bottom: 14px; }
+.sec-ico svg { width: 22px; height: 22px; }
 
 /* roadmap ladder */
 .ladder { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -351,7 +353,7 @@ html[dir="rtl"] .hero-veil {
 .faq-item p { color: var(--ink-soft); margin: 0 0 20px; max-width: 62ch; }
 
 /* cta band — teal full bleed */
-.cta-band { background: linear-gradient(155deg, var(--teal-deep), var(--teal)); color: #f3fffd; padding: 96px 0; }
+.cta-band { background: linear-gradient(155deg, var(--teal-deep), var(--teal)); color: #f3fffd; padding: 74px 0; }
 .cta-band .display { color: #fff; }
 .cta-band .display .ital { color: #bff3ec; }
 .cta-lead { font-size: 1.14rem; color: rgba(255,255,255,.86); max-width: 46ch; margin-inline: auto; }
@@ -394,7 +396,7 @@ html[dir="rtl"] .hero-veil {
 @media (max-width: 560px) {
   .utility-inner { font-size: .74rem; }
   .stats-grid, .steps, .feature-grid, .sec-grid, .ladder { grid-template-columns: 1fr; }
-  .section { padding: 64px 0; }
+  .section { padding: 48px 0; }
   .field input { min-width: 0; width: 100%; }
   .cta-form { flex-direction: column; align-items: stretch; }
   .hero-actions .btn-dark, .hero-actions .btn-line { flex: 1; }
