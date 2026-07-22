@@ -182,7 +182,7 @@ html[dir="rtl"] .hero-veil {
 .hero-trust strong { color: var(--ink); font-weight: 600; }
 
 /* browser-chrome widget mockup */
-.hero-visual { position: relative; }
+.hero-visual { position: relative; pointer-events: none; }
 .browser {
   background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
   box-shadow: var(--shadow-lg); overflow: hidden; max-width: 380px; margin: 0 auto;
