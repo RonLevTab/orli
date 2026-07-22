@@ -14,11 +14,11 @@ form.addEventListener('submit', (e) => {
 
   if (!clinic || !validEmail) {
     note.style.color = '#e11d48';
-    note.textContent = 'Please add your clinic name and a valid work email.';
+    note.textContent = 'נא למלא שם מרפאה ואימייל תקין.';
     return;
   }
   note.style.color = '';
-  note.textContent = `Thanks. We'll reach out to ${clinic} at ${email} to set up a walkthrough.`;
+  note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
   form.reset();
 });
 
