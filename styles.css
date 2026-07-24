@@ -249,7 +249,7 @@ html[dir="rtl"] .hero-veil {
   justify-content: safe center;
 }
 .scrolly-sticky .demo-browser { flex-shrink: 0; }
-.scrolly-sticky .demo-browser { width: 100%; max-width: 460px; box-shadow: var(--shadow-lg); }
+.scrolly-sticky .demo-browser { width: 82%; max-width: 460px; box-shadow: var(--shadow-lg); height: 660px; }
 /* Bare frame: no fake browser bar, just the rounded widget card. */
 .demo-browser--bare { border-radius: 18px; }
 
