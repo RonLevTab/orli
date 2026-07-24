@@ -43,6 +43,7 @@
     writtenToOptima: ['נכתב ל‑Optima ✓', 'written to Optima ✓'],
     bookAnother: ['לקביעת פגישה נוספת', 'Book another appointment'],
     otpDemoHint: ['לצורך ההדגמה: כל 6 ספרות יתקבלו', 'Demo: any 6-digit code works'],
+    sendOtp: ['שלח קוד לאימות', 'Send code to my email'],
   };
 
   var MAX_MONTH_OFFSET = 2;
@@ -156,7 +157,7 @@
         phone: '050-123-4567',
         email: 'demo@orli.health',
         consent: false,
-        otp: '', otpError: false, resendWait: 0, submitting: false, bookingId: null,
+        otp: '', otpSent: false, otpError: false, resendWait: 0, submitting: false, bookingId: null,
       };
     }
     reset();
@@ -180,20 +181,22 @@
     function render() {
       var showProgress = st.step !== 'success';
       var idx = STEP_ORDER.indexOf(st.step);
-      var progress = '';
+      var controls = '';
       if (showProgress) {
         var segs = '';
         for (var n = 0; n < 5; n++) segs += '<span class="obw-progress-seg' + (n <= idx ? ' is-on' : '') + '"></span>';
-        progress = '<div class="obw-progress" aria-hidden="true">' + segs + '</div>';
+        var globeSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
+        var langLabel = LANG === 'he' ? 'עב' : 'EN';
+        controls = '<div class="obw-controls" aria-hidden="true">' +
+          '<button class="obw-lang-btn" type="button" data-lang>' + globeSvg + '<span>' + langLabel + '</span></button>' +
+          '<div class="obw-progress">' + segs + '</div>' +
+        '</div>';
       }
-      // Follow the site language, and mirror direction to match (rtl for
-      // Hebrew) so the widget reads naturally too.
-      LANG = siteLang();
+      // Mirror direction to match language (rtl for Hebrew).
       root.setAttribute('dir', dir());
       root.innerHTML =
         '<div class="obw-widget">' +
-          '<header class="obw-header"><span class="obw-brand">Orli</span></header>' +
-          progress +
+          controls +
           '<main class="obw-step">' + stepHtml() + '</main>' +
         '</div>';
       wire();
@@ -269,26 +272,28 @@
     }
 
     function patientHtml() {
-      return backBtn() + '<h1 class="obw-title">' + bi(S.yourDetails) + '</h1><form data-patient>' +
-        field('firstName', 'firstName', st.firstName) +
-        field('lastName', 'lastName', st.lastName) +
-        field('phone', 'phone', st.phone, 'tel') +
-        field('email', 'email', st.email, 'email') +
-        '<label class="obw-consent"><input type="checkbox" data-field="consent"' + (st.consent ? ' checked' : '') + ' />' +
-          bi(S.marketingConsent) + '</label>' +
-        '<button type="submit" class="obw-primary-btn" data-continue>' + bi(S.continue) + '</button></form>';
+      return '<div class="obw-patient-step">' + backBtn() + '<h1 class="obw-title">' + bi(S.yourDetails) + '</h1>' +
+        '<form class="obw-patient-form" data-patient>' +
+          field('firstName', 'firstName', st.firstName) +
+          field('lastName', 'lastName', st.lastName) +
+          field('phone', 'phone', st.phone, 'tel') +
+          field('email', 'email', st.email, 'email') +
+          '<label class="obw-consent"><input type="checkbox" data-field="consent"' + (st.consent ? ' checked' : '') + ' />' +
+            bi(S.marketingConsent) + '</label>' +
+          '<button type="submit" class="obw-primary-btn obw-primary-btn--compact" data-continue>' + bi(S.continue) + '</button>' +
+        '</form></div>';
     }
 
     function confirmHtml() {
       var dateLabel = formatDate(st.day.date)[LANG === 'he' ? 0 : 1];
-      return backBtn() + '<h1 class="obw-title">' + bi(S.confirmTitle) + '</h1>' +
-        '<dl class="obw-summary">' +
-          '<div><dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd></div>' +
-          '<div><dt>' + bi(S.practitioner) + '</dt><dd>' + bi([st.practitioner.he, st.practitioner.en]) + '</dd></div>' +
-          '<div><dt>' + bi(S.when) + '</dt><dd>' + bdi(dateLabel + ' · ' + st.time) + '</dd></div>' +
-          '<div><dt>' + bi(S.yourDetails) + '</dt><dd>' +
-            bdi(st.firstName + ' ' + st.lastName + ' · ' + st.phone + ' · ' + st.email) + '</dd></div>' +
-        '</dl>' +
+      var summary = '<dl class="obw-summary">' +
+        '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd>' +
+        '<dt>' + bi(S.practitioner) + '</dt><dd>' + bi([st.practitioner.he, st.practitioner.en]) + '</dd>' +
+        '<dt>' + bi(S.when) + '</dt><dd>' + bdi(dateLabel + ' · ' + st.time) + '</dd>' +
+        '<dt>' + bi(S.yourDetails) + '</dt><dd>' +
+          bdi(st.firstName + ' ' + st.lastName + ' · ' + st.phone + ' · ' + st.email) + '</dd>' +
+      '</dl>';
+      var otpBox = st.otpSent ? (
         '<div class="obw-otp">' +
           '<p class="obw-otp-hint">' + bi(fill(S.otpSentTo, { email: st.email })) + '</p>' +
           '<p class="obw-otp-hint" style="color:var(--obw-primary)">' + bi(S.otpDemoHint) + '</p>' +
@@ -297,19 +302,29 @@
           '<button type="button" class="obw-resend-btn" data-resend' + (st.resendWait > 0 ? ' disabled' : '') + '>' +
             bi(S.resendCode) + '<span data-resend-wait>' + (st.resendWait > 0 ? ' (' + st.resendWait + ')' : '') + '</span></button>' +
         '</div>' +
-        (st.otpError ? '<p class="obw-error">' + bi(S.wrongOtpError) + '</p>' : '') +
-        '<button class="obw-primary-btn" data-confirm' + (st.submitting || !/^\d{6}$/.test(st.otp.trim()) ? ' disabled' : '') + '>' +
-          bi(st.submitting ? S.booking : S.confirm) + '</button>';
+        (st.otpError ? '<p class="obw-error">' + bi(S.wrongOtpError) + '</p>' : '')
+      ) : '';
+      var footer = '<div class="obw-confirm-footer">' + (
+        !st.otpSent
+          ? '<button class="obw-primary-btn obw-primary-btn--compact" data-send-otp>' + bi(S.sendOtp) + '</button>'
+          : '<button class="obw-primary-btn obw-primary-btn--compact" data-confirm' + (st.submitting || !/^\d{6}$/.test(st.otp.trim()) ? ' disabled' : '') + '>' +
+              bi(st.submitting ? S.booking : S.confirm) + '</button>'
+      ) + '</div>';
+      return '<div class="obw-confirm-step">' + backBtn() + '<h1 class="obw-title">' + bi(S.confirmTitle) + '</h1>' +
+        summary + otpBox + footer + '</div>';
     }
 
     function successHtml() {
       var dateLabel = formatDate(st.day.date)[LANG === 'he' ? 0 : 1];
-      return '<div style="text-align:center"><div class="obw-success-badge" style="margin-inline:auto">✓</div>' +
-        '<h1 class="obw-title" style="text-align:center">' + bi(S.bookedTitle) + '</h1>' +
-        '<p>' + bi(fill(S.bookedDetails, { date: dateLabel, time: st.time })) + '</p>' +
-        '<p class="obw-muted" style="font-size:.82rem">' +
-          bdi('Booking ' + st.bookingId) + ' · ' + bi(S.writtenToOptima) + '</p>' +
-        '<button class="obw-nav-btn" data-restart style="margin-top:8px">' + bi(S.bookAnother) + '</button></div>';
+      return '<h1 class="obw-title">' + bi(S.bookedTitle) + '</h1>' +
+        '<dl class="obw-summary">' +
+          '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd>' +
+          '<dt>' + bi(S.practitioner) + '</dt><dd>' + bi([st.practitioner.he, st.practitioner.en]) + '</dd>' +
+          '<dt>' + bi(S.when) + '</dt><dd>' + bdi(dateLabel + ' · ' + st.time) + '</dd>' +
+          '<dt>' + bi(S.firstName) + '</dt><dd>' + bdi(st.firstName + ' ' + st.lastName) + '</dd>' +
+          '<dt>' + bi(S.phone) + '</dt><dd>' + bdi(st.phone) + '</dd>' +
+          '<dt>' + bi(S.email) + '</dt><dd>' + bdi(st.email) + '</dd>' +
+        '</dl>';
     }
 
     // ---- event wiring ----
@@ -328,6 +343,7 @@
       });
       var backEl = root.querySelector('[data-back]');
       if (backEl) backEl.addEventListener('click', function () {
+        if (st.step === 'confirm') st.otpSent = false;
         var prev = { date: 'catalog', time: 'date', patient: 'time', confirm: 'patient' }[st.step];
         st.step = prev; render();
       });
@@ -354,7 +370,7 @@
         pform.addEventListener('submit', function (e) {
           e.preventDefault();
           if (!validPatient()) { flashInvalid(pform); return; }
-          st.otp = ''; st.otpError = false; st.step = 'confirm'; render(); startResend();
+          st.otp = ''; st.otpSent = false; st.otpError = false; st.step = 'confirm'; render();
         });
       }
       var otp = root.querySelector('[data-otp]');
@@ -364,8 +380,18 @@
         var cb = root.querySelector('[data-confirm]');
         if (cb) cb.disabled = st.submitting || !/^\d{6}$/.test(st.otp);
       });
+      var sendOtpBtn = root.querySelector('[data-send-otp]');
+      if (sendOtpBtn) sendOtpBtn.addEventListener('click', function () {
+        st.otpSent = true; render(); startResend();
+      });
       var resend = root.querySelector('[data-resend]');
       if (resend) resend.addEventListener('click', function () { st.otp = ''; render(); startResend(); });
+      var langBtn = root.querySelector('[data-lang]');
+      if (langBtn) langBtn.addEventListener('click', function () {
+        LANG = LANG === 'he' ? 'en' : 'he';
+        root.setAttribute('dir', LANG === 'he' ? 'rtl' : 'ltr');
+        render();
+      });
       var confirm = root.querySelector('[data-confirm]');
       if (confirm) confirm.addEventListener('click', function () {
         if (!/^\d{6}$/.test(st.otp.trim())) return;
@@ -377,8 +403,7 @@
           st.step = 'success'; render();
         }, 900);
       });
-      var restart = root.querySelector('[data-restart]');
-      if (restart) restart.addEventListener('click', function () { reset(); render(); });
+      // No restart button on success page in current design.
     }
 
     function validPatient() {
@@ -388,7 +413,7 @@
     function flashInvalid(form) {
       form.querySelectorAll('[data-field]').forEach(function (inp) {
         var bad = (inp.type !== 'checkbox') && !String(inp.value).trim();
-        inp.style.borderColor = bad ? '#d70015' : '';
+        inp.style.borderColor = bad ? '#b4544a' : '';
       });
     }
 
@@ -409,7 +434,7 @@
       if (['time', 'patient', 'confirm', 'success'].indexOf(st.step) >= 0) {
         st.day = day; st.time = timeStr;
       }
-      if (['confirm', 'success'].indexOf(st.step) >= 0) st.otp = '123456';
+      if (['confirm', 'success'].indexOf(st.step) >= 0) { st.otp = '123456'; st.otpSent = true; }
       if (st.step === 'success') st.bookingId = 'OB-' + Math.floor(100000 + Math.random() * 899999);
       render();
     }
@@ -425,7 +450,9 @@
       el.__orli = mount(el);
     });
     // Re-render whenever the site language changes (<html lang> flips).
+    // Reset LANG to match the site so the widget stays in sync with the nav toggle.
     var mo = new MutationObserver(function () {
+      LANG = siteLang();
       widgets.forEach(function (el) { if (el.__orli) el.__orli.render(); });
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });

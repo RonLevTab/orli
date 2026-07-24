@@ -1,23 +1,25 @@
 /* ===========================================================
    Live Orli booking widget — faithful replica of the real
-   product (orli-calendar/web/src/style.css). Apple-inspired,
-   Action-Blue accent, bilingual He/En. Everything is scoped
+   product (orli-calendar/web/src/style.css). Warm cream/teal
+   palette, Heebo font, bilingual He/En. Everything is scoped
    under .orli-live so it never touches the marketing site.
    =========================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap");
+
 .orli-live {
-  --obw-primary: #0066cc;
-  --obw-primary-focus: #0071e3;
+  --obw-primary: #0f8a86;
+  --obw-primary-focus: #0a5d5a;
   --obw-primary-contrast: #ffffff;
-  --obw-bg: #ffffff;
-  --obw-parchment: #f5f5f7;
-  --obw-text: #1d1d1f;
-  --obw-muted: #7a7a7a;
-  --obw-border: #e0e0e0;
+  --obw-bg: #fffdf8;
+  --obw-parchment: #f7f5ef;
+  --obw-text: #1b2523;
+  --obw-muted: #5d6763;
+  --obw-border: #e4ddcf;
   --obw-radius: 11px;
   --obw-radius-lg: 18px;
   --obw-radius-pill: 9999px;
-  --obw-font: "SF Pro Text", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --obw-display: "SF Pro Display", Inter, system-ui, -apple-system, sans-serif;
+  --obw-font: "Heebo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --obw-display: "Heebo", system-ui, -apple-system, sans-serif;
   --obw-chevron: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23000'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M15%206l-6%206%206%206'/%3E%3C/svg%3E");
 
   background: var(--obw-bg);
@@ -29,6 +31,7 @@
   -webkit-font-smoothing: antialiased;
   text-align: start;
 }
+.orli-live[dir="ltr"] { --obw-chevron: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23000'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M9%206l6%206-6%206'/%3E%3C/svg%3E"); }
 .orli-live * { box-sizing: border-box; }
 .orli-live button { font-family: inherit; font-size: 1rem; cursor: pointer; transition: transform 120ms ease, background-color 160ms ease, border-color 160ms ease, opacity 160ms ease; }
 .orli-live button:active:not(:disabled) { transform: scale(0.97); }
@@ -62,27 +65,27 @@
 .orli-live[data-scrolly] .obw-otp .obw-otp-hint + .obw-otp-hint { display: none; }
 .orli-live[data-scrolly] .obw-resend-btn { display: none; }
 .orli-live[data-scrolly] .obw-primary-btn { padding: 11px; }
-.orli-live[data-scrolly] .obw-success-badge { width: 48px; height: 48px; font-size: 1.4rem; margin: 2px 0 10px; }
+/* Confirm step flex in scrolly: footer should not push down since widget clips */
+.orli-live[data-scrolly] .obw-confirm-footer { margin-block-start: 0; }
+.orli-live[data-scrolly] .obw-patient-form .obw-primary-btn { margin-block-start: 0; }
 /* patient form: tighten fields so the whole form fits without scroll */
 .orli-live[data-scrolly] .obw-field { margin-block-end: 6px; gap: 3px; }
 .orli-live[data-scrolly] .obw-field input { padding: 7px 11px; }
 .orli-live[data-scrolly] .obw-consent { margin-block: 0 6px; font-size: .75rem; }
 
-.orli-live .obw-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-block-end: 14px; }
-.orli-live .obw-brand { font-family: var(--obw-display); font-weight: 600; font-size: 1.3rem; letter-spacing: -0.02em; }
+/* Controls bar: lang toggle + progress in a single flex row. */
+.orli-live .obw-controls { display: flex; align-items: center; gap: 10px; margin-block-end: 18px; }
+.orli-live .obw-lang-btn { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: transparent; border: 1px solid var(--obw-border); border-radius: var(--obw-radius-pill); color: var(--obw-muted); font-size: .72rem; font-weight: 600; line-height: 1; white-space: nowrap; direction: ltr; }
+.orli-live .obw-lang-btn:hover { border-color: #c4bda8; color: var(--obw-text); }
+.orli-live .obw-lang-btn > span { position: relative; top: 1px; }
 
-/* Language / direction toggle — flipping this flips the whole widget. */
-.orli-live .obw-langs { display: inline-flex; gap: 3px; background: var(--obw-parchment); border-radius: var(--obw-radius-pill); padding: 3px; direction: ltr; }
-.orli-live .obw-lang { border: 0; background: transparent; padding: 5px 12px; border-radius: var(--obw-radius-pill); font-size: .8rem; font-weight: 600; color: var(--obw-muted); }
-.orli-live .obw-lang.is-on { background: var(--obw-bg); color: var(--obw-text); box-shadow: 0 1px 2px rgb(0 0 0 / 8%); }
-
-.orli-live .obw-progress { display: flex; gap: 5px; margin-block-end: 18px; }
+.orli-live .obw-progress { display: flex; gap: 5px; flex: 1; min-width: 0; }
 .orli-live .obw-progress-seg { flex: 1; height: 3px; border-radius: var(--obw-radius-pill); background: var(--obw-border); transition: background-color 220ms ease; }
 .orli-live .obw-progress-seg.is-on { background: var(--obw-primary); }
 
-.orli-live .obw-step { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 2px; scrollbar-width: thin; scrollbar-color: #d8d8dc transparent; }
+.orli-live .obw-step { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: 2px; scrollbar-width: thin; scrollbar-color: #d5cfc6 transparent; }
 .orli-live .obw-step::-webkit-scrollbar { width: 6px; }
-.orli-live .obw-step::-webkit-scrollbar-thumb { background: #d8d8dc; border-radius: 999px; }
+.orli-live .obw-step::-webkit-scrollbar-thumb { background: #d5cfc6; border-radius: 999px; }
 
 /* Hebrew primary + English secondary sit on the SAME line (baseline-aligned),
    not stacked. English stays faint and small beside the Hebrew. */
@@ -101,9 +104,8 @@
 .orli-live .obw-option { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 13px 15px; text-align: start; background: var(--obw-bg); border: 1px solid var(--obw-border); border-radius: var(--obw-radius); color: var(--obw-text); font-weight: 600; letter-spacing: -0.01em; }
 .orli-live .obw-option .obw-bi { flex: 1; }
 .orli-live .obw-option::after { content: ""; flex: 0 0 18px; width: 18px; height: 18px; background: var(--obw-primary); -webkit-mask: var(--obw-chevron) center / contain no-repeat; mask: var(--obw-chevron) center / contain no-repeat; }
-/* The chevron glyph points left; mirror it in LTR so it always points forward. */
-.orli-live[dir="ltr"] .obw-option::after { transform: scaleX(-1); }
-.orli-live .obw-option:hover { border-color: #c8c8cc; }
+/* The chevron variable already switches for LTR via the [dir="ltr"] rule above. */
+.orli-live .obw-option:hover { border-color: #c4bda8; }
 
 .orli-live .obw-slots { display: flex; flex-wrap: wrap; gap: 9px; }
 .orli-live .obw-slot { padding: 11px 18px; background: var(--obw-bg); border: 1px solid var(--obw-border); border-radius: var(--obw-radius-pill); color: var(--obw-text); font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -127,12 +129,13 @@
 .orli-live .obw-resend-btn { background: none; border: none; padding: 0; color: var(--obw-primary); cursor: pointer; font-size: .82rem; font-weight: 600; }
 .orli-live .obw-resend-btn:disabled { color: var(--obw-muted); cursor: default; }
 
-.orli-live .obw-summary { border: 0; background: var(--obw-parchment); border-radius: var(--obw-radius); padding: 16px 18px; margin-block-end: 16px; display: grid; gap: 12px; }
-.orli-live .obw-summary dt { color: var(--obw-muted); font-size: .82rem; margin: 0; }
-.orli-live .obw-summary dd { margin: 2px 0 0; font-weight: 600; font-size: .92rem; }
+.orli-live .obw-summary { border: 0; background: var(--obw-parchment); border-radius: var(--obw-radius); padding: 11px 14px; margin-block-end: 12px; display: grid; grid-template-columns: auto 1fr; gap: 5px 12px; align-items: baseline; }
+.orli-live .obw-summary dt { color: var(--obw-muted); font-size: .76rem; margin: 0; }
+.orli-live .obw-summary dd { margin: 0; font-weight: 600; font-size: .85rem; }
 
 .orli-live .obw-primary-btn { width: 100%; padding: 14px; background: var(--obw-primary); color: var(--obw-primary-contrast); border: 0; border-radius: var(--obw-radius-pill); font-weight: 600; font-size: 1rem; }
 .orli-live .obw-primary-btn:disabled { opacity: .45; cursor: default; }
+.orli-live .obw-primary-btn--compact { padding-block: 9px; font-size: .92rem; }
 
 .orli-live .obw-back-btn, .orli-live .obw-nav-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid transparent; color: var(--obw-primary); padding: 6px 8px; border-radius: var(--obw-radius); font-size: .9rem; font-weight: 600; line-height: 1.15; }
 .orli-live .obw-back-btn { margin-block-end: 8px; margin-inline-start: -8px; }
@@ -143,6 +146,13 @@
 .orli-live .obw-nav-btn:disabled .obw-nav-arrow { box-shadow: none; }
 
 .orli-live .obw-muted { color: var(--obw-muted); }
-.orli-live .obw-error { color: #d70015; margin-block: 12px; }
+.orli-live .obw-error { color: #b4544a; margin-block: 12px; }
 
-.orli-live .obw-success-badge { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: rgba(0,102,204,.12); color: var(--obw-primary); font-size: 1.8rem; margin: 6px 0 14px; }
+/* Confirm step: flex column so footer button pins to bottom. */
+.orli-live .obw-confirm-step { display: flex; flex-direction: column; min-height: 100%; }
+.orli-live .obw-confirm-footer { margin-block-start: auto; padding-block-end: 2px; }
+
+/* Patient step: flex column so the submit button pins to bottom. */
+.orli-live .obw-patient-step { display: flex; flex-direction: column; min-height: 100%; }
+.orli-live .obw-patient-form { flex: 1; display: flex; flex-direction: column; }
+.orli-live .obw-patient-form .obw-primary-btn { margin-block-start: auto; margin-block-end: 2px; }

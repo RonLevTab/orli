@@ -64,24 +64,34 @@
               <span class="dot"></span><span class="dot"></span><span class="dot"></span>
               <span class="browser-url">your-clinic.co.il</span>
             </div>
-            <div class="widget-body">
-              <p class="widget-label" data-i18n="mock.service">בחרו טיפול</p>
-              <div class="chip-row">
-                <span class="chip active" data-i18n="mock.checkup">בדיקה</span>
-                <span class="chip" data-i18n="mock.cleaning">ניקוי אבנית</span>
-                <span class="chip" data-i18n="mock.consult">ייעוץ</span>
+            <div class="widget-body orli-live" dir="rtl" style="padding:14px 16px 16px">
+              <div class="obw-controls" style="margin-block-end:12px">
+                <button class="obw-lang-btn" type="button" disabled style="pointer-events:none">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span>עב</span>
+                </button>
+                <div class="obw-progress">
+                  <span class="obw-progress-seg is-on"></span>
+                  <span class="obw-progress-seg is-on"></span>
+                  <span class="obw-progress-seg is-on"></span>
+                  <span class="obw-progress-seg"></span>
+                  <span class="obw-progress-seg"></span>
+                </div>
               </div>
-              <p class="widget-label" data-i18n="mock.date">יום שלישי, 28 ביולי</p>
-              <div class="slot-grid">
-                <span class="slot">09:00</span>
-                <span class="slot slot-on">10:30</span>
-                <span class="slot">11:15</span>
-                <span class="slot">14:00</span>
-                <span class="slot">15:45</span>
-                <span class="slot muted">16:30</span>
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-block-end:12px">
+                <h3 class="obw-title" style="margin:0;font-size:1.3rem" data-i18n="mock.confirmTitle">אישור התור</h3>
               </div>
-              <button class="widget-book" data-i18n="mock.confirm">← אישור 10:30</button>
-              <p class="widget-foot" data-i18n="mock.verified">מאומת בקוד שנשלח לאימייל</p>
+              <dl class="obw-summary">
+                <dt data-i18n="mock.treatment">טיפול</dt>
+                <dd data-i18n="mock.treatmentVal">ייעוץ</dd>
+                <dt data-i18n="mock.practitioner">מטפל/ת</dt>
+                <dd data-i18n="mock.practitionerVal">ד״ר רון</dd>
+                <dt data-i18n="mock.when">תאריך ושעה</dt>
+                <dd>28.7 · 10:30</dd>
+                <dt data-i18n="mock.patient">הפרטים שלכם</dt>
+                <dd data-i18n="mock.patientVal">ישראל ישראלי · 050-123-4567</dd>
+              </dl>
+              <button class="obw-primary-btn obw-primary-btn--compact" type="button" style="pointer-events:none" data-i18n="mock.sendOtp">שלח קוד לאימות</button>
             </div>
           </div>
           <div class="float-badge badge-1" data-i18n="mock.badge1">✓ נכתב לאופטימה</div>
