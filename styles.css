@@ -136,7 +136,7 @@ html:not([lang="he"]) .brand-logo--he { display: none; }
 .icon-btn:hover { background: var(--cream-2); }
 
 /* ---------- hero ---------- */
-.hero { padding: 64px 0 48px; position: relative; overflow: hidden; }
+.hero { padding: 64px 0 48px; position: relative; overflow: hidden; min-height: 100vh; display: flex; align-items: center; }
 .hero::before {
   content: ""; position: absolute; inset: -30% 45% auto -12%; height: 640px;
   background: radial-gradient(closest-side, rgba(20,184,166,.16), transparent 72%);
@@ -183,7 +183,7 @@ html[dir="rtl"] .hero-veil {
 .hero-visual { position: relative; pointer-events: none; }
 .browser {
   background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
-  box-shadow: var(--shadow-lg); overflow: hidden; max-width: 380px; margin: 0 auto;
+  box-shadow: var(--shadow-lg); overflow: hidden; max-width: 460px; margin: 0 auto;
 }
 .browser-bar { display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding: 12px 16px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
 .dot { width: 11px; height: 11px; border-radius: 50%; background: #cdbfa8; }
