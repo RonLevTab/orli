@@ -119,13 +119,11 @@ h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
   display: flex; align-items: center; gap: 24px;
   padding: 7px 0;
 }
-.brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 700; font-size: 1.12rem; }
-.brand-mark {
-  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
-  background: linear-gradient(140deg, var(--teal), var(--teal-bright));
-  color: #f4fffe; font-family: var(--serif); font-weight: 600; font-size: 1.15rem;
-}
-.brand-sub { color: var(--ink-soft); font-weight: 500; font-size: .8rem; }
+.brand { display: inline-flex; align-items: center; }
+.brand-logo { display: block; width: auto; height: 38px; object-fit: contain; }
+.brand-logo--footer { height: 44px; }
+html[lang="he"] .brand-logo--en,
+html:not([lang="he"]) .brand-logo--he { display: none; }
 .nav-links { display: flex; gap: 26px; flex: 1; justify-content: center; }
 .nav-links a { color: var(--ink-soft); font-weight: 500; font-size: .93rem; transition: color .15s; }
 .nav-links a:hover { color: var(--teal); }
@@ -401,7 +399,6 @@ html[dir="rtl"] .hero-veil {
   .field input { min-width: 0; width: 100%; }
   .cta-form { flex-direction: column; align-items: stretch; }
   .hero-actions .btn-dark, .hero-actions .btn-line { flex: 1; }
-  .brand-sub { display: none; }
 }
 /* ===== Language-switch loading veil ===== */
 .lang-loader { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; background: var(--cream); opacity: 0; pointer-events: none; transition: opacity .32s ease; }
