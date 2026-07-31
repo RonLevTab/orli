@@ -58,14 +58,13 @@
 
   window.addEventListener('message', function (e) {
     if (!e.data || e.data.source !== 'optima-booking-widget') return;
-    // Deliberately not resizing the iframe itself on 'resize' messages: this
-    // card has its own fixed/clamped height (see .demo-browser in
-    // styles.css), and the iframe fills it at height:100%. Mutating
-    // iframe.style.height on every step change — like the embed.js loader's
-    // rarely-used "inline" mode does — forces the iframe to reflow
-    // repeatedly, which is what was breaking touch taps inside it; the
-    // "popup" mode embed.js actually ships on clinic sites avoids this by
-    // resizing a wrapping panel instead of the iframe element itself.
+    // Not consuming 'resize' messages: the widget reports its own root
+    // element's scrollHeight, but in this fixed-height card layout the
+    // overflow lives on the widget's *inner* step container, not its root
+    // — so the root's scrollHeight just echoes back the card's current
+    // fixed height, never the content's true height. It can't tell us how
+    // tall a step actually wants to be; the card height below is sized by
+    // hand for the tallest step instead (see .demo-browser in styles.css).
     if (e.data.type === 'step' && typeof e.data.step === 'string') {
       var i = STEP_NAMES.indexOf(e.data.step);
       if (i >= 0 && i !== current) {

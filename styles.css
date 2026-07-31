@@ -402,7 +402,7 @@ html[dir="rtl"] .hero-veil {
      without fighting page scroll for control. */
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
-  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(380px, 54vh, 520px); margin-inline: auto; }
+  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(460px, 78vh, 620px); margin-inline: auto; }
   .scrolly-tabs { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
   .scrolly-tab {
     font: inherit; font-size: .8rem; font-weight: 700; letter-spacing: .04em;
