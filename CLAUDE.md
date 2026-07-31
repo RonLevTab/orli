@@ -8,6 +8,22 @@ A single-page marketing site for **Orli**, an online-booking add-on for clinics 
 the legacy **Optima** scheduling system. Plain static HTML/CSS/JS — no build step, no
 package manager, no dependencies, no tests.
 
+## Related project
+
+This is the landing page for **`orli-calendar`** (sibling repo, checked out
+alongside this one), the actual booking product (FastAPI + Vue widget). Keep
+the two aligned when shipping features:
+
+- `widget.js` here is a hand-maintained vanilla-JS mirror of the real Vue widget at
+  `orli-calendar/web/src/App.vue` + its step components — when the real widget's
+  booking flow, steps, or copy change, update this mock to match.
+- Bilingual strings in `widget.js`'s `S` table mirror `orli-calendar/web/src/i18n.ts`.
+- If a feature changes what the product can actually do (new booking capability,
+  changed flow, new provider), check whether this landing page's marketing copy,
+  demo widget, or FAQ need updating too, and vice versa — check whether
+  landing-page promises (features, screenshots, copy) still hold after backend/widget
+  changes in `orli-calendar`.
+
 ## Running locally
 
 ```bash
