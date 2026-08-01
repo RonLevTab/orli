@@ -13,11 +13,11 @@ form.addEventListener('submit', (e) => {
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   if (!clinic || !validEmail) {
-    note.style.color = '#e11d48';
+    note.classList.add('is-error');
     note.textContent = 'נא למלא שם מרפאה ואימייל תקין.';
     return;
   }
-  note.style.color = '';
+  note.classList.remove('is-error');
   note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
   form.reset();
 });

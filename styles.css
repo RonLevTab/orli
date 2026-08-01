@@ -274,6 +274,10 @@ html[dir="rtl"] .hero-veil {
 .demo-browser [data-orli-widget] { display: block; }
 .demo-caption { margin: 16px 0 0; font-family: var(--serif); font-style: italic; color: var(--teal); font-size: 1rem; }
 .section.scrolly { padding-bottom: 140px; }
+/* Mobile-only step tabs (see @media (max-width: 920px) below): a tap-through
+   substitute for the desktop scroll-jack, since a pinned widget and scrolling
+   step text can't share one narrow column without overlapping. */
+.scrolly-tabs { display: none; }
 
 /* how it works — numbered panels */
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
@@ -362,7 +366,9 @@ html[dir="rtl"] .hero-veil {
 .field input { font: inherit; padding: 13px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.12); color: #fff; min-width: 240px; }
 .field input::placeholder { color: rgba(255,255,255,.6); }
 .field input:focus { outline: 2px solid #fff; outline-offset: 1px; background: rgba(255,255,255,.2); }
-.form-note { min-height: 1.4em; margin-top: 18px; font-weight: 600; color: #eafff9; }
+.form-note { min-height: 1.4em; margin-top: 18px; font-weight: 600; color: #fff; }
+.form-note:not(:empty) { display: inline-block; padding: 8px 18px; border-radius: 999px; background: rgba(10, 37, 35, .35); }
+.form-note.is-error { background: rgba(225, 29, 72, .55); }
 
 /* footer */
 .footer { border-top: 1px solid var(--line); background: var(--cream-2); padding: 60px 0 30px; }
@@ -385,11 +391,35 @@ html[dir="rtl"] .hero-veil {
   .compare, .embed-grid { grid-template-columns: 1fr; }
   .demo-grid { grid-template-columns: 1fr; gap: 36px; }
   .demo-notes { max-width: none; order: 2; }
-  /* Mobile scrollytelling: widget pins at the top, steps scroll beneath it. */
-  .scrolly-grid { grid-template-columns: 1fr; gap: 16px; }
-  .scrolly-sticky { position: sticky; top: 56px; height: auto; justify-content: flex-start; order: -1; margin-bottom: 8px; }
-  .scrolly-steps { padding-block: 6vh; }
-  .scrolly-step { min-height: 38vh; }
+  /* Mobile scrollytelling: the desktop sticky-pin-while-scrolling technique
+     needs a second column for the steps to scroll past without crossing the
+     widget's own space — there is no second column on a phone, so pinning
+     here just parks the widget on top of whichever step is scrolling by,
+     and un-pinning it just scrolls it out of view before its state changes
+     ever show. Mobile trades the scroll-jack for a tap-through stepper: the
+     widget stays put, numbered tabs below it switch both the widget's scene
+     and the visible step text, so the "watch it update" payoff survives
+     without fighting page scroll for control. */
+  .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
+  .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
+  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(460px, 78vh, 620px); margin-inline: auto; }
+  .scrolly-tabs { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+  .scrolly-tab {
+    font: inherit; font-size: .8rem; font-weight: 700; letter-spacing: .04em;
+    width: 34px; height: 34px; display: grid; place-items: center;
+    border-radius: 50%; border: 1px solid var(--line); background: var(--surface);
+    color: var(--ink-soft); cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, color .2s ease;
+  }
+  .scrolly-tab:hover { border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); color: var(--ink); }
+  .scrolly-tab.is-active { background: var(--teal); border-color: var(--teal); color: #f4fffe; }
+  .scrolly-steps { padding-block: 0; margin-top: 22px; }
+  .scrolly-step {
+    display: none; min-height: 0; opacity: 1; transform: none; text-align: center;
+  }
+  .scrolly-step.is-active { display: block; animation: scrolly-step-in .35s ease; }
+  .scrolly-step p { margin-inline: auto; }
+  @keyframes scrolly-step-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .nav-links { display: none; }
 }
 @media (max-width: 560px) {
