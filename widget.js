@@ -14,6 +14,8 @@
     bookTitle: ['לקביעת פגישה', 'Book an appointment'],
     treatment: ['טיפול', 'Treatment'],
     practitioner: ['מטפל/ת', 'Practitioner'],
+    price: ['מחיר', 'Price'],
+    freePrice: ['חינם', 'Free'],
     when: ['תאריך ושעה', 'Date and time'],
     chooseDate: ['בחרו תאריך', 'Choose a date'],
     chooseTime: ['בחרו שעה', 'Choose a time'],
@@ -53,15 +55,30 @@
     {
       practitioner: { id: 'p1', he: 'ד״ר רון', en: 'Dr. Ron' },
       treatments: [
-        { id: 't1', he: 'בדיקה תקופתית', en: 'Check-up' },
-        { id: 't2', he: 'ניקוי אבנית', en: 'Cleaning' },
+        {
+          id: 't1', he: 'בדיקה תקופתית', en: 'Check-up',
+          descriptionHe: 'בדיקה כללית ומעקב שגרתי', descriptionEn: 'General check-up and routine follow-up',
+          price: '0',
+        },
+        {
+          id: 't2', he: 'ניקוי אבנית', en: 'Cleaning',
+          descriptionHe: 'ניקוי מקצועי והסרת אבנית', descriptionEn: 'Professional cleaning and plaque removal',
+          price: '180.00',
+        },
       ],
     },
     {
       practitioner: { id: 'p2', he: 'ד״ר דניאל', en: 'Dr. Daniel' },
       treatments: [
-        { id: 't3', he: 'ייעוץ', en: 'Consultation' },
-        { id: 't4', he: 'טיפול שורש', en: 'Root canal' },
+        {
+          id: 't3', he: 'ייעוץ', en: 'Consultation',
+          descriptionHe: 'שיחת ייעוץ ראשונית להכרת הצרכים שלך', descriptionEn: 'An initial consultation to understand your needs',
+          price: '0',
+        },
+        {
+          id: 't4', he: 'טיפול שורש', en: 'Root canal',
+          price: '650.00',
+        },
       ],
     },
   ];
@@ -140,6 +157,10 @@
   function fill(pair, vars) {
     return [pair[0].replace(/\{(\w+)\}/g, function (_, k) { return vars[k]; }),
             pair[1].replace(/\{(\w+)\}/g, function (_, k) { return vars[k]; })];
+  }
+  function formatPrice(price) {
+    if (Number(price) === 0) return S.freePrice;
+    return [price + ' ₪', '₪' + price];
   }
 
   // ---- widget instance ----
@@ -226,8 +247,15 @@
         html += '<section class="obw-card"><h2 class="obw-card-title">' +
           bi([card.practitioner.he, card.practitioner.en]) + '</h2><div class="obw-list">';
         card.treatments.forEach(function (tr, ti) {
+          var description = tr.descriptionHe || tr.descriptionEn
+            ? '<span class="obw-option-description">' + bi([tr.descriptionHe || '', tr.descriptionEn || '']) + '</span>'
+            : '';
+          var price = tr.price != null
+            ? '<span class="obw-option-price">' + bi(formatPrice(tr.price)) + '</span>'
+            : '';
           html += '<button class="obw-option" data-offering="' + ci + ':' + ti + '">' +
-            bi([tr.he, tr.en]) + '</button>';
+            '<span class="obw-option-content">' + bi([tr.he, tr.en]) + description + price + '</span>' +
+            '</button>';
         });
         html += '</div></section>';
       });
@@ -286,8 +314,12 @@
 
     function confirmHtml() {
       var dateLabel = formatDate(st.day.date)[LANG === 'he' ? 0 : 1];
+      var priceRow = st.treatment.price != null
+        ? '<dt>' + bi(S.price) + '</dt><dd>' + bi(formatPrice(st.treatment.price)) + '</dd>'
+        : '';
       var summary = '<dl class="obw-summary">' +
         '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd>' +
+        priceRow +
         '<dt>' + bi(S.practitioner) + '</dt><dd>' + bi([st.practitioner.he, st.practitioner.en]) + '</dd>' +
         '<dt>' + bi(S.when) + '</dt><dd>' + bdi(dateLabel + ' · ' + st.time) + '</dd>' +
         '<dt>' + bi(S.yourDetails) + '</dt><dd>' +
@@ -316,9 +348,13 @@
 
     function successHtml() {
       var dateLabel = formatDate(st.day.date)[LANG === 'he' ? 0 : 1];
+      var priceRow = st.treatment.price != null
+        ? '<dt>' + bi(S.price) + '</dt><dd>' + bi(formatPrice(st.treatment.price)) + '</dd>'
+        : '';
       return '<h1 class="obw-title">' + bi(S.bookedTitle) + '</h1>' +
         '<dl class="obw-summary">' +
           '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd>' +
+          priceRow +
           '<dt>' + bi(S.practitioner) + '</dt><dd>' + bi([st.practitioner.he, st.practitioner.en]) + '</dd>' +
           '<dt>' + bi(S.when) + '</dt><dd>' + bdi(dateLabel + ' · ' + st.time) + '</dd>' +
           '<dt>' + bi(S.firstName) + '</dt><dd>' + bdi(st.firstName + ' ' + st.lastName) + '</dd>' +
