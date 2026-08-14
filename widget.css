@@ -102,7 +102,9 @@
 .orli-live .obw-card-title { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; margin-block: 0 10px; }
 
 .orli-live .obw-option { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 13px 15px; text-align: start; background: var(--obw-bg); border: 1px solid var(--obw-border); border-radius: var(--obw-radius); color: var(--obw-text); font-weight: 600; letter-spacing: -0.01em; }
-.orli-live .obw-option .obw-bi { flex: 1; }
+.orli-live .obw-option-content { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px; }
+.orli-live .obw-option-description,
+.orli-live .obw-option-price { font-size: .8rem; font-weight: 400; color: var(--obw-muted); }
 .orli-live .obw-option::after { content: ""; flex: 0 0 18px; width: 18px; height: 18px; background: var(--obw-primary); -webkit-mask: var(--obw-chevron) center / contain no-repeat; mask: var(--obw-chevron) center / contain no-repeat; }
 /* The chevron variable already switches for LTR via the [dir="ltr"] rule above. */
 .orli-live .obw-option:hover { border-color: #c4bda8; }
