@@ -1,7 +1,7 @@
 /* ============================================================
    Live Orli booking widget — interactive demo.
    A faithful vanilla-JS reproduction of the real Vue widget
-   (orli-calendar/web/src/App.vue + step components), driven by
+   (orli-calendar/widget/src/App.vue + step components), driven by
    in-browser mock data so visitors can play the whole flow:
      catalog → date → time → patient → confirm (OTP) → success
    No backend needed. OTP accepts any 6 digits.
@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  // ---- bilingual strings (from web/src/i18n.ts) ----
+  // ---- bilingual strings (from widget/src/i18n.ts) ----
   var S = {
     bookTitle: ['לקביעת פגישה', 'Book an appointment'],
     treatment: ['טיפול', 'Treatment'],
