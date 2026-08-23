@@ -183,7 +183,6 @@ html[dir="rtl"] .hero-veil {
 .browser-bar { display: flex; align-items: center; justify-content: flex-end; gap: 7px; padding: 12px 16px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
 .dot { width: 11px; height: 11px; border-radius: 50%; background: #cdbfa8; }
 .dot:nth-child(1){ background:#e6a19a;} .dot:nth-child(2){ background:#e8ca8f;} .dot:nth-child(3){ background:#a7c7a0;}
-.browser-url { direction: ltr; font-size: .8rem; color: var(--ink-soft); background: var(--surface); padding: 3px 12px; border-radius: 999px; border: 1px solid var(--line); }
 .widget-body { padding: 22px 20px 24px; }
 .widget-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-soft); margin: 0 0 9px; font-weight: 700; }
 .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
@@ -198,13 +197,6 @@ html[dir="rtl"] .hero-veil {
   background: var(--dark); color: #f4fffe;
 }
 .widget-foot { text-align: center; font-size: .78rem; color: var(--ink-soft); margin: 13px 0 0; }
-.float-badge {
-  position: absolute; background: var(--surface); border: 1px solid var(--line);
-  border-radius: 12px; padding: 9px 14px; font-size: .82rem; font-weight: 600;
-  box-shadow: var(--shadow); animation: float 5s ease-in-out infinite;
-}
-.badge-1 { top: 4%; right: -3%; color: var(--teal); }
-@keyframes float { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-9px);} }
 
 /* ---------- sections ---------- */
 .section { padding: 70px 0; }
@@ -375,6 +367,17 @@ html[dir="rtl"] .hero-veil {
 @media (max-width: 920px) {
   .hero-grid { grid-template-columns: 1fr; gap: 44px; }
   .hero-visual { order: -1; }
+  /* Fade the hero copy in on load, staggered per line — desktop doesn't need
+     it (the widget mockup sits beside the text so nothing feels static on
+     first paint), but on mobile the text is the whole first screen. */
+  .hero-copy > * { animation: hero-fade-in .7s ease both; }
+  .hero-copy .eyebrow { animation-delay: 0s; }
+  .hero-copy h1 { animation-delay: .12s; }
+  .hero-copy .lead { animation-delay: .24s; }
+  @keyframes hero-fade-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
   .steps, .feature-grid, .sec-grid, .ladder { grid-template-columns: 1fr 1fr; }
   .demo-grid { grid-template-columns: 1fr; gap: 36px; }
   .demo-notes { max-width: none; order: 2; }
