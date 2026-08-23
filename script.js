@@ -23,7 +23,7 @@ form.addEventListener('submit', (e) => {
 });
 
 // Reveal-on-scroll for cards and sections
-const revealables = document.querySelectorAll('.rung, .stat, .code-card');
+const revealables = document.querySelectorAll('.rung, .code-card');
 if ('IntersectionObserver' in window) {
   revealables.forEach((el) => {
     el.style.opacity = '0';
