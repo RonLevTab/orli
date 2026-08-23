@@ -3,24 +3,29 @@
 // Current year in footer
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Demo request form (front-end only; wires to a real endpoint later)
+// Demo request form (front-end only; wires to a real endpoint later).
+// Only present on index.html — guarded so this file can be shared as-is
+// across the secondary pages (about/integration/privacy), which just need
+// the footer year and, on integration.html, the reveal-on-scroll below.
 const form = document.getElementById('demoForm');
-const note = document.getElementById('formNote');
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const clinic = form.clinic.value.trim();
-  const email = form.email.value.trim();
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+if (form) {
+  const note = document.getElementById('formNote');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const clinic = form.clinic.value.trim();
+    const email = form.email.value.trim();
+    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  if (!clinic || !validEmail) {
-    note.classList.add('is-error');
-    note.textContent = 'נא למלא שם מרפאה ואימייל תקין.';
-    return;
-  }
-  note.classList.remove('is-error');
-  note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
-  form.reset();
-});
+    if (!clinic || !validEmail) {
+      note.classList.add('is-error');
+      note.textContent = 'נא למלא שם מרפאה ואימייל תקין.';
+      return;
+    }
+    note.classList.remove('is-error');
+    note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
+    form.reset();
+  });
+}
 
 // Reveal-on-scroll for cards and sections
 const revealables = document.querySelectorAll('.rung, .code-card');

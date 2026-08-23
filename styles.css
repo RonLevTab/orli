@@ -416,17 +416,8 @@ html[dir="rtl"] .hero-veil {
   .field input { min-width: 0; width: 100%; }
   .cta-form { flex-direction: column; align-items: stretch; }
 }
-/* ===== Language-switch loading veil ===== */
-.lang-loader { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; background: var(--cream); opacity: 0; pointer-events: none; transition: opacity .32s ease; }
-.lang-loader.on { opacity: 1; pointer-events: auto; }
-.lang-loader-box { position: relative; display: grid; place-items: center; width: 60px; height: 60px; }
-.lang-loader-mark { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 15px; background: linear-gradient(140deg, var(--teal), var(--teal-bright)); color: #f4fffe; font-family: var(--serif); font-weight: 600; font-size: 1.7rem; }
-.lang-loader-ring { position: absolute; inset: -7px; border-radius: 50%; border: 2.5px solid color-mix(in srgb, var(--teal) 20%, transparent); border-top-color: var(--teal); animation: lang-spin .7s linear infinite; }
-@keyframes lang-spin { to { transform: rotate(360deg); } }
-
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
-  .lang-loader { transition: opacity .2s ease !important; }
 }
 
 /* ===== How it works — framed glow cards (Petaron ProcessFlow) ===== */
