@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="מדריך טכני קצר להטמעת אורלי באתר המרפאה: קטע הקוד, מה הוא נוגע ומה לא, ואיך אורלי שומרת על פרטי המטופלים." />
+  <title>אורלי · מדריך טכני להטמעה</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Heebo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=33" />
+  <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
+</head>
+<body>
+  <span id="top" aria-hidden="true"></span>
+
+  <!-- TOP NAV -->
+  <header class="nav">
+    <div class="wrap">
+      <div class="nav-pill">
+        <a href="index.html#top" class="brand" aria-label="Orli home">
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="index.html#demo">דמו מהיר</a>
+          <a href="index.html#compare">למה אורלי</a>
+          <a href="index.html#faq">שאלות נפוצות</a>
+          <a href="#branding">התאמה אישית</a>
+        </nav>
+        <div class="nav-cta">
+          <a href="index.html#contact" class="btn-dark">לקביעת דמו</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" style="padding-block-start:64px; padding-block-end:36px">
+      <div class="wrap narrow">
+        <p class="eyebrow">התאמה אישית ומדריך טכני</p>
+        <h1 class="display" style="font-size:clamp(2rem, 4vw, 2.9rem)">אורלי, <span class="ital">בעיצוב שלכם.</span></h1>
+        <p class="section-lead" style="margin-top:16px; max-width:56ch">הכול כאן: איך להתאים את המראה והמיילים לאורלי בלי לגעת בקוד, ואיך מי שאחראי על האתר מוסיף את קטע ההטמעה. סקרנים? תמשיכו לקרוא. רק רוצים לשלוח את זה למישהו? יש קישור למטה.</p>
+      </div>
+    </section>
+
+    <!-- BRANDING / ADMIN PANEL -->
+    <section class="section alt" id="branding">
+      <div class="wrap narrow">
+        <h2 class="display" style="font-size:1.7rem">עיצוב אישי, <span class="ital">בלי קוד.</span></h2>
+        <p class="section-lead">בלוח ניהול פשוט אתם בוחרים איך הוידג׳ט נראה ומה כתוב במיילים שהמטופלים מקבלים, בלי לגעת בשום קטע קוד.</p>
+        <div class="swatches" aria-hidden="true">
+          <span style="background:#0f8a86"></span>
+          <span style="background:#c2612f"></span>
+          <span style="background:#7b2d8e"></span>
+          <span style="background:#1f4f8f"></span>
+          <span style="background:#2f6b45"></span>
+          <span style="background:#1f1f1f"></span>
+        </div>
+        <ul class="check-list">
+          <li>שישה עיצובים מוכנים לבחירה, או צבע ראשי, רקע, טקסט, לוגו וצורת פינות משלכם</li>
+          <li>עורכים את תוכן מייל האישור והתזכורות שהמטופלים מקבלים, עם תצוגה מקדימה לפני שמירה</li>
+          <li>שינויים נשמרים ללוח הניהול של המרפאה ומשפיעים על הוידג׳ט מיד, בלי לגעת בקטע ההטמעה</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- EMBED -->
+    <section class="section">
+      <div class="wrap narrow">
+        <h2 class="display" style="font-size:1.7rem">קטע ההטמעה</h2>
+        <p class="section-lead">שורת קוד אחת, בכל מקום בעמוד. ברירת המחדל היא בועה צפה בפינת המסך, שנפתחת לחלון קביעת תור מרחף.</p>
+        <div class="code-card" style="margin-top:8px">
+          <div class="code-head">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="code-file">your-clinic.co.il</span>
+          </div>
+<pre class="code-body"><code><span class="c-com">&lt;!-- Orli booking widget --&gt;</span>
+<span class="c-tag">&lt;script</span>
+  <span class="c-attr">src</span>=<span class="c-str">"https://cdn.orli.health/embed.js"</span>
+  <span class="c-attr">data-clinic-id</span>=<span class="c-str">"your-clinic"</span>
+<span class="c-tag">&gt;&lt;/script&gt;</span></code></pre>
+        </div>
+        <p style="margin-top:22px; color:var(--ink-soft)">רוצים אותו מוטמע בתוך העמוד במקום כבועה צפה? מוסיפים <code style="direction:ltr; display:inline-block">data-mode="inline"</code> ו־<code style="direction:ltr; display:inline-block">data-target-id</code> שמצביע לאלמנט שבו הוידג׳ט יופיע.</p>
+        <ul class="check-list">
+          <li>אפשר להתאים צבע ראשי, לוגו וגופן: <code style="direction:ltr; display:inline-block">data-primary-color</code> · <code style="direction:ltr; display:inline-block">data-logo-url</code> · <code style="direction:ltr; display:inline-block">data-font-family</code></li>
+          <li>עובד עם כל אתר מרפאה, בלי תהליך בנייה ובלי תלות בפריימוורק כלשהו</li>
+          <li>מזהה המרפאה (<code style="direction:ltr; display:inline-block">data-clinic-id</code>) נעול למרפאה שלכם בלבד ולא חושף שום מידע רגיש</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SCOPE -->
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2 class="display" style="font-size:1.7rem">מה זה נוגע, <span class="ital">ומה לא.</span></h2>
+        <ul class="check-list">
+          <li>שורת קוד אחת, שום דבר להתקין ושום דבר לתחזק בצד שלכם</li>
+          <li>רץ בתוך iframe מבודד (<code style="direction:ltr; display:inline-block">sandbox</code>) עם ההרשאות המינימליות הדרושות לו בלבד</li>
+          <li>לא נוגע בעיצוב, בסקריפטים או בשאר האתר שלכם, מעבר לבועה או לאזור שבו הוא מוטמע</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- DATA & SECURITY -->
+    <section class="section">
+      <div class="wrap narrow">
+        <h2 class="display" style="font-size:1.7rem">נתונים <span class="ital">ופרטיות.</span></h2>
+        <p class="section-lead">פרטי מטופלים לעולם לא נחשפים בעמוד הציבורי שלכם. הם עוברים ישירות בין המטופל לאורלי, בתוך ה־iframe המבודד.</p>
+        <ul class="check-list">
+          <li>אימות מתבצע בקוד חד־פעמי שנשלח לאימייל של המטופל, לפני שנקבע תור</li>
+          <li>אין למטופלים חשבון או סיסמה לניהול, ואין מה לדלוף מהם</li>
+          <li>מזהה המרפאה בקטע ההטמעה הוא סלאג ציבורי, לא מפתח סודי, כך שאין מה לחשוף בטעות</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- OPTIMA SYNC -->
+    <section class="section alt">
+      <div class="wrap narrow">
+        <h2 class="display" style="font-size:1.7rem">חיבור <span class="ital">לאופטימה.</span></h2>
+        <p class="section-lead">אורלי כותבת ישירות ליומן האופטימה שלכם ברגע שתור נקבע, בזמן אמת ולא כסנכרון לילי. התור פשוט מופיע אצלכם, בדיוק כאילו הוקלד ביד.</p>
+      </div>
+    </section>
+
+    <!-- MULTI-CLINIC -->
+    <section class="section">
+      <div class="wrap narrow">
+        <h2 class="display" style="font-size:1.7rem">יותר מסניף <span class="ital">אחד?</span></h2>
+        <p class="section-lead">כל מרפאה מקבלת יומן משלה מאותה התקנה, לפי מזהה המרפאה בקטע ההטמעה. אם יש לכם כמה סניפים, כל אחד מהם מוטמע בנפרד עם המזהה שלו.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-block-end:80px">
+      <div class="wrap narrow center">
+        <p class="section-lead" style="margin:0 0 18px">שאלה שלא נענתה כאן?</p>
+        <a href="index.html#contact" class="btn-dark lg">דברו איתנו</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <a href="index.html#top" class="brand" aria-label="Orli home">
+          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
+        </a>
+        <p>קביעת תורים אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
+      </div>
+      <nav class="footer-cols" aria-label="Footer">
+        <div class="footer-col">
+          <h4>מוצר</h4>
+          <a href="index.html#roadmap">מפת דרכים</a>
+        </div>
+        <div class="footer-col">
+          <h4>אמון</h4>
+          <a href="index.html#faq">שאלות נפוצות</a>
+          <a href="privacy.html">מדיניות פרטיות</a>
+          <a href="index.html#contact">צור קשר</a>
+        </div>
+        <div class="footer-col">
+          <h4>חברה</h4>
+          <a href="about.html">אודות</a>
+        </div>
+        <div class="footer-col">
+          <h4>בואו נתחיל</h4>
+          <a href="index.html#contact">לקביעת דמו</a>
+          <a href="index.html#compare">למה אורלי</a>
+        </div>
+      </nav>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© <span id="year"></span> אורלי. בנוי על פלטפורמת אופטימה.</span>
+      <span>נבנה למרפאות בישראל · מגשרים על הישן, בעדינות.</span>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

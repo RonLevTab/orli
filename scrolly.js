@@ -84,7 +84,7 @@
           if (i >= 0) activate(i);
         }
       });
-    }, { rootMargin: '-52% 0px -48% 0px', threshold: 0 });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
     steps.forEach(function (s) { io.observe(s); });
   }
 })();

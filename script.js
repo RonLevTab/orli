@@ -23,9 +23,7 @@ form.addEventListener('submit', (e) => {
 });
 
 // Reveal-on-scroll for cards and sections
-const revealables = document.querySelectorAll(
-  '.hiw-card, .feature, .sec-item, .rung, .stat, .code-card'
-);
+const revealables = document.querySelectorAll('.rung, .stat, .code-card');
 if ('IntersectionObserver' in window) {
   revealables.forEach((el) => {
     el.style.opacity = '0';
@@ -46,15 +44,6 @@ if ('IntersectionObserver' in window) {
   }, { threshold: 0.12 });
   revealables.forEach((el) => io.observe(el));
 }
-
-// Cursor-following glow border on the how-it-works cards (Petaron GlowingEffect)
-document.querySelectorAll('[data-glow]').forEach((card) => {
-  card.addEventListener('pointermove', (e) => {
-    const r = card.getBoundingClientRect();
-    card.style.setProperty('--mx', `${e.clientX - r.left}px`);
-    card.style.setProperty('--my', `${e.clientY - r.top}px`);
-  });
-});
 
 // FAQ accordion: one open at a time, smooth grid-rows expand (Petaron animation)
 document.querySelectorAll('.faq-item').forEach((item) => {

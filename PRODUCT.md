@@ -14,7 +14,16 @@ online booking, already living with the pain the copy names directly: patients
 who can only book by phone or in person, a secretary keying every appointment
 into Optima by hand, and requests piling up after hours. They read in Hebrew
 (primary) and decide whether to request a demo — they are not booking an
-appointment for themselves here.
+appointment for themselves here. `index.html` is written for this reader:
+story only, no code, no implementation detail.
+
+**The decision-maker's web person or IT contact** — a secondary audience, reached
+only once the decision-maker hands them a link, not by browsing the site
+themselves. `integration.html` exists for them: the embed snippet and
+surface-level facts about scope, data handling, and the Optima sync, verified
+against `orli-calendar`'s real code rather than written speculatively. It is
+deliberately not promoted in primary nav — a technical reference isn't part of
+the persuasion story, it's a follow-up once the decision-maker is already sold.
 
 ## Product Purpose
 

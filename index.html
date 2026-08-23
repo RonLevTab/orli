@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Heebo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=28" />
+  <link rel="stylesheet" href="styles.css?v=33" />
   <link rel="stylesheet" href="widget.css?v=23" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
 </head>
@@ -25,12 +25,13 @@
           <img class="brand-logo brand-logo--en" src="assets/brand/orli-wordmark.png" alt="Orli" />
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="#demo" data-i18n="nav.demo">דמו אינטראקטיבי</a>
-          <a href="#compare" data-i18n="nav.why">למה אורלי</a>
-          <a href="#faq" data-i18n="nav.faq">שאלות נפוצות</a>
+          <a href="#demo">דמו מהיר</a>
+          <a href="#compare">למה אורלי</a>
+          <a href="#faq">שאלות נפוצות</a>
+          <a href="integration.html">התאמה אישית</a>
         </nav>
         <div class="nav-cta">
-          <a href="#contact" class="btn-dark" data-i18n="nav.book">לקביעת דמו</a>
+          <a href="#contact" class="btn-dark">לקביעת דמו</a>
         </div>
       </div>
     </div>
@@ -43,17 +44,13 @@
       <div class="hero-veil" aria-hidden="true"></div>
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <h1 class="display" data-i18n="hero.h1">אף מטופל <span class="ital">לא נשאר בלי מענה.</span></h1>
-          <p class="lead" data-i18n="hero.lead">אורלי מוסיפה קביעת תורים אונליין לאתר המרפאה, וכל תור נכנס ישר לאופטימה. בלי להחליף כלום, בלי ללמוד מערכת חדשה.</p>
+          <p class="eyebrow">תוסף למרפאות שעובדות עם אופטימה</p>
+          <h1 class="display">קביעת תור באתר שלכם, <span class="ital">בלחיצת כפתור.</span></h1>
+          <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את התור ישר באופטימה. אותו יומן שיש לכם היום, פתוח סוף סוף למטופלים.</p>
           <div class="hero-actions">
-            <a href="#demo" class="btn-dark lg" data-i18n="hero.btnDemo">לדמו האינטראקטיבי</a>
-            <a href="#compare" class="btn-line lg" data-i18n="hero.btnHow">← למה אורלי</a>
+            <a href="#demo" class="btn-dark lg">לדמו המהיר</a>
+            <a href="#compare" class="btn-line lg">← למה אורלי</a>
           </div>
-          <ul class="hero-trust">
-            <li data-i18n="hero.trust1"><strong>בלי הקלדה מחדש.</strong> התורים נכנסים ישירות לאופטימה.</li>
-            <li data-i18n="hero.trust2"><strong>בלי חשבונות למטופלים.</strong> רק קוד לאימייל שלהם.</li>
-            <li data-i18n="hero.trust3"><strong>בלי תחזוקה.</strong> מוסיפים פעם אחת, וזה נשאר מעודכן.</li>
-          </ul>
         </div>
 
         <!-- Widget mockup in browser chrome -->
@@ -77,23 +74,23 @@
                 </div>
               </div>
               <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-block-end:20px">
-                <h3 class="obw-title" style="margin:0;font-size:1.4rem" data-i18n="mock.confirmTitle">אישור התור</h3>
+                <h3 class="obw-title" style="margin:0;font-size:1.4rem">אישור התור</h3>
               </div>
               <dl class="obw-summary" style="padding:16px 18px;margin-block-end:24px">
-                <dt data-i18n="mock.treatment">טיפול</dt>
-                <dd data-i18n="mock.treatmentVal">ייעוץ</dd>
-                <dt data-i18n="mock.practitioner">מטפל/ת</dt>
-                <dd data-i18n="mock.practitionerVal">ד״ר רון</dd>
-                <dt data-i18n="mock.when">תאריך ושעה</dt>
+                <dt>טיפול</dt>
+                <dd>ייעוץ</dd>
+                <dt>מטפל/ת</dt>
+                <dd>ד״ר רון</dd>
+                <dt>תאריך ושעה</dt>
                 <dd>28.7 · 10:30</dd>
-                <dt data-i18n="mock.patient">הפרטים שלכם</dt>
-                <dd data-i18n="mock.patientVal">ישראל ישראלי · 050-123-4567</dd>
+                <dt>הפרטים שלכם</dt>
+                <dd>ישראל ישראלי · 050-123-4567</dd>
               </dl>
-              <button class="obw-primary-btn obw-primary-btn--compact" type="button" style="pointer-events:none;padding-block:14px" data-i18n="mock.sendOtp">שלח קוד לאימות</button>
+              <button class="obw-primary-btn obw-primary-btn--compact" type="button" style="pointer-events:none;padding-block:14px">שלח קוד לאימות</button>
             </div>
           </div>
-          <div class="float-badge badge-1" data-i18n="mock.badge1">✓ אוטומציה מלאה לאופטימה</div>
-          <div class="float-badge badge-2" data-i18n="mock.badge2">🔒 מאובטח · מהיר · פשוט</div>
+          <div class="float-badge badge-1">✓ אוטומציה מלאה לאופטימה</div>
+          <div class="float-badge badge-2">🔒 מאובטח · מהיר · פשוט</div>
         </div>
       </div>
     </section>
@@ -101,9 +98,9 @@
     <!-- STAT STRIP -->
     <section class="stats">
       <div class="wrap stats-grid">
-        <div class="stat"><span class="stat-num">&lt;60s</span><span class="stat-cap" data-i18n="stat.1">מ״אני צריך תור״ ועד תור מאושר</span></div>
-        <div class="stat"><span class="stat-num">24/7</span><span class="stat-cap" data-i18n="stat.2">קביעת תורים, גם אחרי שהמרפאה סגורה</span></div>
-        <div class="stat"><span class="stat-num">1</span><span class="stat-cap" data-i18n="stat.4">שורת קוד להטמעה בכל אתר מרפאה</span></div>
+        <div class="stat"><span class="stat-num">&lt;60s</span><span class="stat-cap">מלחיצה ראשונה ועד תור מאושר</span></div>
+        <div class="stat"><span class="stat-num">24/7</span><span class="stat-cap">המטופלים קובעים לבד, גם כשאתם סגורים</span></div>
+        <div class="stat"><span class="stat-num">0</span><span class="stat-cap">הקלדות של הצוות</span></div>
       </div>
     </section>
 
@@ -111,41 +108,42 @@
     <section class="section scrolly" id="demo">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="display" data-i18n="scrolly.h2">צפו בתור נקבע, <span class="ital">בזמן אמת.</span></h2>
-          <p class="section-lead" data-i18n="scrolly.lead">גללו, והוידג׳ט האמיתי קובע תור שלב אחר שלב, בדיוק כמו שהמטופלים שלכם היו עושים. הוא פעיל, אז אפשר גם לנסות אותו בעצמכם.</p>
+          <p class="eyebrow">דמו מהיר</p>
+          <h2 class="display">צפו בתור נקבע <span class="ital">תוך שניות.</span></h2>
+          <p class="section-lead">גללו, והוידג׳ט האמיתי קובע תור שלב אחר שלב, בדיוק כמו שהמטופלים שלכם היו עושים. הוא פעיל, אז אפשר גם לנסות אותו בעצמכם.</p>
         </div>
       </div>
       <div class="wrap scrolly-grid">
         <div class="scrolly-steps">
           <article class="scrolly-step" data-scene="0">
-            <span class="scrolly-idx" data-i18n="scrolly.0.idx">01 · בחירה</span>
-            <h3 data-i18n="scrolly.0.h">בחירת טיפול</h3>
-            <p data-i18n="scrolly.0.p">המטופל נכנס לאתר שלכם ובוחר טיפול אצל המטפל הנכון. הרשימה מגיעה בזמן אמת מאופטימה.</p>
+            <span class="scrolly-idx">01 · בחירה</span>
+            <h3>בחירת טיפול</h3>
+            <p>המטופל נכנס לאתר שלכם ובוחר טיפול אצל המטפל הנכון. הרשימה מגיעה בזמן אמת מאופטימה.</p>
           </article>
           <article class="scrolly-step" data-scene="1">
-            <span class="scrolly-idx" data-i18n="scrolly.1.idx">02 · תאריך</span>
-            <h3 data-i18n="scrolly.1.h">בחירת יום</h3>
-            <p data-i18n="scrolly.1.p">אורלי מציגה רק ימים עם זמינות אמיתית, לפי השעות והימים החופשיים של כל רופא, כך שזו אף פעם לא שעה שאינה באמת פנויה.</p>
+            <span class="scrolly-idx">02 · תאריך</span>
+            <h3>בחירת יום</h3>
+            <p>אורלי מציגה רק ימים עם זמינות אמיתית, לפי השעות והימים החופשיים של כל רופא, כך שזו אף פעם לא שעה שאינה באמת פנויה.</p>
           </article>
           <article class="scrolly-step" data-scene="2">
-            <span class="scrolly-idx" data-i18n="scrolly.2.idx">03 · שעה</span>
-            <h3 data-i18n="scrolly.2.h">בחירת שעה</h3>
-            <p data-i18n="scrolly.2.p">השעות הפנויות לאותו יום מופיעות מיד, ישירות מהיומן המעודכן.</p>
+            <span class="scrolly-idx">03 · שעה</span>
+            <h3>בחירת שעה</h3>
+            <p>השעות הפנויות לאותו יום מופיעות מיד, ישירות מהיומן המעודכן.</p>
           </article>
           <article class="scrolly-step" data-scene="3">
-            <span class="scrolly-idx" data-i18n="scrolly.3.idx">04 · פרטים</span>
-            <h3 data-i18n="scrolly.3.h">מי קובע את התור</h3>
-            <p data-i18n="scrolly.3.p">שם, טלפון ואימייל, פעם אחת. אין חשבון לפתוח ואין מה לזכור, והאימייל משמש לאימות מהיר ולשליחת האישור.</p>
+            <span class="scrolly-idx">04 · פרטים</span>
+            <h3>מי קובע את התור</h3>
+            <p>שם, טלפון ואימייל, פעם אחת. אין חשבון לפתוח ואין מה לזכור, והאימייל משמש לאימות מהיר ולשליחת האישור.</p>
           </article>
           <article class="scrolly-step" data-scene="4">
-            <span class="scrolly-idx" data-i18n="scrolly.4.idx">05 · אימות</span>
-            <h3 data-i18n="scrolly.4.h">אימות בקוד</h3>
-            <p data-i18n="scrolly.4.p">קוד מהיר מאמת את המטופל ממש לפני שאורלי קובעת משהו. זה חוסם ספאם וזה המקום שבו נאספת ההסכמה.</p>
+            <span class="scrolly-idx">05 · אימות</span>
+            <h3>אימות בקוד</h3>
+            <p>קוד מהיר מאמת את המטופל ממש לפני שאורלי קובעת משהו. זה חוסם ספאם וזה המקום שבו נאספת ההסכמה.</p>
           </article>
           <article class="scrolly-step" data-scene="5">
-            <span class="scrolly-idx" data-i18n="scrolly.5.idx">06 · נקבע</span>
-            <h3 data-i18n="scrolly.5.h">נכתב לאופטימה</h3>
-            <p data-i18n="scrolly.5.p">התור נוחת ביומן האמיתי שלכם והמטופל מקבל אישור. בלי הקלדה מחדש, בלי טלפונים חוזרים. זהו.</p>
+            <span class="scrolly-idx">06 · נקבע</span>
+            <h3>נכתב לאופטימה</h3>
+            <p>התור נוחת ביומן האמיתי שלכם והמטופל מקבל אישור. בלי הקלדה מחדש, בלי טלפונים חוזרים. זהו.</p>
           </article>
         </div>
 
@@ -175,29 +173,30 @@
     <section class="section alt" id="compare">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="display" data-i18n="cmp.h2">הדרך הידנית <span class="ital">מול אורלי.</span></h2>
-          <p class="section-lead" data-i18n="cmp.lead">אותה מרפאה, אותו יומן אופטימה. אחת מהאפשרויות משאירה את המזכירה על הטלפון כל הבוקר.</p>
+          <p class="eyebrow">לפני ואחרי</p>
+          <h2 class="display">אותה מרפאה, אותו יומן. <span class="ital">הבדל אחד.</span></h2>
+          <p class="section-lead">אחת מהאפשרויות משאירה את המזכירה על הטלפון כל הבוקר. השנייה עובדת לבד.</p>
         </div>
         <div class="cmp-table">
           <div class="cmp-thead">
-            <div class="cmp-th cmp-th--without" data-i18n="cmp.without.head">בלי אורלי</div>
-            <div class="cmp-th cmp-th--with" data-i18n="cmp.with.head">עם אורלי</div>
+            <div class="cmp-th cmp-th--without">בלי אורלי</div>
+            <div class="cmp-th cmp-th--with">עם אורלי</div>
           </div>
           <div class="cmp-rows">
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span data-i18n="cmp.without.1">המטופלים מתקשרים בשעות הפעילות, או בכלל לא</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span data-i18n="cmp.with.1">המטופל קובע תור אונליין בפחות מדקה, בכל שעה</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>המטופלים מתקשרים בשעות הפעילות, או בכלל לא</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>המטופל קובע תור אונליין בפחות מדקה, בכל שעה</span></div>
 
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span data-i18n="cmp.without.2">המזכירה מקריאה תורים, רושמת ומקלידה לאופטימה</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span data-i18n="cmp.with.2">התור נכנס ישירות לאופטימה, בלי הקלדה מחדש</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>המזכירה מקריאה תורים, רושמת ומקלידה לאופטימה</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>התור נכנס ישירות לאופטימה, בלי הקלדה מחדש</span></div>
 
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span data-i18n="cmp.without.3">שינוי מועד = עוד שיחה ועוד עריכה ידנית</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span data-i18n="cmp.with.3">מטופלים משנים מועד ומבטלים בעצמם, עם אימות בקוד</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>שינוי מועד = עוד שיחה ועוד עריכה ידנית</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>מטופלים משנים מועד ומבטלים בעצמם, עם אימות בקוד</span></div>
 
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span data-i18n="cmp.without.4">בקשות אחרי שעות הפעילות ממתינות בתא הקולי</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span data-i18n="cmp.with.4">התורים מטופלים ברגע שהם מגיעים, 24/7</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>בקשות אחרי שעות הפעילות ממתינות בתא הקולי</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>התורים מטופלים ברגע שהם מגיעים, 24/7</span></div>
 
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span data-i18n="cmp.without.5">אין תיעוד של מי ניסה לקבוע תור וּויתר</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span data-i18n="cmp.with.5">כל תור נרשם למסד הנתונים שלכם מהיום הראשון</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>אין תיעוד של מי ניסה לקבוע תור וּויתר</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>כל תור נרשם למסד הנתונים שלכם מהיום הראשון</span></div>
           </div>
         </div>
       </div>
@@ -205,27 +204,15 @@
 
     <!-- EMBED SNIPPET -->
     <section class="section alt embed">
-      <div class="wrap embed-grid">
-        <div class="embed-copy">
-          <h2 class="display" data-i18n="emb.h2">באתר שלכם <span class="ital">תוך דקות.</span></h2>
-          <p class="section-lead" data-i18n="emb.lead">מי שאחראי על האתר שלכם מוסיף את אורלי פעם אחת. מכאן, העדכונים קורים לבד, כך שאין לכם מה לתחזק.</p>
-          <ul class="check-list">
-            <li data-i18n="emb.li1">עובד עם כל אתר מרפאה</li>
-            <li data-i18n="emb.li2">לא משנה את המראה של שאר האתר</li>
-            <li data-i18n="emb.li3">נעול למרפאה שלכם, מוגן משימוש לרעה</li>
-          </ul>
-        </div>
-        <div class="code-card">
-          <div class="code-head">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            <span class="code-file">your-clinic.co.il</span>
-          </div>
-<pre class="code-body"><code><span class="c-com">&lt;!-- Orli booking widget --&gt;</span>
-<span class="c-tag">&lt;script</span>
-  <span class="c-attr">src</span>=<span class="c-str">"https://cdn.orli.health/widget.js"</span>
-  <span class="c-attr">data-clinic</span>=<span class="c-str">"pk_live_9f2c...a17"</span>
-<span class="c-tag">&gt;&lt;/script&gt;</span></code></pre>
-        </div>
+      <div class="wrap narrow center">
+        <p class="eyebrow">קל להוספה</p>
+        <h2 class="display">באתר שלכם <span class="ital">תוך דקות.</span></h2>
+        <p class="section-lead">מי שאחראי על האתר שלכם מוסיף את אורלי פעם אחת. מכאן, העדכונים קורים לבד, כך שאין לכם מה לתחזק.</p>
+        <ul class="check-list" style="justify-items:center; justify-content:center">
+          <li>עובד עם כל אתר מרפאה</li>
+          <li>לא משנה את המראה של שאר האתר</li>
+          <li>נעול למרפאה שלכם, מוגן משימוש לרעה</li>
+        </ul>
       </div>
     </section>
 
@@ -233,32 +220,33 @@
     <section class="section alt" id="roadmap">
       <div class="wrap">
         <div class="section-head">
-          <h2 class="display" data-i18n="road.h2">בקרוב, אורלי גם תעזור למרפאה <span class="ital">לצמוח.</span></h2>
-          <p class="section-lead" data-i18n="road.lead">וידג׳ט קביעת התורים כבר עובד היום. בשלב הבא: צ׳אטבוט שעונה על שאלות וקובע תורים בשיחה, ותזכורות חכמות שמזמינות מטופלים לביקור הבא בדיוק בזמן, כדי להחזיר מטופלים ולהגדיל את ההכנסה.</p>
+          <p class="eyebrow">מה הלאה</p>
+          <h2 class="display">אורלי <span class="ital">רק מתחילה.</span></h2>
+          <p class="section-lead">צ׳אטבוט שעונה וקובע תור בשיחה חופשית, ותזכורות חכמות שמחזירות מטופלים בדיוק בזמן.</p>
         </div>
         <ol class="ladder">
           <li class="rung done">
-            <span class="rung-tag" data-i18n="road.tag.live">זמין עכשיו</span>
-            <h3 data-i18n="road.r1.h">המטופלים קובעים בעצמם</h3>
-            <p data-i18n="road.r1.p">המטופלים קובעים שעות פנויות אמיתיות אונליין וזה נוחת באופטימה. הבסיס המוכח שכל השאר נבנה עליו.</p>
+            <span class="rung-tag">זמין עכשיו</span>
+            <h3>המטופלים קובעים בעצמם</h3>
+            <p>המטופלים קובעים שעות פנויות אמיתיות אונליין וזה נוחת באופטימה. הבסיס המוכח שכל השאר נבנה עליו.</p>
           </li>
           <li class="rung done">
-            <span class="rung-tag" data-i18n="road.tag.live2">זמין עכשיו</span>
-            <h3 data-i18n="road.r2.h">שינוי מועד וביטול</h3>
-            <p data-i18n="road.r2.p">המטופלים משנים או מבטלים את התורים שלהם בעצמם, עם אישור בקוד לאימייל. בלי עבודה למזכירה.</p>
+            <span class="rung-tag">זמין עכשיו</span>
+            <h3>שינוי מועד וביטול</h3>
+            <p>המטופלים משנים או מבטלים את התורים שלהם בעצמם, עם אישור בקוד לאימייל. בלי עבודה למזכירה.</p>
           </li>
           <li class="rung next">
-            <span class="rung-tag" data-i18n="road.tag.next">בקרוב</span>
-            <h3 data-i18n="road.r3.h">צ׳אטבוט שעונה, ממליץ וקובע</h3>
-            <p data-i18n="road.r3.p">המטופלים שואלים בשפה חופשית, על טיפולים, מחירים או זמינות, והצ׳אטבוט עונה מתוך המידע של המרפאה, ממליץ על הטיפול המתאים וקובע את התור, הכול בשיחה אחת.</p>
+            <span class="rung-tag">בקרוב</span>
+            <h3>צ׳אטבוט שעונה, ממליץ וקובע</h3>
+            <p>המטופלים שואלים בשפה חופשית, על טיפולים, מחירים או זמינות, והצ׳אטבוט עונה מתוך המידע של המרפאה, ממליץ על הטיפול המתאים וקובע את התור, הכול בשיחה אחת.</p>
           </li>
           <li class="rung next">
-            <span class="rung-tag" data-i18n="road.tag.later">בקרוב</span>
-            <h3 data-i18n="road.r4.h">תזכורות חכמות שמחזירות מטופלים</h3>
-            <p data-i18n="road.r4.p">לכל טיפול יש קצב משלו. אורלי יודעת מתי הגיע הזמן לביקור הבא ושולחת למטופל תזכורת בדיוק בזמן, עם הצעה לקבוע תור. יותר מטופלים חוזרים, יותר הכנסה קבועה.</p>
+            <span class="rung-tag">בקרוב</span>
+            <h3>תזכורות חכמות שמחזירות מטופלים</h3>
+            <p>לכל טיפול יש קצב משלו. אורלי יודעת מתי הגיע הזמן לביקור הבא ושולחת למטופל תזכורת בדיוק בזמן, עם הצעה לקבוע תור. יותר מטופלים חוזרים, יותר הכנסה קבועה.</p>
           </li>
         </ol>
-        <p class="ladder-note" data-i18n="road.note">רוצים גישה מוקדמת ליכולות הצמיחה של אורלי כשהן יוצאות? <a href="#contact">דברו איתנו.</a></p>
+        <p class="ladder-note">רוצים גישה מוקדמת ליכולות הצמיחה של אורלי כשהן יוצאות? <a href="#contact">דברו איתנו.</a></p>
       </div>
     </section>
 
@@ -266,50 +254,50 @@
     <section class="section" id="faq">
       <div class="wrap narrow">
         <div class="section-head">
-          <h2 class="display" data-i18n="faq.h2">כמה דברים שצוותים שואלים <span class="ital">לפני שמתחילים.</span></h2>
+          <h2 class="display">שאלות <span class="ital">ותשובות.</span></h2>
         </div>
         <ul class="faq">
           <li class="faq-item">
             <button class="faq-btn" type="button" aria-expanded="false">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span data-i18n="faq.q0">יש לנו כבר אופטימה, בשביל מה צריך את אורלי?</span><span class="faq-tag" data-i18n="faq.tag0">למה אורלי</span></span>
+              <span class="faq-q"><span>יש לנו כבר אופטימה, בשביל מה צריך את אורלי?</span><span class="faq-tag">למה אורלי</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p data-i18n="faq.a0">היומן של אופטימה נבנה לצוות, לא למטופלים, אז הם עדיין מתקשרים או מגיעים פיזית כדי לקבוע תור, והמזכירה מקלידה כל אחד ביד. <strong>אורלי פותחת את אותו יומן לאתר שלכם, כך שמטופלים קובעים בעצמם והתור נכנס ישר לאופטימה.</strong> בלי להחליף שום דבר שאתם כבר מריצים.</p></div></div>
+            <div class="faq-panel"><div class="faq-panel-inner"><p>היומן של אופטימה נבנה לצוות, לא למטופלים, אז הם עדיין מתקשרים או מגיעים פיזית כדי לקבוע תור, והמזכירה מקלידה כל אחד ביד. <strong>אורלי פותחת את אותו יומן לאתר שלכם, כך שמטופלים קובעים בעצמם והתור נכנס ישר לאופטימה.</strong> בלי להחליף שום דבר שאתם כבר מריצים.</p></div></div>
           </li>
           <li class="faq-item">
             <button class="faq-btn" type="button" aria-expanded="false">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span data-i18n="faq.q1">חייבים להחליף את אופטימה?</span><span class="faq-tag" data-i18n="faq.tag1">אינטגרציה</span></span>
+              <span class="faq-q"><span>חייבים להחליף את אופטימה?</span><span class="faq-tag">אינטגרציה</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p data-i18n="faq.a1">לא. אורלי יושבת מעל יומן האופטימה שכבר יש לכם. שום דבר לא משתנה לצוות. עבודת הקביעה הידנית פשוט נעלמת.</p></div></div>
+            <div class="faq-panel"><div class="faq-panel-inner"><p>לא. אורלי יושבת מעל יומן האופטימה שכבר יש לכם. שום דבר לא משתנה לצוות. עבודת הקביעה הידנית פשוט נעלמת.</p></div></div>
           </li>
           <li class="faq-item">
             <button class="faq-btn" type="button" aria-expanded="false">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span data-i18n="faq.q2">כמה זמן לוקח להתחיל?</span><span class="faq-tag" data-i18n="faq.tag2">הטמעה</span></span>
+              <span class="faq-q"><span>כמה זמן לוקח להתחיל?</span><span class="faq-tag">הטמעה</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p data-i18n="faq.a2">ימים, לא חודשים. אנחנו מתחברים לאופטימה שלכם, מגדירים את השירותים והרופאים, ונותנים לכם קטע קוד פשוט להוסיף לאתר.</p></div></div>
+            <div class="faq-panel"><div class="faq-panel-inner"><p>ימים, לא חודשים. אנחנו מתחברים לאופטימה שלכם, מגדירים את השירותים והרופאים, ונותנים לכם קטע קוד פשוט להוסיף לאתר.</p></div></div>
           </li>
           <li class="faq-item">
             <button class="faq-btn" type="button" aria-expanded="false">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span data-i18n="faq.q3">המזכירה מאבדת שליטה על היומן?</span><span class="faq-tag" data-i18n="faq.tag3">שליטה</span></span>
+              <span class="faq-q"><span>המזכירה מאבדת שליטה על היומן?</span><span class="faq-tag">שליטה</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p data-i18n="faq.a3">לעולם לא. מטופלים קובעים רק לתוך תורים פנויים אמיתיים שהכללים שלכם כבר מתירים. הצוות ממשיך לעבוד באופטימה בדיוק כמו היום.</p></div></div>
+            <div class="faq-panel"><div class="faq-panel-inner"><p>לעולם לא. מטופלים קובעים רק לתוך תורים פנויים אמיתיים שהכללים שלכם כבר מתירים. הצוות ממשיך לעבוד באופטימה בדיוק כמו היום.</p></div></div>
           </li>
           <li class="faq-item">
             <button class="faq-btn" type="button" aria-expanded="false">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span data-i18n="faq.q4">נתוני המטופלים בטוחים באתר ציבורי?</span><span class="faq-tag" data-i18n="faq.tag4">אבטחה</span></span>
+              <span class="faq-q"><span>נתוני המטופלים בטוחים באתר ציבורי?</span><span class="faq-tag">אבטחה</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p data-i18n="faq.a4">כן. פרטי המטופלים לעולם לא נחשפים באתר הציבורי שלכם. כל תור מאושר בקוד שנשלח לאימייל של המטופל, ונשמר עבורכם.</p></div></div>
+            <div class="faq-panel"><div class="faq-panel-inner"><p>כן. פרטי המטופלים לעולם לא נחשפים באתר הציבורי שלכם. כל תור מאושר בקוד שנשלח לאימייל של המטופל, ונשמר עבורכם.</p></div></div>
           </li>
           <li class="faq-item">
             <button class="faq-btn" type="button" aria-expanded="false">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span data-i18n="faq.q5">מה אם שני מטופלים תופסים אותו תור?</span><span class="faq-tag" data-i18n="faq.tag5">אמינות</span></span>
+              <span class="faq-q"><span>מה אם שני מטופלים תופסים אותו תור?</span><span class="faq-tag">אמינות</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p data-i18n="faq.a5">אם שני אנשים מנסים לתפוס אותה שעה, אורלי מזהה ומציעה את השעה הפנויה הבאה, כך שאף אחד לא יוצא במחשבה שהוא קבע כשלא.</p></div></div>
+            <div class="faq-panel"><div class="faq-panel-inner"><p>אם שני אנשים מנסים לתפוס אותה שעה, אורלי מזהה ומציעה את השעה הפנויה הבאה, כך שאף אחד לא יוצא במחשבה שהוא קבע כשלא.</p></div></div>
           </li>
         </ul>
       </div>
@@ -318,18 +306,19 @@
     <!-- CTA, teal full-bleed band (nod to Iris on the Move) -->
     <section class="cta-band" id="contact">
       <div class="wrap narrow center">
-        <h2 class="display" data-i18n="cta.h2">הפכו את יומן האופטימה <span class="ital">למנוע קביעת תורים.</span></h2>
-        <p class="cta-lead" data-i18n="cta.lead">ראו את אורלי קובעת תור אמיתי ליומן פעיל בפחות מדקה. ספרו לנו על המרפאה ונקבע הדגמה.</p>
+        <p class="eyebrow light">כשתהיו מוכנים</p>
+        <h2 class="display">הפכו את יומן האופטימה <span class="ital">למנוע קביעת תורים.</span></h2>
+        <p class="cta-lead">ראו את אורלי קובעת תור אמיתי ליומן פעיל בפחות מדקה. ספרו לנו על המרפאה ונקבע הדגמה.</p>
         <form class="cta-form" id="demoForm" novalidate>
           <div class="field">
-            <label for="clinic" data-i18n="cta.clinicLabel">שם המרפאה</label>
-            <input id="clinic" name="clinic" type="text" dir="auto" placeholder="מרפאת שיניים התוספים" data-i18n-ph="cta.clinicPh" required />
+            <label for="clinic">שם המרפאה</label>
+            <input id="clinic" name="clinic" type="text" dir="auto" placeholder="מרפאת שיניים התוספים" required />
           </div>
           <div class="field">
-            <label for="email" data-i18n="cta.emailLabel">אימייל בעבודה</label>
-            <input id="email" name="email" type="email" dir="auto" placeholder="you@clinic.co.il" data-i18n-ph="cta.emailPh" required />
+            <label for="email">אימייל בעבודה</label>
+            <input id="email" name="email" type="email" dir="auto" placeholder="you@clinic.co.il" required />
           </div>
-          <button type="submit" class="btn-cream lg" data-i18n="cta.btn">בקשת דמו</button>
+          <button type="submit" class="btn-cream lg">בקשת דמו</button>
         </form>
         <p class="form-note" id="formNote" role="status"></p>
       </div>
@@ -344,33 +333,39 @@
           <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
           <img class="brand-logo brand-logo--en brand-logo--footer" src="assets/brand/orli-wordmark.png" alt="Orli" />
         </a>
-        <p data-i18n="foot.tagline">קביעת תורים אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
+        <p>קביעת תורים אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
       <nav class="footer-cols" aria-label="Footer">
         <div class="footer-col">
-          <h4 data-i18n="foot.col1.h">מוצר</h4>
-          <a href="#roadmap" data-i18n="foot.col1.3">מפת דרכים</a>
+          <h4>מוצר</h4>
+          <a href="#roadmap">מפת דרכים</a>
+          <a href="integration.html">מדריך טכני להטמעה</a>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="foot.col2.h">אמון</h4>
-          <a href="#faq" data-i18n="foot.col2.2">שאלות נפוצות</a>
-          <a href="#contact" data-i18n="foot.col2.3">צור קשר</a>
+          <h4>אמון</h4>
+          <a href="#faq">שאלות נפוצות</a>
+          <a href="privacy.html">מדיניות פרטיות</a>
+          <a href="#contact">צור קשר</a>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="foot.col3.h">בואו נתחיל</h4>
-          <a href="#contact" data-i18n="foot.col3.1">לקביעת דמו</a>
-          <a href="#compare" data-i18n="foot.col3.2">למה אורלי</a>
+          <h4>חברה</h4>
+          <a href="about.html">אודות</a>
+        </div>
+        <div class="footer-col">
+          <h4>בואו נתחיל</h4>
+          <a href="#contact">לקביעת דמו</a>
+          <a href="#compare">למה אורלי</a>
         </div>
       </nav>
     </div>
     <div class="wrap footer-bottom">
-      <span data-i18n="foot.bottom1">© <span id="year"></span> אורלי. בנוי על פלטפורמת אופטימה.</span>
-      <span data-i18n="foot.bottom2">נבנה למרפאות בישראל · מגשרים על הישן, בעדינות.</span>
+      <span>© <span id="year"></span> אורלי. בנוי על פלטפורמת אופטימה.</span>
+      <span>נבנה למרפאות בישראל · מגשרים על הישן, בעדינות.</span>
     </div>
   </footer>
 
-  <script src="script.js?v=11"></script>
+  <script src="script.js?v=12"></script>
   <script src="hero-gradient.js?v=13"></script>
-  <script src="scrolly.js?v=20"></script>
+  <script src="scrolly.js?v=21"></script>
 </body>
 </html>

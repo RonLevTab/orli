@@ -66,6 +66,8 @@ h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
   margin-bottom: 18px;
 }
 .eyebrow.light { color: rgba(255,255,255,.85); }
+/* Hebrew has no case, so wide Latin-style tracking just adds drag; ease it off. */
+html[lang="he"] .eyebrow { letter-spacing: .02em; }
 
 /* ---------- buttons ---------- */
 .btn-dark, .btn-line, .btn-cream {
@@ -174,10 +176,6 @@ html[dir="rtl"] .hero-veil {
 .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; position: relative; z-index: 2; }
 .lead { font-size: 1.16rem; color: var(--ink-soft); max-width: 34em; margin-top: 22px; }
 .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin: 28px 0 30px; }
-.hero-trust { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
-.hero-trust li { color: var(--ink-soft); font-size: .96rem; padding-inline-start: 26px; position: relative; }
-.hero-trust li::before { content: "✓"; position: absolute; inset-inline-start: 0; color: var(--teal); font-weight: 800; }
-.hero-trust strong { color: var(--ink); font-weight: 600; }
 
 /* browser-chrome widget mockup */
 .hero-visual { position: relative; pointer-events: none; }
@@ -308,7 +306,10 @@ html[dir="rtl"] .hero-veil {
 .feature p { color: var(--ink-soft); font-size: .96rem; margin: 0; }
 
 /* embed */
-.embed-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center; }
+.swatches { display: flex; gap: 11px; margin: 22px 0 4px; }
+.notice-banner { background: var(--cream-2); border: 1px dashed var(--ink-soft); border-radius: var(--radius); padding: 18px 22px; margin: 0 0 40px; font-size: .92rem; color: var(--ink); }
+.notice-banner strong { color: var(--teal-deep); }
+.swatches span { display: inline-block; width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); box-shadow: var(--shadow-sm); }
 .check-list { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 11px; }
 .check-list li { padding-inline-start: 28px; position: relative; color: var(--ink-soft); }
 .check-list li::before { content: "✓"; position: absolute; inset-inline-start: 0; color: var(--teal); font-weight: 800; }
@@ -388,7 +389,6 @@ html[dir="rtl"] .hero-veil {
   .hero-visual { order: -1; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .steps, .feature-grid, .sec-grid, .ladder { grid-template-columns: 1fr 1fr; }
-  .compare, .embed-grid { grid-template-columns: 1fr; }
   .demo-grid { grid-template-columns: 1fr; gap: 36px; }
   .demo-notes { max-width: none; order: 2; }
   /* Mobile scrollytelling: the desktop sticky-pin-while-scrolling technique
