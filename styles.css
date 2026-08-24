@@ -136,7 +136,16 @@ html:not([lang="he"]) .brand-logo--he { display: none; }
 .icon-btn:hover { background: var(--cream-2); }
 
 /* ---------- hero ---------- */
-.hero { padding: 64px 0 48px; position: relative; overflow: hidden; min-height: 100vh; display: flex; align-items: center; }
+.hero {
+  padding: 64px 0 48px; position: relative; overflow: hidden; display: flex; align-items: center;
+  /* 100vh on mobile Safari is the viewport with its toolbar hidden (the
+     largest it ever gets), not what's actually visible — so with the
+     toolbar showing the hero renders taller than the real screen and its
+     last line ends up under the toolbar. dvh tracks the true visible
+     height; vh stays as the fallback for browsers that don't support it. */
+  min-height: 100vh;
+  min-height: 100dvh;
+}
 .hero::before {
   content: ""; position: absolute; inset: -30% 45% auto -12%; height: 640px;
   background: radial-gradient(closest-side, rgba(20,184,166,.16), transparent 72%);
