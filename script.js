@@ -27,9 +27,58 @@ if (form) {
   });
 }
 
-// Reveal-on-scroll for cards and sections
-const revealables = document.querySelectorAll('.rung, .code-card');
+// Reveal-on-scroll: section headlines split into words (blur + rise in,
+// staggered per word — see .reveal-word in styles.css), everything else
+// (eyebrows, lead paragraphs, list items, cards) fades + rises as a block.
+// The hero is excluded — it has its own on-load fade-in (see styles.css)
+// since it's visible immediately and scroll can't trigger it.
 if ('IntersectionObserver' in window) {
+  function splitIntoWords(el) {
+    const walk = (node) => {
+      Array.from(node.childNodes).forEach((child) => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          const frag = document.createDocumentFragment();
+          child.textContent.split(/(\s+)/).forEach((part) => {
+            if (part === '') return;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(part));
+            } else {
+              const span = document.createElement('span');
+              span.className = 'reveal-word';
+              span.textContent = part;
+              frag.appendChild(span);
+            }
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          walk(child);
+        }
+      });
+    };
+    walk(el);
+    el.querySelectorAll('.reveal-word').forEach((word, i) => {
+      word.style.transitionDelay = `${i * 45}ms`;
+    });
+  }
+
+  const headings = document.querySelectorAll(':is(.section, .cta-band) .display');
+  headings.forEach(splitIntoWords);
+  const headingObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('reveal-play');
+        headingObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  headings.forEach((h) => headingObserver.observe(h));
+
+  const revealables = document.querySelectorAll([
+    ':is(.section, .cta-band) .eyebrow',
+    '.section-lead', '.cta-lead', '.ladder-note',
+    '.check-list li', '.rung', '.code-card',
+    '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
+  ].join(', '));
   revealables.forEach((el) => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(16px)';

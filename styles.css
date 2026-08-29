@@ -432,6 +432,26 @@ html[dir="rtl"] .hero-veil {
   * { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
 }
 
+/* ===== Scroll reveal: headline words blur + rise in (see script.js) ===== */
+.display .reveal-word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(60%);
+  transition: opacity .5s cubic-bezier(.2, .7, .3, 1), transform .5s cubic-bezier(.2, .7, .3, 1), filter .5s ease;
+}
+.display.reveal-play .reveal-word { opacity: 1; transform: none; filter: blur(0); }
+
+/* Chapter break between sections: a hairline that fades out at both ends,
+   wide but centered — text inside each section stays centered as-is. */
+.section-divider {
+  height: 2px;
+  width: 640px;
+  max-width: 92%;
+  margin: 16px auto 64px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--teal) 85%, transparent) 50%, transparent);
+}
+
 /* ===== How it works — framed glow cards (Petaron ProcessFlow) ===== */
 .hiw-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .hiw-card { position: relative; list-style: none; border-radius: 20px; border: 1px solid var(--line); padding: 7px; background: var(--cream-2); }
