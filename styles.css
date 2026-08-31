@@ -432,15 +432,50 @@ html[dir="rtl"] .hero-veil {
   * { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
 }
 
-/* ===== Scroll reveal: headline words blur + rise in (see script.js) ===== */
-.display .reveal-word {
+/* ===== Scroll reveal (see script.js) =====
+   Two techniques:
+   1. Line-by-line text (headlines, eyebrows, leads, list items): words are
+      wrapped in .reveal-word spans, then grouped by which visual line they
+      land on — every word on a line shares one transition-delay, so whole
+      lines cascade in together rather than one word racing after another.
+      The container itself (.display, .eyebrow, ...) is hidden by .js
+      pre-JS to avoid a flash of fully-visible plain text before the words
+      exist, then script.js unmasks the container right after splitting so
+      only the still-hidden words are left to animate on scroll.
+   2. Block reveal (cards, tables, dividers — composite, non-prose
+      elements): fades and rises as a single block, no line-splitting. */
+.js .section .display,
+.js :is(.section, .cta-band) .eyebrow,
+.js .section-lead,
+.js .cta-lead,
+.js .ladder-note,
+.js .check-list li {
+  opacity: 0;
+}
+.reveal-word {
   display: inline-block;
   opacity: 0;
-  filter: blur(6px);
   transform: translateY(60%);
-  transition: opacity .5s cubic-bezier(.2, .7, .3, 1), transform .5s cubic-bezier(.2, .7, .3, 1), filter .5s ease;
+  transition: opacity .75s cubic-bezier(.2, .7, .3, 1), transform .75s cubic-bezier(.2, .7, .3, 1);
 }
-.display.reveal-play .reveal-word { opacity: 1; transform: none; filter: blur(0); }
+.display .reveal-word {
+  filter: blur(6px);
+  transition: opacity .75s cubic-bezier(.2, .7, .3, 1), transform .75s cubic-bezier(.2, .7, .3, 1), filter .75s ease;
+}
+.reveal-play .reveal-word { opacity: 1; transform: none; filter: blur(0); }
+
+/* Block reveal for composite, non-prose elements — this selector list
+   must stay in sync with the `blockRevealTargets` query in script.js. */
+.js .rung,
+.js .code-card,
+.js .cmp-table,
+.js .swatches,
+.js .notice-banner,
+.js .section-divider {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .7s ease, transform .7s ease;
+}
 
 /* Chapter break between sections: a hairline that fades out at both ends,
    wide but centered — text inside each section stays centered as-is. */
