@@ -50,8 +50,6 @@
 .orli-live[data-scrolly] .obw-title { font-size: 1.25rem; margin-block: 2px 9px; }
 .orli-live[data-scrolly] .obw-back-btn { margin-block-end: 4px; }
 .orli-live[data-scrolly] .obw-list { gap: 7px; }
-.orli-live[data-scrolly] .obw-card { margin-block-end: 5px; }
-.orli-live[data-scrolly] .obw-card-title { margin-block: 0 7px; }
 .orli-live[data-scrolly] .obw-option { padding: 10px 14px; }
 .orli-live[data-scrolly] .obw-slots { gap: 7px; }
 .orli-live[data-scrolly] .obw-slot { padding: 8px 15px; }
@@ -98,8 +96,6 @@
 .orli-live .obw-title .obw-en { font-size: .56em; font-weight: 400; margin-block-start: 0; }
 
 .orli-live .obw-list { display: flex; flex-direction: column; gap: 8px; }
-.orli-live .obw-card { border: 0; padding: 0; margin-block-end: 8px; }
-.orli-live .obw-card-title { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; margin-block: 0 10px; }
 
 .orli-live .obw-option { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 13px 15px; text-align: start; background: var(--obw-bg); border: 1px solid var(--obw-border); border-radius: var(--obw-radius); color: var(--obw-text); font-weight: 600; letter-spacing: -0.01em; }
 .orli-live .obw-option-content { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px; }

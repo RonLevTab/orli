@@ -1,17 +1,18 @@
 /* ============================================================
    Live Orli booking widget — interactive demo.
    A faithful vanilla-JS reproduction of the real Vue widget
-   (orli-calendar/web/src/App.vue + step components), driven by
+   (orli-calendar/widget/src/App.vue + step components), driven by
    in-browser mock data so visitors can play the whole flow:
-     catalog → date → time → patient → confirm (OTP) → success
+     practitioner → treatment → date → time → patient → confirm (OTP) → success
    No backend needed. OTP accepts any 6 digits.
    ============================================================ */
 (function () {
   'use strict';
 
-  // ---- bilingual strings (from web/src/i18n.ts) ----
+  // ---- bilingual strings (from widget/src/i18n.ts) ----
   var S = {
     bookTitle: ['לקביעת פגישה', 'Book an appointment'],
+    chooseTreatment: ['בחרו טיפול', 'Choose a treatment'],
     treatment: ['טיפול', 'Treatment'],
     practitioner: ['מטפל/ת', 'Practitioner'],
     price: ['מחיר', 'Price'],
@@ -53,7 +54,10 @@
   // ---- mock catalog (practitioner cards, each with treatments) ----
   var CARDS = [
     {
-      practitioner: { id: 'p1', he: 'ד״ר רון', en: 'Dr. Ron' },
+      practitioner: {
+        id: 'p1', he: 'ד״ר רון', en: 'Dr. Ron',
+        descriptionHe: 'רופא שיניים כללי עם ניסיון של מעל 15 שנה', descriptionEn: 'General dentist with over 15 years of experience',
+      },
       treatments: [
         {
           id: 't1', he: 'בדיקה תקופתית', en: 'Check-up',
@@ -68,7 +72,10 @@
       ],
     },
     {
-      practitioner: { id: 'p2', he: 'ד״ר דניאל', en: 'Dr. Daniel' },
+      practitioner: {
+        id: 'p2', he: 'ד״ר דניאל', en: 'Dr. Daniel',
+        descriptionHe: 'מומחה לטיפולי שורש ושיקום הפה', descriptionEn: 'Specialist in root canals and oral rehabilitation',
+      },
       treatments: [
         {
           id: 't3', he: 'ייעוץ', en: 'Consultation',
@@ -169,7 +176,7 @@
     function reset() {
       LANG = siteLang();
       st = {
-        step: 'catalog', card: null, treatment: null, practitioner: null,
+        step: 'practitioner', practitioner: null, treatments: [], treatment: null,
         monthOffset: 0, day: null, time: '',
         // Pre-filled with a placeholder identity so the demo needs zero typing —
         // it's the Israeli "John Doe". Editable, but ready to click straight through.
@@ -197,7 +204,7 @@
       }, 1000);
     }
 
-    var STEP_ORDER = ['catalog', 'date', 'time', 'patient', 'confirm'];
+    var STEP_ORDER = ['practitioner', 'treatment', 'date', 'time', 'patient', 'confirm'];
 
     function render() {
       var showProgress = st.step !== 'success';
@@ -205,7 +212,7 @@
       var controls = '';
       if (showProgress) {
         var segs = '';
-        for (var n = 0; n < 5; n++) segs += '<span class="obw-progress-seg' + (n <= idx ? ' is-on' : '') + '"></span>';
+        for (var n = 0; n < STEP_ORDER.length; n++) segs += '<span class="obw-progress-seg' + (n <= idx ? ' is-on' : '') + '"></span>';
         var globeSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
         var langLabel = LANG === 'he' ? 'עב' : 'EN';
         controls = '<div class="obw-controls" aria-hidden="true">' +
@@ -225,7 +232,8 @@
 
     function stepHtml() {
       switch (st.step) {
-        case 'catalog': return catalogHtml();
+        case 'practitioner': return practitionerHtml();
+        case 'treatment': return treatmentHtml();
         case 'date': return dateHtml();
         case 'time': return timeHtml();
         case 'patient': return patientHtml();
@@ -241,23 +249,33 @@
       return '<button class="obw-back-btn" data-back>' + chev + ' ' + bi(S.back) + '</button>';
     }
 
-    function catalogHtml() {
+    function practitionerHtml() {
       var html = '<h1 class="obw-title">' + bi(S.bookTitle) + '</h1><div class="obw-list">';
       CARDS.forEach(function (card, ci) {
-        html += '<section class="obw-card"><h2 class="obw-card-title">' +
-          bi([card.practitioner.he, card.practitioner.en]) + '</h2><div class="obw-list">';
-        card.treatments.forEach(function (tr, ti) {
-          var description = tr.descriptionHe || tr.descriptionEn
-            ? '<span class="obw-option-description">' + bi([tr.descriptionHe || '', tr.descriptionEn || '']) + '</span>'
-            : '';
-          var price = tr.price != null
-            ? '<span class="obw-option-price">' + bi(formatPrice(tr.price)) + '</span>'
-            : '';
-          html += '<button class="obw-option" data-offering="' + ci + ':' + ti + '">' +
-            '<span class="obw-option-content">' + bi([tr.he, tr.en]) + description + price + '</span>' +
-            '</button>';
-        });
-        html += '</div></section>';
+        var description = card.practitioner.descriptionHe || card.practitioner.descriptionEn
+          ? '<span class="obw-option-description">' + bi([card.practitioner.descriptionHe || '', card.practitioner.descriptionEn || '']) + '</span>'
+          : '';
+        html += '<button class="obw-option" data-practitioner="' + ci + '">' +
+          '<span class="obw-option-content">' + bi([card.practitioner.he, card.practitioner.en]) + description + '</span>' +
+          '</button>';
+      });
+      return html + '</div>';
+    }
+
+    function treatmentHtml() {
+      var html = backBtn() + '<h1 class="obw-title">' + bi(S.chooseTreatment) + '</h1>' +
+        '<p class="obw-muted">' + bi(S.practitioner) + ': ' + bi([st.practitioner.he, st.practitioner.en]) + '</p>' +
+        '<div class="obw-list">';
+      st.treatments.forEach(function (tr, ti) {
+        var description = tr.descriptionHe || tr.descriptionEn
+          ? '<span class="obw-option-description">' + bi([tr.descriptionHe || '', tr.descriptionEn || '']) + '</span>'
+          : '';
+        var price = tr.price != null
+          ? '<span class="obw-option-price">' + bi(formatPrice(tr.price)) + '</span>'
+          : '';
+        html += '<button class="obw-option" data-treatment="' + ti + '">' +
+          '<span class="obw-option-content">' + bi([tr.he, tr.en]) + description + price + '</span>' +
+          '</button>';
       });
       return html + '</div>';
     }
@@ -365,13 +383,18 @@
 
     // ---- event wiring ----
     function wire() {
-      root.querySelectorAll('[data-offering]').forEach(function (b) {
+      root.querySelectorAll('[data-practitioner]').forEach(function (b) {
         b.addEventListener('click', function () {
-          var p = b.getAttribute('data-offering').split(':');
-          var card = CARDS[+p[0]];
-          st.card = card;
+          var card = CARDS[+b.getAttribute('data-practitioner')];
           st.practitioner = card.practitioner;
-          st.treatment = card.treatments[+p[1]];
+          st.treatments = card.treatments;
+          st.step = 'treatment';
+          render();
+        });
+      });
+      root.querySelectorAll('[data-treatment]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          st.treatment = st.treatments[+b.getAttribute('data-treatment')];
           st.monthOffset = 0;
           st.step = 'date';
           render();
@@ -380,7 +403,7 @@
       var backEl = root.querySelector('[data-back]');
       if (backEl) backEl.addEventListener('click', function () {
         if (st.step === 'confirm') st.otpSent = false;
-        var prev = { date: 'catalog', time: 'date', patient: 'time', confirm: 'patient' }[st.step];
+        var prev = { treatment: 'practitioner', date: 'treatment', time: 'date', patient: 'time', confirm: 'patient' }[st.step];
         st.step = prev; render();
       });
       root.querySelectorAll('[data-month]').forEach(function (b) {
@@ -459,16 +482,19 @@
     function setScene(i) {
       reset();
       var card = CARDS[0];
-      var days = availabilityFor(0, card.treatments[0].id + card.practitioner.id);
-      var day = days[0] || null;
-      var timeStr = (day && day.slots.length) ? day.slots[Math.min(1, day.slots.length - 1)].start : '10:30';
-      var order = ['catalog', 'date', 'time', 'patient', 'confirm', 'success'];
+      var order = ['practitioner', 'treatment', 'date', 'time', 'patient', 'confirm', 'success'];
       st.step = order[Math.max(0, Math.min(order.length - 1, i))];
-      if (st.step !== 'catalog') {
-        st.card = card; st.practitioner = card.practitioner; st.treatment = card.treatments[0];
+      if (st.step !== 'practitioner') {
+        st.practitioner = card.practitioner; st.treatments = card.treatments;
+      }
+      if (['date', 'time', 'patient', 'confirm', 'success'].indexOf(st.step) >= 0) {
+        st.treatment = card.treatments[0];
       }
       if (['time', 'patient', 'confirm', 'success'].indexOf(st.step) >= 0) {
-        st.day = day; st.time = timeStr;
+        var days = availabilityFor(0, card.treatments[0].id + card.practitioner.id);
+        var day = days[0] || null;
+        st.day = day;
+        st.time = (day && day.slots.length) ? day.slots[Math.min(1, day.slots.length - 1)].start : '10:30';
       }
       if (['confirm', 'success'].indexOf(st.step) >= 0) { st.otp = '123456'; st.otpSent = true; }
       if (st.step === 'success') st.bookingId = 'OB-' + Math.floor(100000 + Math.random() * 899999);

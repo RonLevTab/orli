@@ -57,8 +57,9 @@ the clinic's existing workflow has to change.
 
 - Static HTML/CSS/JS, no build step, no framework, no dependencies (see
   `CLAUDE.md` for the six-script architecture).
-- The interactive widget demo plays a scripted flow (catalog → date → time →
-  patient → OTP confirm, any 6 digits works → success) against mock data; it
+- The interactive widget demo plays a scripted flow (practitioner → treatment →
+  date → time → patient → OTP confirm, any 6 digits works → success) against
+  mock data; it
   must keep faithfully mirroring the real widget's flow, steps, and copy as
   that product evolves — see this repo's and `orli-calendar`'s CLAUDE.md
   "Related project" sections.

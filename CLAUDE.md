@@ -15,9 +15,9 @@ alongside this one), the actual booking product (FastAPI + Vue widget). Keep
 the two aligned when shipping features:
 
 - `widget.js` here is a hand-maintained vanilla-JS mirror of the real Vue widget at
-  `orli-calendar/web/src/App.vue` + its step components — when the real widget's
+  `orli-calendar/widget/src/App.vue` + its step components — when the real widget's
   booking flow, steps, or copy change, update this mock to match.
-- Bilingual strings in `widget.js`'s `S` table mirror `orli-calendar/web/src/i18n.ts`.
+- Bilingual strings in `widget.js`'s `S` table mirror `orli-calendar/widget/src/i18n.ts`.
 - If a feature changes what the product can actually do (new booking capability,
   changed flow, new provider), check whether this landing page's marketing copy,
   demo widget, or FAQ need updating too, and vice versa — check whether
@@ -57,10 +57,11 @@ drives `widget.js` through a controller handle):
   add the matching Hebrew string to `HE` in `site-i18n.js`.
 - **`widget.js`** — the live interactive booking widget shown in the "See it in
   action" section. A faithful vanilla-JS reproduction of the real Vue widget
-  (`orli-calendar/web/src/App.vue` + step components) driven by in-browser mock data
-  (`CARDS`), with no backend: catalog → date → time → patient details → OTP confirm
-  (any 6 digits works) → success. Bilingual strings live in its own `S` table (mirrors
-  `web/src/i18n.ts` from the real app) — separate from `site-i18n.js`'s table. It
+  (`orli-calendar/widget/src/App.vue` + step components) driven by in-browser mock
+  data (`CARDS`), with no backend: practitioner → treatment → date → time → patient
+  details → OTP confirm (any 6 digits works) → success. Bilingual strings live in its
+  own `S` table (mirrors `widget/src/i18n.ts` from the real app) — separate from
+  `site-i18n.js`'s table. It
   mounts onto any `[data-orli-widget]` element, exposing a controller on
   `el.__orli` with `setScene(i)` and `render()`. Scoped entirely under `.orli-live` in
   `widget.css` so it never leaks into the marketing site's own styles.
