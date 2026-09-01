@@ -14,7 +14,16 @@
   var tabs = [].slice.call(section.querySelectorAll('.scrolly-tab'));
   if (!iframe || !steps.length) return;
 
-  var STEP_NAMES = ['catalog', 'date', 'time', 'patient', 'confirm', 'success'];
+  // Must match orli-calendar/widget/src/App.vue's actual Step type
+  // ('practitioner' | 'treatment' | 'date' | 'time' | 'patient' | 'confirm'
+  // | 'success') — 'catalog' was never a real step name, so scene 0 used to
+  // set the widget to an unrecognized step: nothing in App.vue's
+  // v-if/v-else-if chain matched it, so the demo rendered blank content
+  // with a nonsensical "Step 0 of 6" progress readout on load, before the
+  // visitor ever scrolled. 'treatment' has no dedicated scene here (scene
+  // 0's copy already narrates picking a practitioner *and* a treatment as
+  // one beat), so it's intentionally not one of these six.
+  var STEP_NAMES = ['practitioner', 'date', 'time', 'patient', 'confirm', 'success'];
   var current = -1;
   var loaded = false;
   // Below this breakpoint .scrolly-sticky is position:static and the widget
