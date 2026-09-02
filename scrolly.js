@@ -68,34 +68,61 @@
 
     activate(0);
 
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) {
-            var i = steps.indexOf(e.target);
-            if (i >= 0) activate(i);
-          }
-        });
-      }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    var io = null;
+    var released = false;
+
+    function observeSteps() {
+      if (!('IntersectionObserver' in window)) return;
+      if (!io) {
+        io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              var i = steps.indexOf(e.target);
+              if (i >= 0) activate(i);
+            }
+          });
+        }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+      }
       steps.forEach(function (s) { io.observe(s); });
+      released = false;
     }
 
     // The scroll narrative is for passive readers. index.html invites the
-    // visitor to drive it themselves ("נסו את התוסף בעצמכם"), and until now
-    // the next scroll nudge called setScene() -> reset(), throwing away
-    // whatever they had typed. So the first real touch inside the widget hands
-    // over control for good: the observer stops, and widget.onStep (wired
-    // above) keeps the step list following them instead of leading them.
-    // The numbered tabs still work — clicking one is an explicit request to
-    // jump, not an accident of scrolling.
-    var released = false;
+    // visitor to drive it themselves ("נסו את התוסף בעצמכם"), and a scroll
+    // nudge used to call setScene() -> reset() and throw away whatever they
+    // had typed. So the first real touch inside the widget hands over control:
+    // the observer stops, and widget.onStep (wired above) keeps the step list
+    // following them instead of leading them. The numbered tabs still work —
+    // clicking one is an explicit request to jump, not an accident of scroll.
     function release() {
       if (released) return;
       released = true;
       if (io) io.disconnect();
     }
+
+    observeSteps();
+
     ['pointerdown', 'keydown'].forEach(function (evt) {
       mountEl.addEventListener(evt, release);
+    });
+
+    // "Restart the demo" is the one control that hands the wheel back, so it
+    // has to undo the release its own pointerdown just caused — otherwise the
+    // widget resets to the catalog and then sits there, deaf to scrolling.
+    mountEl.addEventListener('orli:restart', function () {
+      setActiveUI(0);
+      if (isPinned.matches) {
+        // Take the page back to step 01 as well; restarting the demo while
+        // parked at step 06 otherwise re-arms onto the step still under the
+        // cursor and snaps straight back to the success scene.
+        steps[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Re-observe only once that scroll has landed. Doing it immediately
+        // would fire the observer for every step the smooth scroll passes
+        // through, flicking the widget backwards through the whole flow.
+        setTimeout(observeSteps, 700);
+      } else {
+        observeSteps();
+      }
     });
   }
 

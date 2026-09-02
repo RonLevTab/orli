@@ -529,6 +529,11 @@
       if (restartBtn) restartBtn.addEventListener('click', function () {
         reset();
         render();
+        // Hand control back to whatever is hosting us. The pointerdown that
+        // opened this click has already told scrolly.js the visitor took over,
+        // and without this the scroll narrative would stay switched off and
+        // the widget would sit on the catalog step doing nothing.
+        root.dispatchEvent(new CustomEvent('orli:restart', { bubbles: true }));
       });
       var langBtn = root.querySelector('[data-lang]');
       if (langBtn) langBtn.addEventListener('click', function () {
