@@ -31,7 +31,7 @@ This site is the marketing front door for **Orli**, an online-booking add-on
 for clinics running Optima. It has to do two jobs: explain what Orli does and
 why it's safe to adopt (nothing to replace, nothing new for staff to learn),
 and convert a decision-maker into a demo request via the CTA form
-(`cta.h2`/`#contact`).
+(`#contact`).
 
 Success is a clinic owner or office manager understanding the mechanism (their
 existing Optima calendar, opened up to patients) well enough to submit the
@@ -56,22 +56,34 @@ the clinic's existing workflow has to change.
 - No backend: the demo-request form (`#demoForm` in `index.html`, handled by
   `script.js`) validates client-side only and is not wired to a real endpoint
   yet — see `README.md`'s "Wiring the demo form" note.
-- The "See it in action" section (`widget.js` + `scrolly.js`) runs a
-  faithful, backend-less reproduction of the real product's booking widget so
-  a visitor can try the flow without a real clinic or calendar behind it.
-- Bilingual by design, Hebrew primary / English secondary, full RTL⇄LTR
-  mirroring via `site-i18n.js` — see [CLAUDE.md](CLAUDE.md) for the mechanism.
+- The "See it in action" section (`#demo`, driven by `scrolly.js`) shows a
+  static, backend-less replica of the real product's booking widget so a
+  visitor can follow the flow without a real clinic or calendar behind it.
+  It briefly embedded the live service by iframe
+  (`https://booking.orliclinic.com/?demo=true`); that was replaced because the
+  landing page must not depend on a deployed service being reachable. The
+  replica is derived from `orli-calendar/widget/src/`, and each part carries a
+  source-path comment naming the file it mirrors, so refreshing it against the
+  real widget is a lookup rather than an investigation.
+- **Hebrew-only, permanently.** A whole-site language toggle (`site-i18n.js`
+  plus `data-i18n` attributes) was built and then deliberately removed in
+  commit `4d07431`, where it was found to be dead code the page never loaded.
+  Do not reintroduce one. The booking widget's own Hebrew/English toggle is a
+  property of that product, not of this site.
 
 ## Capabilities and Constraints
 
 - Static HTML/CSS/JS, no build step, no framework, no dependencies (see
-  `CLAUDE.md` for the six-script architecture).
-- The interactive widget demo plays a scripted flow (catalog → date → time →
-  patient → OTP confirm, any 6 digits works → success) against mock data; it
-  must keep faithfully mirroring the real widget's flow, steps, and copy as
-  that product evolves — see this repo's and `orli-calendar`'s CLAUDE.md
-  "Related project" sections.
-- Roadmap section (`road.*`) distinguishes shipped capabilities ("זמין עכשיו":
+  `CLAUDE.md` for the script architecture).
+- The widget demo walks the real product's flow (catalog → date → time →
+  patient → OTP confirm, any 6 digits works → success) against local mock
+  data; it must keep faithfully mirroring the real widget's flow, steps, and
+  copy as that product evolves — see this repo's and `orli-calendar`'s
+  CLAUDE.md "Related project" sections.
+- The hero's widget picture (`.orli-live` in `index.html`, `aria-hidden`) is
+  **decoration only**. It is not held to the real widget's appearance and may
+  diverge freely; only the `#demo` replica carries the fidelity constraint.
+- Roadmap section distinguishes shipped capabilities ("זמין עכשיו":
   patient self-booking, reschedule/cancel) from planned ones ("בקרוב": chatbot
   booking assistant, smart reminders) — this distinction is load-bearing and
   must stay accurate as the real product ships more of the roadmap.
@@ -105,15 +117,17 @@ the clinic's existing workflow has to change.
    and comparison ("nothing to replace," "the secretary keeps working in
    Optima exactly as today") is the primary objection this page exists to
    defuse — don't let new copy contradict it.
-3. **Show, don't just tell.** The live interactive widget demo carries more
-   persuasive weight than the copy around it; keeping it faithful to the real
-   product is a marketing requirement, not just a documentation nicety.
+3. **Show, don't just tell.** The widget demo carries more persuasive weight
+   than the copy around it; keeping it faithful to the real product is a
+   marketing requirement, not just a documentation nicety. Faithful never
+   means live, though — the demo must still work with the booking service
+   unreachable.
 4. **Say only what's shipped.** Roadmap items are explicitly labeled "coming
    soon" and never presented as available today, matching the real product's
    own "say only what is true" principle.
-5. **Hebrew-first, RTL-correct.** The primary audience reads Hebrew; English is
-   a secondary, fully-mirrored experience, not an afterthought bolted onto an
-   English-first layout.
+5. **Hebrew-only, RTL-native.** The audience reads Hebrew; the site is written
+   and laid out in Hebrew RTL with no translation layer. English appears only
+   inside the booking widget's own toggle.
 
 ## Accessibility & Inclusion
 
