@@ -24,8 +24,8 @@ python -m http.server 8899
 # then open http://localhost:8899/
 ```
 
-(Opening `index.html` directly via `file://` also works, but the Google Fonts —
-Fraunces + Inter — need a network connection; without one it falls back to Georgia /
+(Opening `index.html` directly via `file://` also works, but the Google Font —
+Heebo — needs a network connection; without one it falls back to Frank Ruhl Libre /
 system sans, which still looks clean.)
 
 ## Design

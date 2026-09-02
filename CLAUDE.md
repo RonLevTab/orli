@@ -56,7 +56,7 @@ python -m http.server 8899
 # then open http://localhost:8899/
 ```
 
-`file://` also works, except the Google Fonts (Fraunces + Inter) need network access;
+`file://` also works, except the Google Font (Heebo) needs network access;
 without it the page falls back to Georgia / system sans.
 
 There is no lint, build, or test command — verify changes by loading the page in a
