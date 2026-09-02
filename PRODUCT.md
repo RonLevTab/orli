@@ -94,6 +94,16 @@ the clinic's existing workflow has to change.
   booking assistant, smart reminders) — this distinction is load-bearing and
   must stay accurate as the real product ships more of the roadmap.
 
+## Tone toward Optima
+
+**Optima is a partner, not a foil.** A tie-up is plausible, so no surface may
+argue Orli's value by naming something Optima lacks — no "was never opened to
+patients", no "without the obstacles", no "must you replace it?". The framing
+is additive: Optima runs the clinic and its calendar; Orli extends that same
+calendar to the clinic's website as an extra channel. The pain the copy names
+belongs to the **phone-and-transcription workflow**, which is fair game, never
+to Optima's product.
+
 ## Brand Commitments
 
 - Name: **Orli** (אורלי), positioned against the legacy system **Optima**
