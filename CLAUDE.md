@@ -8,7 +8,7 @@ A marketing site for **Orli**, an online-booking add-on for clinics running the 
 **Optima** scheduling system. Plain static HTML/CSS/JS — no build step, no package
 manager, no dependencies, no tests.
 
-Four pages, all sharing the same header/footer shell and `styles.css`:
+Five pages, all sharing the same header/footer shell and `styles.css`:
 
 - **`index.html`** — the story: hero through CTA, written for the clinic owner/office
   manager deciding whether to adopt Orli.
@@ -18,6 +18,15 @@ Four pages, all sharing the same header/footer shell and `styles.css`:
   branding content is decision-maker-relevant, not just for whoever handles the embed.
   Keep technical claims here verified against `orli-calendar`'s actual code, not
   aspirational — see `PRODUCT.md` for why this page exists and what it must not claim.
+- **`panel.html`** — a walkthrough of the clinic admin, answering the objection an
+  owner actually holds: opening the calendar to patients does not mean losing control
+  of it. Five scrollytelling steps over a **static mock** of `orli-calendar/admin`
+  (`panel.js` + `panel.css`, scoped under `.orli-panel`). Every label, the sidebar
+  grouping and the section order are copied from the real admin's `i18n.ts`,
+  `AppShell.vue` and `router.ts` — refresh it against those, don't invent screens.
+  Note the automations step is marked `בקרוב` because the **real admin marks it that
+  way too** (`nav-coming-soon` in `AppShell.vue`); it is not shipped, and neither this
+  page nor the roadmap may imply otherwise.
 - **`about.html`** — mission/principles only. Orli has exactly one real customer
   (`PRODUCT.md`), so there is no team, funding, or customer-count content here to write
   yet — don't invent any.
@@ -30,8 +39,11 @@ Four pages, all sharing the same header/footer shell and `styles.css`:
   that law, which is a live open question for Orli itself, not just for clinic
   customers. Don't fill in the placeholders without an actual legal decision.
 
-All four pages are footer-linked to each other; only `index.html`'s content sections,
-`integration.html`, and the demo/compare/FAQ anchors are in primary nav.
+All five pages are footer-linked to each other. Primary nav carries `index.html`'s
+demo/compare/FAQ anchors plus `panel.html` and `integration.html` — five links and the
+CTA, which is at the top of what a nav should ask someone to choose between. If it
+needs trimming, `התאמה אישית` (integration.html) is the one to move to the footer: it
+is a technical reference, not part of the persuasion path.
 
 ## Related project
 
@@ -64,7 +76,8 @@ browser.
 
 ## Architecture
 
-Four independent, self-contained scripts loaded by `index.html`, each owning one concern.
+Four independent, self-contained scripts loaded by `index.html`, each owning one concern
+(`panel.html` loads `script.js` and its own `panel.js` instead).
 They talk to the DOM, not to each other directly (with one exception: `scrolly.js`
 drives `widget.js` through a controller handle):
 

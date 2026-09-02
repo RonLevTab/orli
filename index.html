@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=54" />
+  <link rel="stylesheet" href="styles.css?v=55" />
   <link rel="stylesheet" href="widget.css?v=24" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
 </head>
@@ -28,6 +28,7 @@
         <nav class="nav-links" id="navMenu" aria-label="Primary">
           <a href="#demo">דמו מהיר</a>
           <a href="#compare">למה אורלי</a>
+          <a href="panel.html">מסך הניהול</a>
           <a href="#faq">שאלות נפוצות</a>
           <a href="integration.html">התאמה אישית</a>
         </nav>
@@ -194,20 +195,18 @@
             <div class="cmp-th cmp-th--with">עם אורלי</div>
           </div>
           <div class="cmp-rows">
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>המטופלים מתקשרים בשעות הפעילות, או בכלל לא</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>המטופל קובע פגישה אונליין בפחות מדקה, בכל שעה</span></div>
+            <!-- Three rows, three different pain points: when patients can
+                 book, what it costs staff to record, and what happens after.
+                 "During opening hours" and "after-hours voicemail" used to be
+                 two rows telling one availability story, so they are one now. -->
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>מתקשרים רק בשעות הפעילות, ומה שמגיע אחרי ממתין בתא הקולי</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>קובעים אונליין בפחות מדקה, בכל שעה</span></div>
 
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>המזכירה מקריאה פגישות, רושמת ומקלידה לאופטימה</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>הפגישה נכנסת ישירות לאופטימה, בלי הקלדה מחדש</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>המזכירה רושמת ומקלידה כל פגישה לאופטימה</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>הפגישה נכנסת ישירות לאופטימה, בלי הקלדה</span></div>
 
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>שינוי מועד = עוד שיחה ועוד עריכה ידנית</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>מטופלים משנים מועד ומבטלים בעצמם, עם אימות בקוד</span></div>
-
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>בקשות אחרי שעות הפעילות ממתינות בתא הקולי</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>הפגישות מטופלות ברגע שהן מגיעות, 24/7</span></div>
-
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>אין תיעוד של מי ניסה לקבוע פגישה וויתר</span></div>
-            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>כל פגישה נרשמת למסד הנתונים שלכם מהיום הראשון</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>כל שינוי מועד = עוד שיחה ועוד עריכה ידנית</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>מטופלים משנים ומבטלים בעצמם, עם אימות בקוד</span></div>
           </div>
         </div>
       </div>
@@ -352,6 +351,7 @@
         <div class="footer-col">
           <h3 class="footer-col-h">מוצר</h3>
           <a href="#roadmap">מפת דרכים</a>
+          <a href="panel.html">מסך הניהול</a>
           <a href="integration.html">מדריך טכני להטמעה</a>
         </div>
         <div class="footer-col">

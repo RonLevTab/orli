@@ -56,6 +56,12 @@ the clinic's existing workflow has to change.
 - No backend: the demo-request form (`#demoForm` in `index.html`, handled by
   `script.js`) validates client-side only and is not wired to a real endpoint
   yet — see `README.md`'s "Wiring the demo form" note.
+- `panel.html` shows the other half of the product: a static mock of the clinic
+  admin, walked through in five steps. It exists because the site otherwise only ever
+  shows the patient's side, and the owner's real question is whether opening the
+  calendar costs her control of it. The mock mirrors `orli-calendar/admin`'s own
+  labels and navigation; the automations screen is marked "בקרוב" there and must stay
+  marked that way here.
 - The "See it in action" section (`#demo`, driven by `scrolly.js`) shows a
   static, backend-less replica of the real product's booking widget so a
   visitor can follow the flow without a real clinic or calendar behind it.
