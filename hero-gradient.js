@@ -1,10 +1,11 @@
 /* ============================================================
    Animated "stripe-like" gradient shader for the hero background.
 
-   A dependency-free vanilla-WebGL reimplementation of the GradFlow
-   React component the user referenced (gradflow.meera.dev) — same
-   flowing 3-colour stripe field + grain, driven by simplex noise.
-   Config mirrors the snippet that was provided.
+   A dependency-free vanilla-WebGL stripe field + grain, driven by
+   simplex noise. The technique came from the GradFlow React component
+   (gradflow.meera.dev); the palette does not — it is built from this
+   product's own tokens in styles.css, so the largest surface on the
+   site reads as Orli rather than as a generic aurora.
 
    Falls back to a static CSS gradient (class on the section) when
    WebGL is unavailable, and freezes for prefers-reduced-motion.
@@ -12,12 +13,15 @@
 (function () {
   'use strict';
 
-  // --- config (softened from the provided GradFlow snippet: same hues, pastel
-  // tints so the contrast is gentle instead of neon) ---
+  // --- config ---
+  // Three tones drawn from the brand tokens, ordered light -> mid -> deep so
+  // the field has real tonal range instead of one flat wash. Pastel on
+  // purpose: the hero copy sits on top of this, so contrast stays gentle.
+  // Keep these in sync with :root in styles.css.
   var CONFIG = {
-    color1: [244, 242, 236], // soft cream-white
-    color2: [152, 226, 214], // soft mint / aqua
-    color3: [190, 170, 228], // soft lilac
+    color1: [247, 245, 239], // --cream  #f7f5ef
+    color2: [152, 226, 214], // tint of --teal-bright #14b8a6
+    color3: [ 90, 158, 150], // muted --teal #0f8a86, the deep stripe
     speed: 0.35,
     scale: 1.0,
     noise: 0.05,

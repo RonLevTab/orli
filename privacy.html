@@ -9,8 +9,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Heebo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=44" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=52" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
   <meta name="robots" content="noindex" />
 </head>
@@ -22,14 +22,20 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
         </a>
-        <nav class="nav-links" aria-label="Primary">
+        <nav class="nav-links" id="navMenu" aria-label="Primary">
           <a href="index.html#demo">דמו מהיר</a>
           <a href="index.html#compare">למה אורלי</a>
           <a href="index.html#faq">שאלות נפוצות</a>
           <a href="integration.html">התאמה אישית</a>
         </nav>
+        <button class="nav-toggle" type="button" id="navToggle"
+                aria-expanded="false" aria-controls="navMenu" aria-label="תפריט">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
         <div class="nav-cta">
           <a href="index.html#contact" class="btn-dark">לקביעת דמו</a>
         </div>
@@ -52,7 +58,7 @@
         </div>
 
         <h2 class="display" style="font-size:1.4rem">איזה מידע נאסף, ולמה</h2>
-        <ul class="check-list">
+        <ul class="check-list check-list--plain">
           <li>שם, טלפון ואימייל של המטופל, כדי לקבוע ולאשר את הפגישה</li>
           <li>סוג הטיפול והמטפל/ת שנבחרו, כדי להעביר את הפגישה לאופטימה של המרפאה</li>
           <li>קוד אימות חד־פעמי שנשלח לאימייל, כדי לוודא שהמטופל הוא אכן מי שהוא טוען</li>
@@ -65,7 +71,7 @@
         <p class="section-lead"><code style="direction:ltr; display:inline-block">[להשלמה משפטית]</code> — ניסוח הבסיס החוקי (הסכמה מול צורך לביצוע ההזמנה) צריך להיקבע מול עורך/ת דין, ובפרט לאור סיווג מידע על טיפול רפואי כ״מידע רגיש״ לפי החוק.</p>
 
         <h2 class="display" style="font-size:1.4rem; margin-top:36px">למי מועבר המידע</h2>
-        <ul class="check-list">
+        <ul class="check-list check-list--plain">
           <li>ליומן האופטימה של המרפאה שבה נקבעת הפגישה, כדי שהפגישה תופיע אצלה</li>
           <li>המידע לעולם לא מוצג בעמוד הציבורי של אתר המרפאה</li>
         </ul>
@@ -87,28 +93,28 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
       <nav class="footer-cols" aria-label="Footer">
         <div class="footer-col">
-          <h4>מוצר</h4>
+          <h3 class="footer-col-h">מוצר</h3>
           <a href="index.html#roadmap">מפת דרכים</a>
           <a href="integration.html">מדריך טכני להטמעה</a>
         </div>
         <div class="footer-col">
-          <h4>אמון</h4>
+          <h3 class="footer-col-h">אמון</h3>
           <a href="index.html#faq">שאלות נפוצות</a>
           <a href="privacy.html">מדיניות פרטיות</a>
           <a href="index.html#contact">צור קשר</a>
         </div>
         <div class="footer-col">
-          <h4>חברה</h4>
+          <h3 class="footer-col-h">חברה</h3>
           <a href="about.html">אודות</a>
         </div>
         <div class="footer-col">
-          <h4>בואו נתחיל</h4>
+          <h3 class="footer-col-h">בואו נתחיל</h3>
           <a href="index.html#contact">לקביעת דמו</a>
           <a href="index.html#compare">למה אורלי</a>
         </div>
@@ -120,6 +126,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=17"></script>
+  <script src="script.js?v=21"></script>
 </body>
 </html>

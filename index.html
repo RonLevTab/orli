@@ -9,9 +9,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Heebo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=44" />
-  <link rel="stylesheet" href="widget.css?v=23" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=52" />
+  <link rel="stylesheet" href="widget.css?v=24" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
 </head>
 <body>
@@ -22,15 +22,21 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
-          <img class="brand-logo brand-logo--en" src="assets/brand/orli-wordmark.png" alt="Orli" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+          <img class="brand-logo brand-logo--en" src="assets/brand/orli-wordmark.png" width="1262" height="604" alt="Orli" />
         </a>
-        <nav class="nav-links" aria-label="Primary">
+        <nav class="nav-links" id="navMenu" aria-label="Primary">
           <a href="#demo">דמו מהיר</a>
           <a href="#compare">למה אורלי</a>
           <a href="#faq">שאלות נפוצות</a>
           <a href="integration.html">התאמה אישית</a>
         </nav>
+        <button class="nav-toggle" type="button" id="navToggle"
+                aria-expanded="false" aria-controls="navMenu" aria-label="תפריט">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
         <div class="nav-cta">
           <a href="#contact" class="btn-dark">לקביעת דמו</a>
         </div>
@@ -48,6 +54,10 @@
           <p class="eyebrow">תוסף למרפאות שעובדות עם אופטימה</p>
           <h1 class="display">קביעת פגישה באתר, <span class="ital">בלחיצת כפתור.</span></h1>
           <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את הפגישה ישר באופטימה. אותו יומן שיש לכם היום, פתוח סוף סוף למטופלים.</p>
+          <div class="hero-actions">
+            <a href="#contact" class="btn-dark lg">לקביעת דמו</a>
+            <a href="#demo" class="hero-link">צפו איך זה עובד</a>
+          </div>
         </div>
 
         <!-- Widget mockup in browser chrome -->
@@ -69,7 +79,7 @@
                 </div>
               </div>
               <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-block-end:20px">
-                <h3 class="obw-title" style="margin:0;font-size:1.4rem">אישור הפגישה</h3>
+                <p class="obw-title" style="margin:0;font-size:1.4rem">אישור הפגישה</p>
               </div>
               <dl class="obw-summary" style="padding:16px 18px;margin-block-end:24px">
                 <dt>טיפול</dt>
@@ -151,13 +161,12 @@
 
         <div class="scrolly-sticky">
           <div class="browser demo-browser demo-browser--bare">
-            <iframe
-              data-orli-demo
-              src="https://booking.orliclinic.com/?demo=true"
-              title="Widget demo"
-              sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
-              style="width:100%;height:100%;border:0;display:block"
-            ></iframe>
+            <!-- Mounted by widget.js, driven by scrolly.js through el.__orli.
+                 This was an <iframe> to booking.orliclinic.com/?demo=true; it
+                 is a local static replica now so the page still works when
+                 that service is down. See widget.js's header for how to
+                 refresh it against the real widget. -->
+            <div data-orli-widget style="width:100%;height:100%"></div>
           </div>
           <div class="scrolly-tabs" role="tablist" aria-label="Booking steps">
             <button type="button" class="scrolly-tab is-active" data-scene="0" role="tab" aria-selected="true">01</button>
@@ -197,7 +206,7 @@
             <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>בקשות אחרי שעות הפעילות ממתינות בתא הקולי</span></div>
             <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>הפגישות מטופלות ברגע שהן מגיעות, 24/7</span></div>
 
-            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>אין תיעוד של מי ניסה לקבוע פגישה וּויתר</span></div>
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>אין תיעוד של מי ניסה לקבוע פגישה וויתר</span></div>
             <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>כל פגישה נרשמת למסד הנתונים שלכם מהיום הראשון</span></div>
           </div>
         </div>
@@ -316,11 +325,11 @@
         <form class="cta-form" id="demoForm" novalidate>
           <div class="field">
             <label for="clinic">שם המרפאה</label>
-            <input id="clinic" name="clinic" type="text" dir="auto" placeholder="מרפאת שיניים התוספים" required />
+            <input id="clinic" name="clinic" type="text" dir="auto" autocomplete="organization" placeholder="מרפאת שיניים התוספים" required />
           </div>
           <div class="field">
             <label for="email">אימייל בעבודה</label>
-            <input id="email" name="email" type="email" dir="auto" placeholder="you@clinic.co.il" required />
+            <input id="email" name="email" type="email" dir="auto" autocomplete="email" inputmode="email" placeholder="you@clinic.co.il" required />
           </div>
           <button type="submit" class="btn-cream lg">בקשת דמו</button>
         </form>
@@ -334,29 +343,29 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
-          <img class="brand-logo brand-logo--en brand-logo--footer" src="assets/brand/orli-wordmark.png" alt="Orli" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+          <img class="brand-logo brand-logo--en brand-logo--footer" src="assets/brand/orli-wordmark.png" width="1262" height="604" alt="Orli" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
       <nav class="footer-cols" aria-label="Footer">
         <div class="footer-col">
-          <h4>מוצר</h4>
+          <h3 class="footer-col-h">מוצר</h3>
           <a href="#roadmap">מפת דרכים</a>
           <a href="integration.html">מדריך טכני להטמעה</a>
         </div>
         <div class="footer-col">
-          <h4>אמון</h4>
+          <h3 class="footer-col-h">אמון</h3>
           <a href="#faq">שאלות נפוצות</a>
           <a href="privacy.html">מדיניות פרטיות</a>
           <a href="#contact">צור קשר</a>
         </div>
         <div class="footer-col">
-          <h4>חברה</h4>
+          <h3 class="footer-col-h">חברה</h3>
           <a href="about.html">אודות</a>
         </div>
         <div class="footer-col">
-          <h4>בואו נתחיל</h4>
+          <h3 class="footer-col-h">בואו נתחיל</h3>
           <a href="#contact">לקביעת דמו</a>
           <a href="#compare">למה אורלי</a>
         </div>
@@ -368,8 +377,11 @@
     </div>
   </footer>
 
-  <script src="script.js?v=17"></script>
-  <script src="hero-gradient.js?v=13"></script>
-  <script src="scrolly.js?v=21"></script>
+  <script src="script.js?v=21"></script>
+  <script src="hero-gradient.js?v=14"></script>
+  <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
+       el.__orli handle widget.js installs. -->
+  <script src="widget.js?v=5"></script>
+  <script src="scrolly.js?v=23"></script>
 </body>
 </html>

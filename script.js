@@ -1,30 +1,96 @@
 (function () {
   'use strict';
 
-  // Current year in footer
-  document.getElementById('year').textContent = new Date().getFullYear();
+  // Current year in footer. Guarded because this IIFE is shared by all four
+  // pages and everything below depends on reaching the end of it — an
+  // unguarded throw here would take the FAQ accordion, the reveal animation
+  // and the snippet copy button down with it.
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // Demo request form (front-end only; wires to a real endpoint later).
-  // Only present on index.html — guarded so this file can be shared as-is
-  // across the secondary pages (about/integration/privacy), which just need
-  // the footer year and, on integration.html, the reveal-on-scroll below.
+  // ---------------------------------------------------------------------
+  // TODO(form): paste the Formspree endpoint here to switch the form on:
+  //   const FORM_ENDPOINT = 'https://formspree.io/f/xxxxxxxx';
+  // Until it is set, the form must not claim anyone was contacted. Nothing is
+  // sent, so saying otherwise would be a lie told at the exact moment this
+  // page is asking for trust — and this product's positioning is built on
+  // saying only what is true. Whatever the visitor typed is preserved either
+  // way; it is only cleared after a send actually succeeds.
+  // ---------------------------------------------------------------------
+  const FORM_ENDPOINT = '';
+
+  // Demo request form. Only present on index.html — guarded so this file can
+  // be shared as-is across the secondary pages (about/integration/privacy),
+  // which just need the footer year and the reveal-on-scroll below.
   const form = document.getElementById('demoForm');
   if (form) {
     const note = document.getElementById('formNote');
-    form.addEventListener('submit', (e) => {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitLabel = submitBtn ? submitBtn.textContent : '';
+    const inputs = () => form.querySelectorAll('input');
+
+    const clearMarks = () => {
+      note.classList.remove('is-error');
+      inputs().forEach((i) => {
+        i.classList.remove('is-invalid');
+        i.setAttribute('aria-invalid', 'false');
+      });
+    };
+
+    // An error that names neither field leaves the visitor to guess which of
+    // the two is wrong. Name it, mark it, and put the cursor in it.
+    const fail = (message, field) => {
+      clearMarks();
+      note.classList.add('is-error');
+      note.textContent = message;
+      if (field) {
+        field.classList.add('is-invalid');
+        field.setAttribute('aria-invalid', 'true');
+        field.focus();
+      }
+    };
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const clinic = form.clinic.value.trim();
       const email = form.email.value.trim();
-      const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-      if (!clinic || !validEmail) {
+      if (!clinic) return fail('נא למלא את שם המרפאה.', form.clinic);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return fail('כתובת האימייל אינה תקינה. בדקו אותה ונסו שוב.', form.email);
+      }
+      clearMarks();
+
+      if (!FORM_ENDPOINT) {
+        // Nothing is sent, so promise nothing — and mark it as the failure it
+        // is. Without is-error this painted in the same neutral pill as an
+        // ordinary note, so the one message that means "your effort was
+        // wasted" looked exactly like the one that means "we got it".
         note.classList.add('is-error');
-        note.textContent = 'נא למלא שם מרפאה ואימייל תקין.';
+        note.textContent = 'הטופס עדיין לא מחובר, ולכן הפרטים לא נשלחו. נסו שוב בקרוב.';
+        console.warn('[orli] demo form: FORM_ENDPOINT is unset — nothing was sent. See script.js.');
         return;
       }
-      note.classList.remove('is-error');
-      note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
-      form.reset();
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'שולח…'; }
+      note.textContent = '';
+      try {
+        const res = await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
+        form.reset();
+      } catch (err) {
+        // Never clear the form on failure — retyping it is the fastest way to
+        // lose someone who was already willing.
+        note.classList.add('is-error');
+        note.textContent = 'השליחה נכשלה. הפרטים נשמרו כאן — נסו שוב בעוד רגע.';
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitLabel; }
+      }
     });
   }
 
@@ -132,6 +198,72 @@
       el.style.transform = 'none';
     });
   }
+
+  // Mobile navigation. The link row is display:none below 920px; this turns
+  // the same <nav> into a disclosure panel rather than duplicating the links,
+  // so the desktop row and the mobile menu can never drift apart.
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  if (navToggle && navMenu) {
+    const pill = navToggle.closest('.nav-pill');
+    const setOpen = (open) => {
+      pill.classList.toggle('is-open', open);
+      navToggle.setAttribute('aria-expanded', String(open));
+    };
+    navToggle.addEventListener('click', () => {
+      setOpen(navToggle.getAttribute('aria-expanded') !== 'true');
+    });
+    // Following a link closes the menu; on index.html the targets are anchors
+    // on the same page, so nothing else would.
+    navMenu.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && pill.classList.contains('is-open')) {
+        setOpen(false);
+        navToggle.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (pill.classList.contains('is-open') && !pill.contains(e.target)) setOpen(false);
+    });
+  }
+
+  // Embed-snippet copy button (integration.html). navigator.clipboard needs a
+  // secure context, which localhost and https give us but file:// does not, so
+  // there is a selection-based fallback for anyone opening the page directly.
+  document.querySelectorAll('[data-copy-code]').forEach((btn) => {
+    const head = btn.closest('.code-head');
+    const code = head && head.parentElement && head.parentElement.querySelector('code');
+    if (!code) return;
+    const label = btn.textContent;
+    btn.addEventListener('click', async () => {
+      // innerText, not textContent: it resolves the highlight spans back into
+      // the snippet as rendered, newlines and all.
+      const text = code.innerText;
+      let ok = true;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+          document.body.appendChild(ta);
+          ta.select();
+          ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+      } catch (err) {
+        ok = false;
+      }
+      btn.textContent = ok ? 'הועתק' : 'ההעתקה נכשלה';
+      btn.classList.toggle('is-copied', ok);
+      setTimeout(() => {
+        btn.textContent = label;
+        btn.classList.remove('is-copied');
+      }, 2000);
+    });
+  });
 
   // FAQ accordion: one open at a time, smooth grid-rows expand (Petaron animation)
   document.querySelectorAll('.faq-item').forEach((item) => {
