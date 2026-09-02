@@ -97,6 +97,20 @@ html[lang="he"] .ladder-note { font-style: normal; }
 .cta-band :where(a, button):focus-visible,
 .footer :where(a, button):focus-visible { outline-color: #fff; }
 
+/* Draft markers on privacy.html. They used to carry direction:ltr, copied
+   from integration.html where it is correct for real LTR code tokens — but
+   these are Hebrew, so it reversed the words and mispaired the brackets.
+   Styled as unfinished rather than as code, which is the job they do. */
+.legal-todo {
+  font-family: inherit; font-size: .88em; font-weight: 600;
+  /* The fill is only 1.03:1 against the cream page, so the dashed border is
+     what actually makes the marker visible — it has to clear the 3:1
+     non-text minimum on its own. #c9982f measured 2.4:1 and did not. */
+  background: #fdf1d8; color: #6d4a10;
+  border: 1px dashed #9d7524; border-radius: 6px;
+  padding: 1px 8px; white-space: nowrap;
+}
+
 /* ---------- buttons ---------- */
 .btn-dark, .btn-cream {
   display: inline-flex; align-items: center; justify-content: center;
@@ -561,7 +575,7 @@ html[dir="rtl"] .hero-veil {
 .faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
 .faq-item.open .faq-panel { grid-template-rows: 1fr; }
 .faq-panel-inner { overflow: hidden; }
-.faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; margin: 0; padding: 0 22px 20px 76px; }
+.faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; margin: 0; padding-block: 0 20px; padding-inline: 76px 22px; }
 
 @media (max-width: 900px) {
 }
