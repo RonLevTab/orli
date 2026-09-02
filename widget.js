@@ -1,15 +1,46 @@
 /* ============================================================
    Live Orli booking widget — interactive demo.
-   A faithful vanilla-JS reproduction of the real Vue widget
-   (orli-calendar/widget/src/App.vue + step components), driven by
-   in-browser mock data so visitors can play the whole flow:
-     catalog → date → time → patient → confirm (OTP) → success
-   No backend needed. OTP accepts any 6 digits.
+
+   A static, dependency-free reproduction of the real Vue widget, so
+   this page never depends on the booking service being reachable.
+   Flow: catalog → date → time → patient → confirm (OTP) → success.
+   No backend. OTP accepts any 6 digits.
+
+   ------------------------------------------------------------
+   HOW TO REFRESH THIS AGAINST THE REAL WIDGET
+   ------------------------------------------------------------
+   Every block below is marked with a SOURCE: comment naming the
+   file it mirrors. All paths are relative to the sibling repo:
+
+       ../orli-calendar/widget/src/
+
+   Read the named file, diff it against the block underneath the
+   comment, and port the differences. The map:
+
+     App.vue                  — step order, progress bar, flow
+     i18n.ts                  — the S string table, formatDate,
+                                formatPrice
+     demo.ts                  — CARDS, availability, DEMO_PREFILL
+     style.css                — mirrored in this repo's widget.css
+     components/CatalogStep.vue — catalogHtml()
+     components/DateStep.vue    — dateHtml()
+     components/TimeStep.vue    — timeHtml()
+     components/PatientStep.vue — patientHtml()
+     components/ConfirmStep.vue — confirmHtml()
+     components/SuccessStep.vue — successHtml()
+
+   ManageStep.vue (reschedule/cancel) is deliberately NOT mirrored:
+   it is reached from an emailed link, never from the booking flow
+   this demo walks.
    ============================================================ */
 (function () {
   'use strict';
 
-  // ---- bilingual strings (from widget/src/i18n.ts) ----
+  // SOURCE: i18n.ts — `strings`. Only the keys this demo can actually
+  // reach are mirrored; error/loading/manage keys are omitted because the
+  // static demo never enters those states. Keys marked DEMO-ONLY have no
+  // counterpart in i18n.ts and exist for this page.
+  // ---- bilingual strings ----
   var S = {
     bookTitle: ['לקביעת פגישה', 'Book an appointment'],
     treatment: ['טיפול', 'Treatment'],
@@ -20,15 +51,15 @@
     chooseDate: ['בחרו תאריך', 'Choose a date'],
     chooseTime: ['בחרו שעה', 'Choose a time'],
     yourDetails: ['הפרטים שלכם', 'Your details'],
-    confirmTitle: ['אישור התור', 'Confirm your appointment'],
+    confirmTitle: ['אישור התור', 'Confirm appointment'],
     bookedTitle: ['התור נקבע!', 'Appointment booked!'],
     firstName: ['שם פרטי', 'First name'],
     lastName: ['שם משפחה', 'Last name'],
     phone: ['מספר טלפון', 'Phone number'],
     email: ['אימייל', 'Email'],
     marketingConsent: [
-      'אני מסכים/ה לקבל תזכורות לפגישות, עדכונים, הצעות ואפשרויות לשינוי מועד',
-      'I agree to receive appointment reminders, updates, offers, rescheduling options, etc.',
+      'אני מעוניין/ת לקבל עדכונים והצעות מהמרפאה',
+      'I would like to receive updates and offers from the clinic',
     ],
     back: ['חזרה', 'Back'],
     continue: ['המשך', 'Continue'],
@@ -36,82 +67,115 @@
     booking: ['קובע תור…', 'Booking…'],
     nextMonth: ['חודש הבא', 'Next month'],
     prevMonth: ['חודש קודם', 'Previous month'],
-    noSlots: ['אין זמנים פנויים החודש. נסו את החודש הבא.', 'No available times this month. Try the next month.'],
+    noSlots: [
+      'אין זמנים פנויים בטווח התאריכים הזמין לקביעה.',
+      'No available times in the bookable date range.',
+    ],
     otpSentTo: ['שלחנו קוד אימות לאימייל {email}', 'We sent a verification code to {email}'],
     otpCode: ['קוד אימות', 'Verification code'],
     resendCode: ['שליחת קוד חדש', 'Send a new code'],
     wrongOtpError: ['הקוד שגוי. נסו שוב.', 'The code is incorrect. Please try again.'],
-    bookedDetails: ['התור שלכם בתאריך {date} בשעה {time}.', 'Your appointment is on {date} at {time}.'],
-    writtenToOptima: ['נכתב ל‑Optima ✓', 'written to Optima ✓'],
-    bookAnother: ['לקביעת פגישה נוספת', 'Book another appointment'],
-    otpDemoHint: ['לצורך ההדגמה: כל 6 ספרות יתקבלו', 'Demo: any 6-digit code works'],
     sendOtp: ['שלח קוד לאימות', 'Send code to my email'],
+    // DEMO-ONLY: the real widget checks the code against the server; here any
+    // 6 digits pass, so the visitor has to be told that.
+    otpDemoHint: ['לצורך ההדגמה: כל 6 ספרות יתקבלו', 'Demo: any 6-digit code works'],
+    // DEMO-ONLY: the real SuccessStep.vue ends the flow with no controls,
+    // because there the patient is finished and closes the widget. On a
+    // marketing page the success scene is a dead end instead, so the demo
+    // gets a way back to the start. Do not port this upstream.
+    restartDemo: ['להתחיל את ההדגמה מחדש', 'Restart the demo'],
+    // No i18n.ts counterpart: the real PatientStep.vue leans on native form
+    // validation, which this hand-rolled form does not have.
+    fixFields: ['יש להשלים: {fields}', 'Please complete: {fields}'],
   };
 
-  var MAX_MONTH_OFFSET = 2;
+  // SOURCE: demo.ts — getBookingSettings() returns booking_months_ahead: 2,
+  // i.e. this month plus the next, so the highest reachable offset is 1.
+  // demoAvailability() agrees: it returns [] for any monthOffset > 1.
+  var MAX_MONTH_OFFSET = 1;
 
-  // ---- mock catalog (practitioner cards, each with treatments) ----
+  // SOURCE: demo.ts — CATALOG / APPOINTMENT_TYPES / PRACTITIONERS.
+  // One card per practitioner, each with their own treatments — the shape
+  // GET /clinics/{id}/catalog returns for real (see api.ts).
   var CARDS = [
     {
-      practitioner: { id: 'p1', he: 'ד״ר רון', en: 'Dr. Ron' },
+      practitioner: { id: 'demo-prac-1', he: 'ד"ר כהן', en: 'Dr. Cohen' },
       treatments: [
         {
-          id: 't1', he: 'בדיקה תקופתית', en: 'Check-up',
-          descriptionHe: 'בדיקה כללית ומעקב שגרתי', descriptionEn: 'General check-up and routine follow-up',
-          price: '0',
-        },
-        {
-          id: 't2', he: 'ניקוי אבנית', en: 'Cleaning',
-          descriptionHe: 'ניקוי מקצועי והסרת אבנית', descriptionEn: 'Professional cleaning and plaque removal',
-          price: '180.00',
+          id: 'demo-apt-1', he: 'ייעוץ', en: 'Consultation',
+          descriptionHe: 'שיחת ייעוץ ראשונית להכרת הצרכים שלך',
+          descriptionEn: 'An initial consultation to understand your needs',
+          price: '150.00',
         },
       ],
     },
     {
-      practitioner: { id: 'p2', he: 'ד״ר דניאל', en: 'Dr. Daniel' },
+      practitioner: { id: 'demo-prac-2', he: 'ד"ר לוי', en: 'Dr. Levi' },
       treatments: [
-        {
-          id: 't3', he: 'ייעוץ', en: 'Consultation',
-          descriptionHe: 'שיחת ייעוץ ראשונית להכרת הצרכים שלך', descriptionEn: 'An initial consultation to understand your needs',
-          price: '0',
-        },
-        {
-          id: 't4', he: 'טיפול שורש', en: 'Root canal',
-          price: '650.00',
-        },
+        { id: 'demo-apt-2', he: 'ניקוי שיניים', en: 'Cleaning', price: '0' },
       ],
     },
   ];
 
-  var SLOT_TIMES = ['09:00', '09:45', '10:30', '11:15', '12:00', '14:00', '14:45', '15:30', '16:15', '17:00'];
+  // SOURCE: demo.ts — demoAvailability(). DELIBERATE DIVERGENCE: demo.ts picks
+  // fixed days-of-month (3, 5, 8, 12, 19, 26) with no weekday logic, so in any
+  // month where those fall on Saturday the demo offers Shabbat appointments —
+  // in September 2026 four of the six did, and the walked-through booking
+  // landed on Shabbat at 10:30. An Israeli clinic works Sunday to Thursday, so
+  // these are generated from the real calendar instead of hardcoded.
+  // The same bug exists upstream in demo.ts and wants fixing there too.
+  var CLINIC_DAYS = [0, 1, 2, 3, 4]; // Sun–Thu. Fri/Sat closed.
+  var SLOT_SETS = [
+    [{ start: '09:00', end: '09:30' }, { start: '11:00', end: '11:30' }, { start: '14:00', end: '14:30' }],
+    [{ start: '10:30', end: '11:00' }, { start: '15:00', end: '15:30' }],
+    [{ start: '09:30', end: '10:00' }, { start: '13:00', end: '13:30' }, { start: '16:00', end: '16:30' }],
+  ];
 
-  // Deterministic-ish availability: a few weekdays per month with a subset of slots.
-  function availabilityFor(monthOffset, seedKey) {
+  // Every other open day in the displayed month, up to six — enough to look
+  // like a real diary without listing every weekday.
+  function availabilityFor(monthOffset) {
+    if (monthOffset > MAX_MONTH_OFFSET) return [];
     var now = new Date();
-    var base = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
-    var year = base.getFullYear();
-    var month = base.getMonth();
+    var year = now.getFullYear();
+    var month = now.getMonth() + monthOffset;
     var daysInMonth = new Date(year, month + 1, 0).getDate();
-    var startDay = monthOffset === 0 ? now.getDate() + 1 : 1;
-    var seed = 0;
-    for (var i = 0; i < seedKey.length; i++) seed += seedKey.charCodeAt(i);
+    var day = monthOffset === 0 ? now.getDate() + 1 : 1;
     var out = [];
-    for (var d = startDay; d <= daysInMonth; d++) {
-      var date = new Date(year, month, d);
-      var dow = date.getDay(); // 0 Sun .. 6 Sat
-      if (dow === 5 || dow === 6) continue; // clinic closed Fri/Sat
-      // ~ every 3rd eligible day is open
-      if ((d + seed) % 3 !== 0) continue;
-      var slots = [];
-      for (var s = 0; s < SLOT_TIMES.length; s++) {
-        if ((d + s + seed) % 2 === 0) slots.push({ start: SLOT_TIMES[s] });
-      }
-      if (!slots.length) continue;
-      out.push({ date: iso(date), slots: slots });
-      if (out.length >= 8) break;
+    var open = 0;
+    for (; day <= daysInMonth && out.length < 6; day++) {
+      var date = new Date(year, month, day);
+      if (CLINIC_DAYS.indexOf(date.getDay()) < 0) continue;
+      if (open++ % 2) continue;
+      out.push({ date: iso(date), slots: SLOT_SETS[out.length % SLOT_SETS.length] });
     }
     return out;
   }
+
+  function demoDate(daysFromNow) {
+    var d = new Date();
+    d.setDate(d.getDate() + daysFromNow);
+    return iso(d);
+  }
+
+  // The first genuinely bookable day, so the booking the demo walks through is
+  // never on a day the clinic is shut. The fallback only fires if a month
+  // somehow yields no open days.
+  var DEMO_DAY = availabilityFor(0)[0] || { date: demoDate(3), slots: SLOT_SETS[0] };
+
+  // SOURCE: demo.ts — DEMO_PREFILL, plus createAppointment()'s returned id.
+  // Pre-made selections so any step can be jumped straight to (see setScene),
+  // and so the visitor never has to type to reach the end of the flow.
+  var DEMO_PREFILL = {
+    cardIndex: 0,
+    treatmentIndex: 0,
+    day: DEMO_DAY,
+    time: (DEMO_DAY.slots[1] || DEMO_DAY.slots[0]).start,
+    firstName: 'ישראל',
+    lastName: 'ישראלי',
+    phone: '050-123-4567',
+    email: 'demo@orliclinic.com',
+    bookingId: 'demo-booking-001',
+  };
 
   function iso(date) {
     var m = String(date.getMonth() + 1).padStart(2, '0');
@@ -131,10 +195,11 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
-  // The widget follows the SITE language (the <html lang> the nav toggle sets).
-  // he → rtl, en → ltr. One value, the whole layout follows.
-  function siteLang() { return document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'he'; }
-  var LANG = siteLang();
+  // The widget owns its own language, exactly like the real product does: the
+  // marketing site around it is Hebrew-only with no toggle (see PRODUCT.md),
+  // so there is no site language to follow. he → rtl, en → ltr; one value,
+  // the whole layout follows.
+  var LANG = 'he';
   function dir() { return LANG === 'he' ? 'rtl' : 'ltr'; }
 
   function bi(pair) {
@@ -167,16 +232,17 @@
   function mount(root) {
     var st = null;
     function reset() {
-      LANG = siteLang();
       st = {
         step: 'catalog', card: null, treatment: null, practitioner: null,
         monthOffset: 0, day: null, time: '',
-        // Pre-filled with a placeholder identity so the demo needs zero typing —
-        // it's the Israeli "John Doe". Editable, but ready to click straight through.
-        firstName: LANG === 'he' ? 'ישראל' : 'Demo',
-        lastName: LANG === 'he' ? 'ישראלי' : 'Patient',
-        phone: '050-123-4567',
-        email: 'demo@orli.health',
+        // Pre-filled with the real demo build's placeholder identity so this
+        // needs zero typing — the Israeli "John Doe". Editable, but ready to
+        // click straight through. Stays Hebrew in both languages, matching
+        // demo.ts, which does not translate it either.
+        firstName: DEMO_PREFILL.firstName,
+        lastName: DEMO_PREFILL.lastName,
+        phone: DEMO_PREFILL.phone,
+        email: DEMO_PREFILL.email,
         consent: false,
         otp: '', otpSent: false, otpError: false, resendWait: 0, submitting: false, bookingId: null,
       };
@@ -199,6 +265,8 @@
 
     var STEP_ORDER = ['catalog', 'date', 'time', 'patient', 'confirm'];
 
+    var lastStep = null;
+
     function render() {
       var showProgress = st.step !== 'success';
       var idx = STEP_ORDER.indexOf(st.step);
@@ -208,9 +276,22 @@
         for (var n = 0; n < 5; n++) segs += '<span class="obw-progress-seg' + (n <= idx ? ' is-on' : '') + '"></span>';
         var globeSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
         var langLabel = LANG === 'he' ? 'עב' : 'EN';
-        controls = '<div class="obw-controls" aria-hidden="true">' +
-          '<button class="obw-lang-btn" type="button" data-lang>' + globeSvg + '<span>' + langLabel + '</span></button>' +
-          '<div class="obw-progress">' + segs + '</div>' +
+        // SOURCE: App.vue — the progress bar there carries role="progressbar"
+        // and a text valuetext. Here the whole row sat inside aria-hidden,
+        // which hid the only "which step am I on" signal from assistive tech
+        // while leaving the language button focusable and operable anyway
+        // (WCAG 4.1.2).
+        var stepNow = idx + 1;
+        var progressLabel = LANG === 'he'
+          ? 'שלב ' + stepNow + ' מתוך 5'
+          : 'Step ' + stepNow + ' of 5';
+        controls = '<div class="obw-controls">' +
+          '<button class="obw-lang-btn" type="button" data-lang aria-label="' +
+            (LANG === 'he' ? 'החלפת שפה' : 'Switch language') + '">' +
+            globeSvg + '<span>' + langLabel + '</span></button>' +
+          '<div class="obw-progress" role="progressbar" aria-valuemin="1" aria-valuemax="5"' +
+            ' aria-valuenow="' + stepNow + '" aria-valuetext="' + progressLabel + '">' +
+            segs + '</div>' +
         '</div>';
       }
       // Mirror direction to match language (rtl for Hebrew).
@@ -221,6 +302,14 @@
           '<main class="obw-step">' + stepHtml() + '</main>' +
         '</div>';
       wire();
+      // Let a host (scrolly.js) follow along when the visitor clicks their own
+      // way through the widget. Fires only on an actual step change, so a
+      // host that drives us via setScene() can ignore the echo of its own
+      // call by tracking the step it last asked for.
+      if (st.step !== lastStep) {
+        lastStep = st.step;
+        if (typeof handle.onStep === 'function') handle.onStep(st.step);
+      }
     }
 
     function stepHtml() {
@@ -235,6 +324,14 @@
       return '';
     }
 
+    // The real widget is a standalone surface, so its step title is an <h1>.
+    // Mounted inside a marketing page that already has one, that yields a
+    // second <h1> and an h1 -> h3 jump, so the demo mount downgrades it.
+    var TITLE_TAG = root.hasAttribute('data-scrolly') ? 'h2' : 'h1';
+    function title(inner) {
+      return '<' + TITLE_TAG + ' class="obw-title">' + inner + '</' + TITLE_TAG + '>';
+    }
+
     function backBtn() {
       // "Back" points toward the start edge, which mirrors with direction.
       var chev = LANG === 'he' ? '›' : '‹';
@@ -242,7 +339,7 @@
     }
 
     function catalogHtml() {
-      var html = '<h1 class="obw-title">' + bi(S.bookTitle) + '</h1><div class="obw-list">';
+      var html = title(bi(S.bookTitle)) + '<div class="obw-list">';
       CARDS.forEach(function (card, ci) {
         html += '<section class="obw-card"><h2 class="obw-card-title">' +
           bi([card.practitioner.he, card.practitioner.en]) + '</h2><div class="obw-list">';
@@ -263,7 +360,7 @@
     }
 
     function dateHtml() {
-      var days = availabilityFor(st.monthOffset, st.treatment.id + st.practitioner.id);
+      var days = availabilityFor(st.monthOffset);
       var list;
       if (!days.length) {
         list = '<p class="obw-muted">' + bi(S.noSlots) + '</p>';
@@ -276,7 +373,7 @@
       // Arrows point "back / forward in time" — they mirror with direction.
       var prevArrow = LANG === 'he' ? '→' : '←';
       var nextArrow = LANG === 'he' ? '←' : '→';
-      return backBtn() + '<h1 class="obw-title">' + bi(S.chooseDate) + '</h1>' +
+      return backBtn() + title(bi(S.chooseDate)) +
         '<div class="obw-month-nav">' +
           '<button class="obw-nav-btn" data-month="-1"' + (st.monthOffset === 0 ? ' disabled' : '') + '>' +
             '<span class="obw-nav-arrow">' + prevArrow + '</span>' + bi(S.prevMonth) + '</button>' +
@@ -289,7 +386,7 @@
       var slots = st.day.slots.map(function (slot) {
         return '<button class="obw-slot" data-time="' + slot.start + '">' + slot.start + '</button>';
       }).join('');
-      return backBtn() + '<h1 class="obw-title">' + bi(S.chooseTime) + '</h1>' +
+      return backBtn() + title(bi(S.chooseTime)) +
         '<p class="obw-muted">' + bi(formatDate(st.day.date)) + '</p>' +
         '<div class="obw-slots">' + slots + '</div>';
     }
@@ -300,7 +397,7 @@
     }
 
     function patientHtml() {
-      return '<div class="obw-patient-step">' + backBtn() + '<h1 class="obw-title">' + bi(S.yourDetails) + '</h1>' +
+      return '<div class="obw-patient-step">' + backBtn() + title(bi(S.yourDetails)) +
         '<form class="obw-patient-form" data-patient>' +
           field('firstName', 'firstName', st.firstName) +
           field('lastName', 'lastName', st.lastName) +
@@ -308,6 +405,7 @@
           field('email', 'email', st.email, 'email') +
           '<label class="obw-consent"><input type="checkbox" data-field="consent"' + (st.consent ? ' checked' : '') + ' />' +
             bi(S.marketingConsent) + '</label>' +
+          '<p class="obw-error" data-form-error role="alert"></p>' +
           '<button type="submit" class="obw-primary-btn obw-primary-btn--compact" data-continue>' + bi(S.continue) + '</button>' +
         '</form></div>';
     }
@@ -342,7 +440,7 @@
           : '<button class="obw-primary-btn obw-primary-btn--compact" data-confirm' + (st.submitting || !/^\d{6}$/.test(st.otp.trim()) ? ' disabled' : '') + '>' +
               bi(st.submitting ? S.booking : S.confirm) + '</button>'
       ) + '</div>';
-      return '<div class="obw-confirm-step">' + backBtn() + '<h1 class="obw-title">' + bi(S.confirmTitle) + '</h1>' +
+      return '<div class="obw-confirm-step">' + backBtn() + title(bi(S.confirmTitle)) +
         summary + otpBox + footer + '</div>';
     }
 
@@ -351,7 +449,7 @@
       var priceRow = st.treatment.price != null
         ? '<dt>' + bi(S.price) + '</dt><dd>' + bi(formatPrice(st.treatment.price)) + '</dd>'
         : '';
-      return '<h1 class="obw-title">' + bi(S.bookedTitle) + '</h1>' +
+      return title(bi(S.bookedTitle)) +
         '<dl class="obw-summary">' +
           '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd>' +
           priceRow +
@@ -360,7 +458,12 @@
           '<dt>' + bi(S.firstName) + '</dt><dd>' + bdi(st.firstName + ' ' + st.lastName) + '</dd>' +
           '<dt>' + bi(S.phone) + '</dt><dd>' + bdi(st.phone) + '</dd>' +
           '<dt>' + bi(S.email) + '</dt><dd>' + bdi(st.email) + '</dd>' +
-        '</dl>';
+        '</dl>' +
+        // DEMO-ONLY exit — see S.restartDemo. Without it the last scene of the
+        // scrollytelling flow has no controls at all and reads as a hang.
+        '<div class="obw-success-actions">' +
+          '<button type="button" class="obw-restart-btn" data-restart>' + bi(S.restartDemo) + '</button>' +
+        '</div>';
     }
 
     // ---- event wiring ----
@@ -422,6 +525,11 @@
       });
       var resend = root.querySelector('[data-resend]');
       if (resend) resend.addEventListener('click', function () { st.otp = ''; render(); startResend(); });
+      var restartBtn = root.querySelector('[data-restart]');
+      if (restartBtn) restartBtn.addEventListener('click', function () {
+        reset();
+        render();
+      });
       var langBtn = root.querySelector('[data-lang]');
       if (langBtn) langBtn.addEventListener('click', function () {
         LANG = LANG === 'he' ? 'en' : 'he';
@@ -434,7 +542,7 @@
         st.submitting = true; render();
         setTimeout(function () {
           st.submitting = false;
-          st.bookingId = 'OB-' + Math.floor(100000 + Math.random() * 899999);
+          st.bookingId = DEMO_PREFILL.bookingId;
           clearInterval(timer);
           st.step = 'success'; render();
         }, 900);
@@ -446,52 +554,78 @@
       return st.firstName.trim() && st.lastName.trim() && st.phone.trim().length >= 7 &&
         /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(st.email.trim());
     }
+    // An error that only recolours a border names neither the problem nor the
+    // recovery, and a red edge is invisible to anyone who cannot see the hue.
+    // Mark the fields, then say which ones in words.
     function flashInvalid(form) {
+      // Two lists, not one: bi() renders a Hebrew line and an English line, so
+      // each needs the field names in its own language. Filling one list into
+      // both leaves the English line reading "Please complete: שם פרטי".
+      var missingHe = [], missingEn = [];
       form.querySelectorAll('[data-field]').forEach(function (inp) {
-        var bad = (inp.type !== 'checkbox') && !String(inp.value).trim();
-        inp.style.borderColor = bad ? '#b4544a' : '';
+        if (inp.type === 'checkbox') return;
+        var key = inp.getAttribute('data-field');
+        var val = String(inp.value).trim();
+        var bad = key === 'email'
+          ? !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)
+          : key === 'phone' ? val.length < 7 : !val;
+        inp.classList.toggle('obw-invalid', bad);
+        inp.setAttribute('aria-invalid', bad ? 'true' : 'false');
+        if (bad && S[key]) { missingHe.push(S[key][0]); missingEn.push(S[key][1]); }
       });
+      var box = form.querySelector('[data-form-error]');
+      if (box) {
+        box.innerHTML = missingHe.length
+          ? bi([S.fixFields[0].replace('{fields}', missingHe.join(', ')),
+                S.fixFields[1].replace('{fields}', missingEn.join(', '))])
+          : '';
+      }
     }
 
     // Scroll-driven "scenes": jump the widget to a given step with all the
     // prior selections pre-made, so a scrollytelling section can walk it
     // through the whole booking flow without any clicks.
+    // SOURCE: App.vue — the `?demo` postMessage handler (search DEMO_PREFILL
+    // there). Same idea: jump to a step with every prior selection already
+    // made, so the scrollytelling section can walk the whole flow with no
+    // clicks. Keep the two in step when App.vue's handler changes.
     function setScene(i) {
       reset();
-      var card = CARDS[0];
-      var days = availabilityFor(0, card.treatments[0].id + card.practitioner.id);
-      var day = days[0] || null;
-      var timeStr = (day && day.slots.length) ? day.slots[Math.min(1, day.slots.length - 1)].start : '10:30';
+      var card = CARDS[DEMO_PREFILL.cardIndex];
       var order = ['catalog', 'date', 'time', 'patient', 'confirm', 'success'];
       st.step = order[Math.max(0, Math.min(order.length - 1, i))];
       if (st.step !== 'catalog') {
-        st.card = card; st.practitioner = card.practitioner; st.treatment = card.treatments[0];
+        st.card = card;
+        st.practitioner = card.practitioner;
+        st.treatment = card.treatments[DEMO_PREFILL.treatmentIndex];
       }
       if (['time', 'patient', 'confirm', 'success'].indexOf(st.step) >= 0) {
-        st.day = day; st.time = timeStr;
+        st.day = DEMO_PREFILL.day;
+        st.time = DEMO_PREFILL.time;
       }
       if (['confirm', 'success'].indexOf(st.step) >= 0) { st.otp = '123456'; st.otpSent = true; }
-      if (st.step === 'success') st.bookingId = 'OB-' + Math.floor(100000 + Math.random() * 899999);
+      if (st.step === 'success') st.bookingId = DEMO_PREFILL.bookingId;
       render();
     }
 
+    var handle = { setScene: setScene, render: render, onStep: null };
     render();
-    return { setScene: setScene, render: render };
+    return handle;
   }
 
   function init() {
     var widgets = [].slice.call(document.querySelectorAll('[data-orli-widget]'));
     widgets.forEach(function (el) {
       el.classList.add('orli-live');
+      // The compaction ruleset in widget.css is gated on [data-scrolly]; it
+      // exists so the tallest scene (confirm) fits the pinned card without an
+      // inner scrollbar. Only the pinned #demo mount wants it — a widget
+      // embedded anywhere else should render at full size.
+      if (el.closest && el.closest('#demo')) el.setAttribute('data-scrolly', '');
       el.__orli = mount(el);
     });
-    // Re-render whenever the site language changes (<html lang> flips).
-    // Reset LANG to match the site so the widget stays in sync with the nav toggle.
-    var mo = new MutationObserver(function () {
-      LANG = siteLang();
-      widgets.forEach(function (el) { if (el.__orli) el.__orli.render(); });
-    });
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    // No <html lang> observer: the site is Hebrew-only and nothing flips it.
+    // The widget's own [data-lang] button is the only language control.
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

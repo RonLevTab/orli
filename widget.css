@@ -42,7 +42,10 @@
 /* Scrollytelling widget: ONE fixed height so the frame never resizes between
    scenes, with compact type so the tallest scene (confirm) fits without any
    inner scroll. Content clips rather than scrolls as a safety. */
-.orli-live[data-scrolly] .obw-widget { height: 502px; padding: 10px 15px; }
+/* Fill whatever frame the host gives us (.demo-browser owns the height, and
+   it differs between the pinned desktop card and the mobile one) rather than
+   restating a number here that has to be kept in sync by hand. */
+.orli-live[data-scrolly] .obw-widget { height: 100%; padding: 10px 15px; }
 .orli-live[data-scrolly] .obw-step,
 .orli-live[data-scrolly] .obw-step--date,
 .orli-live[data-scrolly] .obw-date-step,
@@ -74,6 +77,18 @@
 .orli-live[data-scrolly] .obw-consent { margin-block: 0 6px; font-size: .75rem; }
 
 /* Controls bar: lang toggle + progress in a single flex row. */
+.orli-live input.obw-invalid { border-color: #b4544a; }
+
+/* Demo-only exit on the success scene (see widget.js S.restartDemo). */
+.orli-live .obw-success-actions { margin-block-start: 16px; }
+.orli-live .obw-restart-btn {
+  font: inherit; font-size: .82rem; font-weight: 600; line-height: 1;
+  padding: 9px 16px; border-radius: var(--obw-radius-pill);
+  border: 1px solid var(--obw-border); background: transparent;
+  color: var(--obw-muted); cursor: pointer;
+}
+.orli-live .obw-restart-btn:hover { border-color: #c4bda8; color: var(--obw-text); }
+
 .orli-live .obw-controls { display: flex; align-items: center; gap: 10px; margin-block-end: 18px; }
 .orli-live .obw-lang-btn { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: transparent; border: 1px solid var(--obw-border); border-radius: var(--obw-radius-pill); color: var(--obw-muted); font-size: .72rem; font-weight: 600; line-height: 1; white-space: nowrap; direction: ltr; }
 .orli-live .obw-lang-btn:hover { border-color: #c4bda8; color: var(--obw-text); }
