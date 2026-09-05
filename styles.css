@@ -267,6 +267,7 @@ html[dir="rtl"] .hero-veil {
 .bridge.is-s4:not(.is-all) .bridge-stage:nth-child(5) > :last-child { box-shadow: var(--shadow-lg); }
 .bridge.is-all .bridge-stage { opacity: 1; transform: none; }
 .bridge-link { align-self: center; opacity: .35; transition: opacity .5s ease; }
+.bridge.is-s2 .bridge-link:nth-child(2)::after, .bridge.is-s4 .bridge-link:nth-child(4)::after { background-color: var(--surface); border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); }
 .bridge.is-s2 .bridge-link:nth-child(2), .bridge.is-s4 .bridge-link:nth-child(4) { opacity: 1; }
 /* Stage 1: the clinic's own site late in the evening, and the booking
    button the widget adds to it. The tap ring blooms as the stage begins. */
@@ -311,10 +312,18 @@ html[dir="rtl"] .hero-veil {
 .bridge.is-s3 .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
 @keyframes bridge-tap { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
 .bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 11px; font-weight: 600; font-size: .92rem; }
-/* Dashed connectors, each pointing on to the next stage. */
-.bridge-link { position: relative; height: 0; border-top: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
-.bridge-link::after { content: ""; position: absolute; top: -6px; border: 5px solid transparent; }
-.bridge-link--in::after { inset-inline-end: -1px; border-inline-start: 8px solid var(--teal); }
+/* Connectors: a hairline fading at both ends, and a chevron in a small
+   disc pointing on to the next stage — the widget's own chevron idiom. */
+.bridge-link { position: relative; display: grid; place-items: center; height: 28px; }
+.bridge-link::before {
+  content: ""; position: absolute; inset-inline: -6px; top: 50%; height: 1px;
+  background: linear-gradient(to right, transparent, var(--teal) 25%, var(--teal) 75%, transparent);
+}
+.bridge-link::after {
+  content: ""; position: relative; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--surface) url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%230a5d5a'%20stroke-width='2.4'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M14%206l-6%206%206%206'/%3E%3C/svg%3E") center / 14px no-repeat;
+  border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+}
 /* Stage 3: the Optima day view the booking is written into. */
 .bridge-cal { position: relative; padding: 16px 16px 10px; }
 .bc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; padding: 0 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }
@@ -548,8 +557,9 @@ html[dir="rtl"] .hero-veil {
      without fighting page scroll for control. */
   .bridge { grid-template-columns: 1fr; width: auto; margin-inline: 0; }
   .bridge:not(.is-all) .bridge-stage, .bridge .bridge-stage { transform: none; }
-  .bridge-link { height: 34px; width: 0; margin-inline: auto; border-top: 0; border-inline-start: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
-  .bridge-link::after { top: auto; bottom: -1px; inset-inline: auto; left: -6px; border: 5px solid transparent; border-top: 8px solid var(--teal); }
+  .bridge-link { height: 44px; width: 100%; }
+  .bridge-link::before { inset-inline: auto; left: 50%; top: -6px; bottom: -6px; height: auto; width: 1px; background: linear-gradient(to bottom, transparent, var(--teal) 25%, var(--teal) 75%, transparent); }
+  .bridge-link::after { transform: rotate(-90deg); }
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
   .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(540px, 78vh, 640px); margin-inline: auto; }

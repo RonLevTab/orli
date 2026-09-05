@@ -168,26 +168,49 @@
   }
 
   // "From the clinic's site straight into the calendar" (index.html .bridge):
-  // when the block scrolls into view, the patient's journey plays in order —
-  // a tap on the booking button on the clinic's site (is-s1), the widget
-  // opens with its slots (is-s2), a slot is tapped (is-s3), and the booking
-  // flies into the Optima day view and lands (is-s4); a beat later every
-  // stage lights up together (is-all). The chip is positioned in code because
-  // the stages sit side by side on desktop and stacked on a phone.
+  // while the block is on screen, the patient's journey plays on a loop — a
+  // tap on the booking button on the clinic's site (is-s1), the widget opens
+  // with its slots (is-s2), a slot is tapped (is-s3), the booking flies into
+  // the Optima day view and lands (is-s4), every stage lights up together
+  // (is-all), three seconds to take it in, then it resets and plays again.
+  // Scrolling away pauses the loop; scrolling back resumes it. The chip is
+  // positioned in code because the stages sit side by side on desktop and
+  // stacked on a phone.
   const bridge = document.querySelector('[data-bridge]');
   if (bridge) {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const STAGES = ['is-s1', 'is-s2', 'is-s3', 'is-s4', 'is-all'];
     const stage = (n) => bridge.classList.add('is-s' + n);
+    const chip = bridge.querySelector('[data-bridge-chip="site"]');
+    const from = bridge.querySelector('[data-bridge-from="site"]');
+    const to = bridge.querySelector('[data-bridge-to="site"]');
+    let visible = false;
+    let playing = false;
+    let replayTimer = null;
+
+    const reset = () => {
+      STAGES.forEach((c) => bridge.classList.remove(c));
+      if (to) to.classList.remove('is-landed');
+      if (chip) chip.classList.remove('is-flying');
+    };
+    const scheduleReplay = () => {
+      clearTimeout(replayTimer);
+      replayTimer = setTimeout(() => {
+        reset();
+        // Let the dim-down land before the next run lights stage 1 again.
+        replayTimer = setTimeout(play, 700);
+      }, 3000);
+    };
     const land = () => {
-      const to = bridge.querySelector('[data-bridge-to="site"]');
       if (to) to.classList.add('is-landed');
       stage(4);
-      setTimeout(() => bridge.classList.add('is-all'), 1400);
+      setTimeout(() => {
+        bridge.classList.add('is-all');
+        playing = false;
+        if (visible) scheduleReplay();
+      }, 1400);
     };
     const fly = () => {
-      const chip = bridge.querySelector('[data-bridge-chip="site"]');
-      const from = bridge.querySelector('[data-bridge-from="site"]');
-      const to = bridge.querySelector('[data-bridge-to="site"]');
       if (!chip || !from || !to) return land();
       const b = bridge.getBoundingClientRect();
       const f = from.getBoundingClientRect();
@@ -201,22 +224,33 @@
       chip.classList.add('is-flying');
       chip.addEventListener('animationend', () => { chip.classList.remove('is-flying'); land(); }, { once: true });
     };
-    const run = () => {
-      if (still) { stage(1); stage(2); stage(3); land(); bridge.classList.add('is-all'); return; }
+    function play() {
+      if (playing) return;
+      playing = true;
       stage(1);
       setTimeout(() => stage(2), 1600);
       setTimeout(() => stage(3), 2800);
       setTimeout(fly, 3600);
-    };
-    if ('IntersectionObserver' in window) {
+    }
+
+    if (still) {
+      // No motion, no loop: the finished picture, once.
+      stage(1); stage(2); stage(3);
+      if (to) to.classList.add('is-landed');
+      stage(4); bridge.classList.add('is-all');
+    } else if ('IntersectionObserver' in window) {
       // A low threshold on purpose: stacked on a phone the block is taller
       // than the viewport, so a 50% ratio would never be reached there.
       const io = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting)) { io.disconnect(); run(); }
+        visible = entries.some((e) => e.isIntersecting);
+        if (!visible) { clearTimeout(replayTimer); return; }
+        if (playing) return;
+        if (bridge.classList.contains('is-all')) scheduleReplay();
+        else play();
       }, { threshold: 0.2 });
       io.observe(bridge);
     } else {
-      run();
+      play();
     }
   }
 
