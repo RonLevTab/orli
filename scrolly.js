@@ -109,6 +109,15 @@
         setActiveUI(i);
         if (isPinned.matches) steps[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
+      // Reaching the success screen by hand ends the visitor's own run:
+      // nothing they typed is left to protect, so hand the narrative back to
+      // scrolling. Without this the observer stayed disconnected and the
+      // widget sat on the success screen while the steps scrolled past it.
+      // Delayed on desktop so the scrollIntoView above lands first, or the
+      // re-armed observer fires for every step the smooth scroll crosses.
+      if (name === 'success' && released) {
+        if (isPinned.matches) setTimeout(observeSteps, 700); else observeSteps();
+      }
     };
 
     activate(0);

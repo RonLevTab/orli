@@ -30,10 +30,10 @@
   const CAL_NAMESPACE = 'orli';
 
   // Cal.com's own embed loader, verbatim from their "popup via element click"
-  // snippet, so the button below opens the booking page in a modal instead of
-  // sending the visitor off-site. Loaded only when there is a link to open.
-  const calWrap = document.getElementById('calDemo');
-  if (calWrap && CAL_LINK) {
+  // snippet, so a booking opens in a modal instead of sending the visitor
+  // off-site. Runs on every page: the nav's "book a demo" button is on all
+  // five, and each one opens the popup rather than scrolling to the form.
+  if (CAL_LINK) {
     (function (C, A, L) {
       const p = (a, ar) => { a.q.push(ar); };
       const d = C.document;
@@ -70,11 +70,26 @@
       hideEventTypeDetails: false,
       layout: 'month_view',
     });
-    const calBtn = document.getElementById('calDemoBtn');
-    calBtn.setAttribute('data-cal-link', CAL_LINK);
-    calBtn.setAttribute('data-cal-namespace', CAL_NAMESPACE);
-    calBtn.setAttribute('data-cal-config', JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' }));
-    calWrap.hidden = false;
+    // Cal.com's embed opens the popup for any element carrying these; it
+    // listens for clicks on the whole document.
+    const openCal = (el) => {
+      el.setAttribute('data-cal-link', CAL_LINK);
+      el.setAttribute('data-cal-namespace', CAL_NAMESPACE);
+      el.setAttribute('data-cal-config', JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' }));
+    };
+    // The band's own "pick a time" button (index.html only).
+    const calWrap = document.getElementById('calDemo');
+    if (calWrap) {
+      openCal(document.getElementById('calDemoBtn'));
+      calWrap.hidden = false;
+    }
+    // Every "book a demo" link on every page. Their href still points at the
+    // form section, which is what they do without JavaScript; with it, the
+    // popup opens in place and the page stays where the visitor was.
+    document.querySelectorAll('[data-demo-cta]').forEach((el) => {
+      openCal(el);
+      el.addEventListener('click', (e) => e.preventDefault());
+    });
   }
 
   // Demo request form. Only present on index.html — guarded so this file can
