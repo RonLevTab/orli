@@ -235,20 +235,46 @@ html[dir="rtl"] .hero-veil {
 .problem h2 { margin-inline: auto; }
 
 /* ===== From the clinic's site straight into the calendar =====
-   The patient's journey in three stages side by side (stacked on a phone).
-   script.js adds is-s1..is-s4 to .bridge in sequence as the block scrolls
-   into view; every rule below that starts from a hidden state transitions
-   in on its stage. */
+   One frame plays the journey (.bridge-movie); when it ends, the three
+   cards (.bridge-stage) take its place. script.js drives the states:
+     .bridge-site.is-tapping   the launcher is pressed, ring blooms
+     .bridge-site.is-open      backdrop, panel and close control shown
+     .bridge-site.is-picked    the 10:30 slot is chosen
+     .bw-target.is-picking     the slot's ring blooms
+     .bridge-movie.is-cal      the day view slides over the site
+     .bc-appt.is-landed        the booking sits in its row
+     .bridge.is-split          film out, cards in
+   The cards carry their finished states in the markup, so they need no
+   driving of their own. */
 .bridge {
   --bridge-w: min(1120px, 100vw - 48px);
   position: relative; display: grid; align-items: stretch;
   grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px;
-  /* Wider than the .narrow text column above it: the same negative margin on
-     both sides keeps it centred, in RTL as in LTR. */
   width: var(--bridge-w); margin-inline: calc((100% - var(--bridge-w)) / 2);
   padding-top: 18px;
 }
-.bridge-stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: opacity .55s ease, transform .55s cubic-bezier(.2, .8, .2, 1); }
+/* Film and cards share the grid's first row: the film across all three
+   columns, each card in its own, so the two can cross-fade in place. */
+.bridge-movie {
+  grid-area: 1 / 1 / 2 / -1; justify-self: center; align-self: start;
+  position: relative; width: min(640px, 100%); min-height: 500px;
+  /* Returning after a reset, it waits for the cards to clear first. */
+  transition: opacity .45s ease .3s, transform .6s cubic-bezier(.2, .8, .2, 1) .3s;
+}
+/* Leaving, it goes first; the cards follow once it has faded (below). */
+.bridge.is-split .bridge-movie { opacity: 0; transform: scale(.94); pointer-events: none; transition-delay: 0s; }
+.bridge-stage {
+  grid-row: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0;
+  opacity: 0; transform: translateY(16px); pointer-events: none;
+  transition: opacity .55s ease, transform .6s cubic-bezier(.2, .8, .2, 1);
+}
+.bridge-stage:nth-child(2) { grid-column: 1; }
+.bridge-stage:nth-child(3) { grid-column: 2; }
+.bridge-stage:nth-child(4) { grid-column: 3; }
+.bridge.is-split .bridge-stage { opacity: 1; transform: none; pointer-events: auto; }
+.bridge.is-split .bridge-stage:nth-child(2) { transition-delay: .4s; }
+.bridge.is-split .bridge-stage:nth-child(3) { transition-delay: .52s; }
+.bridge.is-split .bridge-stage:nth-child(4) { transition-delay: .64s; }
 .bridge-stage > :last-child { flex: 1; min-height: 440px; }
 .bridge-label { font-size: .76rem; font-weight: 800; letter-spacing: .06em; color: var(--teal-deep); }
 .bridge-site, .bridge-cal {
@@ -256,62 +282,58 @@ html[dir="rtl"] .hero-veil {
   background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-sm);
   font-size: 1rem;
 }
-/* The spotlight: each stage takes its turn, the rest wait dimmed; once the
-   booking has landed, everything lights up together. */
-.bridge:not(.is-all) .bridge-stage { opacity: .38; transform: scale(.965); }
-.bridge.is-s1:not(.is-s2) .bridge-stage:nth-child(1),
-.bridge.is-s2:not(.is-s4) .bridge-stage:nth-child(2),
-.bridge.is-s4:not(.is-all) .bridge-stage:nth-child(3) { opacity: 1; transform: scale(1.03); }
-.bridge.is-s1:not(.is-s2) .bridge-stage:nth-child(1) > :last-child,
-.bridge.is-s2:not(.is-s4) .bridge-stage:nth-child(2) > :last-child,
-.bridge.is-s4:not(.is-all) .bridge-stage:nth-child(3) > :last-child { box-shadow: var(--shadow-lg); }
-.bridge.is-all .bridge-stage { opacity: 1; transform: none; }
-/* Stage 1: the clinic's own site late in the evening, with the widget's
-   real launcher in the corner — the white pill embed.js draws on a clinic
-   page (orli-calendar/widget/public/embed.js), calendar icon and a
-   two-line label. The tap ring blooms as the stage begins. */
-.bs-page--entry { padding-bottom: 20px; }
+/* The film's two layers: the site, and the day view that slides over it. */
+.bm-site { position: relative; min-height: 500px; transition: opacity .5s ease, filter .5s ease, transform .5s ease; }
+.bridge-movie .bm-cal {
+  position: absolute; inset: 0; box-shadow: var(--shadow-lg);
+  opacity: 0; transform: translateX(-28px) scale(.98);
+  transition: opacity .5s ease, transform .6s cubic-bezier(.2, .8, .2, 1);
+}
+.bridge-movie.is-cal .bm-cal { opacity: 1; transform: none; }
+.bridge-movie.is-cal .bm-site { opacity: .45; filter: blur(1.5px); transform: scale(.985); }
+/* The clinic's own site, sketched — not overflow:hidden, so the launcher's
+   tap ring can bloom past the edge; the bar rounds its own corners. */
+.bridge-site { overflow: visible; }
+.bs-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; background: var(--cream-2); border-bottom: 1px solid var(--line); border-radius: 17px 17px 0 0; }
+.bs-bar span { width: 9px; height: 9px; border-radius: 50%; background: #c9c2b2; }
+.bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .74rem; color: var(--ink-soft); direction: ltr; }
+.bs-page { position: relative; flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 10px; overflow: visible; }
+.bs-skel { height: 9px; border-radius: 999px; background: var(--cream-2); width: 70%; flex: none; }
+.bs-skel--h { height: 16px; width: 50%; margin-bottom: 2px; }
+.bs-skel--short { width: 40%; margin-bottom: 8px; }
 .bs-hero { flex: none; height: 96px; border-radius: 10px; background: linear-gradient(135deg, var(--cream-2), color-mix(in srgb, var(--teal) 14%, var(--cream-2))); margin: 4px 0 6px; }
+.bs-backdrop {
+  position: absolute; inset: 0; z-index: 1; border-radius: 0 0 17px 17px; background: rgba(0, 0, 0, .18);
+  opacity: 0; transition: opacity .3s ease;
+}
+.bridge-site.is-open .bs-backdrop { opacity: 1; }
+/* The widget's real launcher, as embed.js draws it on a clinic page: a
+   white pill in the bottom corner with the calendar icon and a two-line
+   label; once the panel is up it folds into a round teal close control. */
 .bs-launcher {
   position: absolute; bottom: 16px; right: 16px; z-index: 3;
   display: flex; flex-direction: row-reverse; align-items: center; gap: 10px;
   height: 56px; padding: 8px 16px; border-radius: 999px;
   background: #fff; color: #1d1d1f; border: 1px solid #e0e0e0; box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+  transition: opacity .25s ease, transform .3s ease;
 }
 .bs-launcher-icon { display: grid; place-items: center; flex: 0 0 26px; color: var(--teal); }
 .bs-launcher-label { display: flex; flex-direction: column; align-items: flex-start; direction: rtl; text-align: right; white-space: nowrap; }
 .bs-launcher-he { font-size: 15px; line-height: 18px; font-weight: 600; letter-spacing: -.01em; }
 .bs-launcher-en { font-size: 11px; line-height: 14px; font-weight: 400; opacity: .5; direction: ltr; }
 .bs-launcher .bw-tap { inset: -3px; z-index: 1; }
-.bridge.is-s1 .bs-launcher:not(.bs-launcher--open) { animation: bridge-press .5s ease .3s; }
-.bridge.is-s1 .bs-launcher .bw-tap { animation: bridge-tap-cta .9s cubic-bezier(0, 0, .2, 1) .3s forwards; }
+.bridge-site.is-tapping .bs-launcher--pill { animation: bridge-press .5s ease; }
+.bridge-site.is-tapping .bs-launcher--pill .bw-tap { animation: bridge-tap-cta .9s cubic-bezier(0, 0, .2, 1) forwards; }
 @keyframes bridge-press { 0%, 100% { transform: none; } 40% { transform: scale(.94); } }
 @keyframes bridge-tap-cta { 0% { transform: scale(.96); opacity: .9; } 100% { transform: scale(1.22); opacity: 0; } }
-/* Open state: the launcher folds into the round close control, exactly as
-   embed.js does when the panel is up. */
+.bridge-site.is-open .bs-launcher--pill { opacity: 0; transform: scale(.8); }
 .bs-launcher--open {
   width: 52px; height: 52px; padding: 0; justify-content: center; border-radius: 50%;
   background: var(--teal); border-color: transparent; color: #fff;
-  opacity: 0; transform: scale(.8); transition: opacity .3s ease, transform .3s ease;
+  opacity: 0; transform: scale(.8);
 }
-.bridge.is-s2 .bs-launcher--open { opacity: 1; transform: none; }
-.bs-backdrop {
-  position: absolute; inset: 0; z-index: 1; border-radius: 0 0 17px 17px; background: rgba(0, 0, 0, .18);
-  opacity: 0; transition: opacity .3s ease;
-}
-.bridge.is-s2 .bs-backdrop { opacity: 1; }
-/* Stage 2: the clinic's own site, sketched, with the widget landing on it. */
-/* Not overflow:hidden — the tap ring on the booking button has to bloom past
-   the card's edge instead of being cut at it. The bar rounds its own top
-   corners so the frame still reads as a browser window. */
-.bridge-site { overflow: visible; }
-.bs-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; background: var(--cream-2); border-bottom: 1px solid var(--line); border-radius: 17px 17px 0 0; }
-.bs-bar span { width: 9px; height: 9px; border-radius: 50%; background: #c9c2b2; }
-.bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .74rem; color: var(--ink-soft); direction: ltr; }
-.bs-page { position: relative; flex: 1; padding: 18px 18px 18px; display: flex; flex-direction: column; gap: 10px; overflow: visible; }
-.bs-skel { height: 9px; border-radius: 999px; background: var(--cream-2); width: 70%; flex: none; }
-.bs-skel--h { height: 16px; width: 50%; margin-bottom: 2px; }
-.bs-skel--short { width: 40%; margin-bottom: 8px; }
+.bridge-site.is-open .bs-launcher--open { opacity: 1; transform: none; }
+/* The booking panel, as embed.js places it: above the launcher. */
 .bridge-widget {
   position: absolute; z-index: 2; right: 16px; left: 16px; bottom: 84px;
   background: #fff; border: 1px solid #e0e0e0; border-radius: 18px; padding: 18px 18px 16px;
@@ -319,7 +341,8 @@ html[dir="rtl"] .hero-veil {
   opacity: 0; transform: translateY(12px) scale(.975);
   transition: opacity .3s ease, transform .35s cubic-bezier(.2, .8, .2, 1);
 }
-.bridge.is-s2 .bridge-widget { opacity: 1; transform: none; }
+.bridge-site.is-open .bridge-widget { opacity: 1; transform: none; }
+.bm-site .bridge-widget { left: auto; width: min(400px, calc(100% - 32px)); }
 .bw-title { font-weight: 700; font-size: 1.15rem; }
 .bw-date { color: var(--ink-soft); font-size: .88rem; margin: 2px 0 12px; }
 .bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
@@ -328,13 +351,12 @@ html[dir="rtl"] .hero-veil {
   font-weight: 600; font-size: .95rem; font-variant-numeric: tabular-nums; background: var(--cream);
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
-.bridge.is-s3 .bw-slots .bw-target { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
-/* The tap: a ring that blooms out of the slot as it is chosen. */
+.bridge-site.is-picked .bw-slots .bw-target { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
 .bw-tap { position: absolute; inset: -2px; border-radius: 999px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
-.bridge.is-s3 .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
+.bw-target.is-picking .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
 @keyframes bridge-tap { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
 .bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 11px; font-weight: 600; font-size: .92rem; }
-/* Stage 3: the Optima day view the booking is written into. */
+/* The Optima day view the booking is written into. */
 .bridge-cal { position: relative; padding: 16px 16px 10px; }
 .bc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; padding: 0 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }
 .bc-head strong { font-size: 1.02rem; white-space: nowrap; }
@@ -354,14 +376,14 @@ html[dir="rtl"] .hero-veil {
 }
 .bc-appt.is-landed { opacity: 1; transform: none; }
 /* The booking in flight. script.js positions the chip over the tapped slot,
-   then over its row in the calendar, and the keyframes travel between. */
+   then over its row in the day view, and the keyframes travel between. */
 .bridge-chip {
-  position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; opacity: 0;
+  position: absolute; top: 0; left: 0; z-index: 6; pointer-events: none; opacity: 0;
   padding: 9px 16px; border-radius: 999px; background: var(--teal-deep); color: #fff;
   font-size: .9rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
   box-shadow: 0 12px 28px -12px rgba(10, 93, 90, .7);
 }
-.bridge-chip.is-flying { animation: bridge-fly 1.15s cubic-bezier(.45, 0, .2, 1) forwards; }
+.bridge-chip.is-flying { animation: bridge-fly 1.05s cubic-bezier(.45, 0, .2, 1) forwards; }
 @keyframes bridge-fly {
   0%   { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(.85); }
   14%  { opacity: 1; transform: translate(var(--fx), var(--fy)) scale(1); }
@@ -557,9 +579,14 @@ html[dir="rtl"] .hero-veil {
      widget stays put, numbered tabs below it switch both the widget's scene
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
-  .bridge { grid-template-columns: 1fr; width: auto; margin-inline: 0; }
-  .bridge:not(.is-all) .bridge-stage, .bridge .bridge-stage { transform: none; }
-  .bridge { gap: 28px; }
+  .bridge { grid-template-columns: 1fr; width: auto; margin-inline: 0; gap: 28px; }
+  .bridge-movie { grid-area: 1 / 1; width: 100%; }
+  .bridge-stage:nth-child(2) { grid-area: 1 / 1; }
+  .bridge-stage:nth-child(3) { grid-area: 2 / 1; }
+  .bridge-stage:nth-child(4) { grid-area: 3 / 1; }
+  /* One thing at a time on a phone: the film, then the stacked cards. */
+  .bridge:not(.is-split) .bridge-stage { display: none; }
+  .bridge.is-split .bridge-movie { display: none; }
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
   .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(540px, 78vh, 640px); margin-inline: auto; }

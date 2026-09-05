@@ -168,55 +168,55 @@
   }
 
   // "From the clinic's site straight into the calendar" (index.html .bridge):
-  // while the block is on screen, the patient's journey plays on a loop — a
-  // tap on the booking button on the clinic's site (is-s1), the widget opens
-  // with its slots (is-s2), a slot is tapped (is-s3), the booking flies into
-  // the Optima day view and lands (is-s4), every stage lights up together
-  // (is-all), three seconds to take it in, then it resets and plays again.
+  // while the block is on screen, the patient's journey plays as a short
+  // film in one frame — the launcher on the clinic's site is tapped, the
+  // panel opens, a slot is chosen, the Optima day view slides over and the
+  // booking flies into it — then the frame gives way to the same three
+  // moments side by side, held for three seconds, and it plays again.
   // Scrolling away pauses the loop; scrolling back resumes it. The chip is
-  // positioned in code because the stages sit side by side on desktop and
-  // stacked on a phone.
+  // positioned in code from the slot's and the row's live positions.
   const bridge = document.querySelector('[data-bridge]');
   if (bridge) {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const STAGES = ['is-s1', 'is-s2', 'is-s3', 'is-s4', 'is-all'];
-    const stage = (n) => bridge.classList.add('is-s' + n);
-    const chip = bridge.querySelector('[data-bridge-chip="site"]');
-    const from = bridge.querySelector('[data-bridge-from="site"]');
-    const to = bridge.querySelector('[data-bridge-to="site"]');
+    const movie = bridge.querySelector('.bridge-movie');
+    const site = movie.querySelector('.bm-site');
+    const slot = movie.querySelector('[data-bridge-from="movie"]');
+    const row = movie.querySelector('[data-bridge-to="movie"]');
+    const chip = bridge.querySelector('[data-bridge-chip="movie"]');
     let visible = false;
     let playing = false;
     let replayTimer = null;
 
     const reset = () => {
-      STAGES.forEach((c) => bridge.classList.remove(c));
-      if (to) to.classList.remove('is-landed');
-      if (chip) chip.classList.remove('is-flying');
+      bridge.classList.remove('is-split');
+      movie.classList.remove('is-cal');
+      site.classList.remove('is-tapping', 'is-open', 'is-picked');
+      slot.classList.remove('is-picking');
+      row.classList.remove('is-landed');
+      chip.classList.remove('is-flying');
     };
     const scheduleReplay = () => {
       clearTimeout(replayTimer);
       replayTimer = setTimeout(() => {
         reset();
-        // Let the dim-down land before the next run lights stage 1 again.
+        // Let the cards fade out before the film lights up again.
         replayTimer = setTimeout(play, 700);
       }, 3000);
     };
     const land = () => {
-      if (to) to.classList.add('is-landed');
-      stage(4);
+      row.classList.add('is-landed');
       setTimeout(() => {
-        bridge.classList.add('is-all');
+        bridge.classList.add('is-split');
         playing = false;
         if (visible) scheduleReplay();
-      }, 1400);
+      }, 1300);
     };
     const fly = () => {
-      if (!chip || !from || !to) return land();
       const b = bridge.getBoundingClientRect();
-      const f = from.getBoundingClientRect();
-      const t = to.getBoundingClientRect();
+      const f = slot.getBoundingClientRect();
+      const t = row.getBoundingClientRect();
       const c = chip.getBoundingClientRect();
-      // Centre the chip on the tapped slot, then on its destination row.
+      // Centre the chip on the chosen slot, then on its row in the day view.
       chip.style.setProperty('--fx', `${f.left + f.width / 2 - b.left - c.width / 2}px`);
       chip.style.setProperty('--fy', `${f.top + f.height / 2 - b.top - c.height / 2}px`);
       chip.style.setProperty('--tx', `${t.left + t.width / 2 - b.left - c.width / 2}px`);
@@ -227,17 +227,16 @@
     function play() {
       if (playing) return;
       playing = true;
-      stage(1);
-      setTimeout(() => stage(2), 1600);
-      setTimeout(() => stage(3), 2800);
-      setTimeout(fly, 3600);
+      setTimeout(() => site.classList.add('is-tapping'), 300);
+      setTimeout(() => site.classList.add('is-open'), 1500);
+      setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 2700);
+      setTimeout(() => movie.classList.add('is-cal'), 3500);
+      setTimeout(fly, 3950);
     }
 
     if (still) {
-      // No motion, no loop: the finished picture, once.
-      stage(1); stage(2); stage(3);
-      if (to) to.classList.add('is-landed');
-      stage(4); bridge.classList.add('is-all');
+      // No motion, no loop: the three finished cards, once.
+      bridge.classList.add('is-split');
     } else if ('IntersectionObserver' in window) {
       // A low threshold on purpose: stacked on a phone the block is taller
       // than the viewport, so a 50% ratio would never be reached there.
@@ -245,7 +244,7 @@
         visible = entries.some((e) => e.isIntersecting);
         if (!visible) { clearTimeout(replayTimer); return; }
         if (playing) return;
-        if (bridge.classList.contains('is-all')) scheduleReplay();
+        if (bridge.classList.contains('is-split')) scheduleReplay();
         else play();
       }, { threshold: 0.2 });
       io.observe(bridge);
