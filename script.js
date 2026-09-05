@@ -170,9 +170,9 @@
   // "From the clinic's site straight into the calendar" (index.html .bridge):
   // while the block is on screen, the patient's journey plays as a short
   // film in one frame — the launcher on the clinic's site is tapped, the
-  // panel opens, a slot is chosen, the Optima day view slides over and the
-  // booking flies into it — then the frame gives way to the same three
-  // moments side by side, held for three seconds, and it plays again.
+  // panel opens, a slot is chosen, the Optima day view pops up over the
+  // page and the booking flies into it — held for three seconds, then it
+  // plays again.
   // Scrolling away pauses the loop; scrolling back resumes it. The chip is
   // positioned in code from the slot's and the row's live positions.
   const bridge = document.querySelector('[data-bridge]');
@@ -188,7 +188,6 @@
     let replayTimer = null;
 
     const reset = () => {
-      bridge.classList.remove('is-split');
       movie.classList.remove('is-cal');
       site.classList.remove('is-tapping', 'is-open', 'is-picked');
       slot.classList.remove('is-picking');
@@ -199,17 +198,14 @@
       clearTimeout(replayTimer);
       replayTimer = setTimeout(() => {
         reset();
-        // Let the cards fade out before the film lights up again.
+        // Let the popup and panel clear before the film lights up again.
         replayTimer = setTimeout(play, 700);
       }, 3000);
     };
     const land = () => {
       row.classList.add('is-landed');
-      setTimeout(() => {
-        bridge.classList.add('is-split');
-        playing = false;
-        if (visible) scheduleReplay();
-      }, 1300);
+      playing = false;
+      if (visible) scheduleReplay();
     };
     const fly = () => {
       const b = bridge.getBoundingClientRect();
@@ -235,8 +231,10 @@
     }
 
     if (still) {
-      // No motion, no loop: the three finished cards, once.
-      bridge.classList.add('is-split');
+      // No motion, no loop: the finished picture, once.
+      site.classList.add('is-open', 'is-picked');
+      movie.classList.add('is-cal');
+      row.classList.add('is-landed');
     } else if ('IntersectionObserver' in window) {
       // A low threshold on purpose: stacked on a phone the block is taller
       // than the viewport, so a 50% ratio would never be reached there.
@@ -244,7 +242,7 @@
         visible = entries.some((e) => e.isIntersecting);
         if (!visible) { clearTimeout(replayTimer); return; }
         if (playing) return;
-        if (bridge.classList.contains('is-split')) scheduleReplay();
+        if (row.classList.contains('is-landed')) scheduleReplay();
         else play();
       }, { threshold: 0.2 });
       io.observe(bridge);
