@@ -41,8 +41,8 @@ Five pages, all sharing the same header/footer shell and `styles.css`:
   customers. Don't fill in the placeholders without an actual legal decision.
 
 All five pages are footer-linked to each other. Primary nav is deliberately
-minimal: `ראשי` (index.html) and `אודות` (about.html) plus the demo CTA, which
-opens the Cal.com popup. The panel walkthrough, the integration reference, the
+minimal: `ראשי` (index.html), `מסך הניהול` (panel.html) and `אודות` (about.html)
+plus the demo CTA, which opens the Cal.com popup. The integration reference, the
 comparison and the FAQ are reached from the page flow and the footer, not the nav.
 
 ## Related project
