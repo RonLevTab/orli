@@ -65,6 +65,8 @@
     window.Cal.config.forwardQueryParams = true;
     window.Cal.ns[CAL_NAMESPACE]('ui', {
       cssVarsPerTheme: { light: { 'cal-brand': '#0f8a86' }, dark: { 'cal-brand': '#6fd6cf' } },
+      // The page is cream; a dark popup over it looked like a different site.
+      theme: 'light',
       hideEventTypeDetails: false,
       layout: 'month_view',
     });
