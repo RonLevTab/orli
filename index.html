@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=57" />
+  <link rel="stylesheet" href="styles.css?v=58" />
   <link rel="stylesheet" href="widget.css?v=25" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
 </head>
@@ -320,8 +320,21 @@
       <div class="wrap narrow center">
         <p class="eyebrow light">כשתהיו מוכנים</p>
         <h2 class="display">הפכו את יומן האופטימה <span class="ital">למנוע קביעת פגישות.</span></h2>
-        <p class="cta-lead">ראו את אורלי קובעת פגישה אמיתית ליומן פעיל בפחות מדקה. ספרו לנו על המרפאה ונקבע הדגמה.</p>
+        <p class="cta-lead">ראו את אורלי קובעת פגישה אמיתית ליומן פעיל בפחות מדקה. בחרו שעה שנוחה לכם, או השאירו פרטים ונחזור אליכם.</p>
+        <!-- Cal.com: a popup booking page for the demo itself. script.js fills
+             in the link from CAL_LINK and unhides this; while that constant is
+             empty there is nothing to book into, so the button stays hidden
+             rather than opening onto a dead page. -->
+        <div class="cta-book" id="calDemo" hidden>
+          <button type="button" class="btn-cream lg" id="calDemoBtn">בחרו שעה להדגמה</button>
+          <p class="cta-or">או השאירו פרטים ונחזור אליכם</p>
+        </div>
+        <!-- Formspree: script.js posts this to FORM_ENDPOINT. The hidden
+             fields are Formspree's own: _subject titles the email, _gotcha is
+             a honeypot that bots fill and people never see. -->
         <form class="cta-form" id="demoForm" novalidate>
+          <input type="hidden" name="_subject" value="בקשת דמו מהאתר" />
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
           <div class="field">
             <label for="clinic">שם המרפאה</label>
             <input id="clinic" name="clinic" type="text" dir="auto" autocomplete="organization" placeholder="מרפאת שיניים התוספים" required />
@@ -377,7 +390,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=21"></script>
+  <script src="script.js?v=22"></script>
   <script src="hero-gradient.js?v=14"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->

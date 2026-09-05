@@ -19,6 +19,59 @@
   // ---------------------------------------------------------------------
   const FORM_ENDPOINT = '';
 
+  // ---------------------------------------------------------------------
+  // TODO(cal): paste the Cal.com link here to switch the booking button on:
+  //   const CAL_LINK = 'orli/demo';   // the part after https://cal.com/
+  // While it is empty the button stays hidden (see #calDemo in index.html):
+  // a booking button that opens onto nothing would be the same lie as an
+  // unconnected form claiming it sent.
+  // ---------------------------------------------------------------------
+  const CAL_LINK = '';
+
+  // Cal.com's own embed loader, verbatim from their "popup via element click"
+  // snippet, so the button below opens the booking page in a modal instead of
+  // sending the visitor off-site. Loaded only when there is a link to open.
+  const calWrap = document.getElementById('calDemo');
+  if (calWrap && CAL_LINK) {
+    (function (C, A, L) {
+      const p = (a, ar) => { a.q.push(ar); };
+      const d = C.document;
+      C.Cal = C.Cal || function () {
+        const cal = C.Cal;
+        const ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          d.head.appendChild(d.createElement('script')).src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () { p(api, arguments); };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === 'string') {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ['initNamespace', namespace]);
+          } else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+    window.Cal('init', { origin: 'https://app.cal.com' });
+    window.Cal('ui', {
+      theme: 'light',
+      styles: { branding: { brandColor: '#0f8a86' } },
+      hideEventTypeDetails: false,
+      layout: 'month_view',
+    });
+    const calBtn = document.getElementById('calDemoBtn');
+    calBtn.setAttribute('data-cal-link', CAL_LINK);
+    calBtn.setAttribute('data-cal-config', JSON.stringify({ layout: 'month_view' }));
+    calWrap.hidden = false;
+  }
+
   // Demo request form. Only present on index.html — guarded so this file can
   // be shared as-is across the secondary pages (about/integration/privacy),
   // which just need the footer year and the reveal-on-scroll below.

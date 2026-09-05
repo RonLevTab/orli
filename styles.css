@@ -355,6 +355,13 @@ html[dir="rtl"] .hero-veil {
 .cta-band .display { color: #fff; }
 .cta-band .display .ital { color: #bff3ec; }
 .cta-lead { font-size: 1.14rem; color: rgba(255,255,255,.86); max-width: 46ch; margin-inline: auto; }
+/* Two ways in: book a slot straight into the calendar, or leave details.
+   The band is a flex column of centred blocks, so [hidden] has to beat the
+   button's own display to actually hide the Cal.com block. */
+.cta-book { margin-top: 30px; }
+.cta-book[hidden] { display: none !important; }
+.cta-or { margin: 18px 0 0; font-size: .92rem; color: rgba(255,255,255,.78); }
+.cta-book + .cta-form { margin-top: 12px; }
 .cta-form { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: flex-end; margin-top: 30px; }
 .field { text-align: start; }
 .field label { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; color: rgba(255,255,255,.85); margin-bottom: 6px; }
