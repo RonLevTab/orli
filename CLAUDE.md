@@ -40,11 +40,10 @@ Five pages, all sharing the same header/footer shell and `styles.css`:
   that law, which is a live open question for Orli itself, not just for clinic
   customers. Don't fill in the placeholders without an actual legal decision.
 
-All five pages are footer-linked to each other. Primary nav carries `index.html`'s
-demo/compare/FAQ anchors plus `panel.html` and `integration.html` — five links and the
-CTA, which is at the top of what a nav should ask someone to choose between. If it
-needs trimming, `התאמה אישית` (integration.html) is the one to move to the footer: it
-is a technical reference, not part of the persuasion path.
+All five pages are footer-linked to each other. Primary nav is deliberately
+minimal: `ראשי` (index.html) and `אודות` (about.html) plus the demo CTA, which
+opens the Cal.com popup. The panel walkthrough, the integration reference, the
+comparison and the FAQ are reached from the page flow and the footer, not the nav.
 
 ## Related project
 
