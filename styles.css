@@ -277,11 +277,16 @@ html[dir="rtl"] .hero-veil {
   transition: transform .18s ease;
 }
 .bridge.is-s1 .bs-cta { animation: bridge-press .5s ease .3s; }
-.bridge.is-s1 .bs-cta .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) .3s forwards; }
+.bs-cta .bw-tap { inset: -3px; z-index: 1; }
+.bridge.is-s1 .bs-cta .bw-tap { animation: bridge-tap-cta .9s cubic-bezier(0, 0, .2, 1) .3s forwards; }
+@keyframes bridge-tap-cta { 0% { transform: scale(.96); opacity: .9; } 100% { transform: scale(1.22); opacity: 0; } }
 @keyframes bridge-press { 0%, 100% { transform: none; } 40% { transform: scale(.94); } }
 /* Stage 2: the clinic's own site, sketched, with the widget landing on it. */
-.bridge-site { overflow: hidden; }
-.bs-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
+/* Not overflow:hidden — the tap ring on the booking button has to bloom past
+   the card's edge instead of being cut at it. The bar rounds its own top
+   corners so the frame still reads as a browser window. */
+.bridge-site { overflow: visible; }
+.bs-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; background: var(--cream-2); border-bottom: 1px solid var(--line); border-radius: 17px 17px 0 0; }
 .bs-bar span { width: 9px; height: 9px; border-radius: 50%; background: #c9c2b2; }
 .bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .74rem; color: var(--ink-soft); direction: ltr; }
 .bs-page { position: relative; flex: 1; padding: 18px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
