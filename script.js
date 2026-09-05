@@ -207,13 +207,15 @@
     function play() {
       if (playing) return;
       playing = true;
-      // A beat on each screen before the next thing happens.
-      setTimeout(() => site.classList.add('is-tapping'), 800);
-      setTimeout(() => site.classList.add('is-open'), 3000);
-      setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 5200);
-      setTimeout(() => site.classList.add('is-confirmed'), 7000);
-      setTimeout(() => movie.classList.add('is-cal'), 9400);
-      setTimeout(land, 10200);
+      // A beat on each screen the viewer reads (the site, the open panel,
+      // the confirmation) — but the widget itself answers a tap at once:
+      // a slow open here would read as a slow product.
+      setTimeout(() => site.classList.add('is-tapping'), 1500);
+      setTimeout(() => site.classList.add('is-open'), 2000);
+      setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 4400);
+      setTimeout(() => site.classList.add('is-confirmed'), 5600);
+      setTimeout(() => movie.classList.add('is-cal'), 8200);
+      setTimeout(land, 9000);
     }
 
     if (still) {
