@@ -234,6 +234,80 @@ html[dir="rtl"] .hero-veil {
 .section-lead { font-size: 1.12rem; color: var(--ink-soft); }
 .problem h2 { margin-inline: auto; }
 
+/* ===== One calendar, two doors: the mechanism, drawn ===== */
+.bridge {
+  position: relative; display: grid; align-items: center;
+  grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1.3fr) 52px minmax(0, 1fr);
+}
+.bridge-door { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.bridge-label { font-size: .7rem; font-weight: 800; letter-spacing: .06em; color: var(--teal-deep); }
+.bridge-widget, .bridge-phone, .bridge-cal {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-sm);
+  font-size: .9rem;
+}
+/* The site's door: a compact "choose a time" step in the widget's own idiom. */
+.bridge-widget { padding: 16px 16px 14px; }
+.bw-title { font-weight: 700; font-size: 1.02rem; }
+.bw-date { color: var(--ink-soft); font-size: .82rem; margin: 2px 0 12px; }
+.bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.bw-slots span {
+  text-align: center; padding: 8px 6px; border: 1px solid var(--line); border-radius: 999px;
+  font-weight: 600; font-size: .88rem; font-variant-numeric: tabular-nums; background: var(--cream);
+}
+.bw-slots .is-picked { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+.bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 9px; font-weight: 600; font-size: .86rem; }
+/* The phone's door: the call, and the line the secretary types into Optima. */
+.bridge-phone { padding: 16px; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; }
+.bp-ring { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--cream-2); color: var(--teal-deep); }
+.bp-text { display: grid; gap: 2px; min-width: 0; }
+.bp-text span { color: var(--ink-soft); font-size: .84rem; }
+.bp-entry {
+  grid-column: 1 / -1; display: grid; gap: 2px;
+  border: 1px dashed color-mix(in srgb, var(--teal) 40%, var(--line)); border-radius: 10px;
+  padding: 8px 12px; font-size: .9rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.bp-entry span { color: var(--ink-soft); font-weight: 500; font-size: .74rem; }
+/* Dashed connectors, both pointing into the calendar in the middle. */
+.bridge-link { position: relative; height: 0; border-top: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
+.bridge-link::after { content: ""; position: absolute; top: -6px; border: 5px solid transparent; }
+.bridge-link--in::after { inset-inline-end: -1px; border-inline-start: 8px solid var(--teal); }
+.bridge-link--out::after { inset-inline-start: -1px; border-inline-end: 8px solid var(--teal); }
+/* The Optima day view both doors open onto. */
+.bridge-cal { padding: 12px 12px 8px; }
+.bc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; padding: 0 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }
+.bc-head strong { font-size: .92rem; white-space: nowrap; }
+.bc-head span { color: var(--ink-soft); font-size: .8rem; white-space: nowrap; }
+.bc-row { display: grid; grid-template-columns: 44px 1fr; align-items: center; min-height: 40px; border-bottom: 1px dashed color-mix(in srgb, var(--line) 75%, transparent); }
+.bc-row:last-child { border-bottom: 0; }
+.bc-time { font-size: .76rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.bc-appt {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px;
+  font-size: .8rem; font-weight: 600; color: var(--ink); background: var(--cream-2);
+  border-inline-start: 3px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bc-appt--phone, .bc-appt--site {
+  opacity: 0; transform: scale(.85);
+  transition: opacity .35s ease, transform .4s cubic-bezier(.2, .8, .2, 1);
+}
+.bc-appt--phone { background: color-mix(in srgb, var(--teal) 10%, var(--surface)); border-inline-start-color: var(--teal); color: var(--teal-deep); }
+.bc-appt--site { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-inline-start-color: var(--teal-deep); color: var(--teal-deep); }
+.bc-appt.is-landed { opacity: 1; transform: none; }
+/* The bookings in flight. script.js positions each over its source, then
+   over its row in the calendar, and the keyframes travel between the two. */
+.bridge-chip {
+  position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; opacity: 0;
+  padding: 7px 14px; border-radius: 999px; background: var(--teal-deep); color: #fff;
+  font-size: .82rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+  box-shadow: 0 12px 28px -12px rgba(10, 93, 90, .7);
+}
+.bridge-chip.is-flying { animation: bridge-fly 1.15s cubic-bezier(.45, 0, .2, 1) forwards; }
+@keyframes bridge-fly {
+  0%   { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(.85); }
+  14%  { opacity: 1; transform: translate(var(--fx), var(--fy)) scale(1); }
+  86%  { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(.85); }
+}
+
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
 /* Top/bottom padding so the first and last steps can scroll to the centre. */
@@ -422,6 +496,9 @@ html[dir="rtl"] .hero-veil {
      widget stays put, numbered tabs below it switch both the widget's scene
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
+  .bridge { grid-template-columns: 1fr; }
+  .bridge-link { height: 30px; width: 0; margin-inline: auto; border-top: 0; border-inline-start: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
+  .bridge-link::after { top: auto; bottom: -1px; inset-inline: auto; left: -6px; border: 5px solid transparent; border-top: 8px solid var(--teal); }
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
   .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(540px, 78vh, 640px); margin-inline: auto; }
