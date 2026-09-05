@@ -249,7 +249,7 @@ html[dir="rtl"] .hero-veil {
   padding-top: 18px;
 }
 .bridge-stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: opacity .55s ease, transform .55s cubic-bezier(.2, .8, .2, 1); }
-.bridge-stage > :last-child { flex: 1; }
+.bridge-stage > :last-child { flex: 1; min-height: 440px; }
 .bridge-label { font-size: .76rem; font-weight: 800; letter-spacing: .06em; color: var(--teal-deep); }
 .bridge-site, .bridge-cal {
   display: flex; flex-direction: column;
@@ -266,21 +266,40 @@ html[dir="rtl"] .hero-veil {
 .bridge.is-s2:not(.is-s4) .bridge-stage:nth-child(2) > :last-child,
 .bridge.is-s4:not(.is-all) .bridge-stage:nth-child(3) > :last-child { box-shadow: var(--shadow-lg); }
 .bridge.is-all .bridge-stage { opacity: 1; transform: none; }
-/* Stage 1: the clinic's own site late in the evening, and the booking
-   button the widget adds to it. The tap ring blooms as the stage begins. */
+/* Stage 1: the clinic's own site late in the evening, with the widget's
+   real launcher in the corner — the white pill embed.js draws on a clinic
+   page (orli-calendar/widget/public/embed.js), calendar icon and a
+   two-line label. The tap ring blooms as the stage begins. */
 .bs-page--entry { padding-bottom: 20px; }
-.bs-hero { height: 96px; border-radius: 10px; background: linear-gradient(135deg, var(--cream-2), color-mix(in srgb, var(--teal) 14%, var(--cream-2))); margin: 4px 0 6px; }
-.bs-cta {
-  position: relative; justify-self: start; display: inline-flex; align-items: center; gap: 7px;
-  margin-top: auto; padding: 11px 20px; border-radius: 999px; background: var(--teal-deep); color: #fff;
-  font-weight: 600; font-size: .95rem; box-shadow: var(--shadow);
-  transition: transform .18s ease;
+.bs-hero { flex: none; height: 96px; border-radius: 10px; background: linear-gradient(135deg, var(--cream-2), color-mix(in srgb, var(--teal) 14%, var(--cream-2))); margin: 4px 0 6px; }
+.bs-launcher {
+  position: absolute; bottom: 16px; right: 16px; z-index: 3;
+  display: flex; flex-direction: row-reverse; align-items: center; gap: 10px;
+  height: 56px; padding: 8px 16px; border-radius: 999px;
+  background: #fff; color: #1d1d1f; border: 1px solid #e0e0e0; box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
 }
-.bridge.is-s1 .bs-cta { animation: bridge-press .5s ease .3s; }
-.bs-cta .bw-tap { inset: -3px; z-index: 1; }
-.bridge.is-s1 .bs-cta .bw-tap { animation: bridge-tap-cta .9s cubic-bezier(0, 0, .2, 1) .3s forwards; }
-@keyframes bridge-tap-cta { 0% { transform: scale(.96); opacity: .9; } 100% { transform: scale(1.22); opacity: 0; } }
+.bs-launcher-icon { display: grid; place-items: center; flex: 0 0 26px; color: var(--teal); }
+.bs-launcher-label { display: flex; flex-direction: column; align-items: flex-start; direction: rtl; text-align: right; white-space: nowrap; }
+.bs-launcher-he { font-size: 15px; line-height: 18px; font-weight: 600; letter-spacing: -.01em; }
+.bs-launcher-en { font-size: 11px; line-height: 14px; font-weight: 400; opacity: .5; direction: ltr; }
+.bs-launcher .bw-tap { inset: -3px; z-index: 1; }
+.bridge.is-s1 .bs-launcher:not(.bs-launcher--open) { animation: bridge-press .5s ease .3s; }
+.bridge.is-s1 .bs-launcher .bw-tap { animation: bridge-tap-cta .9s cubic-bezier(0, 0, .2, 1) .3s forwards; }
 @keyframes bridge-press { 0%, 100% { transform: none; } 40% { transform: scale(.94); } }
+@keyframes bridge-tap-cta { 0% { transform: scale(.96); opacity: .9; } 100% { transform: scale(1.22); opacity: 0; } }
+/* Open state: the launcher folds into the round close control, exactly as
+   embed.js does when the panel is up. */
+.bs-launcher--open {
+  width: 52px; height: 52px; padding: 0; justify-content: center; border-radius: 50%;
+  background: var(--teal); border-color: transparent; color: #fff;
+  opacity: 0; transform: scale(.8); transition: opacity .3s ease, transform .3s ease;
+}
+.bridge.is-s2 .bs-launcher--open { opacity: 1; transform: none; }
+.bs-backdrop {
+  position: absolute; inset: 0; z-index: 1; border-radius: 0 0 17px 17px; background: rgba(0, 0, 0, .18);
+  opacity: 0; transition: opacity .3s ease;
+}
+.bridge.is-s2 .bs-backdrop { opacity: 1; }
 /* Stage 2: the clinic's own site, sketched, with the widget landing on it. */
 /* Not overflow:hidden — the tap ring on the booking button has to bloom past
    the card's edge instead of being cut at it. The bar rounds its own top
@@ -289,15 +308,16 @@ html[dir="rtl"] .hero-veil {
 .bs-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; background: var(--cream-2); border-bottom: 1px solid var(--line); border-radius: 17px 17px 0 0; }
 .bs-bar span { width: 9px; height: 9px; border-radius: 50%; background: #c9c2b2; }
 .bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .74rem; color: var(--ink-soft); direction: ltr; }
-.bs-page { position: relative; flex: 1; padding: 18px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+.bs-page { position: relative; flex: 1; padding: 18px 18px 18px; display: flex; flex-direction: column; gap: 10px; overflow: visible; }
 .bs-skel { height: 9px; border-radius: 999px; background: var(--cream-2); width: 70%; flex: none; }
 .bs-skel--h { height: 16px; width: 50%; margin-bottom: 2px; }
 .bs-skel--short { width: 40%; margin-bottom: 8px; }
 .bridge-widget {
-  margin-top: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 16px;
-  box-shadow: var(--shadow);
-  opacity: 0; transform: translateY(16px) scale(.96);
-  transition: opacity .5s ease, transform .55s cubic-bezier(.2, .8, .2, 1);
+  position: absolute; z-index: 2; right: 16px; left: 16px; bottom: 84px;
+  background: #fff; border: 1px solid #e0e0e0; border-radius: 18px; padding: 18px 18px 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .2); transform-origin: bottom right;
+  opacity: 0; transform: translateY(12px) scale(.975);
+  transition: opacity .3s ease, transform .35s cubic-bezier(.2, .8, .2, 1);
 }
 .bridge.is-s2 .bridge-widget { opacity: 1; transform: none; }
 .bw-title { font-weight: 700; font-size: 1.15rem; }
