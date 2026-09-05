@@ -257,12 +257,13 @@ html[dir="rtl"] .hero-veil {
   justify-content: safe center;
 }
 .scrolly-sticky .demo-browser { flex-shrink: 0; }
-/* 600px: the real widget's own frame is 580px (orli-calendar style.css
-   .obw-widget), sized so the confirm step's OTP block fits without an inner
-   scrollbar — but measured in production (2026-09) that step is 494px in a
-   480px area and scrolls by 14px, clipping the confirm button. The mock
-   inherits the same stylesheet, so it overflows identically; 20px more
-   frame here hides that until style.css is fixed upstream. */
+/* 600px is a floor: the real widget's own frame is 580px (orli-calendar
+   style.css .obw-widget), sized so the confirm step's OTP block fits without
+   an inner scrollbar — but measured in production (2026-09) that step is
+   494px in a 480px area and scrolls by 14px, clipping the confirm button.
+   The mock inherits the same stylesheet, so it overflows identically.
+   scrolly.js measures the tallest scene on load and raises this inline
+   whenever the column width or font needs more. */
 .scrolly-sticky .demo-browser { width: 82%; max-width: 460px; box-shadow: var(--shadow-lg); height: 600px; }
 /* Bare frame: no fake browser bar, just the rounded widget card. */
 .demo-browser--bare { border-radius: 18px; }

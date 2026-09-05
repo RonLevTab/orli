@@ -23,12 +23,14 @@
     if (!mountEl || !mountEl.__orli || !steps.length) return;
 
     var widget = mountEl.__orli;
-    // SOURCE: orli-calendar/widget/src/App.vue — the Step type, minus
-    // 'treatment': it has no scene of its own (scene 0's copy narrates picking
-    // a practitioner and a treatment as one beat), so onStep('treatment')
-    // finds no index and the step list simply stays where it is.
-    // widget.js's setScene() takes the index into this same list.
+    // SOURCE: orli-calendar/widget/src/App.vue — the Step type. widget.js's
+    // setScene() takes the index into this list; 'treatment' has no scene of
+    // its own (scene 0's copy narrates picking a practitioner and a treatment
+    // as one beat), so SCENE_OF maps it back onto scene 0 — otherwise Back
+    // from the date step landed on a step the list had no answer for and the
+    // text stayed parked on 02.
     var STEP_NAMES = ['practitioner', 'date', 'time', 'patient', 'confirm', 'success'];
+    var SCENE_OF = { practitioner: 0, treatment: 0, date: 1, time: 2, patient: 3, confirm: 4, success: 5 };
     var current = -1;
     // Below this breakpoint .scrolly-sticky is position:static and the widget
     // is driven by the tap-through tabs instead of scroll-jacking (see
@@ -56,14 +58,54 @@
       tab.addEventListener('click', function () { activate(idx); });
     });
 
+    // Size the card to the tallest scene, so no step ever scrolls inside it.
+    // The real widget's fixed 580px frame is already short of its own confirm
+    // step (see styles.css), and a narrow column or a fallback font wraps the
+    // patient and confirm steps taller still — so this is measured, not
+    // guessed: every scene is rendered once, the step area's overflow taken,
+    // and the card grows past its CSS height by the largest. Runs before
+    // onStep is wired, so the measuring renders don't drive the page.
+    var frame = mountEl.closest('.demo-browser');
+    var measuring = false;
+    var released = false;
+    function fitFrame() {
+      if (!frame) return;
+      measuring = true;
+      frame.style.height = '';
+      var overflow = 0;
+      for (var i = 0; i < steps.length; i++) {
+        widget.setScene(i);
+        var area = mountEl.querySelector('.obw-step');
+        overflow = Math.max(overflow, area.scrollHeight - area.clientHeight);
+      }
+      if (overflow > 0) {
+        frame.style.height = Math.ceil(frame.getBoundingClientRect().height + overflow) + 'px';
+      }
+      measuring = false;
+    }
+    fitFrame();
+
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        // Once the visitor has taken over, re-measuring would throw away
+        // whatever they typed; the card keeps the height it has.
+        if (released) return;
+        fitFrame();
+        widget.setScene(current);
+      }, 150);
+    });
+
     // The visitor can also click their own way through the widget. When that
     // lands on a different step than the one we asked for, follow along in the
     // step list — the sync the iframe's 'step' postMessage used to provide.
     // setActiveUI() has already set `current` for scene changes we drove, so
     // the echo of our own setScene() call falls out here.
     widget.onStep = function (name) {
-      var i = STEP_NAMES.indexOf(name);
-      if (i >= 0 && i !== current) {
+      if (measuring) return;
+      var i = SCENE_OF[name];
+      if (i !== undefined && i !== current) {
         setActiveUI(i);
         if (isPinned.matches) steps[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -72,7 +114,6 @@
     activate(0);
 
     var io = null;
-    var released = false;
 
     function observeSteps() {
       if (!('IntersectionObserver' in window)) return;
