@@ -241,7 +241,7 @@ html[dir="rtl"] .hero-veil {
      .bridge-site.is-picked    the 10:30 slot is chosen
      .bw-target.is-picking     the slot's ring blooms
      .bridge-movie.is-cal      the day view pops up over the page
-     .bc-appt.is-landed        the booking sits in its row */
+     .bc-appt.is-landed        the booking pops into its row */
 .bridge { position: relative; display: flex; justify-content: center; padding-top: 6px; }
 .bridge-movie { position: relative; width: min(640px, 100%); min-height: 500px; }
 .bridge-site, .bridge-cal {
@@ -343,27 +343,15 @@ html[dir="rtl"] .hero-veil {
   border-inline-start: 3px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .bc-appt--site {
-  opacity: 0; transform: scale(.85);
+  opacity: 0;
   background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-inline-start-color: var(--teal-deep); color: var(--teal-deep);
-  transition: opacity .35s ease, transform .4s cubic-bezier(.2, .8, .2, 1);
 }
-.bc-appt.is-landed { opacity: 1; transform: none; }
-/* The booking in flight. script.js positions the chip over the tapped slot,
-   then over its row in the day view, and the keyframes travel between. */
-.bridge-chip {
-  position: absolute; top: 0; left: 0; z-index: 6; pointer-events: none; opacity: 0;
-  padding: 9px 16px; border-radius: 999px; background: var(--teal-deep); color: #fff;
-  font-size: .9rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
-  box-shadow: 0 12px 28px -12px rgba(10, 93, 90, .7);
-}
-.bridge-chip.is-flying { animation: bridge-fly 1.05s cubic-bezier(.45, 0, .2, 1) forwards; }
-@keyframes bridge-fly {
-  0%   { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(.85); }
-  14%  { opacity: 1; transform: translate(var(--fx), var(--fy)) scale(1); }
-  86%  { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(1); }
-  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(.85); }
-}
-
+/* The new booking pops into its row — a small overshoot, then settles — and
+   the row flashes teal for a moment so the eye lands there. */
+.bc-appt.is-landed { opacity: 1; animation: bridge-pop .6s cubic-bezier(.2, .9, .3, 1.3) both; }
+@keyframes bridge-pop { 0% { opacity: 0; transform: scale(.55); } 60% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+.bc-row:has(.is-landed) { animation: bridge-row-flash 1.4s ease both; border-radius: 10px; }
+@keyframes bridge-row-flash { 0% { background: transparent; } 20% { background: color-mix(in srgb, var(--teal) 14%, transparent); } 100% { background: transparent; } }
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
 /* Top/bottom padding so the first and last steps can scroll to the centre. */

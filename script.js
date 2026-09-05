@@ -171,10 +171,8 @@
   // while the block is on screen, the patient's journey plays as a short
   // film in one frame — the launcher on the clinic's site is tapped, the
   // panel opens, a slot is chosen, the Optima day view pops up over the
-  // page and the booking flies into it — held for three seconds, then it
-  // plays again.
-  // Scrolling away pauses the loop; scrolling back resumes it. The chip is
-  // positioned in code from the slot's and the row's live positions.
+  // page and the booking pops into its row — held for three seconds, then
+  // it plays again. Scrolling away pauses the loop; scrolling back resumes.
   const bridge = document.querySelector('[data-bridge]');
   if (bridge) {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -182,7 +180,6 @@
     const site = movie.querySelector('.bm-site');
     const slot = movie.querySelector('[data-bridge-from="movie"]');
     const row = movie.querySelector('[data-bridge-to="movie"]');
-    const chip = bridge.querySelector('[data-bridge-chip="movie"]');
     let visible = false;
     let playing = false;
     let replayTimer = null;
@@ -192,7 +189,6 @@
       site.classList.remove('is-tapping', 'is-open', 'is-picked');
       slot.classList.remove('is-picking');
       row.classList.remove('is-landed');
-      chip.classList.remove('is-flying');
     };
     const scheduleReplay = () => {
       clearTimeout(replayTimer);
@@ -207,19 +203,6 @@
       playing = false;
       if (visible) scheduleReplay();
     };
-    const fly = () => {
-      const b = bridge.getBoundingClientRect();
-      const f = slot.getBoundingClientRect();
-      const t = row.getBoundingClientRect();
-      const c = chip.getBoundingClientRect();
-      // Centre the chip on the chosen slot, then on its row in the day view.
-      chip.style.setProperty('--fx', `${f.left + f.width / 2 - b.left - c.width / 2}px`);
-      chip.style.setProperty('--fy', `${f.top + f.height / 2 - b.top - c.height / 2}px`);
-      chip.style.setProperty('--tx', `${t.left + t.width / 2 - b.left - c.width / 2}px`);
-      chip.style.setProperty('--ty', `${t.top + t.height / 2 - b.top - c.height / 2}px`);
-      chip.classList.add('is-flying');
-      chip.addEventListener('animationend', () => { chip.classList.remove('is-flying'); land(); }, { once: true });
-    };
     function play() {
       if (playing) return;
       playing = true;
@@ -227,7 +210,7 @@
       setTimeout(() => site.classList.add('is-open'), 1500);
       setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 2700);
       setTimeout(() => movie.classList.add('is-cal'), 3500);
-      setTimeout(fly, 3950);
+      setTimeout(land, 4200);
     }
 
     if (still) {
