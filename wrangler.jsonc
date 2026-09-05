@@ -5,8 +5,14 @@
   "observability": {
     "enabled": true
   },
+  // Static files are served first; only paths with no matching file (the two
+  // /api/* routes) reach worker.js. Secrets: see the header of worker.js.
+  "main": "worker.js",
   "assets": {
     "directory": "."
+  },
+  "vars": {
+    "SLACK_CHANNEL_ID": "C0BV9BP95T3"
   },
   "compatibility_flags": [
     "nodejs_compat"

@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A marketing site for **Orli**, an online-booking add-on for clinics running the legacy
 **Optima** scheduling system. Plain static HTML/CSS/JS — no build step, no package
-manager, no dependencies, no tests.
+manager, no dependencies, no tests — plus one small Cloudflare Worker (`worker.js`)
+for the demo form and Cal.com webhook.
 
 Five pages, all sharing the same header/footer shell and `styles.css`:
 
@@ -81,9 +82,14 @@ Four independent, self-contained scripts loaded by `index.html`, each owning one
 They talk to the DOM, not to each other directly (with one exception: `scrolly.js`
 drives `widget.js` through a controller handle):
 
-- **`script.js`** — misc page glue: footer year, demo-form validation (client-side
-  only, not wired to a backend), scroll-reveal via `IntersectionObserver`, and the
-  FAQ accordion.
+- **`script.js`** — misc page glue: footer year, the demo form (validated
+  client-side, then posted to `worker.js`'s `/api/demo`), the Cal.com popup button
+  (gated on `CAL_LINK`), scroll-reveal via `IntersectionObserver`, and the FAQ
+  accordion.
+- **`worker.js`** — the one piece of backend: a Cloudflare Worker behind the static
+  assets (`wrangler.jsonc`) with two routes, the demo form and Cal.com's booking
+  webhook, both posting into Slack's `#website-contact`. Secrets and setup are in
+  `README.md`. Listed in `.assetsignore` so it is never served as a file.
 - **`widget.js`** — the live interactive booking widget shown in the "See it in
   action" section. A faithful vanilla-JS reproduction of the real Vue widget
   (`orli-calendar/widget/src/App.vue` + step components) driven by in-browser mock data

@@ -34,6 +34,22 @@ identity and a full-bleed teal CTA band (à la irisonthemove / Princeton Identit
 Notable patterns: floating pill nav, browser-chrome widget mockup, a **Without / With
 Orli** comparison, numbered how-it-works panels, and an FAQ accordion.
 
-## Wiring the demo form
-`script.js` currently validates and shows a confirmation message client-side only.
-Point the submit handler at a real endpoint (or form service) to capture leads.
+## The demo form and Cal.com bookings
+Both land in Slack's `#website-contact`, posted by the "Website contact" Slack app
+(ID `A0BV7G8QCGJ`) through `worker.js`, the Cloudflare Worker that sits behind the
+static files (`wrangler.jsonc`):
+
+- `POST /api/demo` — `script.js` posts the form here as FormData.
+- `POST /api/cal` — Cal.com's booking webhook (booked / rescheduled / cancelled).
+
+The Worker needs two secrets, set once per deployment and never committed:
+
+```bash
+npx wrangler secret put SLACK_BOT_TOKEN      # the app's xoxb- token
+npx wrangler secret put CAL_WEBHOOK_SECRET   # the secret typed into Cal.com's webhook
+```
+
+The channel ID is a plain var in `wrangler.jsonc`. To switch the form off, empty
+`FORM_ENDPOINT` in `script.js`; the page then says the form is not connected rather
+than pretending. The "pick a time" button is driven by `CAL_LINK` in the same file
+and stays hidden until that is set.

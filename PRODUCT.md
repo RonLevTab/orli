@@ -53,9 +53,10 @@ the clinic's existing workflow has to change.
   external reference. `orli-calendar`'s PRODUCT.md treats this site's tokens
   as binding for the whole product; changes here are upstream of that, not
   downstream.
-- No backend: the demo-request form (`#demoForm` in `index.html`, handled by
-  `script.js`) validates client-side only and is not wired to a real endpoint
-  yet — see `README.md`'s "Wiring the demo form" note.
+- The only backend is `worker.js`, a Cloudflare Worker with two routes: the
+  demo-request form (`#demoForm` in `index.html`, posted by `script.js`) and
+  Cal.com's booking webhook, both forwarded into Slack's `#website-contact`.
+  See `README.md` for the secrets it needs.
 - `panel.html` shows the other half of the product: a static mock of the clinic
   admin, walked through in five steps. It exists because the site otherwise only ever
   shows the patient's side, and the owner's real question is whether opening the
@@ -121,8 +122,7 @@ to Optima's product.
   PRODUCT.md); the site names no clinic customers and shows no testimonials,
   logos, or usage metrics.
 - **Absent — do not fabricate:** customer count beyond one, testimonials,
-  logos, usage/performance metrics, pricing, or claims about the demo-request
-  form going anywhere beyond client-side validation today.
+  logos, usage/performance metrics, or pricing.
 
 ## Product Principles
 

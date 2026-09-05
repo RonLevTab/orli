@@ -9,15 +9,15 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // ---------------------------------------------------------------------
-  // TODO(form): paste the Formspree endpoint here to switch the form on:
-  //   const FORM_ENDPOINT = 'https://formspree.io/f/xxxxxxxx';
-  // Until it is set, the form must not claim anyone was contacted. Nothing is
-  // sent, so saying otherwise would be a lie told at the exact moment this
-  // page is asking for trust — and this product's positioning is built on
-  // saying only what is true. Whatever the visitor typed is preserved either
-  // way; it is only cleared after a send actually succeeds.
+  // The form posts to the site's own Cloudflare Worker (worker.js), which
+  // forwards it into Slack's #website-contact. Empty this to switch the form
+  // off: it must then not claim anyone was contacted. Nothing is sent, so
+  // saying otherwise would be a lie told at the exact moment this page is
+  // asking for trust — and this product's positioning is built on saying
+  // only what is true. Whatever the visitor typed is preserved either way;
+  // it is only cleared after a send actually succeeds.
   // ---------------------------------------------------------------------
-  const FORM_ENDPOINT = '';
+  const FORM_ENDPOINT = '/api/demo';
 
   // ---------------------------------------------------------------------
   // TODO(cal): paste the Cal.com link here to switch the booking button on:

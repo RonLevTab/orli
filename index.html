@@ -329,11 +329,10 @@
           <button type="button" class="btn-cream lg" id="calDemoBtn">בחרו שעה להדגמה</button>
           <p class="cta-or">או השאירו פרטים ונחזור אליכם</p>
         </div>
-        <!-- Formspree: script.js posts this to FORM_ENDPOINT. The hidden
-             fields are Formspree's own: _subject titles the email, _gotcha is
-             a honeypot that bots fill and people never see. -->
+        <!-- script.js posts this to the site's Worker (worker.js), which
+             forwards it into Slack. _gotcha is a honeypot: bots fill it,
+             people never see it, and the Worker drops anything that has it. -->
         <form class="cta-form" id="demoForm" novalidate>
-          <input type="hidden" name="_subject" value="בקשת דמו מהאתר" />
           <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
           <div class="field">
             <label for="clinic">שם המרפאה</label>
@@ -390,7 +389,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=22"></script>
+  <script src="script.js?v=23"></script>
   <script src="hero-gradient.js?v=14"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->
