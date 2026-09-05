@@ -333,14 +333,6 @@ html[dir="rtl"] .hero-veil {
   transition: opacity .35s ease, transform .4s cubic-bezier(.2, .8, .2, 1);
 }
 .bc-appt.is-landed { opacity: 1; transform: none; }
-/* "Embedded" / "Saved in Optima" stamps, one per end of the story. */
-.bridge-badge {
-  position: absolute; display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 999px;
-  font-size: .78rem; font-weight: 700; font-family: var(--sans, inherit);
-  opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease;
-}
-.bridge.is-s1 .bridge-badge--cal { top: -12px; inset-inline-start: 14px; background: var(--teal-deep); color: #fff; box-shadow: var(--shadow-sm); }
-.bridge.is-s4 .bridge-badge--cal { opacity: 1; transform: none; }
 /* The booking in flight. script.js positions the chip over the tapped slot,
    then over its row in the calendar, and the keyframes travel between. */
 .bridge-chip {
