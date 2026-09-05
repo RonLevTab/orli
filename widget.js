@@ -55,8 +55,11 @@
     chooseDate: ['בחרו תאריך', 'Choose a date'],
     chooseTime: ['בחרו שעה', 'Choose a time'],
     yourDetails: ['הפרטים שלכם', 'Your details'],
-    confirmTitle: ['אישור התור', 'Confirm appointment'],
-    bookedTitle: ['התור נקבע!', 'Appointment booked!'],
+    // DELIBERATE DIVERGENCE: i18n.ts still says "התור" here; the site's word
+    // for a booking is "פגישה" everywhere, so the demo follows the site until
+    // the real widget's strings catch up.
+    confirmTitle: ['אישור הפגישה', 'Confirm appointment'],
+    bookedTitle: ['הפגישה נקבעה!', 'Appointment booked!'],
     firstName: ['שם פרטי', 'First name'],
     lastName: ['שם משפחה', 'Last name'],
     fullName: ['שם מלא', 'Full name'],
