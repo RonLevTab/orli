@@ -20,13 +20,14 @@
   const FORM_ENDPOINT = '/api/demo';
 
   // ---------------------------------------------------------------------
-  // TODO(cal): paste the Cal.com link here to switch the booking button on:
-  //   const CAL_LINK = 'orli/demo';   // the part after https://cal.com/
-  // While it is empty the button stays hidden (see #calDemo in index.html):
-  // a booking button that opens onto nothing would be the same lie as an
-  // unconnected form claiming it sent.
+  // Cal.com: the part of the booking URL after https://cal.com/. Empty it to
+  // switch the booking button off (see #calDemo in index.html): a booking
+  // button that opens onto nothing would be the same lie as an unconnected
+  // form claiming it sent. Namespace and config are what Cal.com's own
+  // "element click" embed snippet for this event hands out.
   // ---------------------------------------------------------------------
-  const CAL_LINK = '';
+  const CAL_LINK = 'ron-lev-tabuchov-tgk0nx/orli';
+  const CAL_NAMESPACE = 'orli';
 
   // Cal.com's own embed loader, verbatim from their "popup via element click"
   // snippet, so the button below opens the booking page in a modal instead of
@@ -59,16 +60,18 @@
         p(cal, ar);
       };
     })(window, 'https://app.cal.com/embed/embed.js', 'init');
-    window.Cal('init', { origin: 'https://app.cal.com' });
-    window.Cal('ui', {
-      theme: 'light',
-      styles: { branding: { brandColor: '#0f8a86' } },
+    window.Cal('init', CAL_NAMESPACE, { origin: 'https://app.cal.com' });
+    window.Cal.config = window.Cal.config || {};
+    window.Cal.config.forwardQueryParams = true;
+    window.Cal.ns[CAL_NAMESPACE]('ui', {
+      cssVarsPerTheme: { light: { 'cal-brand': '#0f8a86' }, dark: { 'cal-brand': '#6fd6cf' } },
       hideEventTypeDetails: false,
       layout: 'month_view',
     });
     const calBtn = document.getElementById('calDemoBtn');
     calBtn.setAttribute('data-cal-link', CAL_LINK);
-    calBtn.setAttribute('data-cal-config', JSON.stringify({ layout: 'month_view' }));
+    calBtn.setAttribute('data-cal-namespace', CAL_NAMESPACE);
+    calBtn.setAttribute('data-cal-config', JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' }));
     calWrap.hidden = false;
   }
 
