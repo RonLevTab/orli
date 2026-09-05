@@ -4,3 +4,6 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# Playwright MCP scratch output (browser console logs, snapshots, screenshots)
+.playwright-mcp/

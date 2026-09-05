@@ -9,8 +9,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Heebo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=44" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=55" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
 </head>
 <body>
@@ -21,14 +21,21 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
         </a>
-        <nav class="nav-links" aria-label="Primary">
+        <nav class="nav-links" id="navMenu" aria-label="Primary">
           <a href="index.html#demo">דמו מהיר</a>
           <a href="index.html#compare">למה אורלי</a>
+          <a href="panel.html">מסך הניהול</a>
           <a href="index.html#faq">שאלות נפוצות</a>
           <a href="#branding">התאמה אישית</a>
         </nav>
+        <button class="nav-toggle" type="button" id="navToggle"
+                aria-expanded="false" aria-controls="navMenu" aria-label="תפריט">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
         <div class="nav-cta">
           <a href="index.html#contact" class="btn-dark">לקביעת דמו</a>
         </div>
@@ -75,10 +82,11 @@
           <div class="code-head">
             <span class="dot"></span><span class="dot"></span><span class="dot"></span>
             <span class="code-file">your-clinic.co.il</span>
+            <button type="button" class="code-copy" data-copy-code>העתקת הקוד</button>
           </div>
 <pre class="code-body"><code><span class="c-com">&lt;!-- Orli booking widget --&gt;</span>
 <span class="c-tag">&lt;script</span>
-  <span class="c-attr">src</span>=<span class="c-str">"https://cdn.orli.health/embed.js"</span>
+  <span class="c-attr">src</span>=<span class="c-str">"https://cdn.orliclinic.com/embed.js"</span>
   <span class="c-attr">data-clinic-id</span>=<span class="c-str">"your-clinic"</span>
 <span class="c-tag">&gt;&lt;/script&gt;</span></code></pre>
         </div>
@@ -145,27 +153,28 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
       <nav class="footer-cols" aria-label="Footer">
         <div class="footer-col">
-          <h4>מוצר</h4>
+          <h3 class="footer-col-h">מוצר</h3>
           <a href="index.html#roadmap">מפת דרכים</a>
+          <a href="panel.html">מסך הניהול</a>
         </div>
         <div class="footer-col">
-          <h4>אמון</h4>
+          <h3 class="footer-col-h">אמון</h3>
           <a href="index.html#faq">שאלות נפוצות</a>
           <a href="privacy.html">מדיניות פרטיות</a>
           <a href="index.html#contact">צור קשר</a>
         </div>
         <div class="footer-col">
-          <h4>חברה</h4>
+          <h3 class="footer-col-h">חברה</h3>
           <a href="about.html">אודות</a>
         </div>
         <div class="footer-col">
-          <h4>בואו נתחיל</h4>
+          <h3 class="footer-col-h">בואו נתחיל</h3>
           <a href="index.html#contact">לקביעת דמו</a>
           <a href="index.html#compare">למה אורלי</a>
         </div>
@@ -177,6 +186,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=17"></script>
+  <script src="script.js?v=21"></script>
 </body>
 </html>

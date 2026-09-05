@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "styles.css"
+        ],
+        "createdAt": "2026-09-01T20:50:45.548Z",
+        "reason": "Incumbent .rung design, not introduced this session. The 4px border-top is the shipped-vs-planned signal (solid --teal vs dashed --line) added in the colorize pass to fix an honesty problem the critique raised; verified rendering at 1440 and 390 with the stripe following the 18px radius cleanly. Craft-floor's accent-border ban covers border-left/right on cards, not a top rule encoding state."
+      }
+    ]
+  }
+}

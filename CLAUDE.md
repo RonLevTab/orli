@@ -6,9 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A marketing site for **Orli**, an online-booking add-on for clinics running the legacy
 **Optima** scheduling system. Plain static HTML/CSS/JS — no build step, no package
-manager, no dependencies, no tests.
+manager, no dependencies, no tests — plus one small Cloudflare Worker (`worker.js`)
+for the demo form and Cal.com webhook.
 
-Four pages, all sharing the same header/footer shell and `styles.css`:
+Five pages, all sharing the same header/footer shell and `styles.css`:
 
 - **`index.html`** — the story: hero through CTA, written for the clinic owner/office
   manager deciding whether to adopt Orli.
@@ -18,6 +19,15 @@ Four pages, all sharing the same header/footer shell and `styles.css`:
   branding content is decision-maker-relevant, not just for whoever handles the embed.
   Keep technical claims here verified against `orli-calendar`'s actual code, not
   aspirational — see `PRODUCT.md` for why this page exists and what it must not claim.
+- **`panel.html`** — a walkthrough of the clinic admin, answering the objection an
+  owner actually holds: opening the calendar to patients does not mean losing control
+  of it. Five scrollytelling steps over a **static mock** of `orli-calendar/admin`
+  (`panel.js` + `panel.css`, scoped under `.orli-panel`). Every label, the sidebar
+  grouping and the section order are copied from the real admin's `i18n.ts`,
+  `AppShell.vue` and `router.ts` — refresh it against those, don't invent screens.
+  Note the automations step is marked `בקרוב` because the **real admin marks it that
+  way too** (`nav-coming-soon` in `AppShell.vue`); it is not shipped, and neither this
+  page nor the roadmap may imply otherwise.
 - **`about.html`** — mission/principles only. Orli has exactly one real customer
   (`PRODUCT.md`), so there is no team, funding, or customer-count content here to write
   yet — don't invent any.
@@ -30,8 +40,11 @@ Four pages, all sharing the same header/footer shell and `styles.css`:
   that law, which is a live open question for Orli itself, not just for clinic
   customers. Don't fill in the placeholders without an actual legal decision.
 
-All four pages are footer-linked to each other; only `index.html`'s content sections,
-`integration.html`, and the demo/compare/FAQ anchors are in primary nav.
+All five pages are footer-linked to each other. Primary nav carries `index.html`'s
+demo/compare/FAQ anchors plus `panel.html` and `integration.html` — five links and the
+CTA, which is at the top of what a nav should ask someone to choose between. If it
+needs trimming, `התאמה אישית` (integration.html) is the one to move to the footer: it
+is a technical reference, not part of the persuasion path.
 
 ## Related project
 
@@ -56,7 +69,7 @@ python -m http.server 8899
 # then open http://localhost:8899/
 ```
 
-`file://` also works, except the Google Fonts (Fraunces + Inter) need network access;
+`file://` also works, except the Google Font (Heebo) needs network access;
 without it the page falls back to Georgia / system sans.
 
 There is no lint, build, or test command — verify changes by loading the page in a
@@ -64,17 +77,23 @@ browser.
 
 ## Architecture
 
-Four independent, self-contained scripts loaded by `index.html`, each owning one concern.
+Four independent, self-contained scripts loaded by `index.html`, each owning one concern
+(`panel.html` loads `script.js` and its own `panel.js` instead).
 They talk to the DOM, not to each other directly (with one exception: `scrolly.js`
 drives `widget.js` through a controller handle):
 
-- **`script.js`** — misc page glue: footer year, demo-form validation (client-side
-  only, not wired to a backend), scroll-reveal via `IntersectionObserver`, and the
-  FAQ accordion.
+- **`script.js`** — misc page glue: footer year, the demo form (validated
+  client-side, then posted to `worker.js`'s `/api/demo`), the Cal.com popup button
+  (gated on `CAL_LINK`), scroll-reveal via `IntersectionObserver`, and the FAQ
+  accordion.
+- **`worker.js`** — the one piece of backend: a Cloudflare Worker behind the static
+  assets (`wrangler.jsonc`) with two routes, the demo form and Cal.com's booking
+  webhook, both posting into Slack's `#website-contact`. Secrets and setup are in
+  `README.md`. Listed in `.assetsignore` so it is never served as a file.
 - **`widget.js`** — the live interactive booking widget shown in the "See it in
   action" section. A faithful vanilla-JS reproduction of the real Vue widget
   (`orli-calendar/widget/src/App.vue` + step components) driven by in-browser mock data
-  (`CARDS`), with no backend: catalog → date → time → patient details → OTP confirm
+  (`CARDS`), with no backend: practitioner → treatment → date → time → patient details → OTP confirm
   (any 6 digits works) → success. The widget itself is bilingual (Hebrew/English toggle
   in its own UI) with strings in its own `S` table, mirroring `widget/src/i18n.ts` from
   the real app — this is a property of the widget product, not of the marketing site

@@ -18,21 +18,23 @@
   --shadow-lg: 0 40px 80px -32px rgba(15, 60, 55, 0.4);
   --radius: 18px;
   --wrap: 1160px;
-  --serif: "Fraunces", Georgia, "Times New Roman", serif;
-  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Height of the sticky .nav. The hero subtracts it to fit one viewport;
+     keep it in step with .nav-pill's padding and .brand-logo's height. */
+  --nav-h: 65px;
+  /* Heebo is the whole type system. Fraunces and Inter were requested on every
+     page and never rendered — they carry no Hebrew glyphs, so the lang="he"
+     stack below always won. The tokens keep their names because the roles are
+     still real; only the families that never painted are gone. */
+  --serif: "Heebo", "Frank Ruhl Libre", Georgia, serif;
+  --sans: "Heebo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Hebrew: Fraunces/Inter have no Hebrew glyphs, so switch the type stack to
-   Heebo, and drop synthetic italics (Hebrew has no real italic — colour alone
-   carries the emphasis). Triggered purely by the <html lang="he"> flip. */
-html[lang="he"] {
-  --serif: "Heebo", "Frank Ruhl Libre", Georgia, serif;
-  --sans: "Heebo", "Inter", system-ui, sans-serif;
-}
+/* Hebrew has no real italic, so synthetic slanting is the browser faking a
+   face that does not exist — colour alone carries the emphasis. (The font-stack
+   override that used to live here is gone: :root is Heebo now, so it was
+   restating the default.) */
 html[lang="he"] .display .ital,
 html[lang="he"] em { font-style: normal; }
-
-.lang-toggle { font-size: .78rem; font-weight: 700; letter-spacing: 0; }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 72px; }
@@ -62,12 +64,49 @@ h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
 .eyebrow {
   display: inline-block; font-family: var(--sans);
   font-size: .74rem; font-weight: 700; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--teal);
+  text-transform: uppercase; color: var(--teal-deep);
   margin-bottom: 18px;
 }
 .eyebrow.light { color: rgba(255,255,255,.85); }
 /* Hebrew has no case, so wide Latin-style tracking just adds drag; ease it off. */
-html[lang="he"] .eyebrow { letter-spacing: .02em; }
+html[lang="he"] .eyebrow,
+html[lang="he"] .scrolly-idx,
+html[lang="he"] .rung-tag,
+html[lang="he"] .faq-tag,
+html[lang="he"] .cmp-th,
+html[lang="he"] .footer-col-h,
+html[lang="he"] .scrolly-tab{ letter-spacing: .02em; text-transform: none; }
+
+/* Heebo has no true italic, so this rendered as a synthetic slant — exactly
+   what the rule at the top of this file exists to prevent. */
+html[lang="he"] .ladder-note { font-style: normal; }
+
+/* Keyboard focus. PRODUCT.md names keyboard operability as the working floor,
+   and this was the project failing its own standard: three :focus rules existed
+   in the whole codebase, none of them on a link, a button, or the CTA. No
+   border-radius here on purpose — the outline already follows each element's
+   own radius, and setting one would reshape the pills. */
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--teal-deep);
+  outline-offset: 2px;
+}
+/* On the teal band and the dark footer, teal-on-teal would be invisible. */
+.cta-band :where(a, button):focus-visible,
+.footer :where(a, button):focus-visible { outline-color: #fff; }
+
+/* Draft markers on privacy.html. They used to carry direction:ltr, copied
+   from integration.html where it is correct for real LTR code tokens — but
+   these are Hebrew, so it reversed the words and mispaired the brackets.
+   Styled as unfinished rather than as code, which is the job they do. */
+.legal-todo {
+  font-family: inherit; font-size: .88em; font-weight: 600;
+  /* The fill is only 1.03:1 against the cream page, so the dashed border is
+     what actually makes the marker visible — it has to clear the 3:1
+     non-text minimum on its own. #c9982f measured 2.4:1 and did not. */
+  background: #fdf1d8; color: #6d4a10;
+  border: 1px dashed #9d7524; border-radius: 6px;
+  padding: 1px 8px; white-space: nowrap;
+}
 
 /* ---------- buttons ---------- */
 .btn-dark, .btn-cream {
@@ -76,33 +115,18 @@ html[lang="he"] .eyebrow { letter-spacing: .02em; }
   border-radius: 999px; padding: 11px 22px; border: 1.5px solid transparent;
   transition: transform .16s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
 }
-/* Petaron-style "Book a demo": a cream blob expands to fill the dark pill,
-   a shine sweeps across, and the label flips from cream to dark. */
-.btn-dark { background: var(--dark); color: #f6f3ec; position: relative; overflow: hidden; z-index: 0; border: 1px solid rgba(255, 255, 255, 0.08); }
-.btn-dark::before {
-  content: ""; position: absolute; z-index: -1; inset: 0;
-  background: linear-gradient(135deg, #f3eee2, #e2d8c4); border-radius: 50%;
-  transform: scale(0); transform-origin: 22% 40%;
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.btn-dark::after {
-  content: ""; position: absolute; z-index: -1; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-  transform: translateX(-120%); transition: transform 0.7s ease;
-}
+/* "Book a demo": a plain lift, a deeper shadow, and the dark pill warms to
+   teal. Replaced the earlier blob-and-shine sweep, which was more motion
+   than the button earned. */
+.btn-dark { background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); }
 .btn-dark:hover {
-  color: #2a2000; transform: translateY(-2px);
-  border-color: rgba(226, 216, 196, 0.7); box-shadow: 0 8px 24px -8px rgba(120, 108, 86, 0.5);
+  background: var(--teal-deep); border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(10, 93, 90, 0.6);
 }
-.btn-dark:hover::before { transform: scale(2.4); }
-.btn-dark:hover::after { transform: translateX(120%); }
 .btn-cream { background: var(--cream); color: var(--dark); }
 .btn-cream:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
-/* ---------- utility bar ---------- */
-.utility { background: var(--dark); color: rgba(255,255,255,.72); font-size: .82rem; }
-.utility-inner { display: flex; justify-content: space-between; align-items: center; height: 40px; }
 .util-right { display: flex; gap: 10px; align-items: center; }
 .util-right a:hover { color: #fff; }
 .util-sep { opacity: .4; }
@@ -111,7 +135,7 @@ html[lang="he"] .eyebrow { letter-spacing: .02em; }
 /* Flat top bar: connected to the top edge (not a floating pill) and thinner. */
 .nav {
   position: sticky; top: 0; z-index: 60;
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  background: color-mix(in srgb, var(--cream) 86%, transparent);
   backdrop-filter: saturate(1.5) blur(14px);
   border-bottom: 1px solid var(--line);
 }
@@ -124,16 +148,11 @@ html[lang="he"] .eyebrow { letter-spacing: .02em; }
 .brand-logo--footer { height: 44px; }
 html[lang="he"] .brand-logo--en,
 html:not([lang="he"]) .brand-logo--he { display: none; }
+.nav-toggle { display: none; }
 .nav-links { display: flex; gap: 26px; flex: 1; justify-content: center; }
 .nav-links a { color: var(--ink-soft); font-weight: 500; font-size: .93rem; transition: color .15s; }
 .nav-links a:hover { color: var(--teal); }
 .nav-cta { display: flex; align-items: center; gap: 8px; }
-.icon-btn {
-  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
-  background: transparent; border: 1px solid var(--line); cursor: pointer; font-size: 1rem;
-  transition: background .15s;
-}
-.icon-btn:hover { background: var(--cream-2); }
 
 /* ---------- hero ---------- */
 .hero {
@@ -143,9 +162,17 @@ html:not([lang="he"]) .brand-logo--he { display: none; }
      toolbar showing the hero renders taller than the real screen and its
      last line ends up under the toolbar. dvh tracks the true visible
      height; vh stays as the fallback for browsers that don't support it. */
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100dvh - var(--nav-h));
 }
+.hero-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+.hero-link {
+  font-weight: 600; color: var(--teal-deep); padding-bottom: 2px;
+  border-bottom: 1px solid color-mix(in srgb, var(--teal-deep) 35%, transparent);
+  transition: border-color .18s ease;
+}
+.hero-link:hover { border-bottom-color: var(--teal-deep); }
+
 .hero::before {
   content: ""; position: absolute; inset: -30% 45% auto -12%; height: 640px;
   background: radial-gradient(closest-side, rgba(20,184,166,.16), transparent 72%);
@@ -178,7 +205,7 @@ html[dir="rtl"] .hero-veil {
       transparent 74%);
 }
 /* Static fallback when WebGL is unavailable. */
-.hero--nogl { background: linear-gradient(120deg, #f4f2ec, #98e2d6 45%, #beaae4); }
+.hero--nogl { background: linear-gradient(120deg, #f7f5ef, #98e2d6 45%, #5a9e96); }
 
 .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; position: relative; z-index: 2; }
 .lead { font-size: 1.16rem; color: var(--ink-soft); max-width: 34em; margin-top: 22px; }
@@ -193,18 +220,11 @@ html[dir="rtl"] .hero-veil {
 .dot { width: 11px; height: 11px; border-radius: 50%; background: #cdbfa8; }
 .dot:nth-child(1){ background:#e6a19a;} .dot:nth-child(2){ background:#e8ca8f;} .dot:nth-child(3){ background:#a7c7a0;}
 .widget-body { padding: 22px 20px 24px; }
-.widget-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-soft); margin: 0 0 9px; font-weight: 700; }
-.chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
 .chip { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); font-size: .84rem; color: var(--ink-soft); }
 .chip.active { background: var(--teal); color: #f2fffe; border-color: var(--teal); font-weight: 600; }
-.slot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
 .slot { text-align: center; padding: 10px 0; border-radius: 10px; border: 1px solid var(--line); font-size: .9rem; font-variant-numeric: tabular-nums; }
 .slot-on { background: color-mix(in srgb, var(--teal) 14%, transparent); border-color: var(--teal); color: var(--teal); font-weight: 700; }
 .slot.muted { opacity: .38; text-decoration: line-through; }
-.widget-book {
-  width: 100%; border: none; border-radius: 12px; padding: 14px; font: inherit; font-weight: 700; cursor: pointer;
-  background: var(--dark); color: #f4fffe;
-}
 .widget-foot { text-align: center; font-size: .78rem; color: var(--ink-soft); margin: 13px 0 0; }
 
 /* ---------- sections ---------- */
@@ -224,7 +244,7 @@ html[dir="rtl"] .hero-veil {
   transition: opacity .4s ease, transform .4s ease;
 }
 .scrolly-step.is-active { opacity: 1; transform: none; }
-.scrolly-idx { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+.scrolly-idx { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--teal-deep); margin-bottom: 12px; }
 .scrolly-step h3 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2.15rem); margin-bottom: 10px; }
 .scrolly-step p { color: var(--ink-soft); font-size: 1.08rem; max-width: 30em; margin: 0; }
 /* Centred in the space below the nav: firm top boundary, fully visible, and the
@@ -237,62 +257,35 @@ html[dir="rtl"] .hero-veil {
   justify-content: safe center;
 }
 .scrolly-sticky .demo-browser { flex-shrink: 0; }
-.scrolly-sticky .demo-browser { width: 82%; max-width: 460px; box-shadow: var(--shadow-lg); height: 660px; }
+/* 600px is a floor: the real widget's own frame is 580px (orli-calendar
+   style.css .obw-widget), sized so the confirm step's OTP block fits without
+   an inner scrollbar — but measured in production (2026-09) that step is
+   494px in a 480px area and scrolls by 14px, clipping the confirm button.
+   The mock inherits the same stylesheet, so it overflows identically.
+   scrolly.js measures the tallest scene on load and raises this inline
+   whenever the column width or font needs more. */
+.scrolly-sticky .demo-browser { width: 82%; max-width: 460px; box-shadow: var(--shadow-lg); height: 600px; }
 /* Bare frame: no fake browser bar, just the rounded widget card. */
 .demo-browser--bare { border-radius: 18px; }
 
 /* live demo (legacy static layout, still used by CSS below) */
-.demo-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 52px; align-items: center; }
-.demo-notes { max-width: 440px; }
-.demo-flow { list-style: none; counter-reset: df; padding: 0; margin: 0 0 24px; display: grid; gap: 12px; }
-.demo-flow li { counter-increment: df; position: relative; padding-inline-start: 44px; color: var(--ink-soft); font-size: .98rem; }
-.demo-flow li::before {
-  content: counter(df); position: absolute; inset-inline-start: 0; top: -2px;
-  width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%;
-  background: color-mix(in srgb, var(--teal) 13%, transparent); color: var(--teal);
-  font-family: var(--serif); font-weight: 600; font-size: .95rem;
-}
-.demo-flow li span { color: var(--ink); font-weight: 600; }
-.demo-tip { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; font-size: .92rem; color: var(--ink-soft); box-shadow: var(--shadow-sm); }
-.demo-tip code { font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: .88em; background: var(--cream-2); padding: 1px 6px; border-radius: 6px; color: var(--teal); }
-.demo-tip strong { color: var(--ink); }
 .demo-stage { display: flex; flex-direction: column; align-items: center; }
 .demo-browser { max-width: 460px; width: 100%; box-shadow: var(--shadow-lg); }
 .demo-browser [data-orli-widget] { display: block; }
-.demo-caption { margin: 16px 0 0; font-family: var(--serif); font-style: italic; color: var(--teal); font-size: 1rem; }
 .section.scrolly { padding-bottom: 140px; }
 /* Mobile-only step tabs (see @media (max-width: 920px) below): a tap-through
    substitute for the desktop scroll-jack, since a pinned widget and scrolling
    step text can't share one narrow column without overlapping. */
 .scrolly-tabs { display: none; }
 
-/* how it works — numbered panels */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
-.step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 24px; box-shadow: var(--shadow-sm); }
-.step-idx { display: block; font-size: .74rem; font-weight: 700; letter-spacing: .1em; color: var(--teal); margin-bottom: 16px; }
-.step h3 { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; }
-.step p { color: var(--ink-soft); font-size: .95rem; margin: 0; }
-
 /* comparisonn */
 .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.compare-col { border-radius: var(--radius); padding: 30px 28px; border: 1px solid var(--line); }
 .compare-col.without { background: var(--surface); }
 .compare-col.with { background: linear-gradient(160deg, color-mix(in srgb, var(--teal) 10%, var(--surface)), var(--surface)); border-color: color-mix(in srgb, var(--teal) 35%, var(--line)); box-shadow: var(--shadow); }
-.compare-head { font-family: var(--serif); font-size: 1.35rem; margin-bottom: 20px; }
 .compare-col.with .compare-head { color: var(--teal); }
-.compare-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
-.compare-col li { position: relative; padding-inline-start: 30px; color: var(--ink-soft); font-size: .98rem; }
-.compare-col.without li::before { content: "✕"; position: absolute; inset-inline-start: 0; top: -1px; color: #c98b7f; font-weight: 700; }
+.compare-col.without li::before { content: "✕"; position: absolute; inset-inline-start: 0; top: -1px; color: #a8503f; font-weight: 700; }
 .compare-col.with li::before { content: "✓"; position: absolute; inset-inline-start: 0; top: -1px; color: var(--teal); font-weight: 800; }
 .compare-col.with li { color: var(--ink); }
-
-/* features */
-.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-.feature { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 26px; transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease; }
-.feature:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); }
-.feature-ico { font-size: 1.8rem; margin-bottom: 15px; }
-.feature h3 { font-family: var(--serif); font-weight: 500; font-size: 1.22rem; }
-.feature p { color: var(--ink-soft); font-size: .96rem; margin: 0; }
 
 /* embed */
 .swatches { display: flex; gap: 11px; margin: 22px 0 4px; }
@@ -302,19 +295,29 @@ html[dir="rtl"] .hero-veil {
 .check-list { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 11px; }
 .check-list li { padding-inline-start: 28px; position: relative; color: var(--ink-soft); }
 .check-list li::before { content: "✓"; position: absolute; inset-inline-start: 0; color: var(--teal); font-weight: 800; }
+/* Disclosure, not benefit: privacy.html lists what is collected about the
+   reader, and a teal check-mark reads as a feature they are being sold. */
+.check-list--plain li::before { content: "•"; color: var(--ink-soft); font-weight: 400; }
+.cta-form input.is-invalid { border-color: #f0b8ae; box-shadow: 0 0 0 3px rgba(240, 184, 174, .25); }
 .code-card { border-radius: var(--radius); overflow: hidden; border: 1px solid #1c332f; box-shadow: var(--shadow-lg); background: #0c1a17; }
 .code-head { display: flex; align-items: center; gap: 7px; padding: 13px 16px; background: #111f1c; border-bottom: 1px solid #1c332f; }
 .code-head .dot { background: #33524c; }
 .code-file { margin-inline-start: 10px; font-size: .82rem; color: #7f9a94; }
+/* The snippet is the one thing a reader takes away from this page, and it sits
+   in an LTR <pre> inside an RTL document — hand-selecting it is miserable. */
+.code-copy {
+  margin-inline-start: auto; font: inherit; font-size: .78rem; font-weight: 600;
+  padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid #33524c; background: transparent; color: #9fb8b2;
+  transition: color .18s ease, border-color .18s ease;
+}
+.code-copy:hover { color: #eaf3f1; border-color: #4d7d75; }
+.code-copy:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.code-copy.is-copied { color: #7fd8c9; border-color: #2f6f66; }
 .code-card { direction: ltr; }
 .code-body { margin: 0; padding: 24px 22px; overflow-x: auto; font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: .9rem; line-height: 1.8; color: #d6e8e3; }
 .c-com { color: #6a8a84; } .c-tag { color: #f5a3b0; } .c-attr { color: #4fd6c6; } .c-str { color: #f2cf7a; }
 
-/* security */
-.sec-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
-.sec-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px; box-shadow: var(--shadow-sm); }
-.sec-item h3 { font-family: var(--serif); font-weight: 500; font-size: 1.18rem; }
-.sec-item p { color: var(--ink-soft); margin: 0; font-size: .96rem; }
 .sec-ico { width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(15, 138, 134, 0.1); color: var(--teal); margin-bottom: 14px; }
 .sec-ico svg { width: 22px; height: 22px; }
 
@@ -322,10 +325,12 @@ html[dir="rtl"] .hero-veil {
 .ladder { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .rung { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; border-top: 4px solid var(--line); }
 .rung.done { border-top-color: var(--teal); }
-.rung.next { border-top-color: var(--teal-bright); }
+/* Planned, not shipped — a dashed rule and a neutral pill so the distinction
+   survives a glance. Solid teal reads as "available" at any scanning speed. */
+.rung.next { border-top-color: var(--line); border-top-style: dashed; }
 .rung-tag { display: inline-block; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 11px; border-radius: 999px; margin-bottom: 14px; }
-.rung.done .rung-tag { background: color-mix(in srgb, var(--teal) 15%, transparent); color: var(--teal); }
-.rung.next .rung-tag { background: color-mix(in srgb, var(--teal-bright) 18%, transparent); color: var(--teal-deep); }
+.rung.done .rung-tag { background: color-mix(in srgb, var(--teal) 15%, transparent); color: var(--teal-deep); }
+.rung.next .rung-tag { background: var(--cream-2); color: var(--ink-soft); border: 1px dashed var(--line); }
 .rung.soon .rung-tag { background: var(--cream-2); color: var(--ink-soft); }
 .rung h3 { font-family: var(--serif); font-weight: 500; font-size: 1.15rem; }
 .rung p { color: var(--ink-soft); font-size: .93rem; margin: 0; }
@@ -350,11 +355,23 @@ html[dir="rtl"] .hero-veil {
 .cta-band .display { color: #fff; }
 .cta-band .display .ital { color: #bff3ec; }
 .cta-lead { font-size: 1.14rem; color: rgba(255,255,255,.86); max-width: 46ch; margin-inline: auto; }
+/* Two ways in: book a slot straight into the calendar, or leave details.
+   The band is a flex column of centred blocks, so [hidden] has to beat the
+   button's own display to actually hide the Cal.com block. */
+.cta-book { margin-top: 30px; }
+.cta-book[hidden] { display: none !important; }
+.cta-or { margin: 18px 0 0; font-size: .92rem; color: rgba(255,255,255,.78); }
+.cta-book + .cta-form { margin-top: 12px; }
 .cta-form { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: flex-end; margin-top: 30px; }
 .field { text-align: start; }
 .field label { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; color: rgba(255,255,255,.85); margin-bottom: 6px; }
-.field input { font: inherit; padding: 13px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.12); color: #fff; min-width: 240px; }
-.field input::placeholder { color: rgba(255,255,255,.6); }
+/* Opaque fill, not translucent white over a gradient: with an alpha fill the
+   placeholder measured 4.21:1 at the dark end of the band and 2.73:1 at the
+   light end, and even the typed value fell to 3.48:1. One fixed backdrop makes
+   the numbers the same the whole way down — placeholder 6.9:1, value 11.8:1,
+   and the border clears 3:1 against both ends of the band and the fill. */
+.field input { font: inherit; padding: 13px 16px; border-radius: 12px; border: 1px solid #d8f0ed; background: #073f3d; color: #fff; min-width: 240px; }
+.field input::placeholder { color: rgba(255,255,255,.72); }
 .field input:focus { outline: 2px solid #fff; outline-offset: 1px; background: rgba(255,255,255,.2); }
 .form-note { min-height: 1.4em; margin-top: 18px; font-weight: 600; color: #fff; }
 .form-note:not(:empty) { display: inline-block; padding: 8px 18px; border-radius: 999px; background: rgba(10, 37, 35, .35); }
@@ -367,15 +384,22 @@ html[dir="rtl"] .hero-veil {
 .footer-brand p { color: var(--ink-soft); font-size: .94rem; margin-top: 12px; }
 .footer-cols { display: flex; gap: 60px; flex-wrap: wrap; }
 .footer-col { display: flex; flex-direction: column; gap: 10px; }
-.footer-col h4 { font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-soft); margin: 0 0 4px; }
+.footer-col-h { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-soft); margin: 0 0 4px; }
 .footer-col a { color: var(--ink); font-size: .94rem; }
 .footer-col a:hover { color: var(--teal); }
 .footer-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
 
 /* ---------- responsive ---------- */
 @media (max-width: 920px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 44px; }
-  .hero-visual { order: -1; }
+  /* The min-height fits now, but the stacked content did not: copy + actions +
+     mockup ran 906px against an 844px screen. Trim the frame and cap the
+     decoration so the whole argument lands on the first screen. */
+  .hero { padding-block: 44px 28px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 22px; }
+  /* The argument leads; the mockup follows. This was order: -1, which put an
+     aria-hidden, pointer-events:none picture above the H1. The tighter gap and
+     the cap also bring the hero back inside one viewport. */
+  .hero-visual { order: 1; max-width: 296px; margin-inline: auto; width: 100%; }
   /* Fade the hero copy in on load, staggered per line — desktop doesn't need
      it (the widget mockup sits beside the text so nothing feels static on
      first paint), but on mobile the text is the whole first screen. */
@@ -383,13 +407,12 @@ html[dir="rtl"] .hero-veil {
   .hero-copy .eyebrow { animation-delay: 0s; }
   .hero-copy h1 { animation-delay: .12s; }
   .hero-copy .lead { animation-delay: .24s; }
+  .hero-copy .hero-actions { animation-delay: .36s; }
   @keyframes hero-fade-in {
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: none; }
   }
-  .steps, .feature-grid, .sec-grid, .ladder { grid-template-columns: 1fr 1fr; }
-  .demo-grid { grid-template-columns: 1fr; gap: 36px; }
-  .demo-notes { max-width: none; order: 2; }
+   .ladder{ grid-template-columns: 1fr 1fr; }
   /* Mobile scrollytelling: the desktop sticky-pin-while-scrolling technique
      needs a second column for the steps to scroll past without crossing the
      widget's own space — there is no second column on a phone, so pinning
@@ -401,11 +424,11 @@ html[dir="rtl"] .hero-veil {
      without fighting page scroll for control. */
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
-  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(460px, 78vh, 620px); margin-inline: auto; }
-  .scrolly-tabs { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(540px, 78vh, 640px); margin-inline: auto; }
+  .scrolly-tabs { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
   .scrolly-tab {
-    font: inherit; font-size: .8rem; font-weight: 700; letter-spacing: .04em;
-    width: 34px; height: 34px; display: grid; place-items: center;
+    font: inherit; font-size: .84rem; font-weight: 700; letter-spacing: .04em;
+    width: 44px; height: 44px; display: grid; place-items: center;
     border-radius: 50%; border: 1px solid var(--line); background: var(--surface);
     color: var(--ink-soft); cursor: pointer;
     transition: background .2s ease, border-color .2s ease, color .2s ease;
@@ -419,11 +442,38 @@ html[dir="rtl"] .hero-veil {
   .scrolly-step.is-active { display: block; animation: scrolly-step-in .35s ease; }
   .scrolly-step p { margin-inline: auto; }
   @keyframes scrolly-step-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  /* Below this width the link row is hidden, and with no replacement the only
+     thing left in the header was the CTA — a phone visitor had no route to any
+     section on any of the four pages. Same <nav>, re-laid-out as a panel. */
+  .nav-pill { position: relative; }
   .nav-links { display: none; }
+  .nav-toggle {
+    display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
+    /* flex: none — the pill is a flex row and would otherwise shrink this
+       below the 44px touch minimum (it measured 31px wide). */
+    flex: none; box-sizing: border-box;
+    width: 44px; height: 44px; padding: 0 11px; margin-inline-start: auto;
+    background: transparent; border: 0; cursor: pointer;
+  }
+  .nav-toggle-bar { display: block; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s ease, opacity .2s ease; }
+  .nav-pill.is-open .nav-toggle-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-pill.is-open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+  .nav-pill.is-open .nav-toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-pill.is-open .nav-links {
+    display: flex; flex-direction: column; gap: 0; position: absolute;
+    inset-inline: 0; top: calc(100% + 8px); z-index: 30;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 6px; overflow: hidden;
+  }
+  .nav-pill.is-open .nav-links a {
+    padding: 14px 16px; border-radius: 12px; font-size: 1rem; color: var(--ink);
+  }
+  .nav-pill.is-open .nav-links a:hover { background: var(--cream-2); color: var(--teal-deep); }
 }
 @media (max-width: 560px) {
   .utility-inner { font-size: .74rem; }
-  .steps, .feature-grid, .sec-grid, .ladder { grid-template-columns: 1fr; }
+   .ladder{ grid-template-columns: 1fr; }
   .section { padding: 48px 0; }
   .field input { min-width: 0; width: 100%; }
   .cta-form { flex-direction: column; align-items: stretch; }
@@ -487,36 +537,23 @@ html[dir="rtl"] .hero-veil {
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--teal) 85%, transparent) 50%, transparent);
 }
 
-/* ===== How it works — framed glow cards (Petaron ProcessFlow) ===== */
-.hiw-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.hiw-card { position: relative; list-style: none; border-radius: 20px; border: 1px solid var(--line); padding: 7px; background: var(--cream-2); }
-/* Glowing border that follows the cursor (like Petaron's GlowingEffect). */
-.hiw-card::before {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
-  background: radial-gradient(150px circle at var(--mx, 50%) var(--my, 50%), var(--teal), color-mix(in srgb, var(--teal) 35%, transparent) 32%, transparent 66%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude;
-  opacity: 0; transition: opacity .3s ease;
-}
-.hiw-card:hover::before { opacity: 1; }
 .hiw-inner { height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 28px 22px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow-sm); }
 .hiw-ico { display: grid; place-items: center; width: 46px; height: 46px; font-size: 1.4rem; border-radius: 12px; border: 1px solid var(--line); background: var(--cream-2); }
 .hiw-inner h3 { font-family: var(--serif); font-weight: 500; font-size: 1.18rem; margin: 4px 0 0; }
 .hiw-inner p { color: var(--ink-soft); font-size: .95rem; margin: 0; }
 .hiw-chips { margin-top: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding-top: 8px; }
-.hiw-chip { font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--teal); background: color-mix(in srgb, var(--teal) 10%, transparent); border: 1px solid color-mix(in srgb, var(--teal) 22%, transparent); padding: 4px 10px; border-radius: 999px; }
 
 /* ===== Comparison table (Petaron BeforeAfterTable) ===== */
 .cmp-table { max-width: 900px; margin: 0 auto; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
 .cmp-thead { display: grid; grid-template-columns: 1fr 1fr; }
-.cmp-th { padding: 16px 26px; font-size: .72rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
-.cmp-th--with { color: var(--teal); background: color-mix(in srgb, var(--teal) 6%, transparent); border-inline-start: 1px solid var(--line); }
+.cmp-th { padding: 16px 26px; text-align: center; font-size: .72rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.cmp-th--with { color: var(--teal-deep); background: color-mix(in srgb, var(--teal) 6%, transparent); border-inline-start: 1px solid var(--line); }
 .cmp-rows { display: grid; grid-template-columns: 1fr 1fr; }
 .cmp-cell { display: flex; align-items: flex-start; gap: 12px; padding: 16px 26px; border-top: 1px solid var(--line); font-size: .96rem; color: var(--ink-soft); }
 .cmp-cell.with { background: color-mix(in srgb, var(--teal) 6%, transparent); border-inline-start: 1px solid var(--line); color: var(--ink); font-weight: 500; }
 .cmp-mark { flex: 0 0 auto; font-weight: 800; line-height: 1.5; }
-.cmp-cell.without .cmp-mark { color: #c98b7f; }
-.cmp-cell.with .cmp-mark { color: var(--teal); }
+.cmp-cell.without .cmp-mark { color: #a8503f; }
+.cmp-cell.with .cmp-mark { color: var(--teal-deep); }
 
 /* ===== FAQ accordion (Petaron animation: grid-rows expand + rotating +) ===== */
 .faq { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
@@ -534,14 +571,23 @@ html[dir="rtl"] .hero-veil {
 .faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
 .faq-item.open .faq-panel { grid-template-rows: 1fr; }
 .faq-panel-inner { overflow: hidden; }
-.faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; margin: 0; padding: 0 22px 20px 76px; }
+.faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; margin: 0; padding-block: 0 20px; padding-inline: 76px 22px; }
 
 @media (max-width: 900px) {
-  .hiw-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .cmp-thead { display: none; }
   .cmp-rows { grid-template-columns: 1fr; }
+  /* One column means the shared header no longer maps onto the cells, so each
+     cell names its own side instead of relying on the reader's memory and a
+     single coloured mark. */
+  .cmp-cell { flex-wrap: wrap; }
+  .cmp-cell::before {
+    flex: 0 0 100%; content: "בלי אורלי";
+    font-size: .64rem; font-weight: 800; letter-spacing: .02em;
+    color: var(--ink-soft); margin-block-end: 7px;
+  }
+  .cmp-cell.with::before { content: "עם אורלי"; color: var(--teal-deep); }
   .cmp-cell.with, .cmp-th--with { border-inline-start: none; }
   .faq-panel-inner p { padding: 0 22px 20px; }
 }

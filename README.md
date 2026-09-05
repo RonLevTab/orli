@@ -11,7 +11,7 @@ step, no dependencies.
 - `widget.css` / `widget.js` — the **live interactive booking widget** in the
   "See it in action" section: a faithful vanilla-JS reproduction of the real Vue
   widget (`orli-calendar/widget/src/App.vue` + step components), driven by in-browser
-  mock data. Plays the whole flow — catalog → date → time → patient → confirm (OTP)
+  mock data. Plays the whole flow — practitioner → treatment → date → time → patient → confirm (OTP)
   → success — with no backend. OTP accepts any 6 digits. Bilingual (Hebrew primary /
   English secondary) via its own toggle, Apple-clean, Action-Blue accent, scoped
   under `.orli-live` so it never touches the marketing site's styles.
@@ -24,8 +24,8 @@ python -m http.server 8899
 # then open http://localhost:8899/
 ```
 
-(Opening `index.html` directly via `file://` also works, but the Google Fonts —
-Fraunces + Inter — need a network connection; without one it falls back to Georgia /
+(Opening `index.html` directly via `file://` also works, but the Google Font —
+Heebo — needs a network connection; without one it falls back to Frank Ruhl Libre /
 system sans, which still looks clean.)
 
 ## Design
@@ -34,6 +34,22 @@ identity and a full-bleed teal CTA band (à la irisonthemove / Princeton Identit
 Notable patterns: floating pill nav, browser-chrome widget mockup, a **Without / With
 Orli** comparison, numbered how-it-works panels, and an FAQ accordion.
 
-## Wiring the demo form
-`script.js` currently validates and shows a confirmation message client-side only.
-Point the submit handler at a real endpoint (or form service) to capture leads.
+## The demo form and Cal.com bookings
+Both land in Slack's `#website-contact`, posted by the "Website contact" Slack app
+(ID `A0BV7G8QCGJ`) through `worker.js`, the Cloudflare Worker that sits behind the
+static files (`wrangler.jsonc`):
+
+- `POST /api/demo` — `script.js` posts the form here as FormData.
+- `POST /api/cal` — Cal.com's booking webhook (booked / rescheduled / cancelled).
+
+The Worker needs two secrets, set once per deployment and never committed:
+
+```bash
+npx wrangler secret put SLACK_BOT_TOKEN      # the app's xoxb- token
+npx wrangler secret put CAL_WEBHOOK_SECRET   # the secret typed into Cal.com's webhook
+```
+
+The channel ID is a plain var in `wrangler.jsonc`. To switch the form off, empty
+`FORM_ENDPOINT` in `script.js`; the page then says the form is not connected rather
+than pretending. The "pick a time" button is driven by `CAL_LINK` in the same file
+and stays hidden until that is set.

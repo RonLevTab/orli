@@ -6,3 +6,14 @@ README.md
 wrangler.jsonc
 .wrangler
 .wrangler/**
+worker.js
+tools
+tools/**
+.claude
+.claude/**
+.impeccable
+.impeccable/**
+.playwright-mcp
+.playwright-mcp/**
+CLAUDE.md
+PRODUCT.md
