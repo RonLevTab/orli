@@ -240,23 +240,42 @@ html[dir="rtl"] .hero-veil {
    into view; every rule below that starts from a hidden state transitions
    in on its stage. */
 .bridge {
-  position: relative; display: grid; align-items: center;
-  grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1.05fr) 40px minmax(0, 1.15fr);
+  --bridge-w: min(1120px, 100vw - 48px);
+  position: relative; display: grid; align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr) 44px minmax(0, 1fr);
+  /* Wider than the .narrow text column above it: the same negative margin on
+     both sides keeps it centred, in RTL as in LTR. */
+  width: var(--bridge-w); margin-inline: calc((100% - var(--bridge-w)) / 2);
+  padding-top: 18px;
 }
-.bridge-stage { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.bridge-label { font-size: .7rem; font-weight: 800; letter-spacing: .06em; color: var(--teal-deep); }
+.bridge-stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; transition: opacity .55s ease, transform .55s cubic-bezier(.2, .8, .2, 1); }
+.bridge-stage > :last-child { flex: 1; }
+.bridge-label { font-size: .76rem; font-weight: 800; letter-spacing: .06em; color: var(--teal-deep); }
 .bridge-site, .bridge-cal {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-sm);
-  font-size: .9rem;
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-sm);
+  font-size: 1rem;
 }
+/* The spotlight: each stage takes its turn, the rest wait dimmed; once the
+   booking has landed, everything lights up together. */
+.bridge:not(.is-all) .bridge-stage { opacity: .38; transform: scale(.965); }
+.bridge.is-s1:not(.is-s2) .bridge-stage:nth-child(1),
+.bridge.is-s2:not(.is-s4) .bridge-stage:nth-child(3),
+.bridge.is-s4:not(.is-all) .bridge-stage:nth-child(5) { opacity: 1; transform: scale(1.03); }
+.bridge.is-s1:not(.is-s2) .bridge-stage:nth-child(1) > :last-child,
+.bridge.is-s2:not(.is-s4) .bridge-stage:nth-child(3) > :last-child,
+.bridge.is-s4:not(.is-all) .bridge-stage:nth-child(5) > :last-child { box-shadow: var(--shadow-lg); }
+.bridge.is-all .bridge-stage { opacity: 1; transform: none; }
+.bridge-link { align-self: center; opacity: .35; transition: opacity .5s ease; }
+.bridge.is-s2 .bridge-link:nth-child(2), .bridge.is-s4 .bridge-link:nth-child(4) { opacity: 1; }
 /* Stage 1: the clinic's own site late in the evening, and the booking
    button the widget adds to it. The tap ring blooms as the stage begins. */
-.bs-page--entry { padding-bottom: 18px; }
-.bs-hero { height: 64px; border-radius: 10px; background: linear-gradient(135deg, var(--cream-2), color-mix(in srgb, var(--teal) 14%, var(--cream-2))); margin: 4px 0 6px; }
+.bs-page--entry { padding-bottom: 20px; }
+.bs-hero { height: 96px; border-radius: 10px; background: linear-gradient(135deg, var(--cream-2), color-mix(in srgb, var(--teal) 14%, var(--cream-2))); margin: 4px 0 6px; }
 .bs-cta {
   position: relative; justify-self: start; display: inline-flex; align-items: center; gap: 7px;
-  margin-top: 6px; padding: 9px 16px; border-radius: 999px; background: var(--teal-deep); color: #fff;
-  font-weight: 600; font-size: .86rem; box-shadow: var(--shadow);
+  margin-top: auto; padding: 11px 20px; border-radius: 999px; background: var(--teal-deep); color: #fff;
+  font-weight: 600; font-size: .95rem; box-shadow: var(--shadow);
   transition: transform .18s ease;
 }
 .bridge.is-s1 .bs-cta { animation: bridge-press .5s ease .3s; }
@@ -264,26 +283,26 @@ html[dir="rtl"] .hero-veil {
 @keyframes bridge-press { 0%, 100% { transform: none; } 40% { transform: scale(.94); } }
 /* Stage 2: the clinic's own site, sketched, with the widget landing on it. */
 .bridge-site { overflow: hidden; }
-.bs-bar { display: flex; align-items: center; gap: 5px; padding: 9px 12px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
-.bs-bar span { width: 8px; height: 8px; border-radius: 50%; background: #c9c2b2; }
-.bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .68rem; color: var(--ink-soft); direction: ltr; }
-.bs-page { position: relative; padding: 14px 14px 14px; display: grid; gap: 8px; }
-.bs-skel { height: 8px; border-radius: 999px; background: var(--cream-2); width: 70%; }
-.bs-skel--h { height: 14px; width: 50%; margin-bottom: 2px; }
+.bs-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
+.bs-bar span { width: 9px; height: 9px; border-radius: 50%; background: #c9c2b2; }
+.bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .74rem; color: var(--ink-soft); direction: ltr; }
+.bs-page { position: relative; flex: 1; padding: 18px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+.bs-skel { height: 9px; border-radius: 999px; background: var(--cream-2); width: 70%; flex: none; }
+.bs-skel--h { height: 16px; width: 50%; margin-bottom: 2px; }
 .bs-skel--short { width: 40%; margin-bottom: 8px; }
 .bridge-widget {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 12px;
+  margin-top: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 18px 16px;
   box-shadow: var(--shadow);
   opacity: 0; transform: translateY(16px) scale(.96);
   transition: opacity .5s ease, transform .55s cubic-bezier(.2, .8, .2, 1);
 }
 .bridge.is-s2 .bridge-widget { opacity: 1; transform: none; }
-.bw-title { font-weight: 700; font-size: 1rem; }
-.bw-date { color: var(--ink-soft); font-size: .8rem; margin: 2px 0 10px; }
-.bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.bw-title { font-weight: 700; font-size: 1.15rem; }
+.bw-date { color: var(--ink-soft); font-size: .88rem; margin: 2px 0 12px; }
+.bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .bw-slots span {
-  position: relative; text-align: center; padding: 8px 6px; border: 1px solid var(--line); border-radius: 999px;
-  font-weight: 600; font-size: .86rem; font-variant-numeric: tabular-nums; background: var(--cream);
+  position: relative; text-align: center; padding: 10px 6px; border: 1px solid var(--line); border-radius: 999px;
+  font-weight: 600; font-size: .95rem; font-variant-numeric: tabular-nums; background: var(--cream);
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
 .bridge.is-s3 .bw-slots .bw-target { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
@@ -291,22 +310,22 @@ html[dir="rtl"] .hero-veil {
 .bw-tap { position: absolute; inset: -2px; border-radius: 999px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
 .bridge.is-s3 .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
 @keyframes bridge-tap { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
-.bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 8px; font-weight: 600; font-size: .84rem; }
+.bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 11px; font-weight: 600; font-size: .92rem; }
 /* Dashed connectors, each pointing on to the next stage. */
 .bridge-link { position: relative; height: 0; border-top: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
 .bridge-link::after { content: ""; position: absolute; top: -6px; border: 5px solid transparent; }
 .bridge-link--in::after { inset-inline-end: -1px; border-inline-start: 8px solid var(--teal); }
 /* Stage 3: the Optima day view the booking is written into. */
-.bridge-cal { position: relative; padding: 12px 12px 8px; }
+.bridge-cal { position: relative; padding: 16px 16px 10px; }
 .bc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; padding: 0 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }
-.bc-head strong { font-size: .92rem; white-space: nowrap; }
-.bc-head span { color: var(--ink-soft); font-size: .8rem; white-space: nowrap; }
-.bc-row { display: grid; grid-template-columns: 44px 1fr; align-items: center; min-height: 40px; border-bottom: 1px dashed color-mix(in srgb, var(--line) 75%, transparent); }
+.bc-head strong { font-size: 1.02rem; white-space: nowrap; }
+.bc-head span { color: var(--ink-soft); font-size: .86rem; white-space: nowrap; }
+.bc-row { display: grid; grid-template-columns: 50px 1fr; align-items: center; min-height: 48px; border-bottom: 1px dashed color-mix(in srgb, var(--line) 75%, transparent); }
 .bc-row:last-child { border-bottom: 0; }
-.bc-time { font-size: .76rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.bc-time { font-size: .82rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .bc-appt {
-  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px;
-  font-size: .8rem; font-weight: 600; color: var(--ink); background: var(--cream-2);
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 9px;
+  font-size: .88rem; font-weight: 600; color: var(--ink); background: var(--cream-2);
   border-inline-start: 3px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .bc-appt--site {
@@ -317,8 +336,8 @@ html[dir="rtl"] .hero-veil {
 .bc-appt.is-landed { opacity: 1; transform: none; }
 /* "Embedded" / "Saved in Optima" stamps, one per end of the story. */
 .bridge-badge {
-  position: absolute; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px;
-  font-size: .72rem; font-weight: 700; font-family: var(--sans, inherit);
+  position: absolute; display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 999px;
+  font-size: .78rem; font-weight: 700; font-family: var(--sans, inherit);
   opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease;
 }
 .bridge.is-s1 .bridge-badge--cal { top: -12px; inset-inline-start: 14px; background: var(--teal-deep); color: #fff; box-shadow: var(--shadow-sm); }
@@ -327,8 +346,8 @@ html[dir="rtl"] .hero-veil {
    then over its row in the calendar, and the keyframes travel between. */
 .bridge-chip {
   position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; opacity: 0;
-  padding: 7px 14px; border-radius: 999px; background: var(--teal-deep); color: #fff;
-  font-size: .82rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+  padding: 9px 16px; border-radius: 999px; background: var(--teal-deep); color: #fff;
+  font-size: .9rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
   box-shadow: 0 12px 28px -12px rgba(10, 93, 90, .7);
 }
 .bridge-chip.is-flying { animation: bridge-fly 1.15s cubic-bezier(.45, 0, .2, 1) forwards; }
@@ -527,8 +546,9 @@ html[dir="rtl"] .hero-veil {
      widget stays put, numbered tabs below it switch both the widget's scene
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
-  .bridge { grid-template-columns: 1fr; }
-  .bridge-link { height: 30px; width: 0; margin-inline: auto; border-top: 0; border-inline-start: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
+  .bridge { grid-template-columns: 1fr; width: auto; margin-inline: 0; }
+  .bridge:not(.is-all) .bridge-stage, .bridge .bridge-stage { transform: none; }
+  .bridge-link { height: 34px; width: 0; margin-inline: auto; border-top: 0; border-inline-start: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
   .bridge-link::after { top: auto; bottom: -1px; inset-inline: auto; left: -6px; border: 5px solid transparent; border-top: 8px solid var(--teal); }
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }

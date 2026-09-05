@@ -171,9 +171,9 @@
   // when the block scrolls into view, the patient's journey plays in order —
   // a tap on the booking button on the clinic's site (is-s1), the widget
   // opens with its slots (is-s2), a slot is tapped (is-s3), and the booking
-  // flies into the Optima day view and lands (is-s4). The chip is positioned
-  // in code because the stages sit side by side on desktop and stacked on a
-  // phone.
+  // flies into the Optima day view and lands (is-s4); a beat later every
+  // stage lights up together (is-all). The chip is positioned in code because
+  // the stages sit side by side on desktop and stacked on a phone.
   const bridge = document.querySelector('[data-bridge]');
   if (bridge) {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -182,6 +182,7 @@
       const to = bridge.querySelector('[data-bridge-to="site"]');
       if (to) to.classList.add('is-landed');
       stage(4);
+      setTimeout(() => bridge.classList.add('is-all'), 1400);
     };
     const fly = () => {
       const chip = bridge.querySelector('[data-bridge-chip="site"]');
@@ -201,11 +202,11 @@
       chip.addEventListener('animationend', () => { chip.classList.remove('is-flying'); land(); }, { once: true });
     };
     const run = () => {
-      if (still) { stage(1); stage(2); stage(3); land(); return; }
+      if (still) { stage(1); stage(2); stage(3); land(); bridge.classList.add('is-all'); return; }
       stage(1);
-      setTimeout(() => stage(2), 1200);
-      setTimeout(() => stage(3), 2300);
-      setTimeout(fly, 3100);
+      setTimeout(() => stage(2), 1600);
+      setTimeout(() => stage(3), 2800);
+      setTimeout(fly, 3600);
     };
     if ('IntersectionObserver' in window) {
       // A low threshold on purpose: stacked on a phone the block is taller
