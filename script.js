@@ -160,7 +160,7 @@
         // Never clear the form on failure — retyping it is the fastest way to
         // lose someone who was already willing.
         note.classList.add('is-error');
-        note.textContent = 'השליחה נכשלה. הפרטים נשמרו כאן — נסו שוב בעוד רגע.';
+        note.textContent = 'השליחה נכשלה. הפרטים נשמרו כאן. נסו שוב בעוד רגע.';
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitLabel; }
       }
