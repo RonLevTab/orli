@@ -167,46 +167,52 @@
     });
   }
 
-  // "One calendar, two doors" (index.html .bridge): when the block scrolls
-  // into view, a phone booking and a website booking fly, one after the
-  // other, from their doors into the same rows of the Optima day view. The
-  // chips are positioned in code because the doors sit on different sides
-  // (and, on a phone, above and below) of the calendar.
+  // "From the clinic's site straight into the calendar" (index.html .bridge):
+  // when the block scrolls into view, the patient's journey plays in order —
+  // a tap on the booking button on the clinic's site (is-s1), the widget
+  // opens with its slots (is-s2), a slot is tapped (is-s3), and the booking
+  // flies into the Optima day view and lands (is-s4). The chip is positioned
+  // in code because the stages sit side by side on desktop and stacked on a
+  // phone.
   const bridge = document.querySelector('[data-bridge]');
   if (bridge) {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const land = (key) => {
-      const to = bridge.querySelector(`[data-bridge-to="${key}"]`);
+    const stage = (n) => bridge.classList.add('is-s' + n);
+    const land = () => {
+      const to = bridge.querySelector('[data-bridge-to="site"]');
       if (to) to.classList.add('is-landed');
+      stage(4);
     };
-    const fly = (key, delay) => {
-      const chip = bridge.querySelector(`[data-bridge-chip="${key}"]`);
-      const from = bridge.querySelector(`[data-bridge-from="${key}"]`);
-      const to = bridge.querySelector(`[data-bridge-to="${key}"]`);
-      if (!chip || !from || !to) return land(key);
+    const fly = () => {
+      const chip = bridge.querySelector('[data-bridge-chip="site"]');
+      const from = bridge.querySelector('[data-bridge-from="site"]');
+      const to = bridge.querySelector('[data-bridge-to="site"]');
+      if (!chip || !from || !to) return land();
       const b = bridge.getBoundingClientRect();
       const f = from.getBoundingClientRect();
       const t = to.getBoundingClientRect();
       const c = chip.getBoundingClientRect();
-      // Centre the chip on its source, then on its destination row.
+      // Centre the chip on the tapped slot, then on its destination row.
       chip.style.setProperty('--fx', `${f.left + f.width / 2 - b.left - c.width / 2}px`);
       chip.style.setProperty('--fy', `${f.top + f.height / 2 - b.top - c.height / 2}px`);
       chip.style.setProperty('--tx', `${t.left + t.width / 2 - b.left - c.width / 2}px`);
       chip.style.setProperty('--ty', `${t.top + t.height / 2 - b.top - c.height / 2}px`);
-      setTimeout(() => {
-        chip.classList.add('is-flying');
-        chip.addEventListener('animationend', () => { chip.classList.remove('is-flying'); land(key); }, { once: true });
-      }, delay);
+      chip.classList.add('is-flying');
+      chip.addEventListener('animationend', () => { chip.classList.remove('is-flying'); land(); }, { once: true });
     };
     const run = () => {
-      if (still) { land('phone'); land('site'); return; }
-      fly('phone', 250);
-      fly('site', 1500);
+      if (still) { stage(1); stage(2); stage(3); land(); return; }
+      stage(1);
+      setTimeout(() => stage(2), 1200);
+      setTimeout(() => stage(3), 2300);
+      setTimeout(fly, 3100);
     };
     if ('IntersectionObserver' in window) {
+      // A low threshold on purpose: stacked on a phone the block is taller
+      // than the viewport, so a 50% ratio would never be reached there.
       const io = new IntersectionObserver((entries) => {
         if (entries.some((e) => e.isIntersecting)) { io.disconnect(); run(); }
-      }, { threshold: 0.5 });
+      }, { threshold: 0.2 });
       io.observe(bridge);
     } else {
       run();

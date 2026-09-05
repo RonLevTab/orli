@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=60" />
+  <link rel="stylesheet" href="styles.css?v=63" />
   <link rel="stylesheet" href="widget.css?v=25" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
 </head>
@@ -117,48 +117,68 @@
         </div>
         <div class="section-divider" aria-hidden="true"></div>
         <div class="section-head" style="margin-bottom:36px">
-          <h3 class="display">יומן אחד. <span class="ital">שתי דלתות.</span></h3>
-          <p class="section-lead" style="margin-top:14px">המזכירה ממשיכה לקבוע באופטימה, כמו תמיד. המטופלים קובעים לבד מהאתר. הכול נוחת באותו יומן, לפי אותם כללים.</p>
+          <h3 class="display">מהאתר של המרפאה, <span class="ital">ישר ליומן.</span></h3>
+          <p class="section-lead" style="margin-top:14px">ככה זה נראה אצל המטופל: כפתור באתר, שעה פנויה, ואישור. אצלכם זה פשוט מופיע באופטימה.</p>
         </div>
-        <!-- The mechanism, shown rather than told: two bookings, one by phone
-             and one from the site, fly into the same Optima day view when the
-             block scrolls into view (script.js, "two doors"). Static content
-             under prefers-reduced-motion — both appointments simply appear. -->
+        <!-- The patient's journey, shown rather than told, in three stages
+             that play when the block scrolls into view (script.js, "journey"):
+             a tap on the booking button on the clinic's own site, a slot chosen
+             in the widget, and that booking flying into the Optima day view.
+             Under prefers-reduced-motion every stage is simply in its finished
+             state. -->
         <div class="bridge" data-bridge>
-          <div class="bridge-door">
-            <span class="bridge-label">דלת 1 · האתר שלכם</span>
-            <div class="bridge-widget" dir="rtl" aria-label="הווידג׳ט באתר: מטופל בוחר שעה">
-              <div class="bw-title">בחרו שעה</div>
-              <div class="bw-date">יום ראשון, 6 בספטמבר</div>
-              <div class="bw-slots">
-                <span>09:30</span>
-                <span class="is-picked" data-bridge-from="site">10:30</span>
-                <span>12:00</span>
-                <span>14:00</span>
+          <div class="bridge-stage">
+            <span class="bridge-label">1 · המטופל באתר המרפאה</span>
+            <div class="bridge-site bridge-site--entry" dir="rtl" aria-label="אתר המרפאה בערב: המטופל לוחץ על כפתור קביעת הפגישה">
+              <div class="bs-bar" aria-hidden="true"><span></span><span></span><span></span><i>clinic.co.il · 22:40</i></div>
+              <div class="bs-page bs-page--entry">
+                <div class="bs-skel bs-skel--h" aria-hidden="true"></div>
+                <div class="bs-skel" aria-hidden="true"></div>
+                <div class="bs-skel bs-skel--short" aria-hidden="true"></div>
+                <div class="bs-hero" aria-hidden="true"></div>
+                <div class="bs-skel" aria-hidden="true"></div>
+                <div class="bs-skel bs-skel--short" aria-hidden="true"></div>
+                <div class="bs-cta"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>קביעת פגישה<i class="bw-tap" aria-hidden="true"></i></div>
               </div>
-              <div class="bw-btn">אישור הזמנה</div>
             </div>
           </div>
           <div class="bridge-link bridge-link--in" aria-hidden="true"></div>
-          <div class="bridge-cal" dir="rtl" aria-label="היומן באופטימה: שתי הפגישות נכנסות לאותו יום">
-            <div class="bc-head"><strong>היומן באופטימה</strong><span>יום ראשון 6.9 · ד"ר כהן</span></div>
-            <div class="bc-row"><span class="bc-time">09:00</span><span class="bc-appt is-existing">ניקוי שיניים · רונית לוי</span></div>
-            <div class="bc-row"><span class="bc-time">09:30</span></div>
-            <div class="bc-row"><span class="bc-time">10:00</span><span class="bc-appt bc-appt--phone" data-bridge-to="phone"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>ייעוץ · יוסי מזרחי</span></div>
-            <div class="bc-row"><span class="bc-time">10:30</span><span class="bc-appt bc-appt--site" data-bridge-to="site"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>ייעוץ · ישראל ישראלי</span></div>
-            <div class="bc-row"><span class="bc-time">11:00</span><span class="bc-appt is-existing">ביקורת · דנה כהן</span></div>
-            <div class="bc-row"><span class="bc-time">11:30</span></div>
-          </div>
-          <div class="bridge-link bridge-link--out" aria-hidden="true"></div>
-          <div class="bridge-door">
-            <span class="bridge-label">דלת 2 · הטלפון במרפאה</span>
-            <div class="bridge-phone" dir="rtl" aria-label="המזכירה רושמת פגישה באופטימה, כמו תמיד">
-              <div class="bp-ring" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></div>
-              <div class="bp-text"><strong>יוסי מזרחי</strong><span>„אפשר ביום ראשון בעשר?"</span></div>
-              <div class="bp-entry" data-bridge-from="phone"><span>פגישה חדשה</span>10:00 · ייעוץ</div>
+          <div class="bridge-stage">
+            <span class="bridge-label">2 · בוחר שעה פנויה</span>
+            <div class="bridge-site" dir="rtl" aria-label="אתר המרפאה עם הווידג׳ט: המטופל בוחר שעה">
+              <div class="bs-bar" aria-hidden="true"><span></span><span></span><span></span><i>clinic.co.il · 22:41</i></div>
+              <div class="bs-page">
+                <div class="bs-skel bs-skel--h" aria-hidden="true"></div>
+                <div class="bs-skel" aria-hidden="true"></div>
+                <div class="bs-skel bs-skel--short" aria-hidden="true"></div>
+                <div class="bridge-widget">
+                  <div class="bw-title">בחרו שעה</div>
+                  <div class="bw-date">יום ראשון, 6 בספטמבר</div>
+                  <div class="bw-slots">
+                    <span>09:30</span>
+                    <span class="bw-target" data-bridge-from="site">10:30<i class="bw-tap" aria-hidden="true"></i></span>
+                    <span>12:00</span>
+                    <span>14:00</span>
+                  </div>
+                  <div class="bw-btn">אישור הזמנה</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="bridge-chip" data-bridge-chip="phone" aria-hidden="true">10:00 · ייעוץ · יוסי מזרחי</div>
+          <div class="bridge-link bridge-link--in" aria-hidden="true"></div>
+          <div class="bridge-stage">
+            <span class="bridge-label">3 · נכתב לאופטימה</span>
+            <div class="bridge-cal" dir="rtl" aria-label="היומן באופטימה: הפגישה נכנסת לאותו יום">
+              <div class="bc-head"><strong>היומן באופטימה</strong><span>יום ראשון 6.9 · ד"ר כהן</span></div>
+              <div class="bc-row"><span class="bc-time">09:00</span><span class="bc-appt is-existing">ניקוי שיניים · רונית לוי</span></div>
+              <div class="bc-row"><span class="bc-time">09:30</span></div>
+              <div class="bc-row"><span class="bc-time">10:00</span><span class="bc-appt is-existing">ייעוץ · יוסי מזרחי</span></div>
+              <div class="bc-row"><span class="bc-time">10:30</span><span class="bc-appt bc-appt--site" data-bridge-to="site"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>ייעוץ · ישראל ישראלי</span></div>
+              <div class="bc-row"><span class="bc-time">11:00</span><span class="bc-appt is-existing">ביקורת · דנה כהן</span></div>
+              <div class="bc-row"><span class="bc-time">11:30</span></div>
+              <div class="bridge-badge bridge-badge--cal"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>נשמר באופטימה</div>
+            </div>
+          </div>
           <div class="bridge-chip" data-bridge-chip="site" aria-hidden="true">10:30 · ייעוץ · ישראל ישראלי</div>
         </div>
       </div>
@@ -429,7 +449,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=27"></script>
+  <script src="script.js?v=30"></script>
   <script src="hero-gradient.js?v=14"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->

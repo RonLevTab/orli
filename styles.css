@@ -234,46 +234,70 @@ html[dir="rtl"] .hero-veil {
 .section-lead { font-size: 1.12rem; color: var(--ink-soft); }
 .problem h2 { margin-inline: auto; }
 
-/* ===== One calendar, two doors: the mechanism, drawn ===== */
+/* ===== From the clinic's site straight into the calendar =====
+   The patient's journey in three stages side by side (stacked on a phone).
+   script.js adds is-s1..is-s4 to .bridge in sequence as the block scrolls
+   into view; every rule below that starts from a hidden state transitions
+   in on its stage. */
 .bridge {
   position: relative; display: grid; align-items: center;
-  grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1.3fr) 52px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1.05fr) 40px minmax(0, 1.15fr);
 }
-.bridge-door { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.bridge-stage { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .bridge-label { font-size: .7rem; font-weight: 800; letter-spacing: .06em; color: var(--teal-deep); }
-.bridge-widget, .bridge-phone, .bridge-cal {
+.bridge-site, .bridge-cal {
   background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-sm);
   font-size: .9rem;
 }
-/* The site's door: a compact "choose a time" step in the widget's own idiom. */
-.bridge-widget { padding: 16px 16px 14px; }
-.bw-title { font-weight: 700; font-size: 1.02rem; }
-.bw-date { color: var(--ink-soft); font-size: .82rem; margin: 2px 0 12px; }
-.bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+/* Stage 1: the clinic's own site late in the evening, and the booking
+   button the widget adds to it. The tap ring blooms as the stage begins. */
+.bs-page--entry { padding-bottom: 18px; }
+.bs-hero { height: 64px; border-radius: 10px; background: linear-gradient(135deg, var(--cream-2), color-mix(in srgb, var(--teal) 14%, var(--cream-2))); margin: 4px 0 6px; }
+.bs-cta {
+  position: relative; justify-self: start; display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 6px; padding: 9px 16px; border-radius: 999px; background: var(--teal-deep); color: #fff;
+  font-weight: 600; font-size: .86rem; box-shadow: var(--shadow);
+  transition: transform .18s ease;
+}
+.bridge.is-s1 .bs-cta { animation: bridge-press .5s ease .3s; }
+.bridge.is-s1 .bs-cta .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) .3s forwards; }
+@keyframes bridge-press { 0%, 100% { transform: none; } 40% { transform: scale(.94); } }
+/* Stage 2: the clinic's own site, sketched, with the widget landing on it. */
+.bridge-site { overflow: hidden; }
+.bs-bar { display: flex; align-items: center; gap: 5px; padding: 9px 12px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
+.bs-bar span { width: 8px; height: 8px; border-radius: 50%; background: #c9c2b2; }
+.bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .68rem; color: var(--ink-soft); direction: ltr; }
+.bs-page { position: relative; padding: 14px 14px 14px; display: grid; gap: 8px; }
+.bs-skel { height: 8px; border-radius: 999px; background: var(--cream-2); width: 70%; }
+.bs-skel--h { height: 14px; width: 50%; margin-bottom: 2px; }
+.bs-skel--short { width: 40%; margin-bottom: 8px; }
+.bridge-widget {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 12px;
+  box-shadow: var(--shadow);
+  opacity: 0; transform: translateY(16px) scale(.96);
+  transition: opacity .5s ease, transform .55s cubic-bezier(.2, .8, .2, 1);
+}
+.bridge.is-s2 .bridge-widget { opacity: 1; transform: none; }
+.bw-title { font-weight: 700; font-size: 1rem; }
+.bw-date { color: var(--ink-soft); font-size: .8rem; margin: 2px 0 10px; }
+.bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 .bw-slots span {
-  text-align: center; padding: 8px 6px; border: 1px solid var(--line); border-radius: 999px;
-  font-weight: 600; font-size: .88rem; font-variant-numeric: tabular-nums; background: var(--cream);
+  position: relative; text-align: center; padding: 8px 6px; border: 1px solid var(--line); border-radius: 999px;
+  font-weight: 600; font-size: .86rem; font-variant-numeric: tabular-nums; background: var(--cream);
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
-.bw-slots .is-picked { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
-.bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 9px; font-weight: 600; font-size: .86rem; }
-/* The phone's door: the call, and the line the secretary types into Optima. */
-.bridge-phone { padding: 16px; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; }
-.bp-ring { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--cream-2); color: var(--teal-deep); }
-.bp-text { display: grid; gap: 2px; min-width: 0; }
-.bp-text span { color: var(--ink-soft); font-size: .84rem; }
-.bp-entry {
-  grid-column: 1 / -1; display: grid; gap: 2px;
-  border: 1px dashed color-mix(in srgb, var(--teal) 40%, var(--line)); border-radius: 10px;
-  padding: 8px 12px; font-size: .9rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
-}
-.bp-entry span { color: var(--ink-soft); font-weight: 500; font-size: .74rem; }
-/* Dashed connectors, both pointing into the calendar in the middle. */
+.bridge.is-s3 .bw-slots .bw-target { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+/* The tap: a ring that blooms out of the slot as it is chosen. */
+.bw-tap { position: absolute; inset: -2px; border-radius: 999px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
+.bridge.is-s3 .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
+@keyframes bridge-tap { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+.bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 8px; font-weight: 600; font-size: .84rem; }
+/* Dashed connectors, each pointing on to the next stage. */
 .bridge-link { position: relative; height: 0; border-top: 2px dashed color-mix(in srgb, var(--teal) 55%, var(--line)); }
 .bridge-link::after { content: ""; position: absolute; top: -6px; border: 5px solid transparent; }
 .bridge-link--in::after { inset-inline-end: -1px; border-inline-start: 8px solid var(--teal); }
-.bridge-link--out::after { inset-inline-start: -1px; border-inline-end: 8px solid var(--teal); }
-/* The Optima day view both doors open onto. */
-.bridge-cal { padding: 12px 12px 8px; }
+/* Stage 3: the Optima day view the booking is written into. */
+.bridge-cal { position: relative; padding: 12px 12px 8px; }
 .bc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; padding: 0 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }
 .bc-head strong { font-size: .92rem; white-space: nowrap; }
 .bc-head span { color: var(--ink-soft); font-size: .8rem; white-space: nowrap; }
@@ -285,15 +309,22 @@ html[dir="rtl"] .hero-veil {
   font-size: .8rem; font-weight: 600; color: var(--ink); background: var(--cream-2);
   border-inline-start: 3px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.bc-appt--phone, .bc-appt--site {
+.bc-appt--site {
   opacity: 0; transform: scale(.85);
+  background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-inline-start-color: var(--teal-deep); color: var(--teal-deep);
   transition: opacity .35s ease, transform .4s cubic-bezier(.2, .8, .2, 1);
 }
-.bc-appt--phone { background: color-mix(in srgb, var(--teal) 10%, var(--surface)); border-inline-start-color: var(--teal); color: var(--teal-deep); }
-.bc-appt--site { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-inline-start-color: var(--teal-deep); color: var(--teal-deep); }
 .bc-appt.is-landed { opacity: 1; transform: none; }
-/* The bookings in flight. script.js positions each over its source, then
-   over its row in the calendar, and the keyframes travel between the two. */
+/* "Embedded" / "Saved in Optima" stamps, one per end of the story. */
+.bridge-badge {
+  position: absolute; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px;
+  font-size: .72rem; font-weight: 700; font-family: var(--sans, inherit);
+  opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease;
+}
+.bridge.is-s1 .bridge-badge--cal { top: -12px; inset-inline-start: 14px; background: var(--teal-deep); color: #fff; box-shadow: var(--shadow-sm); }
+.bridge.is-s4 .bridge-badge--cal { opacity: 1; transform: none; }
+/* The booking in flight. script.js positions the chip over the tapped slot,
+   then over its row in the calendar, and the keyframes travel between. */
 .bridge-chip {
   position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none; opacity: 0;
   padding: 7px 14px; border-radius: 999px; background: var(--teal-deep); color: #fff;
