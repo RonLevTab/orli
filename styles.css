@@ -539,7 +539,7 @@ html[dir="rtl"] .hero-veil {
 /* ===== Comparison table (Petaron BeforeAfterTable) ===== */
 .cmp-table { max-width: 900px; margin: 0 auto; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
 .cmp-thead { display: grid; grid-template-columns: 1fr 1fr; }
-.cmp-th { padding: 16px 26px; font-size: .72rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.cmp-th { padding: 16px 26px; text-align: center; font-size: .72rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
 .cmp-th--with { color: var(--teal-deep); background: color-mix(in srgb, var(--teal) 6%, transparent); border-inline-start: 1px solid var(--line); }
 .cmp-rows { display: grid; grid-template-columns: 1fr 1fr; }
 .cmp-cell { display: flex; align-items: flex-start; gap: 12px; padding: 16px 26px; border-top: 1px solid var(--line); font-size: .96rem; color: var(--ink-soft); }
