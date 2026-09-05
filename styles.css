@@ -319,7 +319,6 @@ html[dir="rtl"] .hero-veil {
 .bm-site .bridge-widget { left: auto; width: min(400px, calc(100% - 32px)); }
 .bw-title { font-weight: 700; font-size: 1.1rem; }
 .bw-date { color: var(--ink-soft); font-size: .86rem; margin: 2px 0 10px; }
-.bw-date--soft { margin: -4px 0 0; font-size: .8rem; opacity: .8; }
 .bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 .bw-slots span {
   position: relative; text-align: center; padding: 8px 6px; border: 1px solid var(--line); border-radius: 999px;
@@ -334,16 +333,29 @@ html[dir="rtl"] .hero-veil {
 /* Picking, then confirmed: the two views cross-fade inside the same panel. */
 .bw-pick { transition: opacity .35s ease; }
 .bw-confirm {
-  position: absolute; inset: 16px 16px 14px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-  opacity: 0; transform: translateY(6px); transition: opacity .45s ease .15s, transform .45s ease .15s;
+  position: absolute; inset: 16px 16px 14px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; opacity: 0; transform: translateY(8px); transition: opacity .5s ease .2s, transform .5s ease .2s;
 }
 .bridge-site.is-confirmed .bw-pick { opacity: 0; }
 .bridge-site.is-confirmed .bw-confirm { opacity: 1; transform: none; }
+/* The widget's success mark, and a ring that blooms out of it once. */
 .bw-check {
-  display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 10px; border-radius: 50%;
+  position: relative; display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 10px; border-radius: 50%;
   background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal);
 }
-.bw-check svg { width: 22px; height: 22px; }
+.bw-check svg { width: 26px; height: 26px; }
+.bw-check::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--teal); opacity: 0; }
+.bridge-site.is-confirmed .bw-check { animation: bw-check-in .6s cubic-bezier(.2, .8, .2, 1) .25s both; }
+.bridge-site.is-confirmed .bw-check::after { animation: bridge-tap 1s cubic-bezier(0, 0, .2, 1) .5s forwards; }
+@keyframes bw-check-in { 0% { transform: scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+.bw-confirm-title { font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; margin-bottom: 10px; }
+.bw-summary {
+  display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; text-align: start;
+  width: 100%; margin: 0 0 10px; padding: 10px 14px; border-radius: 12px; background: var(--cream);
+}
+.bw-summary dt { color: var(--ink-soft); font-size: .78rem; }
+.bw-summary dd { margin: 0; font-weight: 600; font-size: .86rem; white-space: nowrap; }
+.bw-mailed { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); font-size: .8rem; }
 /* The Optima day view the booking is written into. */
 .bridge-cal { position: relative; padding: 16px 16px 10px; }
 .bc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; padding: 0 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }

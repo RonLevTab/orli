@@ -207,12 +207,13 @@
     function play() {
       if (playing) return;
       playing = true;
-      setTimeout(() => site.classList.add('is-tapping'), 300);
-      setTimeout(() => site.classList.add('is-open'), 1500);
-      setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 2700);
-      setTimeout(() => site.classList.add('is-confirmed'), 3500);
-      setTimeout(() => movie.classList.add('is-cal'), 4900);
-      setTimeout(land, 5700);
+      // A beat on each screen before the next thing happens.
+      setTimeout(() => site.classList.add('is-tapping'), 800);
+      setTimeout(() => site.classList.add('is-open'), 3000);
+      setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 5200);
+      setTimeout(() => site.classList.add('is-confirmed'), 7000);
+      setTimeout(() => movie.classList.add('is-cal'), 9400);
+      setTimeout(land, 10200);
     }
 
     if (still) {
