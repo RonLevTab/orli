@@ -234,6 +234,148 @@ html[dir="rtl"] .hero-veil {
 .section-lead { font-size: 1.12rem; color: var(--ink-soft); }
 .problem h2 { margin-inline: auto; }
 
+/* ===== From the clinic's site straight into the calendar =====
+   One frame plays the journey (.bridge-movie). script.js drives the states:
+     .bridge-site.is-tapping   the launcher is pressed, ring blooms
+     .bridge-site.is-open      backdrop, panel and close control shown
+     .bridge-site.is-picked    the 10:30 slot is chosen
+     .bw-target.is-picking     the slot's ring blooms
+     .bridge-site.is-confirmed the panel shows the widget's success screen
+     .bridge-movie.is-cal      the day view rises over the page
+     .bc-appt.is-landed        the booking pops into its row */
+.bridge { position: relative; display: flex; justify-content: center; padding-top: 6px; }
+.bridge-movie { position: relative; width: min(640px, 100%); min-height: 420px; }
+.bridge-site, .bridge-cal {
+  display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-sm);
+  font-size: 1rem;
+}
+.bm-site { position: relative; min-height: 420px; }
+/* The day view pops up over everything once the slot is chosen: a shade
+   over the page and its panel, and the calendar card centred on top. */
+.bm-shade {
+  position: absolute; inset: 0; z-index: 4; border-radius: 18px; background: rgba(20, 40, 36, .2);
+  opacity: 0; transition: opacity .6s ease;
+}
+.bridge-movie.is-cal .bm-shade { opacity: 1; }
+.bridge-movie .bm-cal {
+  position: absolute; z-index: 5; top: 50%; left: 50%; width: min(440px, calc(100% - 40px));
+  box-shadow: 0 30px 80px -20px rgba(10, 30, 28, .35);
+  opacity: 0; transform: translate(-50%, calc(-50% + 14px)) scale(.97);
+  transition: opacity .6s ease, transform .75s cubic-bezier(.2, .7, .2, 1);
+}
+.bridge-movie.is-cal .bm-cal { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+/* The clinic's own site, sketched — not overflow:hidden, so the launcher's
+   tap ring can bloom past the edge; the bar rounds its own corners. */
+.bridge-site { overflow: visible; }
+.bs-bar { display: flex; align-items: center; gap: 6px; padding: 11px 14px; background: var(--cream-2); border-bottom: 1px solid var(--line); border-radius: 17px 17px 0 0; }
+.bs-bar span { width: 9px; height: 9px; border-radius: 50%; background: #c9c2b2; }
+.bs-bar i { margin-inline-start: auto; font-style: normal; font-size: .74rem; color: var(--ink-soft); direction: ltr; }
+.bs-page { position: relative; flex: 1; padding: 16px 18px; display: flex; flex-direction: column; gap: 9px; overflow: visible; }
+.bs-skel { height: 9px; border-radius: 999px; background: var(--cream-2); width: 70%; flex: none; }
+.bs-skel--h { height: 16px; width: 50%; margin-bottom: 2px; }
+.bs-skel--short { width: 40%; margin-bottom: 8px; }
+.bs-hero { flex: none; height: 64px; border-radius: 10px; background: linear-gradient(135deg, var(--cream-2), color-mix(in srgb, var(--teal) 14%, var(--cream-2))); margin: 4px 0 6px; }
+.bs-backdrop {
+  position: absolute; inset: 0; z-index: 1; border-radius: 0 0 17px 17px; background: rgba(0, 0, 0, .18);
+  opacity: 0; transition: opacity .3s ease;
+}
+.bridge-site.is-open .bs-backdrop { opacity: 1; }
+/* The widget's real launcher, as embed.js draws it on a clinic page: a
+   white pill in the bottom corner with the calendar icon and a two-line
+   label; once the panel is up it folds into a round teal close control. */
+.bs-launcher {
+  position: absolute; bottom: 16px; right: 16px; z-index: 3;
+  display: flex; flex-direction: row-reverse; align-items: center; gap: 10px;
+  height: 56px; padding: 8px 16px; border-radius: 999px;
+  background: #fff; color: #1d1d1f; border: 1px solid #e0e0e0; box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+  transition: opacity .25s ease, transform .3s ease;
+}
+.bs-launcher-icon { display: grid; place-items: center; flex: 0 0 26px; color: var(--teal); }
+.bs-launcher-label { display: flex; flex-direction: column; align-items: flex-start; direction: rtl; text-align: right; white-space: nowrap; }
+.bs-launcher-he { font-size: 15px; line-height: 18px; font-weight: 600; letter-spacing: -.01em; }
+.bs-launcher-en { font-size: 11px; line-height: 14px; font-weight: 400; opacity: .5; direction: ltr; }
+.bs-launcher .bw-tap { inset: -3px; z-index: 1; }
+.bridge-site.is-tapping .bs-launcher--pill { animation: bridge-press .5s ease; }
+.bridge-site.is-tapping .bs-launcher--pill .bw-tap { animation: bridge-tap-cta .9s cubic-bezier(0, 0, .2, 1) forwards; }
+@keyframes bridge-press { 0%, 100% { transform: none; } 40% { transform: scale(.94); } }
+@keyframes bridge-tap-cta { 0% { transform: scale(.96); opacity: .9; } 100% { transform: scale(1.22); opacity: 0; } }
+.bridge-site.is-open .bs-launcher--pill { opacity: 0; transform: scale(.8); }
+.bs-launcher--open {
+  width: 52px; height: 52px; padding: 0; justify-content: center; border-radius: 50%;
+  background: var(--teal); border-color: transparent; color: #fff;
+  opacity: 0; transform: scale(.8);
+}
+.bridge-site.is-open .bs-launcher--open { opacity: 1; transform: none; }
+/* The booking panel, as embed.js places it: above the launcher. */
+.bridge-widget {
+  position: absolute; z-index: 2; right: 16px; left: 16px; bottom: 84px;
+  background: #fff; border: 1px solid #e0e0e0; border-radius: 18px; padding: 16px 16px 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .2); transform-origin: bottom right;
+  opacity: 0; transform: translateY(12px) scale(.975);
+  transition: opacity .3s ease, transform .35s cubic-bezier(.2, .8, .2, 1);
+}
+.bridge-site.is-open .bridge-widget { opacity: 1; transform: none; }
+.bm-site .bridge-widget { left: auto; width: min(400px, calc(100% - 32px)); }
+.bw-title { font-weight: 700; font-size: 1.1rem; }
+.bw-date { color: var(--ink-soft); font-size: .86rem; margin: 2px 0 10px; }
+.bw-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.bw-slots span {
+  position: relative; text-align: center; padding: 8px 6px; border: 1px solid var(--line); border-radius: 999px;
+  font-weight: 600; font-size: .92rem; font-variant-numeric: tabular-nums; background: var(--cream);
+  transition: background .25s ease, color .25s ease, border-color .25s ease;
+}
+.bridge-site.is-picked .bw-slots .bw-target { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+.bw-tap { position: absolute; inset: -2px; border-radius: 999px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
+.bw-target.is-picking .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
+@keyframes bridge-tap { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
+.bw-btn { text-align: center; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 10px; font-weight: 600; font-size: .9rem; }
+/* Picking, then confirmed: the two views cross-fade inside the same panel. */
+.bw-pick { transition: opacity .35s ease; }
+.bw-confirm {
+  position: absolute; inset: 16px 16px 14px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; opacity: 0; transform: translateY(8px); transition: opacity .5s ease .2s, transform .5s ease .2s;
+}
+.bridge-site.is-confirmed .bw-pick { opacity: 0; }
+.bridge-site.is-confirmed .bw-confirm { opacity: 1; transform: none; }
+/* The widget's success mark, and a ring that blooms out of it once. */
+.bw-check {
+  position: relative; display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 10px; border-radius: 50%;
+  background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal);
+}
+.bw-check svg { width: 26px; height: 26px; }
+.bw-check::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--teal); opacity: 0; }
+.bridge-site.is-confirmed .bw-check { animation: bw-check-in .6s cubic-bezier(.2, .8, .2, 1) .25s both; }
+.bridge-site.is-confirmed .bw-check::after { animation: bridge-tap 1s cubic-bezier(0, 0, .2, 1) .5s forwards; }
+@keyframes bw-check-in { 0% { transform: scale(.6); opacity: 0; } 100% { transform: none; opacity: 1; } }
+.bw-confirm-title { font-weight: 700; font-size: 1.2rem; letter-spacing: -.01em; margin-bottom: 10px; }
+.bw-summary {
+  display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; text-align: start;
+  width: 100%; margin: 0 0 10px; padding: 10px 14px; border-radius: 12px; background: var(--cream);
+}
+.bw-summary dt { color: var(--ink-soft); font-size: .78rem; }
+.bw-summary dd { margin: 0; font-weight: 600; font-size: .86rem; white-space: nowrap; }
+.bw-mailed { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-soft); font-size: .8rem; }
+/* The Optima day view the booking is written into. */
+.bridge-cal { position: relative; padding: 16px 16px 10px; }
+.bc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 10px; padding: 0 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }
+.bc-head strong { font-size: 1.02rem; white-space: nowrap; }
+.bc-head span { color: var(--ink-soft); font-size: .86rem; white-space: nowrap; }
+.bc-row { display: grid; grid-template-columns: 50px 1fr; align-items: center; min-height: 44px; border-bottom: 1px dashed color-mix(in srgb, var(--line) 75%, transparent); }
+.bc-row:last-child { border-bottom: 0; }
+.bc-time { font-size: .82rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.bc-appt {
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 9px;
+  font-size: .88rem; font-weight: 600; color: var(--ink); background: var(--cream-2);
+  border-inline-start: 3px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bc-appt--site {
+  opacity: 0;
+  background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-inline-start-color: var(--teal-deep); color: var(--teal-deep);
+}
+/* The new booking settles into its row: a soft fade and a slight grow. */
+.bc-appt.is-landed { opacity: 1; animation: bridge-pop .8s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes bridge-pop { 0% { opacity: 0; transform: scale(.92); } 100% { opacity: 1; transform: none; } }
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
 /* Top/bottom padding so the first and last steps can scroll to the centre. */
@@ -422,6 +564,7 @@ html[dir="rtl"] .hero-veil {
      widget stays put, numbered tabs below it switch both the widget's scene
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
+  .bridge-movie, .bm-site { min-height: 420px; }
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
   .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(540px, 78vh, 640px); margin-inline: auto; }

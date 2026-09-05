@@ -167,6 +167,78 @@
     });
   }
 
+  // "From the clinic's site straight into the calendar" (index.html .bridge):
+  // while the block is on screen, the patient's journey plays as a short
+  // film in one frame — the launcher on the clinic's site is tapped, the
+  // panel opens, a slot is chosen, the widget shows its confirmation, the
+  // Optima day view rises over the page and the booking settles into its
+  // row — held for three seconds, then it plays again. Scrolling away
+  // pauses the loop; scrolling back resumes.
+  const bridge = document.querySelector('[data-bridge]');
+  if (bridge) {
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const movie = bridge.querySelector('.bridge-movie');
+    const site = movie.querySelector('.bm-site');
+    const slot = movie.querySelector('[data-bridge-from="movie"]');
+    const row = movie.querySelector('[data-bridge-to="movie"]');
+    let visible = false;
+    let playing = false;
+    let replayTimer = null;
+
+    const reset = () => {
+      movie.classList.remove('is-cal');
+      site.classList.remove('is-tapping', 'is-open', 'is-picked', 'is-confirmed');
+      slot.classList.remove('is-picking');
+      row.classList.remove('is-landed');
+    };
+    const scheduleReplay = () => {
+      clearTimeout(replayTimer);
+      replayTimer = setTimeout(() => {
+        reset();
+        // Let the popup and panel clear before the film lights up again.
+        replayTimer = setTimeout(play, 700);
+      }, 3000);
+    };
+    const land = () => {
+      row.classList.add('is-landed');
+      playing = false;
+      if (visible) scheduleReplay();
+    };
+    function play() {
+      if (playing) return;
+      playing = true;
+      // A beat on each screen the viewer reads (the site, the open panel,
+      // the confirmation) — but the widget itself answers a tap at once:
+      // a slow open here would read as a slow product.
+      setTimeout(() => site.classList.add('is-tapping'), 1500);
+      setTimeout(() => site.classList.add('is-open'), 2000);
+      setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 4400);
+      setTimeout(() => site.classList.add('is-confirmed'), 5600);
+      setTimeout(() => movie.classList.add('is-cal'), 8200);
+      setTimeout(land, 9000);
+    }
+
+    if (still) {
+      // No motion, no loop: the finished picture, once.
+      site.classList.add('is-open', 'is-picked', 'is-confirmed');
+      movie.classList.add('is-cal');
+      row.classList.add('is-landed');
+    } else if ('IntersectionObserver' in window) {
+      // A low threshold on purpose: stacked on a phone the block is taller
+      // than the viewport, so a 50% ratio would never be reached there.
+      const io = new IntersectionObserver((entries) => {
+        visible = entries.some((e) => e.isIntersecting);
+        if (!visible) { clearTimeout(replayTimer); return; }
+        if (playing) return;
+        if (row.classList.contains('is-landed')) scheduleReplay();
+        else play();
+      }, { threshold: 0.2 });
+      io.observe(bridge);
+    } else {
+      play();
+    }
+  }
+
   // Reveal-on-scroll: headlines, eyebrows, leads and list items are split
   // into words, then the words are grouped by which visual line they land
   // on so a whole line fades + rises in together — a slower, calmer
