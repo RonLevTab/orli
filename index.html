@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=55" />
-  <link rel="stylesheet" href="widget.css?v=24" />
+  <link rel="stylesheet" href="widget.css?v=25" />
   <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
 </head>
 <body>
@@ -54,7 +54,7 @@
         <div class="hero-copy">
           <p class="eyebrow">תוסף למרפאות שעובדות עם אופטימה</p>
           <h1 class="display">קביעת פגישה באתר, <span class="ital">בלחיצת כפתור.</span></h1>
-          <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את הפגישה ישר באופטימה. אותו יומן שמנהל אצלכם את המרפאה, עכשיו זמין למטופלים גם מהאתר.</p>
+          <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את הפגישה ישר באופטימה. אותו יומן, עכשיו זמין למטופלים גם מהאתר.</p>
           <div class="hero-actions">
             <a href="#contact" class="btn-dark lg">לקביעת דמו</a>
             <a href="#demo" class="hero-link">צפו איך זה עובד</a>
@@ -65,8 +65,11 @@
         <div class="hero-visual" aria-hidden="true">
           <div class="browser">
             <div class="browser-bar"></div>
-            <div class="widget-body orli-live" dir="rtl" style="padding:24px 16px 26px">
-              <div class="obw-controls" style="margin-block-end:20px">
+            <div class="widget-body orli-live" dir="rtl" style="padding:24px 16px 16px">
+              <!-- A frozen copy of the real widget's confirm step (markup and
+                   classes from orli-calendar's ConfirmStep.vue), styled by
+                   widget.css. Decorative: aria-hidden, nothing here is live. -->
+              <div class="obw-controls">
                 <button class="obw-lang-btn" type="button" disabled style="pointer-events:none">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                   <span>עב</span>
@@ -75,24 +78,30 @@
                   <span class="obw-progress-seg is-on"></span>
                   <span class="obw-progress-seg is-on"></span>
                   <span class="obw-progress-seg is-on"></span>
-                  <span class="obw-progress-seg"></span>
+                  <span class="obw-progress-seg is-on"></span>
+                  <span class="obw-progress-seg is-on"></span>
                   <span class="obw-progress-seg"></span>
                 </div>
               </div>
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-block-end:20px">
-                <p class="obw-title" style="margin:0;font-size:1.4rem">אישור הפגישה</p>
+              <div class="obw-step-header">
+                <p class="obw-title"><span class="obw-bi"><span>אישור התור</span></span></p>
+                <span class="obw-back-btn">‹ <span class="obw-bi"><span>חזרה</span></span></span>
               </div>
-              <dl class="obw-summary" style="padding:16px 18px;margin-block-end:24px">
+              <dl class="obw-summary">
                 <dt>טיפול</dt>
                 <dd>ייעוץ</dd>
                 <dt>מטפל/ת</dt>
-                <dd>ד״ר רון דניאל</dd>
+                <dd>ד"ר כהן</dd>
                 <dt>תאריך ושעה</dt>
-                <dd>28.7 · 10:30</dd>
-                <dt>הפרטים שלכם</dt>
-                <dd>ישראל ישראלי · 050-123-4567</dd>
+                <dd>יום ראשון, 6 בספטמבר · <span class="obw-tabular">10:30</span></dd>
+                <dt>שם מלא</dt>
+                <dd>ישראל ישראלי</dd>
+                <dt>מספר טלפון</dt>
+                <dd>050-123-4567</dd>
+                <dt>אימייל</dt>
+                <dd>demo@orliclinic.com</dd>
               </dl>
-              <button class="obw-primary-btn obw-primary-btn--compact" type="button" style="pointer-events:none;padding-block:14px">שלח קוד לאימות</button>
+              <button class="obw-primary-btn obw-primary-btn--compact" type="button" style="pointer-events:none">שלח קוד לאימות</button>
             </div>
           </div>
         </div>
@@ -106,12 +115,11 @@
           <p class="eyebrow">אנחנו מכירים את זה</p>
           <h2 class="display">כל בוקר, <span class="ital">אותו סיפור.</span></h2>
           <p class="section-lead">הטלפון מצלצל שוב. המזכירה עונה, רושמת, ומקלידה כל פגישה בנפרד. מי שמתקשר אחרי חמש שומע תא קולי, ומי שלא הצליח להתקשר בזמן הנכון פשוט מוותר על הפגישה.</p>
-          <p class="section-lead" style="margin-top:14px"><strong>אורלי לא מחליפה את המזכירה. היא משחררת אותה מהטלפון.</strong></p>
         </div>
         <div class="section-divider" aria-hidden="true"></div>
         <div class="section-head" style="margin-bottom:0">
           <h3 class="display">בגלל זה בנינו את <span class="ital">אורלי.</span></h3>
-          <p class="section-lead" style="margin-top:14px">לקחנו את היומן שכבר רץ אצלכם באופטימה, והרחבנו אותו גם לאתר המרפאה. אותו יומן, אותם כללים, עכשיו זמינים למטופלים גם בשעות שאף אחד לא ליד הטלפון.</p>
+          <p class="section-lead" style="margin-top:14px">לקחנו את היומן שכבר רץ אצלכם באופטימה, ופתחנו אותו גם לאתר המרפאה. אותו יומן, אותם כללים, עכשיו זמינים למטופלים גם בשעות שאף אחד לא ליד הטלפון.</p>
         </div>
       </div>
     </section>
@@ -123,15 +131,15 @@
         <div class="section-head">
           <p class="eyebrow">דמו מהיר</p>
           <h2 class="display">צפו בפגישה נקבעת <span class="ital">תוך שניות.</span></h2>
-          <p class="section-lead">נסו את התוסף בעצמכם. הוידג׳ט האמיתי קובע פגישה שלב אחר שלב, בדיוק כמו שהמטופלים שלכם היו עושים.</p>
+          <p class="section-lead">נסו את התוסף בעצמכם. בדיוק כמו שהמטופלים שלכם היו עושים.</p>
         </div>
       </div>
       <div class="wrap scrolly-grid">
         <div class="scrolly-steps">
           <article class="scrolly-step" data-scene="0">
             <span class="scrolly-idx">01 · בחירה</span>
-            <h3>בחירת טיפול</h3>
-            <p>המטופל נכנס לאתר שלכם ובוחר טיפול אצל המטפל הנכון. הרשימה מגיעה בזמן אמת מאופטימה.</p>
+            <h3>בחירת מטפל וטיפול</h3>
+            <p>המטופל נכנס לאתר שלכם, בוחר מטפל ואז טיפול. הרשימה מגיעה בזמן אמת מאופטימה.</p>
           </article>
           <article class="scrolly-step" data-scene="1">
             <span class="scrolly-idx">02 · תאריך</span>
@@ -374,7 +382,7 @@
   <script src="hero-gradient.js?v=14"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->
-  <script src="widget.js?v=6"></script>
+  <script src="widget.js?v=7"></script>
   <script src="scrolly.js?v=24"></script>
 </body>
 </html>

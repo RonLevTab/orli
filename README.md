@@ -11,7 +11,7 @@ step, no dependencies.
 - `widget.css` / `widget.js` — the **live interactive booking widget** in the
   "See it in action" section: a faithful vanilla-JS reproduction of the real Vue
   widget (`orli-calendar/widget/src/App.vue` + step components), driven by in-browser
-  mock data. Plays the whole flow — catalog → date → time → patient → confirm (OTP)
+  mock data. Plays the whole flow — practitioner → treatment → date → time → patient → confirm (OTP)
   → success — with no backend. OTP accepts any 6 digits. Bilingual (Hebrew primary /
   English secondary) via its own toggle, Apple-clean, Action-Blue accent, scoped
   under `.orli-live` so it never touches the marketing site's styles.

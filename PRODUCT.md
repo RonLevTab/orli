@@ -81,7 +81,7 @@ the clinic's existing workflow has to change.
 
 - Static HTML/CSS/JS, no build step, no framework, no dependencies (see
   `CLAUDE.md` for the script architecture).
-- The widget demo walks the real product's flow (catalog → date → time →
+- The widget demo walks the real product's flow (practitioner → treatment → date → time →
   patient → OTP confirm, any 6 digits works → success) against local mock
   data; it must keep faithfully mirroring the real widget's flow, steps, and
   copy as that product evolves — see this repo's and `orli-calendar`'s

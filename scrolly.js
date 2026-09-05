@@ -23,9 +23,12 @@
     if (!mountEl || !mountEl.__orli || !steps.length) return;
 
     var widget = mountEl.__orli;
-    // SOURCE: orli-calendar/widget/src/App.vue — STEP_ORDER, plus 'success'.
+    // SOURCE: orli-calendar/widget/src/App.vue — the Step type, minus
+    // 'treatment': it has no scene of its own (scene 0's copy narrates picking
+    // a practitioner and a treatment as one beat), so onStep('treatment')
+    // finds no index and the step list simply stays where it is.
     // widget.js's setScene() takes the index into this same list.
-    var STEP_NAMES = ['catalog', 'date', 'time', 'patient', 'confirm', 'success'];
+    var STEP_NAMES = ['practitioner', 'date', 'time', 'patient', 'confirm', 'success'];
     var current = -1;
     // Below this breakpoint .scrolly-sticky is position:static and the widget
     // is driven by the tap-through tabs instead of scroll-jacking (see
@@ -108,7 +111,7 @@
 
     // "Restart the demo" is the one control that hands the wheel back, so it
     // has to undo the release its own pointerdown just caused — otherwise the
-    // widget resets to the catalog and then sits there, deaf to scrolling.
+    // widget resets to the first step and then sits there, deaf to scrolling.
     mountEl.addEventListener('orli:restart', function () {
       setActiveUI(0);
       if (isPinned.matches) {

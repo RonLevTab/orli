@@ -87,7 +87,7 @@ drives `widget.js` through a controller handle):
 - **`widget.js`** — the live interactive booking widget shown in the "See it in
   action" section. A faithful vanilla-JS reproduction of the real Vue widget
   (`orli-calendar/widget/src/App.vue` + step components) driven by in-browser mock data
-  (`CARDS`), with no backend: catalog → date → time → patient details → OTP confirm
+  (`CARDS`), with no backend: practitioner → treatment → date → time → patient details → OTP confirm
   (any 6 digits works) → success. The widget itself is bilingual (Hebrew/English toggle
   in its own UI) with strings in its own `S` table, mirroring `widget/src/i18n.ts` from
   the real app — this is a property of the widget product, not of the marketing site

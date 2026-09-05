@@ -3,8 +3,8 @@
 
    A static, dependency-free reproduction of the real Vue widget, so
    this page never depends on the booking service being reachable.
-   Flow: catalog → date → time → patient → confirm (OTP) → success.
-   No backend. OTP accepts any 6 digits.
+   Flow: practitioner → treatment → date → time → patient → confirm
+   (OTP) → success. No backend. OTP accepts any 6 digits.
 
    ------------------------------------------------------------
    HOW TO REFRESH THIS AGAINST THE REAL WIDGET
@@ -17,37 +17,41 @@
    Read the named file, diff it against the block underneath the
    comment, and port the differences. The map:
 
-     App.vue                  — step order, progress bar, flow
-     i18n.ts                  — the S string table, formatDate,
-                                formatPrice
-     demo.ts                  — CARDS, availability, DEMO_PREFILL
-     style.css                — mirrored in this repo's widget.css
-     components/CatalogStep.vue — catalogHtml()
-     components/DateStep.vue    — dateHtml()
-     components/TimeStep.vue    — timeHtml()
-     components/PatientStep.vue — patientHtml()
-     components/ConfirmStep.vue — confirmHtml()
-     components/SuccessStep.vue — successHtml()
+     App.vue                        — step order, progress bar, flow,
+                                      the ?demo scene jumps
+     i18n.ts                        — the S string table, WEEKDAYS,
+                                      formatDate, formatMonth, formatPrice
+     demo.ts                        — CARDS, availability, DEMO_PREFILL
+     style.css                      — mirrored in this repo's widget.css
+     components/BiText.vue          — bi()
+     components/PractitionerStep.vue — practitionerHtml()
+     components/TreatmentStep.vue   — treatmentHtml()
+     components/DateStep.vue        — dateHtml() + calendarHtml()
+     components/TimeStep.vue        — timeHtml()
+     components/PatientStep.vue     — patientHtml() + field validation
+     components/ConfirmStep.vue     — confirmHtml()
+     components/SuccessStep.vue     — successHtml()
 
    ManageStep.vue (reschedule/cancel) is deliberately NOT mirrored:
    it is reached from an emailed link, never from the booking flow
-   this demo walks.
+   this demo walks. Nor are the loading/error states — the static
+   demo never enters them.
    ============================================================ */
 (function () {
   'use strict';
 
   // SOURCE: i18n.ts — `strings`. Only the keys this demo can actually
-  // reach are mirrored; error/loading/manage keys are omitted because the
-  // static demo never enters those states. Keys marked DEMO-ONLY have no
-  // counterpart in i18n.ts and exist for this page.
-  // ---- bilingual strings ----
+  // reach are mirrored. Keys marked DEMO-ONLY have no counterpart in
+  // i18n.ts and exist for this page.
   var S = {
+    progressStep: ['שלב {n} מתוך {total}', 'Step {n} of {total}'],
     bookTitle: ['לקביעת פגישה', 'Book an appointment'],
     treatment: ['טיפול', 'Treatment'],
     practitioner: ['מטפל/ת', 'Practitioner'],
     price: ['מחיר', 'Price'],
     freePrice: ['חינם', 'Free'],
     when: ['תאריך ושעה', 'Date and time'],
+    chooseTreatment: ['בחרו טיפול', 'Choose a treatment'],
     chooseDate: ['בחרו תאריך', 'Choose a date'],
     chooseTime: ['בחרו שעה', 'Choose a time'],
     yourDetails: ['הפרטים שלכם', 'Your details'],
@@ -55,12 +59,16 @@
     bookedTitle: ['התור נקבע!', 'Appointment booked!'],
     firstName: ['שם פרטי', 'First name'],
     lastName: ['שם משפחה', 'Last name'],
+    fullName: ['שם מלא', 'Full name'],
     phone: ['מספר טלפון', 'Phone number'],
     email: ['אימייל', 'Email'],
     marketingConsent: [
       'אני מעוניין/ת לקבל עדכונים והצעות מהמרפאה',
       'I would like to receive updates and offers from the clinic',
     ],
+    requiredFieldError: ['שדה חובה', 'This field is required'],
+    phoneTooShortError: ['מספר הטלפון קצר מדי', 'Phone number is too short'],
+    invalidEmailError: ['כתובת אימייל לא תקינה', 'Please enter a valid email address'],
     back: ['חזרה', 'Back'],
     continue: ['המשך', 'Continue'],
     confirm: ['אישור הזמנה', 'Confirm booking'],
@@ -71,11 +79,12 @@
       'אין זמנים פנויים בטווח התאריכים הזמין לקביעה.',
       'No available times in the bookable date range.',
     ],
+    showNextMonth: ['הצג את החודש הבא', 'Show next month'],
     otpSentTo: ['שלחנו קוד אימות לאימייל {email}', 'We sent a verification code to {email}'],
     otpCode: ['קוד אימות', 'Verification code'],
-    resendCode: ['שליחת קוד חדש', 'Send a new code'],
-    wrongOtpError: ['הקוד שגוי. נסו שוב.', 'The code is incorrect. Please try again.'],
     sendOtp: ['שלח קוד לאימות', 'Send code to my email'],
+    sendingOtp: ['שולח…', 'Sending…'],
+    resendCode: ['שליחת קוד חדש', 'Send a new code'],
     // DEMO-ONLY: the real widget checks the code against the server; here any
     // 6 digits pass, so the visitor has to be told that.
     otpDemoHint: ['לצורך ההדגמה: כל 6 ספרות יתקבלו', 'Demo: any 6-digit code works'],
@@ -84,19 +93,28 @@
     // marketing page the success scene is a dead end instead, so the demo
     // gets a way back to the start. Do not port this upstream.
     restartDemo: ['להתחיל את ההדגמה מחדש', 'Restart the demo'],
-    // No i18n.ts counterpart: the real PatientStep.vue leans on native form
-    // validation, which this hand-rolled form does not have.
-    fixFields: ['יש להשלים: {fields}', 'Please complete: {fields}'],
   };
 
+  // SOURCE: i18n.ts — calendarWeekdays.
+  var WEEKDAYS = [
+    ['א׳', 'Sun'], ['ב׳', 'Mon'], ['ג׳', 'Tue'], ['ד׳', 'Wed'],
+    ['ה׳', 'Thu'], ['ו׳', 'Fri'], ['ש׳', 'Sat'],
+  ];
+
   // SOURCE: demo.ts — getBookingSettings() returns booking_months_ahead: 2,
-  // i.e. this month plus the next, so the highest reachable offset is 1.
-  // demoAvailability() agrees: it returns [] for any monthOffset > 1.
-  var MAX_MONTH_OFFSET = 1;
+  // which App.vue passes straight through as the calendar's max month offset.
+  // demoAvailability() returns [] for any monthOffset > 1, so the last
+  // reachable month renders the real widget's empty-month panel.
+  var MAX_MONTH_OFFSET = 2;
+  var LAST_MONTH_WITH_SLOTS = 1;
 
   // SOURCE: demo.ts — CATALOG / APPOINTMENT_TYPES / PRACTITIONERS.
   // One card per practitioner, each with their own treatments — the shape
   // GET /clinics/{id}/catalog returns for real (see api.ts).
+  // DELIBERATE DIVERGENCE: demo.ts prices these (150.00 / 0). Here price is
+  // null, which the real widget handles the same way it does for a clinic
+  // that lists none: no price line on the treatment and no price row in the
+  // summaries. The marketing demo is not the place to put a number on a visit.
   var CARDS = [
     {
       practitioner: { id: 'demo-prac-1', he: 'ד"ר כהן', en: 'Dr. Cohen' },
@@ -105,25 +123,24 @@
           id: 'demo-apt-1', he: 'ייעוץ', en: 'Consultation',
           descriptionHe: 'שיחת ייעוץ ראשונית להכרת הצרכים שלך',
           descriptionEn: 'An initial consultation to understand your needs',
-          price: '150.00',
+          price: null,
         },
       ],
     },
     {
       practitioner: { id: 'demo-prac-2', he: 'ד"ר לוי', en: 'Dr. Levi' },
       treatments: [
-        { id: 'demo-apt-2', he: 'ניקוי שיניים', en: 'Cleaning', price: '0' },
+        { id: 'demo-apt-2', he: 'ניקוי שיניים', en: 'Cleaning', price: null },
       ],
     },
   ];
 
   // SOURCE: demo.ts — demoAvailability(). DELIBERATE DIVERGENCE: demo.ts picks
-  // fixed days-of-month (3, 5, 8, 12, 19, 26) with no weekday logic, so in any
-  // month where those fall on Saturday the demo offers Shabbat appointments —
-  // in September 2026 four of the six did, and the walked-through booking
-  // landed on Shabbat at 10:30. An Israeli clinic works Sunday to Thursday, so
-  // these are generated from the real calendar instead of hardcoded.
-  // The same bug exists upstream in demo.ts and wants fixing there too.
+  // fixed days-of-month (3, 5, 8, 12, 19, 26) and only slides a weekend hit
+  // forward to the next working day, so its demo months look sparse and
+  // uneven. An Israeli clinic works Sunday to Thursday, so these are
+  // generated from the real calendar instead: every other open day, up to
+  // six, which reads like a real diary without listing every weekday.
   var CLINIC_DAYS = [0, 1, 2, 3, 4]; // Sun–Thu. Fri/Sat closed.
   var SLOT_SETS = [
     [{ start: '09:00', end: '09:30' }, { start: '11:00', end: '11:30' }, { start: '14:00', end: '14:30' }],
@@ -131,10 +148,8 @@
     [{ start: '09:30', end: '10:00' }, { start: '13:00', end: '13:30' }, { start: '16:00', end: '16:30' }],
   ];
 
-  // Every other open day in the displayed month, up to six — enough to look
-  // like a real diary without listing every weekday.
   function availabilityFor(monthOffset) {
-    if (monthOffset > MAX_MONTH_OFFSET) return [];
+    if (monthOffset > LAST_MONTH_WITH_SLOTS) return [];
     var now = new Date();
     var year = now.getFullYear();
     var month = now.getMonth() + monthOffset;
@@ -160,7 +175,7 @@
   // The first genuinely bookable day, so the booking the demo walks through is
   // never on a day the clinic is shut. The fallback only fires if a month
   // somehow yields no open days.
-  var DEMO_DAY = availabilityFor(0)[0] || { date: demoDate(3), slots: SLOT_SETS[0] };
+  var DEMO_DAY = availabilityFor(0)[0] || availabilityFor(1)[0] || { date: demoDate(3), slots: SLOT_SETS[0] };
 
   // SOURCE: demo.ts — DEMO_PREFILL, plus createAppointment()'s returned id.
   // Pre-made selections so any step can be jumped straight to (see setScene),
@@ -183,10 +198,21 @@
     return date.getFullYear() + '-' + m + '-' + d;
   }
 
+  // SOURCE: i18n.ts — formatDate / formatMonth / formatPrice.
   var DATE_FMT = { weekday: 'long', day: 'numeric', month: 'long' };
   function formatDate(dateStr) {
     var parsed = new Date(dateStr + 'T00:00:00');
     return [parsed.toLocaleDateString('he', DATE_FMT), parsed.toLocaleDateString('en', DATE_FMT)];
+  }
+  var MONTH_FMT = { month: 'long', year: 'numeric' };
+  function formatMonth(monthOffset) {
+    var now = new Date();
+    var month = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+    return [month.toLocaleDateString('he', MONTH_FMT), month.toLocaleDateString('en', MONTH_FMT)];
+  }
+  function formatPrice(price) {
+    if (Number(price) === 0) return S.freePrice;
+    return [price + ' ₪', '₪' + price];
   }
 
   // ---- tiny DOM helpers ----
@@ -202,38 +228,28 @@
   var LANG = 'he';
   function dir() { return LANG === 'he' ? 'rtl' : 'ltr'; }
 
-  function bi(pair) {
-    var he = pair[0] || pair[1];
-    var en = pair[1] || pair[0];
-    var primary = LANG === 'he' ? he : en;
-    var secondary = LANG === 'he' ? en : he;
-    var showSec = he && en && he !== en;
-    // The secondary line runs opposite to the primary, so mark its own dir.
-    var secDir = LANG === 'he' ? 'ltr' : 'rtl';
-    return '<span class="obw-bi"><span>' + esc(primary) + '</span>' +
-      (showSec ? '<span class="obw-en" dir="' + secDir + '">' + esc(secondary) + '</span>' : '') +
-      '</span>';
+  // SOURCE: BiText.vue — renders ONLY the current language (Hebrew falling
+  // back to English and vice versa), never both. Extra classes land on the
+  // .obw-bi root, as a `class` on <BiText> does.
+  function bi(pair, cls) {
+    var he = pair[0], en = pair[1];
+    var text = LANG === 'he' ? (he || en) : (en || he);
+    return '<span class="obw-bi' + (cls ? ' ' + cls : '') + '"><span>' + esc(text) + '</span></span>';
   }
-
-  // <bdi>: isolates a Latin/number run embedded in Hebrew (or vice-versa) so
-  // the bidi algorithm never reorders its punctuation. Best practice for
-  // user-generated or opposite-direction inline values.
-  function bdi(text) { return '<bdi>' + esc(text) + '</bdi>'; }
   function fill(pair, vars) {
     return [pair[0].replace(/\{(\w+)\}/g, function (_, k) { return vars[k]; }),
             pair[1].replace(/\{(\w+)\}/g, function (_, k) { return vars[k]; })];
   }
-  function formatPrice(price) {
-    if (Number(price) === 0) return S.freePrice;
-    return [price + ' ₪', '₪' + price];
-  }
+
+  var EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
   // ---- widget instance ----
   function mount(root) {
     var st = null;
     function reset() {
       st = {
-        step: 'catalog', card: null, treatment: null, practitioner: null,
+        step: 'practitioner',
+        practitioner: null, treatments: [], treatment: null,
         monthOffset: 0, day: null, time: '',
         // Pre-filled with the real demo build's placeholder identity so this
         // needs zero typing — the Israeli "John Doe". Editable, but ready to
@@ -244,7 +260,9 @@
         phone: DEMO_PREFILL.phone,
         email: DEMO_PREFILL.email,
         consent: false,
-        otp: '', otpSent: false, otpError: false, resendWait: 0, submitting: false, bookingId: null,
+        touched: {},
+        confirmedEmail: null,
+        otp: '', otpSent: false, sendingOtp: false, resendWait: 0, submitting: false, bookingId: null,
       };
     }
     reset();
@@ -263,43 +281,43 @@
       }, 1000);
     }
 
-    var STEP_ORDER = ['catalog', 'date', 'time', 'patient', 'confirm'];
+    // SOURCE: App.vue — STEP_ORDER. 'success' sits outside it: the progress
+    // rail has nothing left to count there.
+    var STEP_ORDER = ['practitioner', 'treatment', 'date', 'time', 'patient', 'confirm'];
 
     var lastStep = null;
 
+    // SOURCE: App.vue — template.
     function render() {
       var showProgress = st.step !== 'success';
       var idx = STEP_ORDER.indexOf(st.step);
       var controls = '';
       if (showProgress) {
         var segs = '';
-        for (var n = 0; n < 5; n++) segs += '<span class="obw-progress-seg' + (n <= idx ? ' is-on' : '') + '"></span>';
+        for (var n = 0; n < STEP_ORDER.length; n++) {
+          segs += '<span class="obw-progress-seg' + (n < idx ? ' is-on' : '') + '"></span>';
+        }
         var globeSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>';
-        var langLabel = LANG === 'he' ? 'עב' : 'EN';
-        // SOURCE: App.vue — the progress bar there carries role="progressbar"
-        // and a text valuetext. Here the whole row sat inside aria-hidden,
-        // which hid the only "which step am I on" signal from assistive tech
-        // while leaving the language button focusable and operable anyway
-        // (WCAG 4.1.2).
-        var stepNow = idx + 1;
-        var progressLabel = LANG === 'he'
-          ? 'שלב ' + stepNow + ' מתוך 5'
-          : 'Step ' + stepNow + ' of 5';
+        var progressLabel = fill(S.progressStep, { n: String(idx + 1), total: String(STEP_ORDER.length) });
+        var labelText = LANG === 'he' ? progressLabel[0] : progressLabel[1];
         controls = '<div class="obw-controls">' +
           '<button class="obw-lang-btn" type="button" data-lang aria-label="' +
-            (LANG === 'he' ? 'החלפת שפה' : 'Switch language') + '">' +
-            globeSvg + '<span>' + langLabel + '</span></button>' +
-          '<div class="obw-progress" role="progressbar" aria-valuemin="1" aria-valuemax="5"' +
-            ' aria-valuenow="' + stepNow + '" aria-valuetext="' + progressLabel + '">' +
-            segs + '</div>' +
+            (LANG === 'he' ? 'Switch to English' : 'החלף לעברית') + '">' +
+            globeSvg + '<span>' + (LANG === 'he' ? 'עב' : 'EN') + '</span></button>' +
+          '<div class="obw-progress" role="progressbar" aria-valuemin="0" aria-valuemax="' + STEP_ORDER.length + '"' +
+            ' aria-valuenow="' + idx + '" aria-valuetext="' + esc(labelText) + '">' +
+            segs + '<span class="obw-visually-hidden">' + esc(labelText) + '</span></div>' +
         '</div>';
       }
+      var stepClass = 'obw-step' +
+        (st.step === 'date' ? ' obw-step--date' : '') +
+        (st.step === 'time' ? ' obw-step--time' : '');
       // Mirror direction to match language (rtl for Hebrew).
       root.setAttribute('dir', dir());
       root.innerHTML =
         '<div class="obw-widget">' +
           controls +
-          '<main class="obw-step">' + stepHtml() + '</main>' +
+          '<main class="' + stepClass + '">' + stepHtml() + '</main>' +
         '</div>';
       wire();
       // Let a host (scrolly.js) follow along when the visitor clicks their own
@@ -314,7 +332,8 @@
 
     function stepHtml() {
       switch (st.step) {
-        case 'catalog': return catalogHtml();
+        case 'practitioner': return practitionerHtml();
+        case 'treatment': return treatmentHtml();
         case 'date': return dateHtml();
         case 'time': return timeHtml();
         case 'patient': return patientHtml();
@@ -324,166 +343,277 @@
       return '';
     }
 
-    // The real widget is a standalone surface, so its step title is an <h1>.
-    // Mounted inside a marketing page that already has one, that yields a
-    // second <h1> and an h1 -> h3 jump, so the demo mount downgrades it.
-    var TITLE_TAG = root.hasAttribute('data-scrolly') ? 'h2' : 'h1';
-    function title(inner) {
-      return '<' + TITLE_TAG + ' class="obw-title">' + inner + '</' + TITLE_TAG + '>';
+    // The real widget is a standalone surface, so its step title is an <h1>
+    // and the calendar's month heading an <h2>. Mounted inside a marketing
+    // page that already has an h1, that yields a second <h1> and an h1 -> h3
+    // jump, so the demo mount steps both down one level.
+    var IN_PAGE = root.hasAttribute('data-scrolly');
+    var TITLE_TAG = IN_PAGE ? 'h2' : 'h1';
+    var SUB_TAG = IN_PAGE ? 'h3' : 'h2';
+    function title(inner, cls) {
+      return '<' + TITLE_TAG + ' class="obw-title' + (cls ? ' ' + cls : '') + '">' + inner + '</' + TITLE_TAG + '>';
     }
 
+    // SOURCE: every step component's "‹ Back" button. The literal ‹ is what
+    // the real markup carries; the bidi algorithm mirrors it under RTL.
     function backBtn() {
-      // "Back" points toward the start edge, which mirrors with direction.
-      var chev = LANG === 'he' ? '›' : '‹';
-      return '<button class="obw-back-btn" data-back>' + chev + ' ' + bi(S.back) + '</button>';
+      return '<button class="obw-back-btn" data-back>‹ ' + bi(S.back) + '</button>';
     }
 
-    function catalogHtml() {
-      var html = title(bi(S.bookTitle)) + '<div class="obw-list">';
-      CARDS.forEach(function (card, ci) {
-        html += '<section class="obw-card"><h2 class="obw-card-title">' +
-          bi([card.practitioner.he, card.practitioner.en]) + '</h2><div class="obw-list">';
-        card.treatments.forEach(function (tr, ti) {
-          var description = tr.descriptionHe || tr.descriptionEn
-            ? '<span class="obw-option-description">' + bi([tr.descriptionHe || '', tr.descriptionEn || '']) + '</span>'
-            : '';
-          var price = tr.price != null
-            ? '<span class="obw-option-price">' + bi(formatPrice(tr.price)) + '</span>'
-            : '';
-          html += '<button class="obw-option" data-offering="' + ci + ':' + ti + '">' +
-            '<span class="obw-option-content">' + bi([tr.he, tr.en]) + description + price + '</span>' +
-            '</button>';
-        });
-        html += '</div></section>';
-      });
-      return html + '</div>';
+    // SOURCE: .obw-step-header — the title on the start edge, Back on the
+    // opposite one, so titles stay level across steps.
+    function header(titleInner, withBack, subtitle) {
+      var t = title(titleInner);
+      if (subtitle) t = '<div>' + t + '<p class="obw-step-subtitle">' + subtitle + '</p></div>';
+      return '<div class="obw-step-header">' + t + (withBack ? backBtn() : '') + '</div>';
     }
 
+    // SOURCE: PractitionerStep.vue
+    function practitionerHtml() {
+      var list = CARDS.map(function (card, i) {
+        var p = card.practitioner;
+        var description = p.descriptionHe || p.descriptionEn
+          ? bi([p.descriptionHe || '', p.descriptionEn || ''], 'obw-option-description')
+          : '';
+        return '<button class="obw-option" data-card="' + i + '">' +
+          '<span class="obw-option-content">' + bi([p.he, p.en]) + description + '</span>' +
+        '</button>';
+      }).join('');
+      return '<div>' + header(bi(S.bookTitle)) + '<div class="obw-list">' + list + '</div></div>';
+    }
+
+    // SOURCE: TreatmentStep.vue
+    function treatmentHtml() {
+      var p = st.practitioner;
+      var subtitle = bi(S.practitioner) + ': ' + bi([p.he, p.en]);
+      var list = st.treatments.map(function (tr, i) {
+        var description = tr.descriptionHe || tr.descriptionEn
+          ? bi([tr.descriptionHe || '', tr.descriptionEn || ''], 'obw-option-description')
+          : '';
+        var price = tr.price != null ? bi(formatPrice(tr.price), 'obw-option-price') : '';
+        return '<button class="obw-option" data-treatment="' + i + '">' +
+          '<span class="obw-option-content">' + bi([tr.he, tr.en]) + description + price + '</span>' +
+        '</button>';
+      }).join('');
+      return '<div>' + header(bi(S.chooseTreatment), true, subtitle) +
+        '<div class="obw-list">' + list + '</div></div>';
+    }
+
+    // SOURCE: DateStep.vue — calendarCells: a fixed 6-week (42 cell) grid
+    // starting on the Sunday of the viewed month's first week.
+    function calendarHtml(days) {
+      var now = new Date();
+      var viewed = new Date(now.getFullYear(), now.getMonth() + st.monthOffset, 1);
+      var year = viewed.getFullYear();
+      var month = viewed.getMonth();
+      var leadingDays = viewed.getDay();
+      var todayKey = iso(now);
+      var byDate = {};
+      days.forEach(function (d) { byDate[d.date] = d; });
+
+      var weekdays = '<div class="obw-calendar-weekdays" aria-hidden="true">' +
+        WEEKDAYS.map(function (w) { return '<span>' + bi(w) + '</span>'; }).join('') + '</div>';
+      var cells = '';
+      for (var i = 0; i < 42; i++) {
+        var date = new Date(year, month, i - leadingDays + 1);
+        var key = iso(date);
+        var inMonth = date.getFullYear() === year && date.getMonth() === month;
+        var available = inMonth && !!byDate[key];
+        var isToday = key === todayKey;
+        var label = formatDate(key);
+        cells += '<button class="obw-calendar-cell obw-calendar-day' +
+          (inMonth ? '' : ' is-adjacent') + (available ? ' is-available' : '') + (isToday ? ' is-today' : '') + '"' +
+          ' data-obw-date="' + key + '" aria-label="' + esc(label[0] + ' / ' + label[1]) + '"' +
+          (isToday ? ' aria-current="date"' : '') + (available ? '' : ' disabled') + '>' +
+          date.getDate() + '</button>';
+      }
+      return weekdays +
+        '<div class="obw-calendar-grid" aria-label="' + esc(formatMonth(st.monthOffset)[1]) + '">' + cells + '</div>';
+    }
+
+    // SOURCE: DateStep.vue — template.
     function dateHtml() {
       var days = availabilityFor(st.monthOffset);
-      var list;
-      if (!days.length) {
-        list = '<p class="obw-muted">' + bi(S.noSlots) + '</p>';
-      } else {
-        list = '<div class="obw-list">' + days.map(function (day, i) {
-          return '<button class="obw-option" data-day="' + i + '">' + bi(formatDate(day.date)) + '</button>';
-        }).join('') + '</div>';
-      }
       st._days = days;
-      // Arrows point "back / forward in time" — they mirror with direction.
-      var prevArrow = LANG === 'he' ? '→' : '←';
-      var nextArrow = LANG === 'he' ? '←' : '→';
-      return backBtn() + title(bi(S.chooseDate)) +
-        '<div class="obw-month-nav">' +
-          '<button class="obw-nav-btn" data-month="-1"' + (st.monthOffset === 0 ? ' disabled' : '') + '>' +
-            '<span class="obw-nav-arrow">' + prevArrow + '</span>' + bi(S.prevMonth) + '</button>' +
-          '<button class="obw-nav-btn" data-month="1"' + (st.monthOffset >= MAX_MONTH_OFFSET ? ' disabled' : '') + '>' +
-            bi(S.nextMonth) + '<span class="obw-nav-arrow">' + nextArrow + '</span></button>' +
-        '</div><div class="obw-date-results">' + list + '</div>';
+      var body;
+      if (!days.length) {
+        body = '<div class="obw-calendar-empty">' +
+          '<p class="obw-muted">' + bi(S.noSlots) + '</p>' +
+          (st.monthOffset < MAX_MONTH_OFFSET
+            ? '<button class="obw-nav-btn" data-month="1">' + bi(S.showNextMonth) + '</button>'
+            : '') +
+        '</div>';
+      } else {
+        body = calendarHtml(days);
+      }
+      return '<div class="obw-date-step">' + header(bi(S.chooseDate), true) +
+        '<div class="obw-date-results">' +
+          '<section class="obw-calendar">' +
+            '<header class="obw-month-nav">' +
+              '<button class="obw-calendar-nav obw-calendar-nav--previous" data-month="-1" aria-label="' + S.prevMonth[1] + '"' +
+                (st.monthOffset === 0 ? ' disabled' : '') + '>' +
+                '<span class="obw-nav-arrow obw-nav-arrow--previous" aria-hidden="true"></span></button>' +
+              '<' + SUB_TAG + ' class="obw-current-month">' + bi(formatMonth(st.monthOffset)) + '</' + SUB_TAG + '>' +
+              '<button class="obw-calendar-nav obw-calendar-nav--next" data-month="1" aria-label="' + S.nextMonth[1] + '"' +
+                (st.monthOffset >= MAX_MONTH_OFFSET ? ' disabled' : '') + '>' +
+                '<span class="obw-nav-arrow obw-nav-arrow--next" aria-hidden="true"></span></button>' +
+            '</header>' +
+            '<div class="obw-calendar-body">' + body + '</div>' +
+          '</section>' +
+        '</div></div>';
     }
 
+    // SOURCE: TimeStep.vue
     function timeHtml() {
       var slots = st.day.slots.map(function (slot) {
         return '<button class="obw-slot" data-time="' + slot.start + '">' + slot.start + '</button>';
       }).join('');
-      return backBtn() + title(bi(S.chooseTime)) +
-        '<p class="obw-muted">' + bi(formatDate(st.day.date)) + '</p>' +
-        '<div class="obw-slots">' + slots + '</div>';
+      return '<div class="obw-time-step">' + header(bi(S.chooseTime), true) +
+        '<p class="obw-date-summary obw-muted">' + bi(formatDate(st.day.date)) + '</p>' +
+        '<div class="obw-slots">' + slots + '</div></div>';
     }
 
-    function field(key, name, value, type) {
-      return '<label class="obw-field">' + bi(S[key]) +
-        '<input data-field="' + name + '" type="' + (type || 'text') + '" value="' + esc(value) + '" /></label>';
+    // SOURCE: PatientStep.vue — fields, autocomplete hints and per-field
+    // validity rules. A field only shows its Invalid state once the visitor
+    // has left it (blur); submit marks every field touched so the problem
+    // ones light up instead of the button silently doing nothing.
+    var FIELDS = [
+      { name: 'firstName', input: 'first_name', type: 'text', autocomplete: 'given-name', error: 'requiredFieldError' },
+      { name: 'lastName', input: 'last_name', type: 'text', autocomplete: 'family-name', error: 'requiredFieldError' },
+      { name: 'phone', input: 'phone', type: 'tel', autocomplete: 'tel', error: 'phoneTooShortError' },
+      { name: 'email', input: 'email', type: 'email', autocomplete: 'email', error: 'invalidEmailError' },
+    ];
+    function fieldValid(f) {
+      var v = String(st[f.name]).trim();
+      if (f.name === 'phone') return v.length >= 7;
+      if (f.name === 'email') return EMAIL_PATTERN.test(v);
+      return v.length > 0;
+    }
+    function fieldInvalid(f) { return !!st.touched[f.name] && !fieldValid(f); }
+    function fieldHtml(f) {
+      var invalid = fieldInvalid(f);
+      return '<label class="obw-field' + (invalid ? ' is-invalid' : '') + '" data-field-wrap="' + f.name + '">' +
+        bi(S[f.name]) +
+        '<input data-field="' + f.name + '" name="' + f.input + '" type="' + f.type + '"' +
+          ' autocomplete="' + f.autocomplete + '" required value="' + esc(st[f.name]) + '" />' +
+        (invalid ? '<p class="obw-field-error">' + bi(S[f.error]) + '</p>' : '') +
+      '</label>';
+    }
+    // Updates one field's Invalid state in place. A full re-render on blur
+    // would tear down the input the visitor is tabbing into.
+    function refreshField(f) {
+      var wrap = root.querySelector('[data-field-wrap="' + f.name + '"]');
+      if (!wrap) return;
+      var invalid = fieldInvalid(f);
+      wrap.classList.toggle('is-invalid', invalid);
+      var err = wrap.querySelector('.obw-field-error');
+      if (invalid && !err) wrap.insertAdjacentHTML('beforeend', '<p class="obw-field-error">' + bi(S[f.error]) + '</p>');
+      else if (!invalid && err) err.parentNode.removeChild(err);
     }
 
     function patientHtml() {
-      return '<div class="obw-patient-step">' + backBtn() + title(bi(S.yourDetails)) +
-        '<form class="obw-patient-form" data-patient>' +
-          field('firstName', 'firstName', st.firstName) +
-          field('lastName', 'lastName', st.lastName) +
-          field('phone', 'phone', st.phone, 'tel') +
-          field('email', 'email', st.email, 'email') +
-          '<label class="obw-consent"><input type="checkbox" data-field="consent"' + (st.consent ? ' checked' : '') + ' />' +
-            bi(S.marketingConsent) + '</label>' +
-          '<p class="obw-error" data-form-error role="alert"></p>' +
-          '<button type="submit" class="obw-primary-btn obw-primary-btn--compact" data-continue>' + bi(S.continue) + '</button>' +
+      return '<div class="obw-patient-step">' +
+        '<div class="obw-patient-header obw-step-header">' + title(bi(S.yourDetails)) + backBtn() + '</div>' +
+        '<form class="obw-patient-form" data-patient novalidate>' +
+          FIELDS.map(fieldHtml).join('') +
+          '<label class="obw-consent"><input data-field="consent" name="marketing_consent" type="checkbox"' +
+            (st.consent ? ' checked' : '') + ' />' + bi(S.marketingConsent) + '</label>' +
+          '<button type="submit" class="obw-primary-btn obw-primary-btn--compact">' + bi(S.continue) + '</button>' +
         '</form></div>';
     }
 
-    function confirmHtml() {
-      var dateLabel = formatDate(st.day.date)[LANG === 'he' ? 0 : 1];
-      var priceRow = st.treatment.price != null
-        ? '<dt>' + bi(S.price) + '</dt><dd>' + bi(formatPrice(st.treatment.price)) + '</dd>'
-        : '';
-      var summary = '<dl class="obw-summary">' +
-        '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd>' +
-        priceRow +
-        '<dt>' + bi(S.practitioner) + '</dt><dd>' + bi([st.practitioner.he, st.practitioner.en]) + '</dd>' +
-        '<dt>' + bi(S.when) + '</dt><dd>' + bdi(dateLabel + ' · ' + st.time) + '</dd>' +
-        '<dt>' + bi(S.yourDetails) + '</dt><dd>' +
-          bdi(st.firstName + ' ' + st.lastName + ' · ' + st.phone + ' · ' + st.email) + '</dd>' +
+    // SOURCE: ConfirmStep.vue + SuccessStep.vue — the same <dl> on both.
+    function summaryHtml(date, time) {
+      var tr = st.treatment;
+      var p = st.practitioner;
+      return '<dl class="obw-summary">' +
+        '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([tr.he, tr.en]) + '</dd>' +
+        (tr.price != null ? '<dt>' + bi(S.price) + '</dt><dd>' + bi(formatPrice(tr.price)) + '</dd>' : '') +
+        '<dt>' + bi(S.practitioner) + '</dt><dd>' + bi([p.he, p.en]) + '</dd>' +
+        '<dt>' + bi(S.when) + '</dt><dd>' + bi(formatDate(date)) + ' · <span class="obw-tabular">' + esc(time) + '</span></dd>' +
+        '<dt>' + bi(S.fullName) + '</dt><dd>' + esc(st.firstName + ' ' + st.lastName) + '</dd>' +
+        '<dt>' + bi(S.phone) + '</dt><dd>' + esc(st.phone) + '</dd>' +
+        '<dt>' + bi(S.email) + '</dt><dd>' + esc(st.email) + '</dd>' +
       '</dl>';
+    }
+
+    // SOURCE: ConfirmStep.vue
+    function confirmHtml() {
       var otpBox = st.otpSent ? (
         '<div class="obw-otp">' +
           '<p class="obw-otp-hint">' + bi(fill(S.otpSentTo, { email: st.email })) + '</p>' +
-          '<p class="obw-otp-hint" style="color:var(--obw-primary)">' + bi(S.otpDemoHint) + '</p>' +
           '<label class="obw-field">' + bi(S.otpCode) +
-            '<input data-otp inputmode="numeric" maxlength="6" value="' + esc(st.otp) + '" /></label>' +
+            '<input data-otp name="otp_code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required value="' + esc(st.otp) + '" /></label>' +
           '<button type="button" class="obw-resend-btn" data-resend' + (st.resendWait > 0 ? ' disabled' : '') + '>' +
             bi(S.resendCode) + '<span data-resend-wait>' + (st.resendWait > 0 ? ' (' + st.resendWait + ')' : '') + '</span></button>' +
-        '</div>' +
-        (st.otpError ? '<p class="obw-error">' + bi(S.wrongOtpError) + '</p>' : '')
+          // DEMO-ONLY, and on the resend row rather than a line of its own so
+          // the step stays exactly the real widget's height: style.css sizes
+          // the 580px frame to fit this block with no inner scrollbar.
+          bi(S.otpDemoHint, 'obw-demo-hint') +
+        '</div>'
       ) : '';
+      var canConfirm = st.otpSent && /^\d{6}$/.test(st.otp.trim());
       var footer = '<div class="obw-confirm-footer">' + (
         !st.otpSent
-          ? '<button class="obw-primary-btn obw-primary-btn--compact" data-send-otp>' + bi(S.sendOtp) + '</button>'
-          : '<button class="obw-primary-btn obw-primary-btn--compact" data-confirm' + (st.submitting || !/^\d{6}$/.test(st.otp.trim()) ? ' disabled' : '') + '>' +
+          ? '<button type="button" class="obw-primary-btn obw-primary-btn--compact" data-send-otp' + (st.sendingOtp ? ' disabled' : '') + '>' +
+              bi(st.sendingOtp ? S.sendingOtp : S.sendOtp) + '</button>'
+          : '<button class="obw-primary-btn obw-primary-btn--compact" data-confirm' + (st.submitting || !canConfirm ? ' disabled' : '') + '>' +
               bi(st.submitting ? S.booking : S.confirm) + '</button>'
       ) + '</div>';
-      return '<div class="obw-confirm-step">' + backBtn() + title(bi(S.confirmTitle)) +
-        summary + otpBox + footer + '</div>';
+      return '<div class="obw-confirm-step">' + header(bi(S.confirmTitle), true) +
+        summaryHtml(st.day.date, st.time) + otpBox + footer + '</div>';
     }
 
+    // SOURCE: SuccessStep.vue. The real svg carries no stroke attribute, so
+    // in production the check mark is invisible and only the tinted circle
+    // shows — an upstream bug; stroke="currentColor" here is the fix it
+    // wants, not a divergence to preserve.
     function successHtml() {
-      var dateLabel = formatDate(st.day.date)[LANG === 'he' ? 0 : 1];
-      var priceRow = st.treatment.price != null
-        ? '<dt>' + bi(S.price) + '</dt><dd>' + bi(formatPrice(st.treatment.price)) + '</dd>'
-        : '';
-      return title(bi(S.bookedTitle)) +
-        '<dl class="obw-summary">' +
-          '<dt>' + bi(S.treatment) + '</dt><dd>' + bi([st.treatment.he, st.treatment.en]) + '</dd>' +
-          priceRow +
-          '<dt>' + bi(S.practitioner) + '</dt><dd>' + bi([st.practitioner.he, st.practitioner.en]) + '</dd>' +
-          '<dt>' + bi(S.when) + '</dt><dd>' + bdi(dateLabel + ' · ' + st.time) + '</dd>' +
-          '<dt>' + bi(S.firstName) + '</dt><dd>' + bdi(st.firstName + ' ' + st.lastName) + '</dd>' +
-          '<dt>' + bi(S.phone) + '</dt><dd>' + bdi(st.phone) + '</dd>' +
-          '<dt>' + bi(S.email) + '</dt><dd>' + bdi(st.email) + '</dd>' +
-        '</dl>' +
+      return '<div class="obw-success-step">' +
+        '<div class="obw-success-mark" aria-hidden="true">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>' +
+        '</div>' +
+        title(bi(S.bookedTitle), 'obw-success-title') +
+        summaryHtml(st.day.date, st.time) +
         // DEMO-ONLY exit — see S.restartDemo. Without it the last scene of the
         // scrollytelling flow has no controls at all and reads as a hang.
         '<div class="obw-success-actions">' +
           '<button type="button" class="obw-restart-btn" data-restart>' + bi(S.restartDemo) + '</button>' +
-        '</div>';
+        '</div>' +
+      '</div>';
+    }
+
+    // SOURCE: DateStep.vue — probingInitialMonth: on first landing (not on a
+    // deliberate navigation) skip forward past leading empty months, so a
+    // patient never opens on a dead calendar.
+    function firstMonthWithSlots() {
+      var offset = 0;
+      while (offset < MAX_MONTH_OFFSET && !availabilityFor(offset).length) offset++;
+      return offset;
     }
 
     // ---- event wiring ----
     function wire() {
-      root.querySelectorAll('[data-offering]').forEach(function (b) {
+      root.querySelectorAll('[data-card]').forEach(function (b) {
         b.addEventListener('click', function () {
-          var p = b.getAttribute('data-offering').split(':');
-          var card = CARDS[+p[0]];
-          st.card = card;
+          var card = CARDS[+b.getAttribute('data-card')];
           st.practitioner = card.practitioner;
-          st.treatment = card.treatments[+p[1]];
-          st.monthOffset = 0;
+          st.treatments = card.treatments;
+          st.step = 'treatment';
+          render();
+        });
+      });
+      root.querySelectorAll('[data-treatment]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          st.treatment = st.treatments[+b.getAttribute('data-treatment')];
+          st.monthOffset = firstMonthWithSlots();
           st.step = 'date';
           render();
         });
       });
       var backEl = root.querySelector('[data-back]');
       if (backEl) backEl.addEventListener('click', function () {
-        if (st.step === 'confirm') st.otpSent = false;
-        var prev = { date: 'catalog', time: 'date', patient: 'time', confirm: 'patient' }[st.step];
+        var prev = { treatment: 'practitioner', date: 'treatment', time: 'date', patient: 'time', confirm: 'patient' }[st.step];
         st.step = prev; render();
       });
       root.querySelectorAll('[data-month]').forEach(function (b) {
@@ -492,24 +622,37 @@
           render();
         });
       });
-      root.querySelectorAll('[data-day]').forEach(function (b) {
-        b.addEventListener('click', function () { st.day = st._days[+b.getAttribute('data-day')]; st.step = 'time'; render(); });
+      root.querySelectorAll('[data-obw-date]:not([disabled])').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var key = b.getAttribute('data-obw-date');
+          var day = st._days.filter(function (d) { return d.date === key; })[0];
+          if (!day) return;
+          st.day = day; st.step = 'time'; render();
+        });
       });
       root.querySelectorAll('[data-time]').forEach(function (b) {
         b.addEventListener('click', function () { st.time = b.getAttribute('data-time'); st.step = 'patient'; render(); });
       });
       var pform = root.querySelector('[data-patient]');
       if (pform) {
-        pform.querySelectorAll('[data-field]').forEach(function (inp) {
-          inp.addEventListener('input', function () {
-            var k = inp.getAttribute('data-field');
-            st[k] = inp.type === 'checkbox' ? inp.checked : inp.value;
-          });
+        FIELDS.forEach(function (f) {
+          var inp = pform.querySelector('[data-field="' + f.name + '"]');
+          inp.addEventListener('input', function () { st[f.name] = inp.value; refreshField(f); });
+          inp.addEventListener('blur', function () { st.touched[f.name] = true; refreshField(f); });
         });
+        var consent = pform.querySelector('[data-field="consent"]');
+        consent.addEventListener('change', function () { st.consent = consent.checked; });
         pform.addEventListener('submit', function (e) {
           e.preventDefault();
-          if (!validPatient()) { flashInvalid(pform); return; }
-          st.otp = ''; st.otpSent = false; st.otpError = false; st.step = 'confirm'; render();
+          FIELDS.forEach(function (f) { st.touched[f.name] = true; refreshField(f); });
+          if (!FIELDS.every(fieldValid)) return;
+          FIELDS.forEach(function (f) { st[f.name] = String(st[f.name]).trim(); });
+          // SOURCE: App.vue submitPatient — only a genuinely new email resets
+          // the code state; coming back with the same one must not re-demand
+          // a code that was already sent.
+          if (st.email !== st.confirmedEmail) { st.otpSent = false; st.otp = ''; }
+          st.confirmedEmail = st.email;
+          st.step = 'confirm'; render();
         });
       }
       var otp = root.querySelector('[data-otp]');
@@ -521,7 +664,10 @@
       });
       var sendOtpBtn = root.querySelector('[data-send-otp]');
       if (sendOtpBtn) sendOtpBtn.addEventListener('click', function () {
-        st.otpSent = true; render(); startResend();
+        st.sendingOtp = true; render();
+        setTimeout(function () {
+          st.sendingOtp = false; st.otpSent = true; render(); startResend();
+        }, 500);
       });
       var resend = root.querySelector('[data-resend]');
       if (resend) resend.addEventListener('click', function () { st.otp = ''; render(); startResend(); });
@@ -532,13 +678,12 @@
         // Hand control back to whatever is hosting us. The pointerdown that
         // opened this click has already told scrolly.js the visitor took over,
         // and without this the scroll narrative would stay switched off and
-        // the widget would sit on the catalog step doing nothing.
+        // the widget would sit on the first step doing nothing.
         root.dispatchEvent(new CustomEvent('orli:restart', { bubbles: true }));
       });
       var langBtn = root.querySelector('[data-lang]');
       if (langBtn) langBtn.addEventListener('click', function () {
         LANG = LANG === 'he' ? 'en' : 'he';
-        root.setAttribute('dir', LANG === 'he' ? 'rtl' : 'ltr');
         render();
       });
       var confirm = root.querySelector('[data-confirm]');
@@ -552,39 +697,6 @@
           st.step = 'success'; render();
         }, 900);
       });
-      // No restart button on success page in current design.
-    }
-
-    function validPatient() {
-      return st.firstName.trim() && st.lastName.trim() && st.phone.trim().length >= 7 &&
-        /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(st.email.trim());
-    }
-    // An error that only recolours a border names neither the problem nor the
-    // recovery, and a red edge is invisible to anyone who cannot see the hue.
-    // Mark the fields, then say which ones in words.
-    function flashInvalid(form) {
-      // Two lists, not one: bi() renders a Hebrew line and an English line, so
-      // each needs the field names in its own language. Filling one list into
-      // both leaves the English line reading "Please complete: שם פרטי".
-      var missingHe = [], missingEn = [];
-      form.querySelectorAll('[data-field]').forEach(function (inp) {
-        if (inp.type === 'checkbox') return;
-        var key = inp.getAttribute('data-field');
-        var val = String(inp.value).trim();
-        var bad = key === 'email'
-          ? !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)
-          : key === 'phone' ? val.length < 7 : !val;
-        inp.classList.toggle('obw-invalid', bad);
-        inp.setAttribute('aria-invalid', bad ? 'true' : 'false');
-        if (bad && S[key]) { missingHe.push(S[key][0]); missingEn.push(S[key][1]); }
-      });
-      var box = form.querySelector('[data-form-error]');
-      if (box) {
-        box.innerHTML = missingHe.length
-          ? bi([S.fixFields[0].replace('{fields}', missingHe.join(', ')),
-                S.fixFields[1].replace('{fields}', missingEn.join(', '))])
-          : '';
-      }
     }
 
     // Scroll-driven "scenes": jump the widget to a given step with all the
@@ -592,23 +704,29 @@
     // through the whole booking flow without any clicks.
     // SOURCE: App.vue — the `?demo` postMessage handler (search DEMO_PREFILL
     // there). Same idea: jump to a step with every prior selection already
-    // made, so the scrollytelling section can walk the whole flow with no
-    // clicks. Keep the two in step when App.vue's handler changes.
+    // made. 'treatment' has no scene of its own: scene 0's copy narrates
+    // picking a practitioner and a treatment as one beat, and the treatment
+    // step is one click away from it. Keep the two in step when App.vue's
+    // handler changes.
     function setScene(i) {
       reset();
-      var card = CARDS[DEMO_PREFILL.cardIndex];
-      var order = ['catalog', 'date', 'time', 'patient', 'confirm', 'success'];
+      var order = ['practitioner', 'date', 'time', 'patient', 'confirm', 'success'];
       st.step = order[Math.max(0, Math.min(order.length - 1, i))];
-      if (st.step !== 'catalog') {
-        st.card = card;
+      if (st.step !== 'practitioner') {
+        var card = CARDS[DEMO_PREFILL.cardIndex];
         st.practitioner = card.practitioner;
+        st.treatments = card.treatments;
         st.treatment = card.treatments[DEMO_PREFILL.treatmentIndex];
       }
       if (['time', 'patient', 'confirm', 'success'].indexOf(st.step) >= 0) {
         st.day = DEMO_PREFILL.day;
         st.time = DEMO_PREFILL.time;
       }
-      if (['confirm', 'success'].indexOf(st.step) >= 0) { st.otp = '123456'; st.otpSent = true; }
+      if (['confirm', 'success'].indexOf(st.step) >= 0) {
+        // The real demo handler only marks the code as sent; the scene here
+        // also pre-fills it so the confirm button reads as live, not dimmed.
+        st.otpSent = true; st.otp = '123456'; st.confirmedEmail = st.email;
+      }
       if (st.step === 'success') st.bookingId = DEMO_PREFILL.bookingId;
       render();
     }
@@ -622,10 +740,10 @@
     var widgets = [].slice.call(document.querySelectorAll('[data-orli-widget]'));
     widgets.forEach(function (el) {
       el.classList.add('orli-live');
-      // The compaction ruleset in widget.css is gated on [data-scrolly]; it
-      // exists so the tallest scene (confirm) fits the pinned card without an
-      // inner scrollbar. Only the pinned #demo mount wants it — a widget
-      // embedded anywhere else should render at full size.
+      // [data-scrolly] makes the widget fill the pinned #demo card instead of
+      // style.css's own 400x580 frame (see widget.css), and steps the heading
+      // levels down to fit inside a page that already has an h1. A widget
+      // embedded anywhere else renders exactly as the real one does.
       if (el.closest && el.closest('#demo')) el.setAttribute('data-scrolly', '');
       el.__orli = mount(el);
     });
