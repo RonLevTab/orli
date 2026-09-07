@@ -167,7 +167,7 @@ html[lang="he"] .ladder-note { font-style: normal; }
   min-height: calc(100vh - var(--nav-h));
   min-height: calc(100dvh - var(--nav-h));
 }
-.hero-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+.hero-actions, .page-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
 .hero-link {
   font-weight: 600; color: var(--teal-deep); padding-bottom: 2px;
   border-bottom: 1px solid color-mix(in srgb, var(--teal-deep) 35%, transparent);
@@ -481,7 +481,6 @@ html[dir="rtl"] .hero-veil {
    reader, and a teal check-mark reads as a feature they are being sold. */
 .check-list--plain li::before { content: "•"; color: var(--ink-soft); font-weight: 400; }
 .check-list--center { justify-items: center; justify-content: center; }
-.cta-form input.is-invalid { border-color: #f0b8ae; box-shadow: 0 0 0 3px rgba(240, 184, 174, .25); }
 .code-card { border-radius: var(--radius); overflow: hidden; border: 1px solid #1c332f; box-shadow: var(--shadow-lg); background: #0c1a17; }
 .code-card--snug { margin-top: 8px; }
 .code-head { display: flex; align-items: center; gap: 7px; padding: 13px 16px; background: #111f1c; border-bottom: 1px solid #1c332f; }
@@ -528,24 +527,9 @@ html[dir="rtl"] .hero-veil {
 /* Two ways in: book a slot straight into the calendar, or leave details.
    The band is a flex column of centred blocks, so [hidden] has to beat the
    button's own display to actually hide the Cal.com block. */
-.cta-book { margin-top: 30px; }
-.cta-book[hidden] { display: none !important; }
-.cta-or { margin: 18px 0 0; font-size: .92rem; color: #fff; }
-.cta-book + .cta-form { margin-top: 12px; }
-.cta-form { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: flex-end; margin-top: 30px; }
-.field { text-align: start; }
-.field label { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; color: #fff; margin-bottom: 6px; }
-/* Opaque fill, not translucent white over a gradient: with an alpha fill the
-   placeholder measured 4.21:1 at the dark end of the band and 2.73:1 at the
-   light end, and even the typed value fell to 3.48:1. One fixed backdrop makes
-   the numbers the same the whole way down — placeholder 6.9:1, value 11.8:1,
-   and the border clears 3:1 against both ends of the band and the fill. */
-.field input { font: inherit; padding: 13px 16px; border-radius: 12px; border: 1px solid #d8f0ed; background: #073f3d; color: #fff; min-width: 240px; }
-.field input::placeholder { color: rgba(255,255,255,.72); }
-.field input:focus { outline: 2px solid #fff; outline-offset: 1px; background: rgba(255,255,255,.2); }
-.form-note { min-height: 1.4em; margin-top: 18px; font-weight: 600; color: #fff; }
-.form-note:not(:empty) { display: inline-block; padding: 8px 18px; border-radius: 999px; background: rgba(10, 37, 35, .35); }
-.form-note.is-error { background: rgba(225, 29, 72, .55); }
+.cta-actions { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 30px; }
+/* Buttons are display:inline-flex, which beats the hidden attribute's UA rule. */
+.cta-actions [hidden] { display: none !important; }
 
 /* footer */
 .footer { border-top: 1px solid var(--line); background: var(--cream-2); padding: 60px 0 max(30px, env(safe-area-inset-bottom)); }
@@ -656,7 +640,6 @@ html[dir="rtl"] .hero-veil {
    .ladder{ grid-template-columns: 1fr; }
   .section { padding: 48px 0; }
   .field input { min-width: 0; width: 100%; }
-  .cta-form { flex-direction: column; align-items: stretch; }
 }
 /* Reduced motion: movement goes, fades stay. The old rule killed every
    animation and transition on the page with one `*`, which also removed the
@@ -858,4 +841,57 @@ html[dir="rtl"] .hero-veil {
   .hero-link::after { content: ""; position: absolute; inset: -8px 0; }
   .code-copy { padding-block: 11px; }
   .ladder-note a, .faq-panel-inner a { padding-block: 10px; }
+}
+
+/* ===== Contact dialog =====
+   Opened from the band's "צרו קשר" and the footer link (script.js). A native
+   <dialog>: focus stays inside, Escape and the backdrop close it, and focus
+   returns to whatever opened it. Styled as a card in the page's own world —
+   the inputs are the light treatment, not the band's dark-on-teal. */
+.contact-dialog {
+  width: min(520px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto;
+  margin: auto; padding: 0; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); box-shadow: var(--shadow-lg);
+}
+.contact-dialog::backdrop { background: rgba(22, 33, 31, .48); backdrop-filter: blur(6px); }
+.contact-dialog[open] { animation: contact-in .22s cubic-bezier(.2, .7, .2, 1); }
+@keyframes contact-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+html:has(dialog[open]) { overflow: hidden; }
+.contact-form { padding: 26px 28px 24px; text-align: start; }
+.contact-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.contact-head .display { margin: 0; }
+.contact-close {
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: -6px -8px 0 0;
+  border-radius: 50%; border: 1px solid transparent; background: transparent; color: var(--ink-soft); cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.contact-close:hover { background: var(--cream-2); color: var(--ink); }
+.contact-close svg { width: 18px; height: 18px; }
+.contact-lead { color: var(--ink-soft); margin: 8px 0 20px; }
+.contact-form .field { margin-bottom: 14px; text-align: start; }
+.contact-form .field label { display: block; font-size: .8rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; }
+.contact-form .field :is(input, textarea) {
+  display: block; width: 100%; font: inherit; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--cream); color: var(--ink);
+}
+.contact-form .field textarea { min-height: 120px; resize: vertical; }
+/* --ink-soft is 5.4:1 on cream; the label above and the darker typed value
+   keep an example from reading as a value. */
+.contact-form .field :is(input, textarea)::placeholder { color: var(--ink-soft); }
+.contact-form .field :is(input, textarea):focus { outline: 2px solid var(--teal-deep); outline-offset: 1px; border-color: var(--teal-deep); }
+.contact-form .field :is(input, textarea).is-invalid { border-color: #b8322a; box-shadow: 0 0 0 3px rgba(225, 29, 72, .14); }
+.contact-actions { margin-top: 6px; }
+.contact-form .form-note { display: none; margin: 14px 0 0; padding: 10px 14px; border-radius: 12px; background: var(--cream-2); color: var(--ink); font-weight: 600; }
+.contact-form .form-note:not(:empty) { display: block; }
+.contact-form .form-note.is-error { background: color-mix(in srgb, #e11d48 12%, var(--surface)); color: #9f1239; }
+/* Sent: the fields go, the confirmation and a way out stay. */
+.contact-done { display: none; margin-top: 16px; }
+.contact-form.is-sent :is(.contact-lead, .field, .contact-actions) { display: none; }
+.contact-form.is-sent .contact-done { display: inline-flex; }
+@media (max-width: 560px) {
+  .cta-actions { flex-direction: column; align-items: stretch; }
+  .contact-form { padding: 22px 18px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-dialog[open] { animation: none; }
 }

@@ -87,10 +87,10 @@
     //     navigating once the popup can really open. Swallowing the click
     //     unconditionally, as this used to, turned every "book a demo" on all
     //     five pages into a dead control the moment Cal was unreachable.
-    //   - #calDemo's "pick a time" is a <button> with nothing to fall back
+    //   - #calDemoBtn, "pick a time", is a <button> with nothing to fall back
     //     to, so it stays hidden until there is something behind it.
     const calCtas = document.querySelectorAll('[data-demo-cta]');
-    const calWrap = document.getElementById('calDemo');
+    const calWrap = document.getElementById('calDemoBtn');
     let calReady = false;
     let calSettled = false;
 
@@ -135,26 +135,55 @@
     }
   }
 
-  // Demo request form. Only present on index.html — guarded so this file can
-  // be shared as-is across the secondary pages (about/integration/privacy),
-  // which just need the footer year and the reveal-on-scroll below.
+  // Contact form. Lives in a <dialog> on index.html (#contactDialog), opened
+  // from the CTA band's "צרו קשר" and from the footer link on that page. On
+  // the other pages the same footer link carries no dialog to open, so it is
+  // left alone and simply goes to /#contact. Guarded so this file can be
+  // shared as-is across every page.
+  const dialog = document.getElementById('contactDialog');
   const form = document.getElementById('demoForm');
-  if (form) {
+  if (dialog && form) {
     const note = document.getElementById('formNote');
     const submitBtn = form.querySelector('button[type="submit"]');
     const submitLabel = submitBtn ? submitBtn.textContent : '';
-    const inputs = () => form.querySelectorAll('input');
+    // form.elements, not form.name: a form's own `name` property shadows a
+    // field called name.
+    const f = form.elements;
+    const fields = () => form.querySelectorAll('.field :is(input, textarea)');
+    let opener = null;
 
     const clearMarks = () => {
       note.classList.remove('is-error');
-      inputs().forEach((i) => {
+      fields().forEach((i) => {
         i.classList.remove('is-invalid');
         i.setAttribute('aria-invalid', 'false');
       });
     };
 
-    // An error that names neither field leaves the visitor to guess which of
-    // the two is wrong. Name it, mark it, and put the cursor in it.
+    const openContact = (from) => {
+      opener = from || document.activeElement;
+      clearMarks();
+      note.textContent = '';
+      form.classList.remove('is-sent');
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitLabel; }
+      if (typeof dialog.showModal === 'function') dialog.showModal();
+      else dialog.setAttribute('open', '');
+      // showModal() honours the name field's autofocus; the fallback needs a hand.
+      if (document.activeElement !== f.name) f.name.focus();
+    };
+    const closeContact = () => { if (dialog.open) dialog.close(); else dialog.removeAttribute('open'); };
+    // Native dialogs usually hand focus back on close; make it certain.
+    dialog.addEventListener('close', () => { if (opener && opener.focus) opener.focus(); });
+    document.querySelectorAll('[data-contact-open]').forEach((el) => {
+      el.addEventListener('click', (e) => { e.preventDefault(); openContact(el); });
+    });
+    dialog.querySelectorAll('[data-contact-close]').forEach((el) => el.addEventListener('click', closeContact));
+    // A click on the backdrop lands on the <dialog> element itself, never on
+    // its content, so this is exactly "clicked outside the card".
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) closeContact(); });
+
+    // An error that names neither field leaves the visitor to guess which
+    // one is wrong. Name it, mark it, and put the cursor in it.
     const fail = (message, field) => {
       clearMarks();
       note.classList.add('is-error');
@@ -168,23 +197,23 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const clinic = form.clinic.value.trim();
-      const email = form.email.value.trim();
+      const name = f.name.value.trim();
+      const email = f.email.value.trim();
+      const message = f.message.value.trim();
 
-      if (!clinic) return fail('נא למלא את שם המרפאה.', form.clinic);
+      if (!name) return fail('נא למלא את השם.', f.name);
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return fail('כתובת האימייל אינה תקינה. בדקו אותה ונסו שוב.', form.email);
+        return fail('כתובת האימייל אינה תקינה. בדקו אותה ונסו שוב.', f.email);
       }
+      if (!message) return fail('כתבו לנו כמה מילים, כדי שנדע במה לעזור.', f.message);
       clearMarks();
 
       if (!FORM_ENDPOINT) {
         // Nothing is sent, so promise nothing — and mark it as the failure it
-        // is. Without is-error this painted in the same neutral pill as an
-        // ordinary note, so the one message that means "your effort was
-        // wasted" looked exactly like the one that means "we got it".
+        // is, not as a neutral note.
         note.classList.add('is-error');
-        note.textContent = 'הטופס עדיין לא מחובר, ולכן הפרטים לא נשלחו. נסו שוב בקרוב.';
-        console.warn('[orli] demo form: FORM_ENDPOINT is unset — nothing was sent. See script.js.');
+        note.textContent = 'הטופס עדיין לא מחובר, ולכן ההודעה לא נשלחה. נסו שוב בקרוב.';
+        console.warn('[orli] contact form: FORM_ENDPOINT is unset — nothing was sent. See script.js.');
         return;
       }
 
@@ -202,34 +231,23 @@
           signal: ctl ? ctl.signal : undefined,
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
+        note.textContent = `תודה, ${name}. נחזור אליכם בכתובת ${email}.`;
         form.reset();
+        form.classList.add('is-sent');
+        note.focus();
       } catch (err) {
         // Never clear the form on failure — retyping it is the fastest way to
-        // lose someone who was already willing. A timeout and a refusal need
-        // different words: one says wait, the other says try again.
-        //
-        // The only other way to reach us on this band is Cal's "pick a time"
-        // button, and only while Cal actually loaded (see calFailed above).
-        // Offer it as the way out when it is there; promise nothing when it
-        // is not — this used to say "or write to us directly", and there is
-        // no address anywhere on the site to write to.
-        // Looked up here, not via the CAL_LINK block's calWrap: that const is
-        // scoped to its own `if`, and would be a ReferenceError from this one.
-        const calBlock = document.getElementById('calDemo');
-        const calUp = !!calBlock && !calBlock.hidden;
+        // lose someone who was already willing. The other way in is Cal's
+        // "pick a time" on the band behind this dialog, and only while Cal
+        // actually loaded; offer it when it is there, promise nothing when not.
+        const calBtn = document.getElementById('calDemoBtn');
+        const calUp = !!calBtn && !calBtn.hidden;
         const timedOut = err && err.name === 'AbortError';
         note.classList.add('is-error');
-        note.textContent = timedOut
-          ? (calUp
-              ? 'השליחה נתקעה. הפרטים נשמרו כאן. נסו שוב, או בחרו שעה להדגמה בכפתור שלמעלה.'
-              : 'השליחה נתקעה. הפרטים נשמרו כאן. נסו שוב בעוד רגע.')
-          : (calUp
-              ? 'השליחה נכשלה. הפרטים נשמרו כאן. נסו שוב בעוד רגע, או בחרו שעה להדגמה בכפתור שלמעלה.'
-              : 'השליחה נכשלה. הפרטים נשמרו כאן. נסו שוב בעוד רגע.');
+        note.textContent = (timedOut ? 'השליחה נתקעה. ' : 'השליחה נכשלה. ') + 'ההודעה נשמרה כאן. נסו שוב בעוד רגע'
+          + (calUp ? ', או סגרו את החלון ובחרו שעה להדגמה.' : '.');
         // Nothing else moves focus on this path, so a polite status region
-        // could go unread. Land on the message: it is announced, and the
-        // retry button sits directly above it.
+        // could go unread. Land on the message; the retry sits right above it.
         note.focus();
       } finally {
         if (timeout) clearTimeout(timeout);

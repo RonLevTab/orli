@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script>
+    document.documentElement.classList.add('js');
+    // styles.css hides every reveal target behind this class, and only
+    // script.js ever unhides them. If that file does not arrive — a 404, a
+    // dropped connection, a blocked request — the class would leave each
+    // page's headlines, leads and lists at opacity 0 with nothing coming to
+    // reveal them. script.js sets data-reveal-ready the moment it takes over;
+    // if it hasn't, give up the effect and show the page as plain text.
+    setTimeout(function () {
+      var d = document.documentElement;
+      if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js');
+    }, 3000);
+  </script>
+  <meta name="description" content="העמוד שחיפשתם לא נמצא באתר אורלי." />
+  <title>אורלי · העמוד לא נמצא</title>
+  <!-- worker.js serves this for any path with no file behind it, so it renders
+       at /whatever/was/typed. Every URL below is root-absolute for that reason:
+       a relative styles.css would resolve against a directory that does not
+       exist. No canonical and no link-preview tags, for the same reason — this
+       page has no address of its own. noindex covers a direct visit to
+       /404.html, which the static layer serves with a 200. -->
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=20260907" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/assets/brand/favicon-64.png" />
+  <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0f8a86" />
+</head>
+<body>
+  <span id="top" aria-hidden="true"></span>
+
+  <!-- TOP NAV -->
+  <header class="nav">
+    <div class="wrap">
+      <div class="nav-pill">
+        <a href="/" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he" src="/assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
+        </a>
+        <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
+          <a href="/">ראשי</a>
+          <a href="/panel.html">מסך הניהול</a>
+          <a href="/about.html">אודות</a>
+        </nav>
+        <button class="nav-toggle" type="button" id="navToggle"
+                aria-expanded="false" aria-controls="navMenu" aria-label="תפריט">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+        <div class="nav-cta">
+          <a data-demo-cta href="/#contact" class="btn-dark">לקביעת דמו</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section page-head section--tail">
+      <div class="wrap narrow">
+        <h1 class="display display--page">העמוד שחיפשתם <span class="ital">לא נמצא.</span></h1>
+        <p class="section-lead section-lead--intro">אולי הקישור השתנה, או שנפלה טעות בכתובת. הכול עדיין כאן, פשוט לא בדף הזה.</p>
+        <div class="page-actions">
+          <a href="/" class="btn-dark lg">לדף הבית</a>
+          <a data-demo-cta href="/#contact" class="hero-link">לקביעת דמו</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <a href="/" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="/assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
+        </a>
+        <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
+      </div>
+      <nav class="footer-cols" aria-label="ניווט תחתון">
+        <div class="footer-col">
+          <h3 class="footer-col-h">מוצר</h3>
+          <a href="/#roadmap">מפת דרכים</a>
+          <a href="/panel.html">מסך הניהול</a>
+          <a href="/integration.html">מדריך טכני להטמעה</a>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-h">אמון</h3>
+          <a href="/#faq">שאלות נפוצות</a>
+          <a href="/privacy.html">מדיניות פרטיות</a>
+          <a href="/#contact" data-contact-open>צרו קשר</a>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-h">חברה</h3>
+          <a href="/about.html">אודות</a>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-h">בואו נתחיל</h3>
+          <a data-demo-cta href="/#contact">לקביעת דמו</a>
+          <a href="/#compare">למה אורלי</a>
+        </div>
+      </nav>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© <span id="year"></span> אורלי. בנוי על פלטפורמת אופטימה.</span>
+      <span>נבנה למרפאות בישראל · מגשרים על הישן, בעדינות.</span>
+    </div>
+  </footer>
+
+  <script src="/script.js?v=20260907"></script>
+</body>
+</html>

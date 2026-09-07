@@ -39,6 +39,10 @@ Five pages, all sharing the same header/footer shell and `styles.css`:
   data tied to an identified patient likely qualifies as "sensitive information" under
   that law, which is a live open question for Orli itself, not just for clinic
   customers. Don't fill in the placeholders without an actual legal decision.
+- **`404.html`** — not one of the five: `worker.js` serves it, with status 404, for
+  any path that matches no file. It renders at whatever path was typed, so every
+  URL in it is root-absolute; a relative `styles.css` would resolve against a
+  directory that doesn't exist. Linked from nowhere, `noindex`.
 
 All five pages are footer-linked to each other. Primary nav is deliberately
 minimal: `ראשי` (index.html), `מסך הניהול` (panel.html) and `אודות` (about.html)
@@ -81,12 +85,13 @@ Four independent, self-contained scripts loaded by `index.html`, each owning one
 They talk to the DOM, not to each other directly (with one exception: `scrolly.js`
 drives `widget.js` through a controller handle):
 
-- **`script.js`** — misc page glue: footer year, the demo form (validated
+- **`script.js`** — misc page glue: footer year, the contact form — name, email,
+  message, in a `<dialog>` opened from the CTA band and the footer link (validated
   client-side, then posted to `worker.js`'s `/api/demo`), the Cal.com popup button
   (gated on `CAL_LINK`), scroll-reveal via `IntersectionObserver`, and the FAQ
   accordion.
 - **`worker.js`** — the one piece of backend: a Cloudflare Worker behind the static
-  assets (`wrangler.jsonc`) with two routes, the demo form and Cal.com's booking
+  assets (`wrangler.jsonc`) with two routes, the contact form and Cal.com's booking
   webhook, both posting into Slack's `#website-contact`. Secrets and setup are in
   `README.md`. Listed in `.assetsignore` so it is never served as a file.
 - **`widget.js`** — the live interactive booking widget shown in the "See it in
@@ -130,5 +135,5 @@ drives `widget.js` through a controller handle):
   The live booking widget (`widget.js`) is a separate case: it has its own
   Hebrew/English toggle mirroring the real product, kept in its own `S` table.
 - `assets/brand/` holds logo/wordmark source + exported PNGs (including a Hebrew
-  wordmark variant); `.assetsignore` suggests deploys target Cloudflare Pages, though
-  no `wrangler.jsonc` is checked in yet.
+  wordmark variant). Deploys go through `wrangler.jsonc`: Cloudflare Workers with
+  static assets, `worker.js` as the fallthrough for paths with no file behind them.

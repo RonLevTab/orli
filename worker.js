@@ -4,10 +4,10 @@
    Every request is served from the static assets first; only paths
    with no matching file reach this script. It owns two of them, both
    of which post into Slack's #website-contact as the "Website contact"
-   app:
+   app, and answers everything else with the site's own 404 page:
 
-     POST /api/demo   the demo-request form on index.html (script.js
-                      posts it as FormData)
+     POST /api/demo   the contact form on index.html — name, email,
+                      message (script.js posts it as FormData)
      POST /api/cal    Cal.com's booking webhook, so a booked demo lands
                       in the same channel
 
@@ -24,9 +24,31 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/demo') return handleDemo(request, env, url);
     if (url.pathname === '/api/cal') return handleCal(request, env);
-    return new Response('Not found', { status: 404 });
+    return notFound(request, env);
   },
 };
+
+// ---- everything else --------------------------------------------------------
+// Static files are served before this script runs, so a GET that lands here
+// is a path with nothing behind it: a typo, a stale link, a guessed route.
+// Answer with 404.html, fetched from the assets binding (wrangler.jsonc:
+// assets.binding), status kept honest. The plain-text fallback covers a
+// missing binding (local dev without one) and a failed fetch, so this can
+// never itself be the reason a request ends in a 500.
+async function notFound(request, env) {
+  if (env.ASSETS && (request.method === 'GET' || request.method === 'HEAD')) {
+    try {
+      const page = await env.ASSETS.fetch(new Request(new URL('/404.html', request.url)));
+      if (page.ok) {
+        return new Response(request.method === 'HEAD' ? null : page.body, {
+          status: 404,
+          headers: { 'content-type': page.headers.get('content-type') || 'text/html; charset=utf-8' },
+        });
+      }
+    } catch (err) { /* fall through to the plain response */ }
+  }
+  return new Response('Not found', { status: 404 });
+}
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -53,14 +75,18 @@ async function handleDemo(request, env, url) {
   // it worked so they learn nothing, and post nothing.
   if (String(form.get('_gotcha') || '').trim()) return json({ ok: true });
 
-  const clinic = String(form.get('clinic') || '').trim().slice(0, 200);
+  const name = String(form.get('name') || '').trim().slice(0, 200);
   const email = String(form.get('email') || '').trim().slice(0, 200);
-  if (!clinic) return json({ ok: false, error: 'clinic' }, 400);
+  const message = String(form.get('message') || '').trim().slice(0, 2000);
+  if (!name) return json({ ok: false, error: 'name' }, 400);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ ok: false, error: 'email' }, 400);
+  if (!message) return json({ ok: false, error: 'message' }, 400);
 
-  const text = `בקשת דמו מהאתר · ${clinic}`;
+  const text = `פנייה מהאתר · ${name}`;
   const blocks = [
-    section(`*בקשת דמו מהאתר*\n*מרפאה:* ${escapeMrkdwn(clinic)}\n*אימייל:* ${escapeMrkdwn(email)}`),
+    section(`*פנייה מהאתר*\n*שם:* ${escapeMrkdwn(name)}\n*אימייל:* ${escapeMrkdwn(email)}`),
+    // Slack caps a section at 3000 characters; escaping can only lengthen.
+    section(escapeMrkdwn(message).slice(0, 2900)),
     context([nowInIsrael(), request.headers.get('cf-ipcountry')].filter(Boolean).join(' · ')),
   ];
   const posted = await postToSlack(env, text, blocks);
