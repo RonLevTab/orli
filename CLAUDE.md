@@ -117,6 +117,14 @@ drives `widget.js` through a controller handle):
   keep that order if you add or reorder scripts.
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
+- Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
+  carries the **same** token on every page (`?v=20260907` today). Bump them all
+  together with one search-and-replace when any asset changes; a per-file counter
+  drifted across pages and left stale copies in caches.
+- Page-level layout lives in `styles.css` modifiers (`.page-head`, `.display--page`,
+  `.display--sub`, `.section--tail`, `.section-lead--intro`, `.code-inline`, …), not in
+  `style=""` attributes. The only inline styles left are the colour swatches on
+  `integration.html` and `panel.html`, which are data, not layout.
 - The marketing site itself is Hebrew-only (`<html lang="he" dir="rtl">`), no runtime
   language switch — copy lives directly in `index.html`, no i18n table to keep in sync.
   The live booking widget (`widget.js`) is a separate case: it has its own

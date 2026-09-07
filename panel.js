@@ -34,11 +34,28 @@
       current = i;
 
       steps.forEach(function (s, idx) { s.classList.toggle('is-active', idx === i); });
+      // Buttons in a sequence, not an ARIA tablist — see scrolly.js's
+      // setActiveUI for why the tab roles came off both pages.
       tabs.forEach(function (t, idx) {
         t.classList.toggle('is-active', idx === i);
-        t.setAttribute('aria-selected', idx === i ? 'true' : 'false');
+        if (idx === i) t.setAttribute('aria-current', 'step');
+        else t.removeAttribute('aria-current');
       });
       panes.forEach(function (p, idx) { p.classList.toggle('is-active', idx === i); });
+
+      // The mock's sidebar is a horizontal scrolling strip on a phone, so the
+      // item this step highlights is often off-screen — the walkthrough's
+      // whole payoff, invisible. Bring it along by scrolling the strip itself
+      // rather than calling scrollIntoView, which is free to move the page and
+      // would fight the scroll narrative driving this in the first place.
+      var activeNav = navBtns.filter(function (b) {
+        return (b.getAttribute('data-nav') || '').split(' ').indexOf(String(i)) >= 0;
+      })[0];
+      var strip = activeNav && activeNav.parentElement && activeNav.parentElement.parentElement;
+      if (strip && strip.scrollWidth > strip.clientWidth) {
+        var far = activeNav.offsetLeft + activeNav.offsetWidth - strip.clientWidth;
+        strip.scrollLeft = Math.min(Math.max(strip.scrollLeft, far), activeNav.offsetLeft);
+      }
 
       // A sidebar item can own more than one step — steps 01 and 02 are two
       // tabs inside the same "מטפלים ושירותים" screen, which is how the real
@@ -65,9 +82,16 @@
     // scroll that doesn't cross one leaves the panel showing a stale screen,
     // and when several steps cross at once the entry order is not scroll
     // order. Measuring five rectangles inside a rAF is cheap and exact.
+    // Below 920px the steps are a tap-through stepper (styles.css): only the
+    // active one is laid out, so every step measures 0×0 at the top and
+    // "nearest the middle" was always step 01 — each scroll on a phone
+    // snapped the panel back to the first screen after any tab was tapped.
+    // Scroll drives the panel only in the pinned layout.
+    var isPinned = window.matchMedia('(min-width: 921px)');
     var ticking = false;
     function pick() {
       ticking = false;
+      if (!isPinned.matches) return;
       var mid = window.innerHeight / 2;
       var best = 0, bestDist = Infinity;
       for (var i = 0; i < steps.length; i++) {

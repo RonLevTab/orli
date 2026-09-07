@@ -913,6 +913,12 @@
    =========================================================== */
 .orli-live { display: block; text-align: start; }
 
+/* widget.js renders into a shell it creates once, so the live region beside
+   it survives each re-render (see its focus/announce block). display:contents
+   keeps that wrapper out of the layout entirely, so the rule below still
+   sizes .obw-widget against the pinned frame. */
+.orli-live > .obw-shell { display: contents; }
+
 /* The pinned #demo card owns the frame's size (styles.css .demo-browser), so
    the widget fills it instead of restating style.css's 400x580 defaults. */
 .orli-live[data-scrolly] .obw-widget { max-width: none; height: 100%; }

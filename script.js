@@ -77,19 +77,62 @@
       el.setAttribute('data-cal-namespace', CAL_NAMESPACE);
       el.setAttribute('data-cal-config', JSON.stringify({ layout: 'month_view', useSlotsViewOnSmallScreen: 'true' }));
     };
-    // The band's own "pick a time" button (index.html only).
+
+    // Everything below depends on a script from app.cal.com actually arriving.
+    // An ad-blocker, a corporate proxy or a Cal outage is enough to stop it,
+    // and this is the one button the whole site exists to get clicked — so
+    // nothing commits to Cal until that script has loaded:
+    //
+    //   - the CTAs keep their own href (the demo form) and only stop
+    //     navigating once the popup can really open. Swallowing the click
+    //     unconditionally, as this used to, turned every "book a demo" on all
+    //     five pages into a dead control the moment Cal was unreachable.
+    //   - #calDemo's "pick a time" is a <button> with nothing to fall back
+    //     to, so it stays hidden until there is something behind it.
+    const calCtas = document.querySelectorAll('[data-demo-cta]');
     const calWrap = document.getElementById('calDemo');
-    if (calWrap) {
-      openCal(document.getElementById('calDemoBtn'));
-      calWrap.hidden = false;
-    }
-    // Every "book a demo" link on every page. Their href still points at the
-    // form section, which is what they do without JavaScript; with it, the
-    // popup opens in place and the page stays where the visitor was.
-    document.querySelectorAll('[data-demo-cta]').forEach((el) => {
+    let calReady = false;
+    let calSettled = false;
+
+    const calLoaded = () => {
+      if (calSettled) return;
+      calSettled = true;
+      calReady = true;
+      if (calWrap) calWrap.hidden = false;
+    };
+    const calFailed = () => {
+      if (calSettled) return;
+      calSettled = true;
+      // Drop the embed hooks too: a script that turns up late must not find
+      // half-wired buttons and start intercepting clicks the page has already
+      // handed back to the form.
+      calCtas.forEach((el) => {
+        el.removeAttribute('data-cal-link');
+        el.removeAttribute('data-cal-namespace');
+        el.removeAttribute('data-cal-config');
+      });
+      if (calWrap) calWrap.hidden = true;
+      console.warn('[orli] Cal.com embed unavailable — demo CTAs fall back to the form at #contact.');
+    };
+
+    calCtas.forEach((el) => {
       openCal(el);
-      el.addEventListener('click', (e) => e.preventDefault());
+      el.addEventListener('click', (e) => { if (calReady) e.preventDefault(); });
     });
+    const calBtn = document.getElementById('calDemoBtn');
+    if (calBtn) openCal(calBtn);
+
+    // The loader above appends the tag synchronously, so it is already here.
+    const calScript = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
+    if (calScript) {
+      calScript.addEventListener('load', calLoaded);
+      calScript.addEventListener('error', calFailed);
+      // A request that is black-holed rather than refused fires neither event,
+      // which would leave the CTA waiting forever. Past this, treat it as gone.
+      setTimeout(calFailed, 6000);
+    } else {
+      calFailed();
+    }
   }
 
   // Demo request form. Only present on index.html — guarded so this file can
@@ -147,21 +190,49 @@
 
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'שולח…'; }
       note.textContent = '';
+      // A request that never resolves would leave the button disabled and the
+      // visitor staring at "שולח…" for good. Give up after 15s and say so.
+      const ctl = typeof AbortController === 'function' ? new AbortController() : null;
+      const timeout = ctl ? setTimeout(() => ctl.abort(), 15000) : null;
       try {
         const res = await fetch(FORM_ENDPOINT, {
           method: 'POST',
           headers: { Accept: 'application/json' },
           body: new FormData(form),
+          signal: ctl ? ctl.signal : undefined,
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         note.textContent = `תודה. ניצור קשר עם ${clinic} בכתובת ${email} כדי לקבוע הדגמה.`;
         form.reset();
       } catch (err) {
         // Never clear the form on failure — retyping it is the fastest way to
-        // lose someone who was already willing.
+        // lose someone who was already willing. A timeout and a refusal need
+        // different words: one says wait, the other says try again.
+        //
+        // The only other way to reach us on this band is Cal's "pick a time"
+        // button, and only while Cal actually loaded (see calFailed above).
+        // Offer it as the way out when it is there; promise nothing when it
+        // is not — this used to say "or write to us directly", and there is
+        // no address anywhere on the site to write to.
+        // Looked up here, not via the CAL_LINK block's calWrap: that const is
+        // scoped to its own `if`, and would be a ReferenceError from this one.
+        const calBlock = document.getElementById('calDemo');
+        const calUp = !!calBlock && !calBlock.hidden;
+        const timedOut = err && err.name === 'AbortError';
         note.classList.add('is-error');
-        note.textContent = 'השליחה נכשלה. הפרטים נשמרו כאן. נסו שוב בעוד רגע.';
+        note.textContent = timedOut
+          ? (calUp
+              ? 'השליחה נתקעה. הפרטים נשמרו כאן. נסו שוב, או בחרו שעה להדגמה בכפתור שלמעלה.'
+              : 'השליחה נתקעה. הפרטים נשמרו כאן. נסו שוב בעוד רגע.')
+          : (calUp
+              ? 'השליחה נכשלה. הפרטים נשמרו כאן. נסו שוב בעוד רגע, או בחרו שעה להדגמה בכפתור שלמעלה.'
+              : 'השליחה נכשלה. הפרטים נשמרו כאן. נסו שוב בעוד רגע.');
+        // Nothing else moves focus on this path, so a polite status region
+        // could go unread. Land on the message: it is announced, and the
+        // retry button sits directly above it.
+        note.focus();
       } finally {
+        if (timeout) clearTimeout(timeout);
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitLabel; }
       }
     });
@@ -261,6 +332,14 @@
     '.rung', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
   ].join(', '));
 
+  // Tells the watchdog in each page's <head> that this file arrived and the
+  // reveal is being handled. Without it, a script.js that 404s or is dropped
+  // by a flaky connection would leave every headline, lead and check-list on
+  // the site at opacity 0 — the `.js` class hiding them is set inline, before
+  // this file is even requested. The watchdog drops that class if this
+  // attribute never appears, so the page degrades to plain visible text.
+  document.documentElement.setAttribute('data-reveal-ready', '');
+
   if ('IntersectionObserver' in window) {
     function splitIntoWords(el) {
       const walk = (node) => {
@@ -290,27 +369,38 @@
     // Groups the now-split words by their rendered line (via viewport
     // top) and gives every word on the same line the same delay, so
     // lines step in one after another instead of word-by-word.
+    //
+    // Every read is taken before any write. Interleaving them, as this used
+    // to, makes each getBoundingClientRect() flush the style change written
+    // for the previous word: 106 words across this page measured 17.8ms of
+    // forced reflow on the load path, against 0.6ms batched.
+    // Measures only, and hands back the writes to run later — so the caller
+    // can finish reading every element before the first style is set.
     function groupWordsByLine(el, stepMs) {
       const words = Array.from(el.querySelectorAll('.reveal-word'));
+      const tops = words.map((word) => Math.round(word.getBoundingClientRect().top));
       const lineTops = [];
-      words.forEach((word) => {
-        const top = Math.round(word.getBoundingClientRect().top);
+      const delays = tops.map((top) => {
         let line = lineTops.findIndex((t) => Math.abs(t - top) < 3);
         if (line === -1) {
           lineTops.push(top);
           line = lineTops.length - 1;
         }
-        word.style.transitionDelay = `${line * stepMs}ms`;
+        return line * stepMs;
       });
+      return () => words.forEach((word, i) => { word.style.transitionDelay = `${delays[i]}ms`; });
     }
 
-    lineRevealTargets.forEach((el) => {
-      splitIntoWords(el);
-      groupWordsByLine(el, 160);
-      // Words are now individually pre-hidden via .reveal-word — safe to
-      // unmask the container so they're ready for the observer below.
-      el.style.opacity = '1';
-    });
+    // Three passes, not one loop of three steps: splitting is a DOM write and
+    // measuring is a read, so doing them per element made every element's
+    // first measurement flush the previous element's rewritten text. Split
+    // everything, measure everything, then write everything.
+    lineRevealTargets.forEach((el) => splitIntoWords(el));
+    const grouped = Array.from(lineRevealTargets).map((el) => groupWordsByLine(el, 160));
+    grouped.forEach((apply) => apply());
+    // Words are now individually pre-hidden via .reveal-word — safe to
+    // unmask the containers so they're ready for the observer below.
+    lineRevealTargets.forEach((el) => { el.style.opacity = '1'; });
     const lineObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -401,7 +491,7 @@
       } catch (err) {
         ok = false;
       }
-      btn.textContent = ok ? 'הועתק' : 'ההעתקה נכשלה';
+      btn.textContent = ok ? 'הועתק' : 'לא הועתק. סמנו והעתיקו ידנית';
       btn.classList.toggle('is-copied', ok);
       setTimeout(() => {
         btn.textContent = label;
@@ -410,19 +500,32 @@
     });
   });
 
-  // FAQ accordion: one open at a time, smooth grid-rows expand (Petaron animation)
+  // FAQ accordion: one open at a time, smooth grid-rows expand (Petaron
+  // animation). A collapsed panel is 0fr tall but still laid out, so its
+  // contents stay reachable unless they are explicitly taken out — the third
+  // answer links to panel.html, and that link was tabbable while invisible.
+  // `inert` removes it from both the tab order and the accessibility tree;
+  // styles.css carries the visibility half for browsers without it.
   document.querySelectorAll('.faq-item').forEach((item) => {
     const btn = item.querySelector('.faq-btn');
+    const panel = item.querySelector('.faq-panel');
+    const setOpen = (open) => {
+      item.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      if (panel) panel.inert = !open;
+    };
+    setOpen(item.classList.contains('open'));
     btn.addEventListener('click', () => {
       const willOpen = !item.classList.contains('open');
       document.querySelectorAll('.faq-item.open').forEach((o) => {
         if (o !== item) {
           o.classList.remove('open');
           o.querySelector('.faq-btn').setAttribute('aria-expanded', 'false');
+          const p = o.querySelector('.faq-panel');
+          if (p) p.inert = true;
         }
       });
-      item.classList.toggle('open', willOpen);
-      btn.setAttribute('aria-expanded', String(willOpen));
+      setOpen(willOpen);
     });
   });
 })();

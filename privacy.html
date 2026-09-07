@@ -2,16 +2,50 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>document.documentElement.classList.add('js');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script>
+    document.documentElement.classList.add('js');
+    // styles.css hides every reveal target behind this class, and only
+    // script.js ever unhides them. If that file does not arrive — a 404, a
+    // dropped connection, a blocked request — the class would leave each
+    // page's headlines, leads and lists at opacity 0 with nothing coming to
+    // reveal them. script.js sets data-reveal-ready the moment it takes over;
+    // if it hasn't, give up the effect and show the page as plain text.
+    setTimeout(function () {
+      var d = document.documentElement;
+      if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js');
+    }, 3000);
+  </script>
   <meta name="description" content="טיוטת מדיניות הפרטיות של אורלי. טרם עברה בדיקה משפטית." />
   <title>אורלי · מדיניות פרטיות (טיוטה)</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=55" />
-  <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
+  <link rel="stylesheet" href="styles.css?v=20260907" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://orliclinic.com/privacy.html" />
+  <meta name="theme-color" content="#0f8a86" />
+
+  <!-- Link previews. PRODUCT.md's second audience reaches this site because
+       the decision-maker sends them a link, so a bare URL in WhatsApp or
+       email is a lost handoff. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="אורלי" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:url" content="https://orliclinic.com/privacy.html" />
+  <meta property="og:title" content="אורלי · מדיניות פרטיות (טיוטה)" />
+  <meta property="og:description" content="טיוטת מדיניות הפרטיות של אורלי. טרם עברה בדיקה משפטית." />
+  <meta property="og:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="אורלי · קביעת פגישה באתר המרפאה, ישר ליומן האופטימה" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="אורלי · מדיניות פרטיות (טיוטה)" />
+  <meta name="twitter:description" content="טיוטת מדיניות הפרטיות של אורלי. טרם עברה בדיקה משפטית." />
+  <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
   <meta name="robots" content="noindex" />
 </head>
 <body>
@@ -21,10 +55,10 @@
   <header class="nav">
     <div class="wrap">
       <div class="nav-pill">
-        <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
-        <nav class="nav-links" id="navMenu" aria-label="Primary">
+        <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html">ראשי</a>
           <a href="panel.html">מסך הניהול</a>
           <a href="about.html">אודות</a>
@@ -43,45 +77,56 @@
   </header>
 
   <main>
-    <section class="section" style="padding-block-start:64px; padding-block-end:24px">
+    <section class="section page-head page-head--short">
       <div class="wrap narrow">
         <p class="eyebrow">מדיניות פרטיות</p>
-        <h1 class="display" style="font-size:clamp(2rem, 4vw, 2.6rem)">מדיניות פרטיות <span class="ital">(טיוטה).</span></h1>
+        <h1 class="display display--page display--page-sm">מדיניות פרטיות <span class="ital">(טיוטה).</span></h1>
       </div>
     </section>
 
-    <section class="section" style="padding-block-start:0">
+    <section class="section section--flush-top">
       <div class="wrap narrow">
         <div class="notice-banner">
           <strong>זו טיוטת עבודה, לא מסמך משפטי סופי.</strong> העמוד הזה בנוי לפי קטגוריות הגילוי הנדרשות בתיקון 13 לחוק הגנת הפרטיות (בתוקף מ־14 באוגוסט 2025), עם המידע העובדתי שידוע לנו על המוצר. מקומות שמסומנים <code class="legal-todo">[להשלמה משפטית]</code> דורשים החלטה של עורך/ת דין לפני פרסום, לא ניחוש שלנו.
         </div>
 
-        <h2 class="display" style="font-size:1.4rem">איזה מידע נאסף, ולמה</h2>
+        <h2 class="display display--sub-sm">איזה מידע נאסף, ולמה</h2>
         <ul class="check-list check-list--plain">
           <li>שם, טלפון ואימייל של המטופל, כדי לקבוע ולאשר את הפגישה</li>
           <li>סוג הטיפול והמטפל/ת שנבחרו, כדי להעביר את הפגישה לאופטימה של המרפאה</li>
           <li>קוד אימות חד־פעמי שנשלח לאימייל, כדי לוודא שהמטופל הוא אכן מי שהוא טוען</li>
         </ul>
 
-        <h2 class="display" style="font-size:1.4rem; margin-top:36px">עוגיות ומעקב</h2>
-        <p class="section-lead">האתר הזה לא משתמש בעוגיות, לא בכלי אנליטיקס ולא בכל מנגנון מעקב אחר. אין שום מידע שנשמר בדפדפן של המבקר.</p>
-
-        <h2 class="display" style="font-size:1.4rem; margin-top:36px">הבסיס החוקי לאיסוף</h2>
-        <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: ניסוח הבסיס החוקי (הסכמה מול צורך לביצוע ההזמנה) צריך להיקבע מול עורך/ת דין, ובפרט לאור סיווג מידע על טיפול רפואי כ״מידע רגיש״ לפי החוק.</p>
-
-        <h2 class="display" style="font-size:1.4rem; margin-top:36px">למי מועבר המידע</h2>
+        <h2 class="display display--sub-sm display--spaced">עוגיות ומעקב</h2>
+        <!-- Facts only, verified against what the pages actually load
+             (script.js, and the font link in every <head>). This used to
+             say "no tracking mechanism whatsoever", which was untrue: two
+             third-party hosts receive a request on every page view. The
+             storage half of the old claim held and is kept. -->
+        <p class="section-lead">האתר הזה לא משתמש בעוגיות ולא בכלי אנליטיקס, ולא שומר מידע בדפדפן של המבקר. עם זאת, כל עמוד באתר טוען משאבים משני ספקים חיצוניים, וכל טעינה כזו חושפת להם את כתובת ה־IP של המבקר, את סוג הדפדפן ואת העמוד שממנו הגיע:</p>
         <ul class="check-list check-list--plain">
-          <li>ליומן האופטימה של המרפאה שבה נקבעת הפגישה, כדי שהפגישה תופיע אצלה</li>
-          <li>המידע לעולם לא מוצג בעמוד הציבורי של אתר המרפאה</li>
+          <li>Google Fonts, שממנו נטען הגופן של האתר</li>
+          <li>Cal.com, שמפעיל את חלון קביעת הדמו. פרטים שמזינים בחלון הזה מועברים ל־Cal.com ומטופלים לפי מדיניות הפרטיות שלהם</li>
         </ul>
 
-        <h2 class="display" style="font-size:1.4rem; margin-top:36px">כמה זמן המידע נשמר</h2>
+        <h2 class="display display--sub-sm display--spaced">הבסיס החוקי לאיסוף</h2>
+        <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: ניסוח הבסיס החוקי (הסכמה מול צורך לביצוע ההזמנה) צריך להיקבע מול עורך/ת דין, ובפרט לאור סיווג מידע על טיפול רפואי כ״מידע רגיש״ לפי החוק.</p>
+
+        <h2 class="display display--sub-sm display--spaced">למי מועבר המידע</h2>
+        <ul class="check-list check-list--plain">
+          <li>לאורלי, שמקבלת את פרטי הפגישה מהווידג׳ט ושולחת לאימייל של המטופל את קוד האימות ואת אישור הפגישה</li>
+          <li>ליומן האופטימה של המרפאה שבה נקבעת הפגישה, כדי שהפגישה תופיע אצלה</li>
+          <li>המידע לעולם לא מוצג בעמוד הציבורי של אתר המרפאה</li>
+          <li>באתר הזה: בקשת דמו מהטופס מועברת לצוות אורלי דרך Slack, וקביעת הדגמה מהחלון מתבצעת אצל Cal.com (ראו ״עוגיות ומעקב״ למעלה)</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">כמה זמן המידע נשמר</h2>
         <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: תקופת השמירה ומדיניות המחיקה טרם נקבעו רשמית.</p>
 
-        <h2 class="display" style="font-size:1.4rem; margin-top:36px">זכויות המטופל</h2>
+        <h2 class="display display--sub-sm display--spaced">זכויות המטופל</h2>
         <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: פירוט זכות העיון, התיקון, המחיקה והניוד, ואיך לממש אותן בפועל.</p>
 
-        <h2 class="display" style="font-size:1.4rem; margin-top:36px">ממונה הגנת פרטיות</h2>
+        <h2 class="display display--sub-sm display--spaced">ממונה הגנת פרטיות</h2>
         <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: לפי תיקון 13, מינוי ממונה הגנת פרטיות עשוי להיות חובה לארגון שעיסוקו העיקרי הוא עיבוד מידע רגיש. זה שיקול שצריך להיבדק ספציפית עבור אורלי, לא רק עבור המרפאות הלקוחות.</p>
       </div>
     </section>
@@ -91,12 +136,12 @@
   <footer class="footer">
     <div class="wrap footer-inner">
       <div class="footer-brand">
-        <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
-      <nav class="footer-cols" aria-label="Footer">
+      <nav class="footer-cols" aria-label="ניווט תחתון">
         <div class="footer-col">
           <h3 class="footer-col-h">מוצר</h3>
           <a href="index.html#roadmap">מפת דרכים</a>
@@ -126,6 +171,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=39"></script>
+  <script src="script.js?v=20260907"></script>
 </body>
 </html>

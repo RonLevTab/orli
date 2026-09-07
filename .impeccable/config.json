@@ -11,6 +11,42 @@
         ],
         "createdAt": "2026-09-01T20:50:45.548Z",
         "reason": "Incumbent .rung design, not introduced this session. The 4px border-top is the shipped-vs-planned signal (solid --teal vs dashed --line) added in the colorize pass to fix an honesty problem the critique raised; verified rendering at 1440 and 390 with the stripe following the 18px radius cleanly. Craft-floor's accent-border ban covers border-left/right on cards, not a top rule encoding state."
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "styles.css"
+        ],
+        "createdAt": "2026-09-07T16:20:59.782Z",
+        "reason": "Not a card accent: .bc-appt (styles.css:367) is an appointment block in the Optima day-view mock. The colored leading edge is the calendar-app convention being reproduced, and .bc-appt--site recolors it to teal to mark the booking that arrived from the website - the journey animation's whole payoff. Sole side-tab match in this file."
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "privacy.html"
+        ],
+        "createdAt": "2026-09-07T17:30:58.716Z",
+        "reason": "Detector artifact, not a flat hierarchy: in degraded mode (no css-tree) it reads both bounds of the h1's inline clamp() as two separate sizes and sees only inline styles, so body (16px) and .section-lead (17.9px) from styles.css are invisible to it. Real ladder on this page: 16 -> 17.9 -> 22.4 -> 32-41.6px, every step >= the 1.25 it asks for. Its own reported ratio exceeds its own threshold."
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "about.html"
+        ],
+        "createdAt": "2026-09-07T17:30:59.111Z",
+        "reason": "Detector artifact, not a flat hierarchy: in degraded mode (no css-tree) it reads both bounds of the h1's inline clamp() as two separate sizes and sees only inline styles, so body (16px) and .section-lead (17.9px) from styles.css are invisible to it. Real ladder on this page: 16 -> 17.9 -> 22.4 -> 32-41.6px, every step >= the 1.25 it asks for. Its own reported ratio exceeds its own threshold."
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "integration.html"
+        ],
+        "createdAt": "2026-09-07T17:30:59.368Z",
+        "reason": "Detector artifact, not a flat hierarchy: in degraded mode (no css-tree) it reads both bounds of the h1's inline clamp() as two separate sizes and sees only inline styles, so body (16px) and .section-lead (17.9px) from styles.css are invisible to it. Real ladder on this page: 16 -> 17.9 -> 22.4 -> 32-41.6px, every step >= the 1.25 it asks for. Its own reported ratio exceeds its own threshold."
       }
     ]
   }

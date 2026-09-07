@@ -2,16 +2,50 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>document.documentElement.classList.add('js');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script>
+    document.documentElement.classList.add('js');
+    // styles.css hides every reveal target behind this class, and only
+    // script.js ever unhides them. If that file does not arrive — a 404, a
+    // dropped connection, a blocked request — the class would leave each
+    // page's headlines, leads and lists at opacity 0 with nothing coming to
+    // reveal them. script.js sets data-reveal-ready the moment it takes over;
+    // if it hasn't, give up the effect and show the page as plain text.
+    setTimeout(function () {
+      var d = document.documentElement;
+      if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js');
+    }, 3000);
+  </script>
   <meta name="description" content="מדריך טכני קצר להטמעת אורלי באתר המרפאה: קטע הקוד, מה הוא נוגע ומה לא, ואיך אורלי שומרת על פרטי המטופלים." />
   <title>אורלי · מדריך טכני להטמעה</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=55" />
-  <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
+  <link rel="stylesheet" href="styles.css?v=20260907" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://orliclinic.com/integration.html" />
+  <meta name="theme-color" content="#0f8a86" />
+
+  <!-- Link previews. PRODUCT.md's second audience reaches this site because
+       the decision-maker sends them a link, so a bare URL in WhatsApp or
+       email is a lost handoff. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="אורלי" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:url" content="https://orliclinic.com/integration.html" />
+  <meta property="og:title" content="אורלי · מדריך טכני להטמעה" />
+  <meta property="og:description" content="מדריך טכני קצר להטמעת אורלי באתר המרפאה: קטע הקוד, מה הוא נוגע ומה לא, ואיך אורלי שומרת על פרטי המטופלים." />
+  <meta property="og:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="אורלי · קביעת פגישה באתר המרפאה, ישר ליומן האופטימה" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="אורלי · מדריך טכני להטמעה" />
+  <meta name="twitter:description" content="מדריך טכני קצר להטמעת אורלי באתר המרפאה: קטע הקוד, מה הוא נוגע ומה לא, ואיך אורלי שומרת על פרטי המטופלים." />
+  <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
 </head>
 <body>
   <span id="top" aria-hidden="true"></span>
@@ -20,10 +54,10 @@
   <header class="nav">
     <div class="wrap">
       <div class="nav-pill">
-        <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
-        <nav class="nav-links" id="navMenu" aria-label="Primary">
+        <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html">ראשי</a>
           <a href="panel.html">מסך הניהול</a>
           <a href="about.html">אודות</a>
@@ -42,18 +76,18 @@
   </header>
 
   <main>
-    <section class="section" style="padding-block-start:64px; padding-block-end:36px">
+    <section class="section page-head">
       <div class="wrap narrow">
         <p class="eyebrow">התאמה אישית ומדריך טכני</p>
-        <h1 class="display" style="font-size:clamp(2rem, 4vw, 2.9rem)">אורלי, <span class="ital">בעיצוב שלכם.</span></h1>
-        <p class="section-lead" style="margin-top:16px; max-width:56ch">הכול כאן: איך להתאים את המראה והמיילים לאורלי בלי לגעת בקוד, ואיך מי שאחראי על האתר מוסיף את קטע ההטמעה. סקרנים? תמשיכו לקרוא. רק רוצים לשלוח את זה למישהו? יש קישור למטה.</p>
+        <h1 class="display display--page">אורלי, <span class="ital">בעיצוב שלכם.</span></h1>
+        <p class="section-lead section-lead--intro">הכול כאן: איך להתאים את המראה והמיילים לאורלי בלי לגעת בקוד, ואיך מי שאחראי על האתר מוסיף את קטע ההטמעה. סקרנים? תמשיכו לקרוא. רק רוצים לשלוח את זה למישהו? יש קישור למטה.</p>
       </div>
     </section>
 
     <!-- BRANDING / ADMIN PANEL -->
     <section class="section alt" id="branding">
       <div class="wrap narrow">
-        <h2 class="display" style="font-size:1.7rem">עיצוב אישי, <span class="ital">בלי קוד.</span></h2>
+        <h2 class="display display--sub">עיצוב אישי, <span class="ital">בלי קוד.</span></h2>
         <p class="section-lead">בלוח ניהול פשוט אתם בוחרים איך הוידג׳ט נראה ומה כתוב במיילים שהמטופלים מקבלים, בלי לגעת בשום קטע קוד.</p>
         <div class="swatches" aria-hidden="true">
           <span style="background:#0f8a86"></span>
@@ -74,25 +108,25 @@
     <!-- EMBED -->
     <section class="section">
       <div class="wrap narrow">
-        <h2 class="display" style="font-size:1.7rem">קטע ההטמעה</h2>
+        <h2 class="display display--sub">קטע ההטמעה</h2>
         <p class="section-lead">שורת קוד אחת, בכל מקום בעמוד. ברירת המחדל היא בועה צפה בפינת המסך, שנפתחת לחלון קביעת פגישה מרחף.</p>
-        <div class="code-card" style="margin-top:8px">
+        <div class="code-card code-card--snug">
           <div class="code-head">
             <span class="dot"></span><span class="dot"></span><span class="dot"></span>
             <span class="code-file">your-clinic.co.il</span>
             <button type="button" class="code-copy" data-copy-code>העתקת הקוד</button>
           </div>
-<pre class="code-body"><code><span class="c-com">&lt;!-- Orli booking widget --&gt;</span>
+<pre class="code-body" tabindex="0" role="region" aria-label="קטע ההטמעה של אורלי"><code><span class="c-com">&lt;!-- Orli booking widget --&gt;</span>
 <span class="c-tag">&lt;script</span>
   <span class="c-attr">src</span>=<span class="c-str">"https://cdn.orliclinic.com/embed.js"</span>
   <span class="c-attr">data-clinic-id</span>=<span class="c-str">"your-clinic"</span>
 <span class="c-tag">&gt;&lt;/script&gt;</span></code></pre>
         </div>
-        <p style="margin-top:22px; color:var(--ink-soft)">רוצים אותו מוטמע בתוך העמוד במקום כבועה צפה? מוסיפים <code style="direction:ltr; display:inline-block">data-mode="inline"</code> ו־<code style="direction:ltr; display:inline-block">data-target-id</code> שמצביע לאלמנט שבו הוידג׳ט יופיע.</p>
+        <p class="section-note">רוצים אותו מוטמע בתוך העמוד במקום כבועה צפה? מוסיפים <code class="code-inline">data-mode="inline"</code> ו־<code class="code-inline">data-target-id</code> שמצביע לאלמנט שבו הוידג׳ט יופיע.</p>
         <ul class="check-list">
-          <li>אפשר להתאים צבע ראשי, לוגו וגופן: <code style="direction:ltr; display:inline-block">data-primary-color</code> · <code style="direction:ltr; display:inline-block">data-logo-url</code> · <code style="direction:ltr; display:inline-block">data-font-family</code></li>
+          <li>אפשר להתאים צבע ראשי, לוגו וגופן: <code class="code-inline">data-primary-color</code> · <code class="code-inline">data-logo-url</code> · <code class="code-inline">data-font-family</code></li>
           <li>עובד עם כל אתר מרפאה, בלי תהליך בנייה ובלי תלות בפריימוורק כלשהו</li>
-          <li>מזהה המרפאה (<code style="direction:ltr; display:inline-block">data-clinic-id</code>) נעול למרפאה שלכם בלבד ולא חושף שום מידע רגיש</li>
+          <li>מזהה המרפאה (<code class="code-inline">data-clinic-id</code>) נעול למרפאה שלכם בלבד ולא חושף שום מידע רגיש</li>
         </ul>
       </div>
     </section>
@@ -100,10 +134,10 @@
     <!-- SCOPE -->
     <section class="section alt">
       <div class="wrap narrow">
-        <h2 class="display" style="font-size:1.7rem">מה זה נוגע, <span class="ital">ומה לא.</span></h2>
+        <h2 class="display display--sub">מה זה נוגע, <span class="ital">ומה לא.</span></h2>
         <ul class="check-list">
           <li>שורת קוד אחת, שום דבר להתקין ושום דבר לתחזק בצד שלכם</li>
-          <li>רץ בתוך iframe מבודד (<code style="direction:ltr; display:inline-block">sandbox</code>) עם ההרשאות המינימליות הדרושות לו בלבד</li>
+          <li>רץ בתוך iframe מבודד (<code class="code-inline">sandbox</code>) עם ההרשאות המינימליות הדרושות לו בלבד</li>
           <li>לא נוגע בעיצוב, בסקריפטים או בשאר האתר שלכם, מעבר לבועה או לאזור שבו הוא מוטמע</li>
         </ul>
       </div>
@@ -112,7 +146,7 @@
     <!-- DATA & SECURITY -->
     <section class="section">
       <div class="wrap narrow">
-        <h2 class="display" style="font-size:1.7rem">נתונים <span class="ital">ופרטיות.</span></h2>
+        <h2 class="display display--sub">נתונים <span class="ital">ופרטיות.</span></h2>
         <p class="section-lead">פרטי מטופלים לעולם לא נחשפים בעמוד הציבורי שלכם. הם עוברים ישירות בין המטופל לאורלי, בתוך ה־iframe המבודד.</p>
         <ul class="check-list">
           <li>אימות מתבצע בקוד חד־פעמי שנשלח לאימייל של המטופל, לפני שנקבעת פגישה</li>
@@ -125,7 +159,7 @@
     <!-- OPTIMA SYNC -->
     <section class="section alt">
       <div class="wrap narrow">
-        <h2 class="display" style="font-size:1.7rem">חיבור <span class="ital">לאופטימה.</span></h2>
+        <h2 class="display display--sub">חיבור <span class="ital">לאופטימה.</span></h2>
         <p class="section-lead">אורלי כותבת ישירות ליומן האופטימה שלכם ברגע שפגישה נקבעת, בזמן אמת ולא כסנכרון לילי. הפגישה פשוט מופיעה אצלכם.</p>
       </div>
     </section>
@@ -133,14 +167,14 @@
     <!-- MULTI-CLINIC -->
     <section class="section">
       <div class="wrap narrow">
-        <h2 class="display" style="font-size:1.7rem">יותר מסניף <span class="ital">אחד?</span></h2>
+        <h2 class="display display--sub">יותר מסניף <span class="ital">אחד?</span></h2>
         <p class="section-lead">כל מרפאה מקבלת יומן משלה מאותה התקנה, לפי מזהה המרפאה בקטע ההטמעה. אם יש לכם כמה סניפים, כל אחד מהם מוטמע בנפרד עם המזהה שלו.</p>
       </div>
     </section>
 
-    <section class="section" style="padding-block-end:80px">
+    <section class="section section--tail">
       <div class="wrap narrow center">
-        <p class="section-lead" style="margin:0 0 18px">שאלה שלא נענתה כאן?</p>
+        <p class="section-lead section-lead--cta">שאלה שלא נענתה כאן?</p>
         <a href="index.html#contact" class="btn-dark lg">דברו איתנו</a>
       </div>
     </section>
@@ -150,12 +184,12 @@
   <footer class="footer">
     <div class="wrap footer-inner">
       <div class="footer-brand">
-        <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
-      <nav class="footer-cols" aria-label="Footer">
+      <nav class="footer-cols" aria-label="ניווט תחתון">
         <div class="footer-col">
           <h3 class="footer-col-h">מוצר</h3>
           <a href="index.html#roadmap">מפת דרכים</a>
@@ -184,6 +218,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=39"></script>
+  <script src="script.js?v=20260907"></script>
 </body>
 </html>

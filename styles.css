@@ -48,7 +48,10 @@ p { margin: 0 0 1em; }
 a { color: inherit; text-decoration: none; }
 em { font-style: normal; color: var(--teal); }
 
-.wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+/* Side padding is max(24px, notch): a landscape phone with viewport-fit=cover
+   would otherwise run body text under the sensor housing. Zero everywhere
+   else, so this is the plain 24px on every desktop and portrait screen. */
+.wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 max(24px, env(safe-area-inset-right)) 0 max(24px, env(safe-area-inset-left)); }
 .narrow { max-width: 780px; }
 .center { text-align: center; margin-inline: auto; }
 
@@ -67,7 +70,7 @@ h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
   text-transform: uppercase; color: var(--teal-deep);
   margin-bottom: 18px;
 }
-.eyebrow.light { color: rgba(255,255,255,.85); }
+.eyebrow.light { color: #fff; }
 /* Hebrew has no case, so wide Latin-style tracking just adds drag; ease it off. */
 html[lang="he"] .eyebrow,
 html[lang="he"] .scrolly-idx,
@@ -127,14 +130,11 @@ html[lang="he"] .ladder-note { font-style: normal; }
 .btn-cream:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
-.util-right { display: flex; gap: 10px; align-items: center; }
-.util-right a:hover { color: #fff; }
-.util-sep { opacity: .4; }
-
 /* ---------- floating pill nav ---------- */
 /* Flat top bar: connected to the top edge (not a floating pill) and thinner. */
 .nav {
   position: sticky; top: 0; z-index: 60;
+  padding-top: env(safe-area-inset-top);
   background: color-mix(in srgb, var(--cream) 86%, transparent);
   backdrop-filter: saturate(1.5) blur(14px);
   border-bottom: 1px solid var(--line);
@@ -146,12 +146,14 @@ html[lang="he"] .ladder-note { font-style: normal; }
 .brand { display: inline-flex; align-items: center; }
 .brand-logo { display: block; width: auto; height: 38px; object-fit: contain; }
 .brand-logo--footer { height: 44px; }
-html[lang="he"] .brand-logo--en,
-html:not([lang="he"]) .brand-logo--he { display: none; }
+/* The English wordmark and the rules that hid it are gone. It was display:none
+   on every page (the site is Hebrew-only, permanently — see PRODUCT.md), which
+   does not stop the download: 242 KB fetched twice per load to paint nothing. */
 .nav-toggle { display: none; }
 .nav-links { display: flex; gap: 26px; flex: 1; justify-content: center; }
 .nav-links a { color: var(--ink-soft); font-weight: 500; font-size: .93rem; transition: color .15s; }
-.nav-links a:hover { color: var(--teal); }
+/* Deep teal, not teal: #0f8a86 on cream is 3.8:1, under AA for 15px text. */
+.nav-links a:hover { color: var(--teal-deep); }
 .nav-cta { display: flex; align-items: center; gap: 8px; }
 
 /* ---------- hero ---------- */
@@ -220,19 +222,45 @@ html[dir="rtl"] .hero-veil {
 .dot { width: 11px; height: 11px; border-radius: 50%; background: #cdbfa8; }
 .dot:nth-child(1){ background:#e6a19a;} .dot:nth-child(2){ background:#e8ca8f;} .dot:nth-child(3){ background:#a7c7a0;}
 .widget-body { padding: 22px 20px 24px; }
-.chip { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); font-size: .84rem; color: var(--ink-soft); }
-.chip.active { background: var(--teal); color: #f2fffe; border-color: var(--teal); font-weight: 600; }
-.slot { text-align: center; padding: 10px 0; border-radius: 10px; border: 1px solid var(--line); font-size: .9rem; font-variant-numeric: tabular-nums; }
-.slot-on { background: color-mix(in srgb, var(--teal) 14%, transparent); border-color: var(--teal); color: var(--teal); font-weight: 700; }
-.slot.muted { opacity: .38; text-decoration: line-through; }
-.widget-foot { text-align: center; font-size: .78rem; color: var(--ink-soft); margin: 13px 0 0; }
+/* The frozen confirm step in the hero frame sits tighter than the demo. */
+.widget-body--hero { padding: 24px 16px 16px; }
 
 /* ---------- sections ---------- */
 .section { padding: 70px 0; }
 .section.alt { background: var(--cream-2); }
 .section-head { max-width: 760px; margin: 0 auto 56px; text-align: center; }
 .section-lead { font-size: 1.12rem; color: var(--ink-soft); }
-.problem h2 { margin-inline: auto; }
+
+/* Page-level modifiers. These used to be inline style="" attributes repeated
+   across the five pages; each name says what the block is, so the number
+   lives here once. */
+.page-head { padding-block: 64px 36px; }
+.page-head--tight { padding-block-end: 20px; }
+.page-head--short { padding-block-end: 24px; }
+.section--flush-top { padding-block-start: 0; }
+.section--tail { padding-block-end: 80px; }
+/* index.html's "from the clinic's site straight into the calendar" block
+   runs straight into the demo below it, so it has no bottom padding and a
+   tighter heading. */
+.section--bridge { padding: 52px 0 0; }
+.section-head--tight { margin-bottom: 22px; }
+.section-lead--close { margin-top: 10px; }
+.section-lead--intro { margin-top: 16px; max-width: 56ch; }
+.section-lead--intro-wide { max-width: 58ch; }
+.section-lead--cta { margin: 0 0 18px; }
+.section-note { margin-top: 22px; color: var(--ink-soft); }
+.display--page { font-size: clamp(2rem, 4vw, 2.9rem); }
+.display--page-sm { font-size: clamp(2rem, 4vw, 2.6rem); }
+.display--sub { font-size: 1.7rem; }
+.display--sub-sm { font-size: 1.4rem; }
+.display--spaced { margin-top: 36px; }
+/* At 22px regular the teal turn of phrase is no longer large text, and
+   #0f8a86 on cream is 3.8:1 — deep teal keeps the emphasis readable. */
+.display--sub-sm .ital { color: var(--teal-deep); }
+/* An attribute name quoted mid-sentence: LTR token inside RTL prose. */
+.code-inline { direction: ltr; display: inline-block; }
+/* The demo form's honeypot: bots fill it, people never see it. */
+.honeypot { display: none; }
 
 /* ===== From the clinic's site straight into the calendar =====
    One frame plays the journey (.bridge-movie). script.js drives the states:
@@ -378,11 +406,32 @@ html[dir="rtl"] .hero-veil {
 @keyframes bridge-pop { 0% { opacity: 0; transform: scale(.92); } 100% { opacity: 1; transform: none; } }
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
-/* Top/bottom padding so the first and last steps can scroll to the centre. */
-.scrolly-steps { display: flex; flex-direction: column; padding-block: 32vh; }
+/* The pinned columns carry their own lead-in, so the standard 56px under the
+   heading stacked on top of it and pushed the whole demo down the page.
+   Desktop only: below 920px the sticky is static and the steps have no
+   lead-in, so 20px put the card closer to the heading than the tabs are to
+   the card — the block boundary tighter than the gaps inside it. */
+@media (min-width: 921px) {
+  .scrolly .section-head { margin-bottom: 20px; }
+}
+/* Lead-in so step 01 is still travelling when the widget pins beside it, and
+   a tail so the last step can reach the activation band.
+   The lead-in used to be 32vh at the top as well, which opened a 288px void
+   directly under the section heading — and since the pinned widget only
+   offsets itself by ~110px, the two columns visibly started on different
+   planes. 14vh brings the first step down to where the widget starts, and
+   scrolly.js's activation band moved up to match (see its rootMargin). */
+.scrolly-steps { display: flex; flex-direction: column; padding-block: 14vh 32vh; }
+/* Grid items default to min-width:auto, so anything too wide inside a column
+   widens the column instead of overflowing it — at 320px the six-tab stepper
+   (314px) pushed the whole section 18px off the page's edge. */
+.scrolly-steps, .scrolly-sticky { min-width: 0; }
+/* Steps not being read sit back at .65, not .3: at .3 the step copy was
+   under 2:1 against the cream, unreadable for anyone glancing ahead. .65
+   keeps the headings above 4.5:1 while the current step still stands out. */
 .scrolly-step {
   min-height: 40vh; display: flex; flex-direction: column; justify-content: center;
-  opacity: .3; transform: translateY(8px);
+  opacity: .65; transform: translateY(8px);
   transition: opacity .4s ease, transform .4s ease;
 }
 .scrolly-step.is-active { opacity: 1; transform: none; }
@@ -410,24 +459,15 @@ html[dir="rtl"] .hero-veil {
 /* Bare frame: no fake browser bar, just the rounded widget card. */
 .demo-browser--bare { border-radius: 18px; }
 
-/* live demo (legacy static layout, still used by CSS below) */
-.demo-stage { display: flex; flex-direction: column; align-items: center; }
 .demo-browser { max-width: 460px; width: 100%; box-shadow: var(--shadow-lg); }
-.demo-browser [data-orli-widget] { display: block; }
-.section.scrolly { padding-bottom: 140px; }
+/* The widget fills the frame; scrolly.js sizes the frame to the tallest scene. */
+.demo-browser [data-orli-widget] { display: block; width: 100%; height: 100%; }
+/* The heading above already carries the section's top padding. */
+.section.scrolly { padding-top: 24px; padding-bottom: 140px; }
 /* Mobile-only step tabs (see @media (max-width: 920px) below): a tap-through
    substitute for the desktop scroll-jack, since a pinned widget and scrolling
    step text can't share one narrow column without overlapping. */
 .scrolly-tabs { display: none; }
-
-/* comparisonn */
-.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.compare-col.without { background: var(--surface); }
-.compare-col.with { background: linear-gradient(160deg, color-mix(in srgb, var(--teal) 10%, var(--surface)), var(--surface)); border-color: color-mix(in srgb, var(--teal) 35%, var(--line)); box-shadow: var(--shadow); }
-.compare-col.with .compare-head { color: var(--teal); }
-.compare-col.without li::before { content: "✕"; position: absolute; inset-inline-start: 0; top: -1px; color: #a8503f; font-weight: 700; }
-.compare-col.with li::before { content: "✓"; position: absolute; inset-inline-start: 0; top: -1px; color: var(--teal); font-weight: 800; }
-.compare-col.with li { color: var(--ink); }
 
 /* embed */
 .swatches { display: flex; gap: 11px; margin: 22px 0 4px; }
@@ -440,8 +480,10 @@ html[dir="rtl"] .hero-veil {
 /* Disclosure, not benefit: privacy.html lists what is collected about the
    reader, and a teal check-mark reads as a feature they are being sold. */
 .check-list--plain li::before { content: "•"; color: var(--ink-soft); font-weight: 400; }
+.check-list--center { justify-items: center; justify-content: center; }
 .cta-form input.is-invalid { border-color: #f0b8ae; box-shadow: 0 0 0 3px rgba(240, 184, 174, .25); }
 .code-card { border-radius: var(--radius); overflow: hidden; border: 1px solid #1c332f; box-shadow: var(--shadow-lg); background: #0c1a17; }
+.code-card--snug { margin-top: 8px; }
 .code-head { display: flex; align-items: center; gap: 7px; padding: 13px 16px; background: #111f1c; border-bottom: 1px solid #1c332f; }
 .code-head .dot { background: #33524c; }
 .code-file { margin-inline-start: 10px; font-size: .82rem; color: #7f9a94; }
@@ -460,9 +502,6 @@ html[dir="rtl"] .hero-veil {
 .code-body { margin: 0; padding: 24px 22px; overflow-x: auto; font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; font-size: .9rem; line-height: 1.8; color: #d6e8e3; }
 .c-com { color: #6a8a84; } .c-tag { color: #f5a3b0; } .c-attr { color: #4fd6c6; } .c-str { color: #f2cf7a; }
 
-.sec-ico { width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(15, 138, 134, 0.1); color: var(--teal); margin-bottom: 14px; }
-.sec-ico svg { width: 22px; height: 22px; }
-
 /* roadmap ladder */
 .ladder { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .rung { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; border-top: 4px solid var(--line); }
@@ -473,40 +512,29 @@ html[dir="rtl"] .hero-veil {
 .rung-tag { display: inline-block; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 3px 11px; border-radius: 999px; margin-bottom: 14px; }
 .rung.done .rung-tag { background: color-mix(in srgb, var(--teal) 15%, transparent); color: var(--teal-deep); }
 .rung.next .rung-tag { background: var(--cream-2); color: var(--ink-soft); border: 1px dashed var(--line); }
-.rung.soon .rung-tag { background: var(--cream-2); color: var(--ink-soft); }
 .rung h3 { font-family: var(--serif); font-weight: 500; font-size: 1.15rem; }
 .rung p { color: var(--ink-soft); font-size: .93rem; margin: 0; }
 .ladder-note { text-align: center; max-width: 64ch; margin: 36px auto 0; color: var(--ink-soft); font-family: var(--serif); font-style: italic; font-size: 1.08rem; }
 
-/* faq */
-.faq { display: grid; gap: 12px; }
-.faq-item { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 22px; box-shadow: var(--shadow-sm); }
-.faq-item summary {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  cursor: pointer; list-style: none; padding: 18px 0; font-weight: 600; font-size: 1.05rem;
-}
-.faq-item summary::-webkit-details-marker { display: none; }
-.faq-item summary::after { content: "+"; color: var(--teal); font-size: 1.4rem; font-weight: 400; transition: transform .2s; }
-.faq-item[open] summary::after { transform: rotate(45deg); }
-.faq-tag { font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); background: var(--cream-2); padding: 3px 10px; border-radius: 999px; margin-inline-start: auto; }
-.faq-item summary span:first-child { flex: 1; }
-.faq-item p { color: var(--ink-soft); margin: 0 0 20px; max-width: 62ch; }
-
-/* cta band — teal full bleed */
-.cta-band { background: linear-gradient(155deg, var(--teal-deep), var(--teal)); color: #f3fffd; padding: 74px 0; }
+/* cta band — teal full bleed.
+   White on #0f8a86 is 4.2:1, so the light end of the band is pulled a fifth
+   of the way toward deep teal (≈#0e817d, 4.7:1 with white) and the copy on
+   it is solid white rather than the .78–.86 alphas it wore before, which
+   fell to 4.0:1 and under. Hierarchy comes from size and weight instead. */
+.cta-band { background: linear-gradient(155deg, var(--teal-deep), color-mix(in srgb, var(--teal) 80%, var(--teal-deep))); color: #fff; padding: 74px 0; }
 .cta-band .display { color: #fff; }
 .cta-band .display .ital { color: #bff3ec; }
-.cta-lead { font-size: 1.14rem; color: rgba(255,255,255,.86); max-width: 46ch; margin-inline: auto; }
+.cta-lead { font-size: 1.14rem; color: #fff; max-width: 46ch; margin-inline: auto; }
 /* Two ways in: book a slot straight into the calendar, or leave details.
    The band is a flex column of centred blocks, so [hidden] has to beat the
    button's own display to actually hide the Cal.com block. */
 .cta-book { margin-top: 30px; }
 .cta-book[hidden] { display: none !important; }
-.cta-or { margin: 18px 0 0; font-size: .92rem; color: rgba(255,255,255,.78); }
+.cta-or { margin: 18px 0 0; font-size: .92rem; color: #fff; }
 .cta-book + .cta-form { margin-top: 12px; }
 .cta-form { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: flex-end; margin-top: 30px; }
 .field { text-align: start; }
-.field label { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; color: rgba(255,255,255,.85); margin-bottom: 6px; }
+.field label { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .04em; color: #fff; margin-bottom: 6px; }
 /* Opaque fill, not translucent white over a gradient: with an alpha fill the
    placeholder measured 4.21:1 at the dark end of the band and 2.73:1 at the
    light end, and even the typed value fell to 3.48:1. One fixed backdrop makes
@@ -520,7 +548,7 @@ html[dir="rtl"] .hero-veil {
 .form-note.is-error { background: rgba(225, 29, 72, .55); }
 
 /* footer */
-.footer { border-top: 1px solid var(--line); background: var(--cream-2); padding: 60px 0 30px; }
+.footer { border-top: 1px solid var(--line); background: var(--cream-2); padding: 60px 0 max(30px, env(safe-area-inset-bottom)); }
 .footer-inner { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
 .footer-brand { max-width: 300px; }
 .footer-brand p { color: var(--ink-soft); font-size: .94rem; margin-top: 12px; }
@@ -528,7 +556,7 @@ html[dir="rtl"] .hero-veil {
 .footer-col { display: flex; flex-direction: column; gap: 10px; }
 .footer-col-h { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-soft); margin: 0 0 4px; }
 .footer-col a { color: var(--ink); font-size: .94rem; }
-.footer-col a:hover { color: var(--teal); }
+.footer-col a:hover { color: var(--teal-deep); }
 .footer-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
 
 /* ---------- responsive ---------- */
@@ -614,15 +642,49 @@ html[dir="rtl"] .hero-veil {
   }
   .nav-pill.is-open .nav-links a:hover { background: var(--cream-2); color: var(--teal-deep); }
 }
+/* Phone header. Measured at 375px: wordmark 121 + two 24px gaps + the 44px
+   toggle + a 127px CTA came to 340px inside a 312px row, so the CTA hung
+   3px past the viewport's edge and gave every page a horizontal scrollbar.
+   Tighter gaps, a smaller mark and a compact pill bring the row to ~268px. */
+@media (max-width: 480px) {
+  .nav-pill { gap: 12px; }
+  .brand-logo { height: 32px; }
+  .nav-cta { flex: none; }
+  .nav-cta .btn-dark { padding: 9px 14px; font-size: .9rem; }
+}
 @media (max-width: 560px) {
-  .utility-inner { font-size: .74rem; }
    .ladder{ grid-template-columns: 1fr; }
   .section { padding: 48px 0; }
   .field input { min-width: 0; width: 100%; }
   .cta-form { flex-direction: column; align-items: stretch; }
 }
+/* Reduced motion: movement goes, fades stay. The old rule killed every
+   animation and transition on the page with one `*`, which also removed the
+   opacity fades that tell a keyboard or screen-magnifier visitor that
+   something changed — a FAQ answer appearing, a step becoming current.
+   Each override below names the rule it tempers. */
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+  /* Scroll reveal: no rise, no blur, a short fade. */
+  .reveal-word, .display .reveal-word { transform: none; filter: none; transition: opacity .3s ease; }
+  .js .rung, .js .code-card, .js .cmp-table, .js .swatches, .js .notice-banner, .js .section-divider { transform: none; transition: opacity .3s ease; }
+  /* Hero copy and the bridge film: script.js already shows the film's
+     finished frame; these stop the CSS half from travelling there. */
+  .hero-copy > * { animation: none; }
+  .bm-shade, .bm-cal, .bs-backdrop, .bs-launcher, .bridge-widget, .bw-slots span, .bw-pick, .bw-confirm, .bc-appt { transition: none; animation: none; }
+  .bridge-movie .bm-cal { transform: translate(-50%, -50%); }
+  .bridge-site.is-tapping .bs-launcher--pill, .bridge-site.is-tapping .bs-launcher--pill .bw-tap,
+  .bw-target.is-picking .bw-tap, .bridge-site.is-confirmed .bw-check, .bridge-site.is-confirmed .bw-check::after,
+  .bc-appt.is-landed { animation: none; }
+  /* Demo steps: current one fades in place instead of rising. */
+  .scrolly-step { transform: none; transition: opacity .2s ease; }
+  .scrolly-step.is-active { animation: none; }
+  /* Controls: no lift on hover, no rotating plus, no ping. */
+  .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+  .faq-plus, .faq-item.open .faq-plus { transition: none; }
+  .faq-item.open .faq-ring { animation: none; }
+  .faq-panel, .faq-panel-inner { transition: none; }
+  .nav-toggle-bar { transition: none; }
 }
 
 /* ===== Scroll reveal (see script.js) =====
@@ -680,12 +742,6 @@ html[dir="rtl"] .hero-veil {
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--teal) 85%, transparent) 50%, transparent);
 }
 
-.hiw-inner { height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 28px 22px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow-sm); }
-.hiw-ico { display: grid; place-items: center; width: 46px; height: 46px; font-size: 1.4rem; border-radius: 12px; border: 1px solid var(--line); background: var(--cream-2); }
-.hiw-inner h3 { font-family: var(--serif); font-weight: 500; font-size: 1.18rem; margin: 4px 0 0; }
-.hiw-inner p { color: var(--ink-soft); font-size: .95rem; margin: 0; }
-.hiw-chips { margin-top: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; padding-top: 8px; }
-
 /* ===== Comparison table (Petaron BeforeAfterTable) ===== */
 .cmp-table { max-width: 900px; margin: 0 auto; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
 .cmp-thead { display: grid; grid-template-columns: 1fr 1fr; }
@@ -713,11 +769,15 @@ html[dir="rtl"] .hero-veil {
 .faq-q .faq-tag { margin-inline-start: auto; font-size: .64rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
 .faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s ease; }
 .faq-item.open .faq-panel { grid-template-rows: 1fr; }
-.faq-panel-inner { overflow: hidden; }
-.faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; margin: 0; padding-block: 0 20px; padding-inline: 76px 22px; }
+/* A collapsed panel is 0fr tall but its content is still laid out, so a link
+   inside an answer stayed in the tab order — keyboard focus landed on an
+   invisible link. script.js marks the panel `inert`; visibility is the
+   universal half of the same guarantee, held back until the collapse
+   animation has finished so the text doesn't vanish mid-transition. */
+.faq-panel-inner { overflow: hidden; visibility: hidden; transition: visibility 0s linear .45s; }
+.faq-item.open .faq-panel-inner { visibility: visible; transition-delay: 0s; }
+.faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; max-width: 62ch; margin: 0; padding-block: 0 20px; padding-inline: 76px 22px; }
 
-@media (max-width: 900px) {
-}
 @media (max-width: 640px) {
   .cmp-thead { display: none; }
   .cmp-rows { grid-template-columns: 1fr; }
@@ -733,4 +793,69 @@ html[dir="rtl"] .hero-veil {
   .cmp-cell.with::before { content: "עם אורלי"; color: var(--teal-deep); }
   .cmp-cell.with, .cmp-th--with { border-inline-start: none; }
   .faq-panel-inner p { padding: 0 22px 20px; }
+}
+
+/* ===== Touch input =====
+   No hover on a touchscreen — a tapped .btn-dark stayed teal and lifted, and
+   a tapped FAQ card stayed raised, until the next touch landed somewhere
+   else. Colour-only hovers (links) are left alone: a link that stays teal
+   after a tap reads as "you touched this", which is fine. The lifts are not.
+   A press state gives touch its own feedback, released with the finger. */
+@media (hover: none) {
+  .btn-dark:hover { background: var(--dark); border-color: rgba(255, 255, 255, 0.08); transform: none; box-shadow: none; }
+  .btn-cream:hover { transform: none; box-shadow: none; }
+  .faq-item:hover { transform: none; }
+  .btn-dark:active, .btn-cream:active { transform: scale(.985); }
+}
+
+/* ===== Smallest phones (iPhone SE class, 320px) =====
+   Six 44px circles and five 10px gaps are 314px; the content box is 272. The
+   one place the 44px target is traded down: 40px circles at 6px gaps are 270,
+   and the spacing between them keeps the effective target above 44. */
+@media (max-width: 360px) {
+  .scrolly-tabs { gap: 6px; }
+  .scrolly-tab { width: 40px; height: 40px; }
+}
+
+/* ===== Short landscape phone (e.g. 812x375) =====
+   Below 920px the demo stacks: a card that measures ~600px tall over a
+   stepper. In a 375px-tall viewport the two can never be on screen together,
+   which is the whole point of the stepper. Side by side instead: the card on
+   one side, capped to the viewport and scrolling inside — the real widget
+   already scrolls its step area, and widget.css styles that scrollbar — with
+   the tabs under it and the step text beside it. */
+@media (max-width: 920px) and (max-height: 500px) and (orientation: landscape) {
+  .scrolly-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .scrolly-sticky { order: 0; margin: 0; }
+  /* max-height wins over the inline height scrolly.js's fitFrame() sets. */
+  .scrolly-sticky .demo-browser { width: 100%; max-width: 400px; max-height: calc(100vh - 140px); }
+  .scrolly-tabs { margin-top: 12px; }
+  .scrolly-steps { margin-top: 0; }
+  .scrolly-step { text-align: start; }
+  .scrolly-step p { margin-inline: 0; }
+}
+
+/* ===== Narrow pinned layout (tablet, 921-1100px) =====
+   .demo-browser takes 82% of its column so the shadow can breathe at 1160px.
+   In a 410px column that left the widget 335px wide — a 74px margin around a
+   product the visitor is meant to try. Full column width until it can afford
+   the room. */
+@media (min-width: 921px) and (max-width: 1100px) {
+  .scrolly-sticky .demo-browser { width: min(100%, 460px); }
+}
+
+/* ===== Coarse pointers =====
+   Measured on a phone: footer links 24px tall at 10px gaps, the hero link 29,
+   the snippet's copy button 32, inline links 23-26. Each is brought to 44
+   without moving anything on a mouse-driven screen: padding on an inline box
+   extends its hit area without touching line layout, and the underlined hero
+   link gets its extra reach from an invisible pseudo-element so the underline
+   stays where it is. */
+@media (pointer: coarse) {
+  .footer-col { gap: 4px; }
+  .footer-col a { padding-block: 8px; }
+  .hero-link { position: relative; }
+  .hero-link::after { content: ""; position: absolute; inset: -8px 0; }
+  .code-copy { padding-block: 11px; }
+  .ladder-note a, .faq-panel-inner a { padding-block: 10px; }
 }

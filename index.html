@@ -2,17 +2,51 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>document.documentElement.classList.add('js');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script>
+    document.documentElement.classList.add('js');
+    // styles.css hides every reveal target behind this class, and only
+    // script.js ever unhides them. If that file does not arrive — a 404, a
+    // dropped connection, a blocked request — the class would leave each
+    // page's headlines, leads and lists at opacity 0 with nothing coming to
+    // reveal them. script.js sets data-reveal-ready the moment it takes over;
+    // if it hasn't, give up the effect and show the page as plain text.
+    setTimeout(function () {
+      var d = document.documentElement;
+      if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js');
+    }, 3000);
+  </script>
   <meta name="description" content="אורלי היא תוסף למרפאות שעובדות עם אופטימה. היא מרחיבה את היומן שכבר מנהל אצלכם את המרפאה גם לאתר, כך שמטופלים קובעים פגישה אונליין בכל שעה, וכל פגישה נכנסת ישר לאופטימה." />
   <title>אורלי · קביעת פגישות אונליין למרפאות אופטימה</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=78" />
-  <link rel="stylesheet" href="widget.css?v=25" />
-  <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
+  <link rel="stylesheet" href="styles.css?v=20260907" />
+  <link rel="stylesheet" href="widget.css?v=20260907" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://orliclinic.com/" />
+  <meta name="theme-color" content="#0f8a86" />
+
+  <!-- Link previews. PRODUCT.md's second audience reaches this site because
+       the decision-maker sends them a link, so a bare URL in WhatsApp or
+       email is a lost handoff. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="אורלי" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:url" content="https://orliclinic.com/" />
+  <meta property="og:title" content="אורלי · קביעת פגישות אונליין למרפאות אופטימה" />
+  <meta property="og:description" content="אורלי היא תוסף למרפאות שעובדות עם אופטימה. היא מרחיבה את היומן שכבר מנהל אצלכם את המרפאה גם לאתר, כך שמטופלים קובעים פגישה אונליין בכל שעה, וכל פגישה נכנסת ישר לאופטימה." />
+  <meta property="og:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="אורלי · קביעת פגישה באתר המרפאה, ישר ליומן האופטימה" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="אורלי · קביעת פגישות אונליין למרפאות אופטימה" />
+  <meta name="twitter:description" content="אורלי היא תוסף למרפאות שעובדות עם אופטימה. היא מרחיבה את היומן שכבר מנהל אצלכם את המרפאה גם לאתר, כך שמטופלים קובעים פגישה אונליין בכל שעה, וכל פגישה נכנסת ישר לאופטימה." />
+  <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
 </head>
 <body>
   <span id="top" aria-hidden="true"></span>
@@ -21,11 +55,10 @@
   <header class="nav">
     <div class="wrap">
       <div class="nav-pill">
-        <a href="#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
-          <img class="brand-logo brand-logo--en" src="assets/brand/orli-wordmark.png" width="1262" height="604" alt="Orli" />
+        <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
-        <nav class="nav-links" id="navMenu" aria-label="Primary">
+        <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html" aria-current="page">ראשי</a>
           <a href="panel.html">מסך הניהול</a>
           <a href="about.html">אודות</a>
@@ -60,15 +93,18 @@
         </div>
 
         <!-- Widget mockup in browser chrome -->
-        <div class="hero-visual" aria-hidden="true">
+        <!-- inert as well as aria-hidden: the frozen confirm step below has a
+             real <button>, and aria-hidden alone left it in the tab order —
+             a keyboard visitor landed on a control nothing announced. -->
+        <div class="hero-visual" aria-hidden="true" inert>
           <div class="browser">
             <div class="browser-bar"></div>
-            <div class="widget-body orli-live" dir="rtl" style="padding:24px 16px 16px">
+            <div class="widget-body widget-body--hero orli-live" dir="rtl">
               <!-- A frozen copy of the real widget's confirm step (markup and
                    classes from orli-calendar's ConfirmStep.vue), styled by
                    widget.css. Decorative: aria-hidden, nothing here is live. -->
               <div class="obw-controls">
-                <button class="obw-lang-btn" type="button" disabled style="pointer-events:none">
+                <button class="obw-lang-btn" type="button" disabled>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                   <span>עב</span>
                 </button>
@@ -99,7 +135,7 @@
                 <dt>אימייל</dt>
                 <dd>demo@orliclinic.com</dd>
               </dl>
-              <button class="obw-primary-btn obw-primary-btn--compact" type="button" style="pointer-events:none">שלח קוד לאימות</button>
+              <button class="obw-primary-btn obw-primary-btn--compact" type="button">שלח קוד לאימות</button>
             </div>
           </div>
         </div>
@@ -107,11 +143,11 @@
     </section>
 
     <!-- PROBLEM -->
-    <section class="section" style="padding:52px 0 0">
+    <section class="section section--bridge">
       <div class="wrap narrow">
-        <div class="section-head" style="margin-bottom:22px">
+        <div class="section-head section-head--tight">
           <h2 class="display">מהאתר של המרפאה, <span class="ital">ישר ליומן.</span></h2>
-          <p class="section-lead" style="margin-top:10px">הווידג׳ט יושב באתר המרפאה, בפינה, כמו כפתור צ׳אט. המטופל לוחץ, בוחר שעה, ואצלכם זה פשוט מופיע באופטימה.</p>
+          <p class="section-lead section-lead--close">הווידג׳ט יושב באתר המרפאה, בפינה, כמו כפתור צ׳אט. המטופל לוחץ, בוחר שעה, ואצלכם זה פשוט מופיע באופטימה.</p>
         </div>
         <!-- The patient's journey as a short film in one frame (script.js,
              "journey"): the clinic's site with the widget's launcher in the
@@ -122,7 +158,7 @@
              screen. Under prefers-reduced-motion it shows the finished
              picture once. -->
         <div class="bridge" data-bridge>
-          <div class="bridge-movie" aria-label="המסע של המטופל: מהכפתור באתר המרפאה ועד הפגישה ביומן האופטימה">
+          <div class="bridge-movie" role="img" aria-label="המסע של המטופל: מהכפתור באתר המרפאה ועד הפגישה ביומן האופטימה">
             <div class="bridge-site bm-site " dir="rtl">
               <div class="bs-bar" aria-hidden="true"><span></span><span></span><span></span><i>clinic.co.il · 22:40</i></div>
               <div class="bs-page">
@@ -181,7 +217,7 @@
     </section>
 
     <!-- LIVE DEMO, scroll-pinned (Vectrix-style scrollytelling) -->
-    <section class="section scrolly" id="demo" style="padding-top:57px">
+    <section class="section scrolly" id="demo">
       <div class="wrap">
         <div class="section-divider" aria-hidden="true"></div>
         <div class="section-head">
@@ -231,15 +267,15 @@
                  is a local static replica now so the page still works when
                  that service is down. See widget.js's header for how to
                  refresh it against the real widget. -->
-            <div data-orli-widget style="width:100%;height:100%"></div>
+            <div data-orli-widget></div>
           </div>
-          <div class="scrolly-tabs" role="tablist" aria-label="Booking steps">
-            <button type="button" class="scrolly-tab is-active" data-scene="0" role="tab" aria-selected="true">01</button>
-            <button type="button" class="scrolly-tab" data-scene="1" role="tab" aria-selected="false">02</button>
-            <button type="button" class="scrolly-tab" data-scene="2" role="tab" aria-selected="false">03</button>
-            <button type="button" class="scrolly-tab" data-scene="3" role="tab" aria-selected="false">04</button>
-            <button type="button" class="scrolly-tab" data-scene="4" role="tab" aria-selected="false">05</button>
-            <button type="button" class="scrolly-tab" data-scene="5" role="tab" aria-selected="false">06</button>
+          <div class="scrolly-tabs" role="group" aria-label="שלבי קביעת הפגישה">
+            <button type="button" class="scrolly-tab is-active" data-scene="0" aria-current="step" aria-label="שלב 1: בחירת מטפל וטיפול">01</button>
+            <button type="button" class="scrolly-tab" data-scene="1" aria-label="שלב 2: בחירת יום">02</button>
+            <button type="button" class="scrolly-tab" data-scene="2" aria-label="שלב 3: בחירת שעה">03</button>
+            <button type="button" class="scrolly-tab" data-scene="3" aria-label="שלב 4: מי קובע את הפגישה">04</button>
+            <button type="button" class="scrolly-tab" data-scene="4" aria-label="שלב 5: אימות בקוד">05</button>
+            <button type="button" class="scrolly-tab" data-scene="5" aria-label="שלב 6: נכתב לאופטימה">06</button>
           </div>
         </div>
       </div>
@@ -282,7 +318,7 @@
         <p class="eyebrow">קל להוספה</p>
         <h2 class="display">באתר שלכם <span class="ital">תוך דקות.</span></h2>
         <p class="section-lead">מוסיפים שורה אחת לאתר, וזהו. מכאן אורלי מתעדכנת לבד, בלי תחזוקה ובלי לגעת בזה שוב.</p>
-        <ul class="check-list" style="justify-items:center; justify-content:center">
+        <ul class="check-list check-list--center">
           <li>עובד עם כל אתר מרפאה</li>
           <li>לא משנה את המראה של שאר האתר</li>
           <li>נעול למרפאה שלכם, מוגן משימוש לרעה</li>
@@ -333,39 +369,39 @@
         </div>
         <ul class="faq">
           <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false">
+            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="faqPanel1">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
               <span class="faq-q"><span>יש לנו כבר אופטימה, בשביל מה צריך את אורלי?</span><span class="faq-tag">למה אורלי</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p>אופטימה מנהלת את היומן ואת המרפאה, וזה בדיוק מה שהיא עושה טוב. אורלי מוסיפה לה ערוץ נוסף: <strong>המטופלים קובעים בעצמם מהאתר שלכם, בכל שעה, והפגישה נכנסת ישר לאופטימה.</strong></p></div></div>
+            <div class="faq-panel" id="faqPanel1"><div class="faq-panel-inner"><p>אופטימה מנהלת את היומן ואת המרפאה, וזה בדיוק מה שהיא עושה טוב. אורלי מוסיפה לה ערוץ נוסף: <strong>המטופלים קובעים בעצמם מהאתר שלכם, בכל שעה, והפגישה נכנסת ישר לאופטימה.</strong></p></div></div>
           </li>
           <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false">
+            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="faqPanel2">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
               <span class="faq-q"><span>כמה זמן לוקח להתחיל?</span><span class="faq-tag">הטמעה</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p>בדרך כלל יום אחד. מחברים את אורלי לאופטימה שלכם, מגדירים בפאנל הניהול את הרופאים, השירותים והשעות שפתוחות לקביעה, ומוסיפים שורה אחת לאתר. מהרגע הזה המטופלים קובעים.</p></div></div>
+            <div class="faq-panel" id="faqPanel2"><div class="faq-panel-inner"><p>בדרך כלל יום אחד. מחברים את אורלי לאופטימה שלכם, מגדירים בפאנל הניהול את הרופאים, השירותים והשעות שפתוחות לקביעה, ומוסיפים שורה אחת לאתר. מהרגע הזה המטופלים קובעים.</p></div></div>
           </li>
           <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false">
+            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="faqPanel3">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
               <span class="faq-q"><span>המזכירה מאבדת שליטה על היומן?</span><span class="faq-tag">שליטה</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p>לא. מטופלים קובעים רק לתוך שעות פנויות שאתם פתחתם לקביעה, אצל הרופאים ובשירותים שבחרתם. כל פגישה כזו נכנסת לאופטימה כמו פגישה שנקבעה בטלפון, והצוות ממשיך לעבוד שם כרגיל. <a href="panel.html">ככה זה נראה בפאנל הניהול.</a></p></div></div>
+            <div class="faq-panel" id="faqPanel3"><div class="faq-panel-inner"><p>לא. מטופלים קובעים רק לתוך שעות פנויות שאתם פתחתם לקביעה, אצל הרופאים ובשירותים שבחרתם. כל פגישה כזו נכנסת לאופטימה כמו פגישה שנקבעה בטלפון, והצוות ממשיך לעבוד שם כרגיל. <a href="panel.html">ככה זה נראה בפאנל הניהול.</a></p></div></div>
           </li>
           <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false">
+            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="faqPanel4">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
               <span class="faq-q"><span>נתוני המטופלים בטוחים באתר ציבורי?</span><span class="faq-tag">אבטחה</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p>כן. האתר שלכם לא מציג ולא שומר פרטי מטופלים: הווידג׳ט אוסף את פרטי הפגישה ומעביר אותם לאורלי ולאופטימה בלבד. כל קביעה מאושרת בקוד חד־פעמי שנשלח לאימייל של המטופל, כך שרק מי שמחזיק באימייל יכול לאשר אותה.</p></div></div>
+            <div class="faq-panel" id="faqPanel4"><div class="faq-panel-inner"><p>כן. האתר שלכם לא מציג ולא שומר פרטי מטופלים: הווידג׳ט אוסף את פרטי הפגישה ומעביר אותם לאורלי ולאופטימה בלבד. כל קביעה מאושרת בקוד חד־פעמי שנשלח לאימייל של המטופל, כך שרק מי שמחזיק באימייל יכול לאשר אותה.</p></div></div>
           </li>
           <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false">
+            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="faqPanel5">
               <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
               <span class="faq-q"><span>מה אם שני מטופלים תופסים אותה פגישה?</span><span class="faq-tag">אמינות</span></span>
             </button>
-            <div class="faq-panel"><div class="faq-panel-inner"><p>אורלי כותבת את הפגישה לאופטימה ברגע האישור, ואם השעה נתפסה בינתיים, המטופל מקבל הודעה מיד ובוחר שעה אחרת. אף אחד לא יוצא במחשבה שקבע כשלא, וגם המטופל וגם המרפאה מקבלים אישור במייל על כל פגישה שכן נקבעה.</p></div></div>
+            <div class="faq-panel" id="faqPanel5"><div class="faq-panel-inner"><p>אורלי כותבת את הפגישה לאופטימה ברגע האישור, ואם השעה נתפסה בינתיים, המטופל מקבל הודעה מיד ובוחר שעה אחרת. אף אחד לא יוצא במחשבה שקבע כשלא, וגם המטופל וגם המרפאה מקבלים אישור במייל על כל פגישה שכן נקבעה.</p></div></div>
           </li>
         </ul>
       </div>
@@ -389,18 +425,18 @@
              forwards it into Slack. _gotcha is a honeypot: bots fill it,
              people never see it, and the Worker drops anything that has it. -->
         <form class="cta-form" id="demoForm" novalidate>
-          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
+          <input type="text" name="_gotcha" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <div class="field">
             <label for="clinic">שם המרפאה</label>
-            <input id="clinic" name="clinic" type="text" dir="auto" autocomplete="organization" placeholder="מרפאת שיניים התוספים" required />
+            <input id="clinic" name="clinic" type="text" dir="auto" autocomplete="organization" placeholder="מרפאת שיניים התוספים" maxlength="200" aria-describedby="formNote" required />
           </div>
           <div class="field">
             <label for="email">אימייל בעבודה</label>
-            <input id="email" name="email" type="email" dir="auto" autocomplete="email" inputmode="email" placeholder="you@clinic.co.il" required />
+            <input id="email" name="email" type="email" dir="auto" autocomplete="email" inputmode="email" placeholder="you@clinic.co.il" maxlength="200" spellcheck="false" autocapitalize="off" aria-describedby="formNote" required />
           </div>
           <button type="submit" class="btn-cream lg">בקשת דמו</button>
         </form>
-        <p class="form-note" id="formNote" role="status"></p>
+        <p class="form-note" id="formNote" role="status" tabindex="-1"></p>
       </div>
     </section>
   </main>
@@ -409,13 +445,12 @@
   <footer class="footer">
     <div class="wrap footer-inner">
       <div class="footer-brand">
-        <a href="#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
-          <img class="brand-logo brand-logo--en brand-logo--footer" src="assets/brand/orli-wordmark.png" width="1262" height="604" alt="Orli" />
+        <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
-      <nav class="footer-cols" aria-label="Footer">
+      <nav class="footer-cols" aria-label="ניווט תחתון">
         <div class="footer-col">
           <h3 class="footer-col-h">מוצר</h3>
           <a href="#roadmap">מפת דרכים</a>
@@ -445,11 +480,11 @@
     </div>
   </footer>
 
-  <script src="script.js?v=39"></script>
-  <script src="hero-gradient.js?v=14"></script>
+  <script src="script.js?v=20260907"></script>
+  <script src="hero-gradient.js?v=20260907"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->
-  <script src="widget.js?v=8"></script>
-  <script src="scrolly.js?v=26"></script>
+  <script src="widget.js?v=20260907"></script>
+  <script src="scrolly.js?v=20260907"></script>
 </body>
 </html>

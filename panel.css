@@ -119,6 +119,10 @@
   pointer-events: none;
 }
 .opn-pane.is-active { opacity: 1; transform: none; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .opn-pane { transform: none; transition: opacity .2s ease; }
+  .opn-nav-btn { transition: none; }
+}
 
 .opn-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
 .opn-tab {
@@ -169,6 +173,8 @@
   background: var(--surface); border: 1px dashed #c4bda8;
 }
 .opn-soon-badge--lg { font-size: .6rem; padding: 2px 9px; }
+/* The card's grid gap does the spacing; the title and note bring none. */
+.opn-soon-card .opn-pane-title, .opn-soon-card .opn-note { margin: 0; }
 
 /* ---------- narrow ---------- */
 /* The frame is a landscape admin screen; on a phone the sidebar would eat
@@ -181,7 +187,11 @@
     border-inline-end: 0; border-bottom: 1px solid var(--line);
     padding: 9px 10px; display: flex; align-items: center; gap: 6px;
     overflow-x: auto;
+    /* panel.js scrolls the strip itself to keep the highlighted item in
+       view, so the bar under it is noise inside a mock nobody can drag. */
+    scrollbar-width: none;
   }
+  .opn-sidebar::-webkit-scrollbar { display: none; }
   .opn-nav-label { display: none; }
   .opn-nav { display: flex; gap: 6px; margin: 0; }
   .opn-nav-btn { white-space: nowrap; font-size: .66rem; padding: 6px 9px; }

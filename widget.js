@@ -75,7 +75,8 @@
     back: ['חזרה', 'Back'],
     continue: ['המשך', 'Continue'],
     confirm: ['אישור הזמנה', 'Confirm booking'],
-    booking: ['קובע תור…', 'Booking…'],
+    // Same divergence as confirmTitle: the site says פגישה, never תור.
+    booking: ['קובע פגישה…', 'Booking…'],
     nextMonth: ['חודש הבא', 'Next month'],
     prevMonth: ['חודש קודם', 'Previous month'],
     noSlots: [
@@ -290,6 +291,45 @@
 
     var lastStep = null;
 
+    // Each render replaces the widget's markup wholesale, which takes the
+    // focused element with it — a keyboard visitor who picked a time slot
+    // landed back on <body> and had to tab in from the top of the page again,
+    // once per step. Two things fix that, and both need to outlive the
+    // markup, so they live on nodes created once:
+    //
+    //   shell  the render target, so `root` itself is never emptied
+    //   live   a status region announcing each new step, which would never be
+    //          heard if it were rebuilt along with everything else
+    //
+    // The shell is display:contents (widget.css), so it adds no box and the
+    // pinned #demo frame still sizes .obw-widget directly.
+    var shell = document.createElement('div');
+    shell.className = 'obw-shell';
+    var live = document.createElement('p');
+    live.className = 'obw-visually-hidden';
+    live.setAttribute('role', 'status');
+    live.setAttribute('aria-live', 'polite');
+    root.appendChild(shell);
+    root.appendChild(live);
+
+    // True while a host (scrolly.js) is driving us. Scroll- and stepper-driven
+    // changes must not pull focus into the widget — that would fight the page
+    // for the scroll position and yank the reader mid-sentence. The step text
+    // beside the widget already narrates those. Only a step the visitor caused
+    // from inside the widget moves focus and announces.
+    var hostDriven = false;
+
+    function announceStep() {
+      var heading = shell.querySelector('.obw-title');
+      if (!heading) return;
+      var label = heading.textContent.trim();
+      live.textContent = label;
+      heading.setAttribute('tabindex', '-1');
+      // preventScroll: the widget is already in view; scrolling to the heading
+      // would move the page out from under the visitor.
+      try { heading.focus({ preventScroll: true }); } catch (e) { heading.focus(); }
+    }
+
     // SOURCE: App.vue — template.
     function render() {
       var showProgress = st.step !== 'success';
@@ -315,9 +355,12 @@
       var stepClass = 'obw-step' +
         (st.step === 'date' ? ' obw-step--date' : '') +
         (st.step === 'time' ? ' obw-step--time' : '');
-      // Mirror direction to match language (rtl for Hebrew).
+      // Mirror direction and language to match the toggle. lang matters as
+      // much as dir: without it a screen reader reads the English strings
+      // with a Hebrew voice, because the host page is <html lang="he">.
       root.setAttribute('dir', dir());
-      root.innerHTML =
+      root.setAttribute('lang', LANG);
+      shell.innerHTML =
         '<div class="obw-widget">' +
           controls +
           '<main class="' + stepClass + '">' + stepHtml() + '</main>' +
@@ -328,7 +371,9 @@
       // host that drives us via setScene() can ignore the echo of its own
       // call by tracking the step it last asked for.
       if (st.step !== lastStep) {
+        var first = lastStep === null;
         lastStep = st.step;
+        if (!first && !hostDriven) announceStep();
         if (typeof handle.onStep === 'function') handle.onStep(st.step);
       }
     }
@@ -731,7 +776,9 @@
         st.otpSent = true; st.otp = '123456'; st.confirmedEmail = st.email;
       }
       if (st.step === 'success') st.bookingId = DEMO_PREFILL.bookingId;
-      render();
+      // Scroll and the numbered stepper drive this; neither may steal focus.
+      hostDriven = true;
+      try { render(); } finally { hostDriven = false; }
     }
 
     var handle = { setScene: setScene, render: render, onStep: null };

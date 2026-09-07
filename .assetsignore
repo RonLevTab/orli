@@ -17,3 +17,11 @@ tools/**
 .playwright-mcp/**
 CLAUDE.md
 PRODUCT.md
+
+# Design masters and superseded exports. Kept in git so the shipped PNGs can be
+# re-exported, but never served: 4.7 MB that no page requests.
+assets/brand/*-source.png
+assets/brand/orli-logo.png
+assets/brand/orli-logo-256.png
+assets/brand/orli-wordmark.png
+assets/brand/orli-wordmark-he-v2.png

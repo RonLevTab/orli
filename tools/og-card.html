@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+  Source for assets/brand/orli-og.png — the 1200x630 link-preview card the
+  og:image / twitter:image tags on all five pages point at.
+
+  It is built from the site's own tokens (cream ground, teal identity, Heebo,
+  the hero's headline and glow) so a shared link previews as the page it opens.
+
+  To regenerate, from the repo root:
+
+    python -m http.server 8899
+    chrome --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=8000 --screenshot=assets/brand/orli-og.png http://localhost:8899/tools/og-card.html
+
+  (Any Chromium works; the one Playwright installs is at
+   %LOCALAPPDATA%/ms-playwright/chromium-*/chrome-win64/chrome.exe.)
+
+  The html{overflow:hidden} rule below is load-bearing, not tidiness: the
+  glow is inset past the left edge, and body{overflow:hidden} alone
+  propagates to the viewport while leaving body itself scrollable, which
+  under RTL renders a shifted slice and clips the card's right side.
+
+  Edit the copy here, never the PNG. Not deployed: tools/ is in .assetsignore.
+-->
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #f7f5ef;
+    --ink: #1b2523;
+    --ink-soft: #5d6763;
+    --teal: #0f8a86;
+    --teal-deep: #0a5d5a;
+    --line: #e4ddcf;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  /* The glow is inset past the left edge. body{overflow:hidden} alone
+     propagates to the viewport and leaves body itself scrollable, which
+     under RTL shifts the visible slice and clips the card. Clip on html. */
+  html { overflow: hidden; width: 100%; height: 100%; }
+  body {
+    width: 100vw; height: 100vh; overflow: hidden;
+    font-family: "Heebo", system-ui, sans-serif;
+    background: var(--cream); color: var(--ink);
+    position: relative;
+  }
+  /* The hero's own glow, flipped to the RTL trailing edge as styles.css does. */
+  .glow {
+    position: absolute; inset: -22% 40% auto -14%; height: 700px;
+    background: radial-gradient(closest-side, rgba(20,184,166,.22), transparent 72%);
+  }
+  .frame {
+    position: relative; height: 100%;
+    padding: 62px 72px 56px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    overflow: hidden;
+  }
+  /* 1600x502 intrinsic — state both so the block img can't stretch to fill. */
+  .mark { width: 198px; height: 62px; display: block; object-fit: contain; }
+  h1 {
+    font-size: 78px; line-height: 1.08; letter-spacing: -0.02em; font-weight: 400;
+    max-width: 700px;
+  }
+  h1 span { color: var(--teal); }
+  p {
+    margin-top: 26px; font-size: 29px; line-height: 1.5;
+    color: var(--ink-soft); max-width: 720px;
+  }
+  .foot {
+    display: flex; align-items: center; gap: 18px;
+    padding-top: 26px; border-top: 1px solid var(--line);
+    font-size: 22px; color: var(--ink-soft);
+  }
+  .foot b { color: var(--teal-deep); font-weight: 600; }
+  .foot .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--line); }
+  .url { margin-inline-start: auto; direction: ltr; letter-spacing: .02em; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="frame">
+    <img class="mark" src="../assets/brand/orli-wordmark-he.png" alt="" />
+    <div>
+      <h1>קביעת פגישה באתר, <span>בלחיצת כפתור.</span></h1>
+      <p>היומן שכבר מנהל את המרפאה באופטימה, פתוח עכשיו למטופלים גם מהאתר.</p>
+    </div>
+    <div class="foot">
+      <b>תוסף למרפאות שעובדות עם אופטימה</b>
+      <span class="dot"></span>
+      <span>כל פגישה נכנסת ישר לאופטימה</span>
+      <span class="url">orliclinic.com</span>
+    </div>
+  </div>
+</body>
+</html>

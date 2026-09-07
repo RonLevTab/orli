@@ -2,16 +2,50 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>document.documentElement.classList.add('js');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script>
+    document.documentElement.classList.add('js');
+    // styles.css hides every reveal target behind this class, and only
+    // script.js ever unhides them. If that file does not arrive — a 404, a
+    // dropped connection, a blocked request — the class would leave each
+    // page's headlines, leads and lists at opacity 0 with nothing coming to
+    // reveal them. script.js sets data-reveal-ready the moment it takes over;
+    // if it hasn't, give up the effect and show the page as plain text.
+    setTimeout(function () {
+      var d = document.documentElement;
+      if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js');
+    }, 3000);
+  </script>
   <meta name="description" content="אורלי נולדה משאלה אחת: איך פותחים גם למטופלים את היומן שכבר מנהל את המרפאה. הכירו את הסיפור והעקרונות שמנחים אותנו." />
   <title>אורלי · אודות</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=55" />
-  <link rel="icon" type="image/png" href="assets/brand/orli-logo-256.png" />
+  <link rel="stylesheet" href="styles.css?v=20260907" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://orliclinic.com/about.html" />
+  <meta name="theme-color" content="#0f8a86" />
+
+  <!-- Link previews. PRODUCT.md's second audience reaches this site because
+       the decision-maker sends them a link, so a bare URL in WhatsApp or
+       email is a lost handoff. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="אורלי" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:url" content="https://orliclinic.com/about.html" />
+  <meta property="og:title" content="אורלי · אודות" />
+  <meta property="og:description" content="אורלי נולדה משאלה אחת: איך פותחים גם למטופלים את היומן שכבר מנהל את המרפאה. הכירו את הסיפור והעקרונות שמנחים אותנו." />
+  <meta property="og:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="אורלי · קביעת פגישה באתר המרפאה, ישר ליומן האופטימה" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="אורלי · אודות" />
+  <meta name="twitter:description" content="אורלי נולדה משאלה אחת: איך פותחים גם למטופלים את היומן שכבר מנהל את המרפאה. הכירו את הסיפור והעקרונות שמנחים אותנו." />
+  <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
 </head>
 <body>
   <span id="top" aria-hidden="true"></span>
@@ -20,10 +54,10 @@
   <header class="nav">
     <div class="wrap">
       <div class="nav-pill">
-        <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
-        <nav class="nav-links" id="navMenu" aria-label="Primary">
+        <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html">ראשי</a>
           <a href="panel.html">מסך הניהול</a>
           <a href="about.html" aria-current="page">אודות</a>
@@ -42,17 +76,17 @@
   </header>
 
   <main>
-    <section class="section" style="padding-block-start:64px; padding-block-end:36px">
+    <section class="section page-head">
       <div class="wrap narrow">
         <p class="eyebrow">אודות</p>
-        <h1 class="display" style="font-size:clamp(2rem, 4vw, 2.9rem)">למה בנינו <span class="ital">את אורלי.</span></h1>
-        <p class="section-lead" style="margin-top:16px; max-width:56ch">אופטימה מנהלת את היומן של המרפאה ועושה את זה טוב. מה שחיפשנו היה ערוץ נוסף לצידה, כזה שמאפשר גם למטופלים לקבוע בעצמם, בלי לעבור דרך הטלפון. בנינו את אורלי כדי להרחיב את אותו יומן גם לאתר המרפאה: תוספת לצד מה שכבר עובד, לא החלפה שלו.</p>
+        <h1 class="display display--page">למה בנינו <span class="ital">את אורלי.</span></h1>
+        <p class="section-lead section-lead--intro">אופטימה מנהלת את היומן של המרפאה ועושה את זה טוב. מה שחיפשנו היה ערוץ נוסף לצידה, כזה שמאפשר גם למטופלים לקבוע בעצמם, בלי לעבור דרך הטלפון. בנינו את אורלי כדי להרחיב את אותו יומן גם לאתר המרפאה: תוספת לצד מה שכבר עובד, לא החלפה שלו.</p>
       </div>
     </section>
 
     <section class="section alt">
       <div class="wrap narrow">
-        <h2 class="display" style="font-size:1.7rem">איך אנחנו <span class="ital">עובדים.</span></h2>
+        <h2 class="display display--sub">איך אנחנו <span class="ital">עובדים.</span></h2>
         <ul class="check-list">
           <li>אורלי עובדת יחד עם אופטימה ומרחיבה אותה לאתר. שום דבר לא משתנה לצוות שכבר יודע לעבוד שם</li>
           <li>אומרים רק מה שכבר קיים. יכולות שבדרך מסומנות ככאלה, ולא מוצגות כאילו הן זמינות היום</li>
@@ -61,9 +95,9 @@
       </div>
     </section>
 
-    <section class="section" style="padding-block-end:80px">
+    <section class="section section--tail">
       <div class="wrap narrow center">
-        <p class="section-lead" style="margin:0 0 18px">רוצים לדבר איתנו?</p>
+        <p class="section-lead section-lead--cta">רוצים לדבר איתנו?</p>
         <a data-demo-cta href="index.html#contact" class="btn-dark lg">לקביעת דמו</a>
       </div>
     </section>
@@ -73,12 +107,12 @@
   <footer class="footer">
     <div class="wrap footer-inner">
       <div class="footer-brand">
-        <a href="index.html#top" class="brand" aria-label="Orli home">
-          <img class="brand-logo brand-logo--he brand-logo--footer" src="assets/brand/orli-wordmark-he.png" width="1600" height="502" alt="אורלי" />
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260907" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
-      <nav class="footer-cols" aria-label="Footer">
+      <nav class="footer-cols" aria-label="ניווט תחתון">
         <div class="footer-col">
           <h3 class="footer-col-h">מוצר</h3>
           <a href="index.html#roadmap">מפת דרכים</a>
@@ -108,6 +142,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=39"></script>
+  <script src="script.js?v=20260907"></script>
 </body>
 </html>

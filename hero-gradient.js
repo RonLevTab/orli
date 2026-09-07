@@ -140,16 +140,51 @@
     }
     gl.uniform2f(U.res, canvas.width, canvas.height);
   }
-  window.addEventListener('resize', resize);
+  // resize() reads canvas.clientWidth/Height, which forces layout. It used to
+  // run inside frame(), so the shader took a synchronous layout 60 times a
+  // second for a size that only changes when the window does.
+  resize();
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 120);
+  });
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var start = performance.now();
+  var running = false;
+  var elapsed = 0;
 
   function frame(now) {
-    resize();
     gl.uniform1f(U.time, (now - start) / 1000);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    if (!reduce) requestAnimationFrame(frame);
+    if (reduce || !running) { running = false; return; }
+    requestAnimationFrame(frame);
   }
+  function play() {
+    if (running || reduce) return;
+    running = true;
+    // Restart the clock where it stopped, so coming back to the hero doesn't
+    // jump the field forward by however long the visitor spent reading below.
+    start = performance.now() - elapsed;
+    requestAnimationFrame(frame);
+  }
+  function pause() {
+    if (!running) return;
+    elapsed = performance.now() - start;
+    running = false;
+  }
+
+  // A full-viewport fragment shader has no business running while the visitor
+  // is three sections down reading the FAQ. Draw one frame so the hero is
+  // painted, then animate only while it is actually on screen.
   requestAnimationFrame(frame);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) play();
+      else pause();
+    }, { threshold: 0 }).observe(canvas);
+  } else {
+    play();
+  }
 })();

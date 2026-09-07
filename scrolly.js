@@ -38,13 +38,23 @@
     // own step changes with scrollIntoView — on mobile that yanked the page
     // out from under the user's finger on every tap inside the widget.
     var isPinned = window.matchMedia('(min-width: 921px)');
+    // Following the visitor's own clicks with a smooth scroll is movement
+    // they did not ask for; under reduced motion the page jumps instead.
+    var scrollTo = { behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' };
 
+    // The numbered controls were marked up as an ARIA tablist, but nothing on
+    // the page was ever a tabpanel and there was no arrow-key navigation, so
+    // a screen reader announced "01, tab, selected" about a tab controlling
+    // nothing. They are what they look like instead: buttons that jump the
+    // demo to a step in a sequence, with aria-current="step" marking where
+    // the visitor is. See the markup in index.html.
     function setActiveUI(i) {
       current = i;
       steps.forEach(function (s, idx) { s.classList.toggle('is-active', idx === i); });
       tabs.forEach(function (t, idx) {
         t.classList.toggle('is-active', idx === i);
-        t.setAttribute('aria-selected', idx === i ? 'true' : 'false');
+        if (idx === i) t.setAttribute('aria-current', 'step');
+        else t.removeAttribute('aria-current');
       });
     }
 
@@ -107,7 +117,7 @@
       var i = SCENE_OF[name];
       if (i !== undefined && i !== current) {
         setActiveUI(i);
-        if (isPinned.matches) steps[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (isPinned.matches) steps[i].scrollIntoView(scrollTo);
       }
       // Reaching the success screen by hand ends the visitor's own run:
       // nothing they typed is left to protect, so hand the narrative back to
@@ -134,7 +144,13 @@
               if (i >= 0) activate(i);
             }
           });
-        }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+        // A band across 30-40% of the viewport, not dead centre. Paired with
+        // the 14vh lead-in in styles.css: step 01 has to reach this band only
+        // after the widget has pinned beside it, or the step text advances
+        // while the widget is still scrolling up the page. Moving the band up
+        // is what let the lead-in shrink from 32vh, which is what closed the
+        // gap under the section heading.
+        }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
       }
       steps.forEach(function (s) { io.observe(s); });
       released = false;
@@ -168,7 +184,7 @@
         // Take the page back to step 01 as well; restarting the demo while
         // parked at step 06 otherwise re-arms onto the step still under the
         // cursor and snaps straight back to the success scene.
-        steps[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        steps[0].scrollIntoView(scrollTo);
         // Re-observe only once that scroll has landed. Doing it immediately
         // would fire the observer for every step the smooth scroll passes
         // through, flicking the widget backwards through the whole flow.
