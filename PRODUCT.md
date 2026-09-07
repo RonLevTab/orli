@@ -30,12 +30,16 @@ the persuasion story, it's a follow-up once the decision-maker is already sold.
 This site is the marketing front door for **Orli**, an online-booking add-on
 for clinics running Optima. It has to do two jobs: explain what Orli does and
 why it's safe to adopt (nothing to replace, nothing new for staff to learn),
-and convert a decision-maker into a demo request via the CTA form
-(`#contact`).
+and convert a decision-maker into a booked demo. The CTA band (`#contact`)
+offers two ways in: a Cal.com booking slot, and a contact dialog (name, email,
+message) for whoever would rather write first.
 
 Success is a clinic owner or office manager understanding the mechanism (their
-existing Optima calendar, opened up to patients) well enough to submit the
-demo-request form.
+existing Optima calendar, opened up to patients) well enough to book a demo.
+**The booked slot is the conversion the site is judged by; a sent message
+counts, but as the fallback** (confirmed 2026-09-07). The two buttons are
+equal weight today; giving booking more visual weight is a design decision
+still open, not a product fact.
 
 ## Positioning
 
@@ -54,9 +58,15 @@ the clinic's existing workflow has to change.
   as binding for the whole product; changes here are upstream of that, not
   downstream.
 - The only backend is `worker.js`, a Cloudflare Worker with two routes: the
-  demo-request form (`#demoForm` in `index.html`, posted by `script.js`) and
-  Cal.com's booking webhook, both forwarded into Slack's `#website-contact`.
-  See `README.md` for the secrets it needs.
+  contact form (`#demoForm`, a `<dialog>` on `index.html` opened from the CTA
+  band and the footer link, posted by `script.js`) and Cal.com's booking
+  webhook, both forwarded into Slack's `#website-contact`. See `README.md` for
+  the secrets it needs. The Worker also serves `404.html` for any path with
+  no file behind it.
+- Every page loads two third parties — Google Fonts (the site's typeface) and
+  Cal.com's embed script — and each receives the visitor's IP, user agent and
+  referring page on every view. `privacy.html` discloses both; no surface may
+  claim the site has "no tracking" without accounting for them.
 - `panel.html` shows the other half of the product: a static mock of the clinic
   admin, walked through in five steps. It exists because the site otherwise only ever
   shows the patient's side, and the owner's real question is whether opening the
@@ -87,6 +97,9 @@ the clinic's existing workflow has to change.
   data; it must keep faithfully mirroring the real widget's flow, steps, and
   copy as that product evolves — see this repo's and `orli-calendar`'s
   CLAUDE.md "Related project" sections.
+- The contact form asks for name, email and message only. It deliberately does
+  **not** ask for the clinic's name (decided 2026-09-07). **Undecided:** whether
+  the confirmation promises a response time; until decided it promises none.
 - The hero's widget picture (`.orli-live` in `index.html`, `aria-hidden`) is
   **decoration only**. It is not held to the real widget's appearance and may
   diverge freely; only the `#demo` replica carries the fidelity constraint.
@@ -105,6 +118,12 @@ calendar to the clinic's website as an extra channel. The pain the copy names
 belongs to the **phone-and-transcription workflow**, which is fair game, never
 to Optima's product.
 
+**Status (confirmed 2026-09-07): in talks, nothing signed.** Until that changes,
+no surface may state or imply an approval, a partnership, or that Orli is
+"built on" Optima's platform — the footer says "עובד עם אופטימה" (works with
+Optima), not "built on", for exactly this reason. Revisit this section the day
+something is signed.
+
 ## Brand Commitments
 
 - Name: **Orli** (אורלי), positioned against the legacy system **Optima**
@@ -122,7 +141,8 @@ to Optima's product.
   PRODUCT.md); the site names no clinic customers and shows no testimonials,
   logos, or usage metrics.
 - **Absent — do not fabricate:** customer count beyond one, testimonials,
-  logos, usage/performance metrics, or pricing.
+  logos, usage/performance metrics, or pricing. Reconfirmed 2026-09-07: still
+  one customer, still not nameable.
 
 ## Product Principles
 
