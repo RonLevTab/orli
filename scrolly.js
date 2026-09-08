@@ -196,7 +196,21 @@
       if (io) io.disconnect();
       clearTimeout(pausedTimer);
       steps[i].scrollIntoView(scrollTo);
-      pausedTimer = setTimeout(observeSteps, 700);
+      // Re-arm once the scroll has actually stopped: a fixed delay re-armed
+      // mid-flight on the long way back from step 06 to 01 (the restart),
+      // and the observer then flicked the widget through every step it
+      // passed. Quiet for 160ms means landed; 1500ms is the ceiling.
+      var settle = null;
+      var ceiling = setTimeout(rearm, 1500);
+      function rearm() {
+        clearTimeout(settle); clearTimeout(ceiling);
+        window.removeEventListener('scroll', onMove);
+        observeSteps();
+      }
+      function onMove() { clearTimeout(settle); settle = setTimeout(rearm, 160); }
+      window.addEventListener('scroll', onMove, { passive: true });
+      settle = setTimeout(rearm, 160);
+      pausedTimer = ceiling;
     }
 
     // The visitor can also click their own way through the widget. When that

@@ -475,6 +475,12 @@ html[dir="rtl"] .hero-veil {
 .demo-browser { max-width: 460px; width: 100%; box-shadow: var(--shadow-lg); }
 /* The widget fills the frame; scrolly.js sizes the frame to the tallest scene. */
 .demo-browser [data-orli-widget] { display: block; width: 100%; height: 100%; }
+/* The real widget contains overscroll inside its step area because it lives
+   in an iframe. On this page the same rule swallowed every wheel turn made
+   over the demo — after clicking "restart" the cursor rests on it, and the
+   page seemed stuck. Here the wheel reaches the page once the step area
+   has nothing left to scroll. */
+#demo .orli-live .obw-step { overscroll-behavior: auto; }
 /* The heading above already carries the section's top padding. */
 .section.scrolly { padding-top: 24px; padding-bottom: 140px; }
 /* Mobile-only step tabs (see @media (max-width: 920px) below): a tap-through
