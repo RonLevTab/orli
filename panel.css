@@ -242,7 +242,10 @@
 @media (max-width: 920px) {
   .pstack { gap: 20px; padding-block-end: 0; }
   /* In flow on a phone: no stacking, the mock above its text. */
-  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: calc(100vh - var(--nav-h) - 24px); min-height: calc(100dvh - var(--nav-h) - 24px); }
+  /* In flow on a phone: no stacking, the mock above its text, and the card
+     as tall as its content — a screen-tall card with the mock and two lines
+     floating in it read as empty. */
+  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: 0; }
   .pcard.is-behind { transform: none; opacity: 1; filter: none; }
   .pcard-mock { order: -1; }
   .pcard-list li { font-size: 1rem; }

@@ -778,7 +778,10 @@ html[dir="rtl"] .hero-veil {
   /* One column means the shared header no longer maps onto the cells, so each
      cell names its own side instead of relying on the reader's memory and a
      single coloured mark. */
-  .cmp-cell { flex-wrap: wrap; }
+  /* The mark and the text share one line under the label; without a
+     flex basis the text kept its full width and dropped under the mark. */
+  .cmp-cell { flex-wrap: wrap; row-gap: 2px; }
+  .cmp-cell > span:last-child { flex: 1 1 0; min-width: 0; }
   .cmp-cell::before {
     flex: 0 0 100%; content: "בלי אורלי";
     font-size: .64rem; font-weight: 800; letter-spacing: .02em;
@@ -845,7 +848,9 @@ html[dir="rtl"] .hero-veil {
    extends its hit area without touching line layout, and the underlined hero
    link gets its extra reach from an invisible pseudo-element so the underline
    stays where it is. */
-@media (pointer: coarse) {
+/* Phone-width layouts get the same reach even when the browser reports a
+   fine pointer (a phone in desktop mode, an emulator). */
+@media (pointer: coarse), (max-width: 640px) {
   .footer-col { gap: 4px; }
   .footer-col a { padding-block: 8px; }
   .hero-link { position: relative; }
