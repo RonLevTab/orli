@@ -616,7 +616,7 @@ html[dir="rtl"] .hero-veil {
   /* Text first, so it is what stays readable once the card is stuck; the
      widget takes the rest and scrolls inside on the taller steps, as the
      real widget does on a phone. */
-  .scrolly-card .scrolly-step { order: -1; opacity: 1; transform: none; text-align: center; flex: none; }
+  .scrolly-card .scrolly-step { order: -1; min-height: 0; display: block; opacity: 1; transform: none; transition: none; text-align: center; flex: none; padding-block: 4px 2px; }
   .scrolly-card .scrolly-step h3 { font-size: 1.35rem; margin-bottom: 6px; }
   .scrolly-card .scrolly-step p { margin-inline: auto; font-size: .95rem; }
   .scrolly-card .demo-browser { flex: 1; min-height: 0; width: 100%; max-width: 340px; margin: 0 auto; box-shadow: var(--shadow); }
