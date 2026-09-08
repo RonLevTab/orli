@@ -398,19 +398,23 @@ html[dir="rtl"] .hero-veil {
   border-inline-start: 3px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .bc-appt--site {
-  position: relative; overflow: visible; opacity: 0;
+  opacity: 0; transform-origin: right center;
   background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-inline-start-color: var(--teal-deep); color: var(--teal-deep);
 }
-/* The new booking settles into its row: a soft fade and a slight grow, and
-   then the same ring that bloomed out of the tapped slot and the success
-   mark blooms out of the row — the film's last beat gets the same
-   emphasis as its first. overflow:visible on this one chip so the ring is
-   not clipped; its text is short enough never to need the ellipsis. */
-.bc-appt.is-landed { opacity: 1; animation: bridge-pop .8s cubic-bezier(.2, .7, .2, 1) both; }
-.bc-appt--site::after { content: ""; position: absolute; inset: -3px; border-radius: 11px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
-.bc-appt.is-landed::after { animation: bridge-land-ring 1s cubic-bezier(0, 0, .2, 1) .35s forwards; }
-@keyframes bridge-pop { 0% { opacity: 0; transform: scale(.92); } 100% { opacity: 1; transform: none; } }
-@keyframes bridge-land-ring { 0% { transform: scale(.98); opacity: .9; } 100% { transform: scale(1.14, 1.5); opacity: 0; } }
+/* The new booking pops into its row: it springs out from its time column,
+   overshoots, bounces back and settles, with a teal flash that fades as it
+   lands — the film's last beat, and the one that should feel like a win. */
+.bc-appt.is-landed { opacity: 1; animation: bridge-pop .85s cubic-bezier(.34, 1.56, .64, 1) both, bridge-pop-flash 1.1s ease-out both; }
+@keyframes bridge-pop {
+  0% { opacity: 0; transform: scale(.4, .7) translateY(6px); }
+  45% { opacity: 1; transform: scale(1.1, 1.06) translateY(-2px); }
+  70% { transform: scale(.96, .98) translateY(1px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes bridge-pop-flash {
+  0% { box-shadow: 0 0 0 0 rgba(15, 138, 134, .55); background: color-mix(in srgb, var(--teal) 42%, var(--surface)); }
+  100% { box-shadow: 0 0 0 10px rgba(15, 138, 134, 0); background: color-mix(in srgb, var(--teal) 16%, var(--surface)); }
+}
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
 /* The pinned columns carry their own lead-in, so the standard 56px under the
@@ -665,7 +669,7 @@ html[dir="rtl"] .hero-veil {
   .bridge-movie .bm-cal { transform: translate(-50%, -50%); }
   .bridge-site.is-tapping .bs-launcher--pill, .bridge-site.is-tapping .bs-launcher--pill .bw-tap,
   .bw-target.is-picking .bw-tap, .bridge-site.is-confirmed .bw-check, .bridge-site.is-confirmed .bw-check::after,
-  .bc-appt.is-landed, .bc-appt.is-landed::after { animation: none; }
+  .bc-appt.is-landed { animation: none; }
   /* Demo steps: current one fades in place instead of rising. */
   .scrolly-step { transform: none; transition: opacity .2s ease; }
   .scrolly-step.is-active { animation: none; }
