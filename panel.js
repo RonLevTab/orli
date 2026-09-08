@@ -42,19 +42,32 @@
         else t.removeAttribute('aria-current');
       });
       panes.forEach(function (p, idx) { p.classList.toggle('is-active', idx === i); });
+      // Steps 05 and 06 are account pages (הגדרות מרפאה, עזרה ותמיכה): in
+      // the real admin they live in the avatar menu, not the rail
+      // (AppShell.vue), so the mock opens that menu while one of them is up.
+      panel.classList.toggle('is-account', panes[i].hasAttribute('data-account'));
 
       // The mock's sidebar is a horizontal scrolling strip on a phone, so the
       // item this step highlights is often off-screen — the walkthrough's
       // whole payoff, invisible. Bring it along by scrolling the strip itself
       // rather than calling scrollIntoView, which is free to move the page and
       // would fight the scroll narrative driving this in the first place.
+      // The rail's own item, not the account menu's: both carry data-nav
+      // for the account pages, and only the rail is the strip that scrolls.
       var activeNav = navBtns.filter(function (b) {
-        return (b.getAttribute('data-nav') || '').split(' ').indexOf(String(i)) >= 0;
+        return b.closest('.opn-sidebar') && (b.getAttribute('data-nav') || '').split(' ').indexOf(String(i)) >= 0;
       })[0];
-      var strip = activeNav && activeNav.parentElement && activeNav.parentElement.parentElement;
+      // Measured from the rendered boxes, not offsetLeft: under RTL,
+      // scrollLeft counts from the right edge and runs negative, so the
+      // offset arithmetic this used to do left every item past the first
+      // fold off-screen. Nudging scrollLeft by the overshoot works the same
+      // way in both directions.
+      var strip = activeNav && activeNav.closest('.opn-sidebar');
       if (strip && strip.scrollWidth > strip.clientWidth) {
-        var far = activeNav.offsetLeft + activeNav.offsetWidth - strip.clientWidth;
-        strip.scrollLeft = Math.min(Math.max(strip.scrollLeft, far), activeNav.offsetLeft);
+        var sr = strip.getBoundingClientRect();
+        var ar = activeNav.getBoundingClientRect();
+        if (ar.right > sr.right - 8) strip.scrollLeft += ar.right - sr.right + 10;
+        else if (ar.left < sr.left + 8) strip.scrollLeft += ar.left - sr.left - 10;
       }
 
       // A sidebar item can own more than one step — steps 01 and 02 are two

@@ -141,7 +141,7 @@
   font-size: .74rem;
 }
 .opn-row--off { background: var(--cream-2); border-style: dashed; color: var(--ink-soft); }
-.opn-price, .opn-time { font-weight: 600; color: var(--ink); white-space: nowrap; }
+.opn-time { font-weight: 600; color: var(--ink); white-space: nowrap; }
 .opn-on { font-weight: 600; color: var(--teal-deep); white-space: nowrap; }
 .opn-off { font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
 .opn-note { margin: 10px 0 0; font-size: .66rem; color: var(--ink-soft); }
@@ -196,5 +196,129 @@
   .opn-nav { display: flex; gap: 6px; margin: 0; }
   .opn-nav-btn { white-space: nowrap; font-size: .66rem; padding: 6px 9px; }
   .opn-nav-btn .opn-icon { display: none; }
-  .opn-soon-badge { font-size: .5rem; }
+  /* SOURCE: AppShell.vue drops the stacked "בקרוב" badge from its phone
+     bar too; the pane's own card still says it. */
+  .opn-sidebar .opn-soon-badge { display: none; }
+}
+
+/* ============================================================
+   DRAFT — additions to append to orli/panel.css once approved.
+   Everything is scoped to .orli-panel / #panel / .panel-news, built from
+   styles.css tokens, logical properties only (RTL-first).
+   ============================================================ */
+
+/* The step headings on this page are h2 (index.html uses h3); give them
+   the same serif treatment styles.css gives .scrolly-step h3. */
+#panel .scrolly-step h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2.15rem); margin-bottom: 10px; }
+
+/* ---------- "חדש במסך הניהול" strip ---------- */
+.panel-news { padding-block: 8px 40px; }
+.panel-news-grid { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.panel-news-card {
+  position: relative; padding: 22px 22px 20px; border-radius: var(--radius);
+  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+  text-align: start;
+}
+.panel-news-card h2 { font-size: 1.12rem; font-weight: 700; margin: 10px 0 8px; letter-spacing: -.01em; }
+.panel-news-card p { margin: 0; color: var(--ink-soft); font-size: .98rem; }
+.panel-news-tag, .opn-new {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep);
+  font-size: .68rem; font-weight: 700; letter-spacing: .04em;
+}
+@media (max-width: 760px) { .panel-news-grid { grid-template-columns: 1fr; } }
+
+/* ---------- account menu under the avatar ---------- */
+.opn-account { position: relative; }
+.opn-menu {
+  position: absolute; inset-inline-end: 0; top: calc(100% + 6px); z-index: 3;
+  min-width: 140px; padding: 4px; display: grid; gap: 1px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-lg);
+  opacity: 0; transform: translateY(-4px); pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+.orli-panel.is-account .opn-menu { opacity: 1; transform: none; }
+.opn-menu-item { display: block; padding: 5px 9px; border-radius: 8px; font-size: .68rem; color: var(--ink-soft); }
+/* The open menu hangs over the top of the workspace, so the account pane
+   starts below it rather than under it. */
+.opn-pane { transition: opacity .3s ease, transform .3s ease, top .3s ease; }
+.orli-panel.is-account .opn-pane.is-active { top: 138px; }
+.opn-menu-item.is-active { background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal-deep); font-weight: 600; }
+/* The rail's "חשבון" stops exist only for the phone strip. */
+.opn-nav-label--account, .opn-nav--account { display: none; }
+
+/* ---------- pane pieces ---------- */
+.opn-pane-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.opn-pane-head .opn-tabs { margin-bottom: 0; }
+.opn-ghost-btn { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: .64rem; font-weight: 600; color: var(--teal-deep); white-space: nowrap; }
+.opn-tabs { flex-wrap: wrap; }
+.opn-tabs--sm .opn-tab { font-size: .6rem; padding: 3px 9px; }
+.opn-row--tight { padding-block: 6px; }
+.opn-row--flag { border-color: color-mix(in srgb, #b8322a 35%, var(--line)); }
+
+/* The check every confirmation carries (SavedMark.vue), and the two places
+   it shows: the save bar's "נשמר" and the practitioner-ready toast. */
+.opn-check { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep); }
+.opn-check svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.opn-savebar { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; padding: 5px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: .66rem; font-weight: 700; color: var(--teal-deep); }
+.opn-toast {
+  display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 12px; border-radius: 12px;
+  background: var(--surface); border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+  box-shadow: var(--shadow-sm); font-size: .7rem; font-weight: 600;
+}
+
+/* Two columns inside a pane (design, emails). */
+.opn-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+.opn-cols--rail { grid-template-columns: 128px 1fr; }
+.opn-rail { display: grid; gap: 3px; }
+.opn-rail-item { padding: 5px 8px; border-radius: 8px; font-size: .66rem; color: var(--ink-soft); }
+.opn-rail-item.is-active { background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal-deep); font-weight: 600; }
+.opn-field-label--gap { margin-top: 12px; }
+
+/* Placement group + its mock-page preview (WidgetThemeSection.vue). */
+.opn-place { display: grid; gap: 6px; margin-bottom: 10px; }
+.opn-place-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: .64rem; color: var(--ink-soft); }
+.opn-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
+.opn-seg i { font-style: normal; padding: 3px 7px; font-size: .58rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+.opn-seg i.is-on { background: var(--teal-deep); color: #fff; }
+.opn-site { position: relative; height: 74px; padding: 10px; border-radius: 10px; background: var(--cream-2); border: 1px solid var(--line); overflow: hidden; }
+.opn-site-line { display: block; height: 6px; width: 60%; border-radius: 999px; background: color-mix(in srgb, var(--ink-soft) 22%, transparent); margin-bottom: 6px; }
+.opn-site-line--short { width: 35%; }
+.opn-site-a11y { position: absolute; inset-inline-start: 8px; bottom: 8px; width: 16px; height: 16px; border-radius: 50%; background: #1f6feb; opacity: .55; }
+.opn-site-btn { position: absolute; inset-inline-start: 30px; bottom: 16px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid #e0e0e0; font-size: .54rem; font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.1); }
+
+/* Email preview's action, the embed line, the support form. */
+.opn-mail-btn { justify-self: start; margin-top: 4px; padding: 4px 10px; border-radius: 999px; background: var(--teal-deep); color: #fff; font-size: .62rem; font-weight: 600; }
+.opn-code { padding: 8px 10px; border-radius: 8px; background: #0c1a17; color: #d7e6e2; font: 600 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.opn-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+.opn-choice { display: grid; gap: 2px; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: .68rem; font-weight: 700; }
+.opn-choice small { font-size: .58rem; font-weight: 400; color: var(--ink-soft); }
+.opn-choice.is-on { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
+.opn-textarea { height: 44px; padding: 6px 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: .62rem; color: var(--ink-soft); margin-bottom: 6px; }
+.opn-attach { display: flex; align-items: center; gap: 8px; font-size: .62rem; color: var(--ink-soft); margin-bottom: 10px; }
+.opn-attach-thumb { width: 26px; height: 20px; border-radius: 5px; background: var(--cream-2); border: 1px dashed #c4bda8; }
+.opn-support-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.opn-support-foot .opn-note { margin: 0; }
+
+/* ---------- narrow ---------- */
+@media (max-width: 920px) {
+  .opn-menu { display: none; }
+  /* No menu to clear on a phone, so the account panes start where every
+     other pane does. */
+  .orli-panel.is-account .opn-pane.is-active { top: 14px; }
+  .opn-nav-label--account { display: none; }
+  .opn-nav--account { display: flex; }
+  .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
+  .opn-rail { display: flex; flex-wrap: wrap; gap: 4px; }
+  .opn-rail .opn-field-label { width: 100%; margin: 4px 0 2px; }
+  .opn-choices { grid-template-columns: 1fr; }
+  .opn-choice small { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .opn-menu { transition: none; } }
+
+/* Seven step buttons (index.html has six) overran a 375px viewport by a few
+   pixels; the same tighter size styles.css uses on short phones, scoped here. */
+@media (max-width: 560px) {
+  #panel .scrolly-tabs { gap: 6px; }
+  #panel .scrolly-tab { width: 40px; height: 40px; }
 }
