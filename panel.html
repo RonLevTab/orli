@@ -126,14 +126,14 @@
       <div class="wrap scrolly-grid">
         <div class="scrolly-steps">
           <article class="scrolly-step" data-scene="0">
-            <span class="scrolly-idx">01 · מטפלים ושירותים</span>
-            <h2>מי נותן מה</h2>
-            <p>המטפלים מיובאים מאופטימה בלחיצה. לכל אחד רשימת הטיפולים שלו ומשך הטיפול לצידם. מה שלא הוגדר כאן, המטופל פשוט לא רואה באתר. וברגע שמטפל מוכן, פרטים, ימי עבודה ושירותים, המערכת אומרת שאפשר לקבוע איתו.</p>
-          </article>
-          <article class="scrolly-step" data-scene="1">
-            <span class="scrolly-idx">02 · זמינות</span>
+            <span class="scrolly-idx">01 · זמינות</span>
             <h2>מתי אתם באמת פנויים</h2>
             <p>שעות שבועיות לכל מטפל, יום חסום או שעות חריגות לתאריך מסוים, וסגירות המרפאה וחגי ישראל פעם אחת לכולם. אורלי מציעה למטופל רק את מה שפתוח אצלכם ביומן, ולא שעה אחת מעבר.</p>
+          </article>
+          <article class="scrolly-step" data-scene="1">
+            <span class="scrolly-idx">02 · מטפלים ושירותים</span>
+            <h2>מי נותן מה</h2>
+            <p>המטפלים מיובאים מאופטימה בלחיצה. לכל אחד רשימת הטיפולים שלו ומשך הטיפול לצידם. מה שלא הוגדר כאן, המטופל פשוט לא רואה באתר. וברגע שמטפל מוכן, פרטים, ימי עבודה ושירותים, המערכת אומרת שאפשר לקבוע איתו.</p>
           </article>
           <article class="scrolly-step" data-scene="2">
             <span class="scrolly-idx">03 · עיצוב הזמנת תור</span>
@@ -220,11 +220,26 @@
                 </aside>
 
                 <div class="opn-workspace">
-                  <!-- 01 — practitioners: services & prices. SOURCE:
+                  <!-- 01 — availability. SOURCE: WorkingScheduleEditor.vue
+                       (weekly hours), AbsenceEditor.vue (blocked day /
+                       exceptional hours), HolidaysPanel.vue (closures +
+                       Hebcal sync), SaveBar + SavedMark for "נשמר". -->
+                  <section class="opn-pane" data-pane="0">
+                    <div class="opn-tabs"><span class="opn-tab">פרטים</span><span class="opn-tab is-active">זמינות</span><span class="opn-tab">שירותים וטיפולים</span></div>
+                    <p class="opn-pane-title">ד"ר כהן · שעות שבועיות</p>
+                    <div class="opn-row"><span>ראשון–שלישי</span><span class="opn-time">09:00 – 16:00</span></div>
+                    <div class="opn-row"><span>רביעי</span><span class="opn-time">09:00 – 13:00</span></div>
+                    <div class="opn-row opn-row--off"><span>שישי–שבת</span><span class="opn-off">סגור</span></div>
+                    <div class="opn-row opn-row--flag"><span>היעדרות · 14.10</span><span class="opn-off">יום חסום</span></div>
+                    <div class="opn-savebar"><span class="opn-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>נשמר</div>
+                    <p class="opn-note">סגירות המרפאה וחגי ישראל מוגדרים פעם אחת, בהגדרות המרפאה, לכל המטפלים</p>
+                  </section>
+
+                  <!-- 02 — practitioners: services. SOURCE:
                        PractitionersWorkspace.vue (rail + three tabs),
                        DoctorServicesTab.vue, OptimaImportDialog.vue, and the
                        practitionerReadyToast milestone. -->
-                  <section class="opn-pane" data-pane="0">
+                  <section class="opn-pane" data-pane="1">
                     <div class="opn-pane-head">
                       <div class="opn-tabs"><span class="opn-tab">פרטים</span><span class="opn-tab">זמינות</span><span class="opn-tab is-active">שירותים וטיפולים</span></div>
                       <span class="opn-ghost-btn">ייבוא מאופטימה</span>
@@ -237,21 +252,6 @@
                       <span class="opn-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
                       מעכשיו אפשר לקבוע פגישות עם ד"ר כהן.
                     </div>
-                  </section>
-
-                  <!-- 02 — availability. SOURCE: WorkingScheduleEditor.vue
-                       (weekly hours), AbsenceEditor.vue (blocked day /
-                       exceptional hours), HolidaysPanel.vue (closures +
-                       Hebcal sync), SaveBar + SavedMark for "נשמר". -->
-                  <section class="opn-pane" data-pane="1">
-                    <div class="opn-tabs"><span class="opn-tab">פרטים</span><span class="opn-tab is-active">זמינות</span><span class="opn-tab">שירותים וטיפולים</span></div>
-                    <p class="opn-pane-title">ד"ר כהן · שעות שבועיות</p>
-                    <div class="opn-row"><span>ראשון–שלישי</span><span class="opn-time">09:00 – 16:00</span></div>
-                    <div class="opn-row"><span>רביעי</span><span class="opn-time">09:00 – 13:00</span></div>
-                    <div class="opn-row opn-row--off"><span>שישי–שבת</span><span class="opn-off">סגור</span></div>
-                    <div class="opn-row opn-row--flag"><span>היעדרות · 14.10</span><span class="opn-off">יום חסום</span></div>
-                    <div class="opn-savebar"><span class="opn-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>נשמר</div>
-                    <p class="opn-note">סגירות המרפאה וחגי ישראל מוגדרים פעם אחת, בהגדרות המרפאה, לכל המטפלים</p>
                   </section>
 
                   <!-- 03 — widget branding. SOURCE: WidgetThemeSection.vue —
@@ -363,8 +363,8 @@
           </div>
 
           <div class="scrolly-tabs" role="group" aria-label="מסכי הניהול">
-            <button type="button" class="scrolly-tab is-active" data-scene="0" aria-current="step" aria-label="מסך 1: מי נותן מה">01</button>
-            <button type="button" class="scrolly-tab" data-scene="1" aria-label="מסך 2: מתי אתם באמת פנויים">02</button>
+            <button type="button" class="scrolly-tab is-active" data-scene="0" aria-current="step" aria-label="מסך 1: מתי אתם באמת פנויים">01</button>
+            <button type="button" class="scrolly-tab" data-scene="1" aria-label="מסך 2: מי נותן מה">02</button>
             <button type="button" class="scrolly-tab" data-scene="2" aria-label="מסך 3: עיצוב הזמנת תור">03</button>
             <button type="button" class="scrolly-tab" data-scene="3" aria-label="מסך 4: מה נשלח אחרי הקביעה">04</button>
             <button type="button" class="scrolly-tab" data-scene="4" aria-label="מסך 5: הגדרות מרפאה">05</button>
