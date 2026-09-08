@@ -354,6 +354,14 @@ html[dir="rtl"] .hero-veil {
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
 .bridge-site.is-picked .bw-slots .bw-target { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+/* At the pick, everything around the chosen slot recedes — the page behind
+   dims further and the panel's other slots and copy fade — so the eye lands
+   on 10:30 turning teal, the beat the whole film is about. */
+.bs-backdrop { transition: opacity .3s ease, background .5s ease; }
+.bridge-site.is-picked .bs-backdrop { background: rgba(0, 0, 0, .42); }
+.bw-title, .bw-date, .bw-btn, .bw-slots span:not(.bw-target) { transition: opacity .5s ease; }
+.bridge-site.is-picked :is(.bw-title, .bw-date, .bw-btn, .bw-slots span:not(.bw-target)) { opacity: .35; }
+.bridge-site.is-confirmed .bs-backdrop { background: rgba(0, 0, 0, .18); }
 .bw-tap { position: absolute; inset: -2px; border-radius: 999px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
 .bw-target.is-picking .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
 @keyframes bridge-tap { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
@@ -853,15 +861,21 @@ html[dir="rtl"] .hero-veil {
   margin: auto; padding: 0; border: 1px solid var(--line); border-radius: var(--radius);
   background: var(--surface); color: var(--ink); box-shadow: var(--shadow-lg);
 }
-.contact-dialog::backdrop { background: rgba(22, 33, 31, .48); backdrop-filter: blur(6px); }
+/* A plain dim, no blur: the blurred band behind the card read as a
+   rendering fault, and blurring a full-page canvas costs frames. */
+.contact-dialog::backdrop { background: rgba(22, 33, 31, .55); }
 .contact-dialog[open] { animation: contact-in .22s cubic-bezier(.2, .7, .2, 1); }
 @keyframes contact-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+/* Locking the page while the dialog is up drops the scrollbar, and the
+   whole page used to shift sideways by its width. The gutter is reserved
+   permanently instead, so the layout is the same with the bar or without. */
+html { scrollbar-gutter: stable; }
 html:has(dialog[open]) { overflow: hidden; }
 .contact-form { padding: 26px 28px 24px; text-align: start; }
 .contact-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .contact-head .display { margin: 0; }
 .contact-close {
-  flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: -6px -8px 0 0;
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: -6px 0 0; margin-inline-end: -8px;
   border-radius: 50%; border: 1px solid transparent; background: transparent; color: var(--ink-soft); cursor: pointer;
   transition: background .15s ease, color .15s ease;
 }
@@ -875,9 +889,10 @@ html:has(dialog[open]) { overflow: hidden; }
   border: 1px solid var(--line); background: var(--cream); color: var(--ink);
 }
 .contact-form .field textarea { min-height: 120px; resize: vertical; }
-/* --ink-soft is 5.4:1 on cream; the label above and the darker typed value
-   keep an example from reading as a value. */
-.contact-form .field :is(input, textarea)::placeholder { color: var(--ink-soft); }
+/* An email address is Latin text, so it runs LTR — but it still sits
+   against the form's right edge, where every other value in this Hebrew
+   form sits. */
+.contact-form .field .field-ltr { direction: ltr; text-align: right; }
 .contact-form .field :is(input, textarea):focus { outline: 2px solid var(--teal-deep); outline-offset: 1px; border-color: var(--teal-deep); }
 .contact-form .field :is(input, textarea).is-invalid { border-color: #b8322a; box-shadow: 0 0 0 3px rgba(225, 29, 72, .14); }
 .contact-actions { margin-top: 6px; }

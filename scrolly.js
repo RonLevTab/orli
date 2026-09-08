@@ -77,7 +77,6 @@
     // onStep is wired, so the measuring renders don't drive the page.
     var frame = mountEl.closest('.demo-browser');
     var measuring = false;
-    var released = false;
     function fitFrame() {
       if (!frame) return;
       measuring = true;
@@ -99,40 +98,13 @@
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        // Once the visitor has taken over, re-measuring would throw away
-        // whatever they typed; the card keeps the height it has.
-        if (released) return;
         fitFrame();
         widget.setScene(current);
       }, 150);
     });
 
-    // The visitor can also click their own way through the widget. When that
-    // lands on a different step than the one we asked for, follow along in the
-    // step list — the sync the iframe's 'step' postMessage used to provide.
-    // setActiveUI() has already set `current` for scene changes we drove, so
-    // the echo of our own setScene() call falls out here.
-    widget.onStep = function (name) {
-      if (measuring) return;
-      var i = SCENE_OF[name];
-      if (i !== undefined && i !== current) {
-        setActiveUI(i);
-        if (isPinned.matches) steps[i].scrollIntoView(scrollTo);
-      }
-      // Reaching the success screen by hand ends the visitor's own run:
-      // nothing they typed is left to protect, so hand the narrative back to
-      // scrolling. Without this the observer stayed disconnected and the
-      // widget sat on the success screen while the steps scrolled past it.
-      // Delayed on desktop so the scrollIntoView above lands first, or the
-      // re-armed observer fires for every step the smooth scroll crosses.
-      if (name === 'success' && released) {
-        if (isPinned.matches) setTimeout(observeSteps, 700); else observeSteps();
-      }
-    };
-
-    activate(0);
-
     var io = null;
+    var pausedTimer = null;
 
     function observeSteps() {
       if (!('IntersectionObserver' in window)) return;
@@ -153,45 +125,45 @@
         }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
       }
       steps.forEach(function (s) { io.observe(s); });
-      released = false;
     }
 
-    // The scroll narrative is for passive readers. index.html invites the
-    // visitor to drive it themselves ("נסו את התוסף בעצמכם"), and a scroll
-    // nudge used to call setScene() -> reset() and throw away whatever they
-    // had typed. So the first real touch inside the widget hands over control:
-    // the observer stops, and widget.onStep (wired above) keeps the step list
-    // following them instead of leading them. The numbered tabs still work —
-    // clicking one is an explicit request to jump, not an accident of scroll.
-    function release() {
-      if (released) return;
-      released = true;
+    // Scrolls the page to a step without the observer reacting to every step
+    // the smooth scroll crosses on the way — that flicked the widget through
+    // the whole flow. The observer is re-armed once the scroll has landed.
+    function scrollToStep(i) {
+      if (!isPinned.matches) return;
       if (io) io.disconnect();
+      clearTimeout(pausedTimer);
+      steps[i].scrollIntoView(scrollTo);
+      pausedTimer = setTimeout(observeSteps, 700);
     }
 
+    // The visitor can also click their own way through the widget. When that
+    // lands on a different step than the one we asked for, follow along in the
+    // step list and bring the page to it — the sync the iframe's 'step'
+    // postMessage used to provide. Scrolling keeps driving afterwards: this
+    // used to hand the wheel over for good on the first click inside the
+    // widget, and the steps then scrolled past a widget that no longer moved.
+    // setActiveUI() has already set `current` for scene changes we drove, so
+    // the echo of our own setScene() call falls out here.
+    widget.onStep = function (name) {
+      if (measuring) return;
+      var i = SCENE_OF[name];
+      if (i !== undefined && i !== current) {
+        setActiveUI(i);
+        scrollToStep(i);
+      }
+    };
+
+    activate(0);
     observeSteps();
 
-    ['pointerdown', 'keydown'].forEach(function (evt) {
-      mountEl.addEventListener(evt, release);
-    });
-
-    // "Restart the demo" is the one control that hands the wheel back, so it
-    // has to undo the release its own pointerdown just caused — otherwise the
-    // widget resets to the first step and then sits there, deaf to scrolling.
+    // "Restart the demo" takes the page back to step 01 as well; restarting
+    // while parked at step 06 otherwise leaves the observer on the step still
+    // under the cursor, which snaps straight back to the success scene.
     mountEl.addEventListener('orli:restart', function () {
       setActiveUI(0);
-      if (isPinned.matches) {
-        // Take the page back to step 01 as well; restarting the demo while
-        // parked at step 06 otherwise re-arms onto the step still under the
-        // cursor and snaps straight back to the success scene.
-        steps[0].scrollIntoView(scrollTo);
-        // Re-observe only once that scroll has landed. Doing it immediately
-        // would fire the observer for every step the smooth scroll passes
-        // through, flicking the widget backwards through the whole flow.
-        setTimeout(observeSteps, 700);
-      } else {
-        observeSteps();
-      }
+      scrollToStep(0);
     });
   }
 
