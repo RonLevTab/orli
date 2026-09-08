@@ -590,7 +590,17 @@ html[dir="rtl"] .hero-veil {
   .bridge-movie, .bm-site { min-height: 420px; }
   .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
   .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
-  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: clamp(540px, 78vh, 640px); margin-inline: auto; }
+  /* The card fits the step it is showing instead of holding the height of
+     the tallest one: the practitioner list is two rows, the confirm step
+     is a full form, and a fixed frame left the first mostly empty. The
+     widget sizes itself, scrolly.js writes that height onto the card, and
+     the card animates between steps so the tabs below glide rather than
+     jump. */
+  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: auto; margin-inline: auto; overflow: hidden; }
+  .scrolly-sticky .demo-browser.is-settled { transition: height .45s cubic-bezier(.2, .7, .2, 1); }
+  .scrolly-sticky .demo-browser [data-orli-widget] { height: auto; }
+  .scrolly-sticky .orli-live .obw-widget { height: auto; min-height: 320px; }
+  .scrolly-sticky .orli-live .obw-step { flex: none; overflow: visible; }
   .scrolly-tabs { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
   .scrolly-tab {
     font: inherit; font-size: .84rem; font-weight: 700; letter-spacing: .04em;
@@ -677,6 +687,7 @@ html[dir="rtl"] .hero-veil {
   .bc-appt.is-landed { animation: none; }
   /* Demo steps: current one fades in place instead of rising. */
   .scrolly-step { transform: none; transition: opacity .2s ease; }
+  .scrolly-sticky .demo-browser.is-settled { transition: none; }
   .scrolly-step.is-active { animation: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }

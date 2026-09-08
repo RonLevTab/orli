@@ -79,6 +79,9 @@
     var measuring = false;
     function fitFrame() {
       if (!frame) return;
+      // On a phone the card fits whatever step it is showing (see
+      // fitMobile below), so there is no tallest scene to size for.
+      if (!isPinned.matches) { frame.style.height = ''; return; }
       measuring = true;
       frame.style.height = '';
       var overflow = 0;
@@ -94,12 +97,34 @@
     }
     fitFrame();
 
+    // Phone layout: the widget sizes itself to the step it is showing, and
+    // the card takes that height in pixels so styles.css can animate the
+    // change between steps. Observing the mount element rather than the
+    // widget's own root survives the widget re-rendering its markup.
+    function fitMobile() {
+      if (!frame || isPinned.matches) return;
+      frame.style.height = mountEl.offsetHeight + 'px';
+      // The first measurement lands without a transition; the ones after
+      // it glide.
+      if (!frame.classList.contains('is-settled')) {
+        window.requestAnimationFrame(function () { frame.classList.add('is-settled'); });
+      }
+    }
+    if ('ResizeObserver' in window) new ResizeObserver(fitMobile).observe(mountEl);
+    fitMobile();
+
     var resizeTimer = null;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        fitFrame();
-        widget.setScene(current);
+        if (isPinned.matches) {
+          fitFrame();
+          widget.setScene(current);
+        } else {
+          frame && frame.classList.remove('is-settled');
+          frame && (frame.style.height = '');
+          fitMobile();
+        }
       }, 150);
     });
 
