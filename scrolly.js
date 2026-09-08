@@ -79,8 +79,8 @@
     var measuring = false;
     function fitFrame() {
       if (!frame) return;
-      // On a phone the card fits whatever step it is showing (see
-      // fitMobile below), so there is no tallest scene to size for.
+      // On a phone the pinned grid is hidden and the cards size themselves
+      // (see buildStack below), so there is no tallest scene to size for.
       if (!isPinned.matches) { frame.style.height = ''; return; }
       measuring = true;
       frame.style.height = '';
@@ -97,21 +97,49 @@
     }
     fitFrame();
 
-    // Phone layout: the widget sizes itself to the step it is showing, and
-    // the card takes that height in pixels so styles.css can animate the
-    // change between steps. Observing the mount element rather than the
-    // widget's own root survives the widget re-rendering its markup.
-    function fitMobile() {
-      if (!frame || isPinned.matches) return;
-      frame.style.height = mountEl.offsetHeight + 'px';
-      // The first measurement lands without a transition; the ones after
-      // it glide.
-      if (!frame.classList.contains('is-settled')) {
-        window.requestAnimationFrame(function () { frame.classList.add('is-settled'); });
+    // Phone layout: the pinned grid above is hidden, and the section is six
+    // cards in flow instead — the admin page's pattern — each with its own
+    // copy of the widget, already at that step, above the step's text. Built
+    // once, the first time the phone layout is in effect, from the desktop
+    // steps so the copy lives in one place. widget.js mounts each copy.
+    var stackEl = section.querySelector('[data-scrolly-stack]');
+    var stackBuilt = false;
+    function buildStack() {
+      if (stackBuilt || !stackEl || !window.OrliWidget) return;
+      stackBuilt = true;
+      steps.forEach(function (step, i) {
+        var card = document.createElement('article');
+        card.className = 'scrolly-card';
+        var cardFrame = document.createElement('div');
+        cardFrame.className = 'browser demo-browser demo-browser--bare';
+        var el = document.createElement('div');
+        el.setAttribute('data-orli-widget', '');
+        cardFrame.appendChild(el);
+        var text = step.cloneNode(true);
+        text.classList.add('is-active');
+        text.removeAttribute('data-scene');
+        card.appendChild(cardFrame);
+        card.appendChild(text);
+        stackEl.appendChild(card);
+        var instance = window.OrliWidget.mount(el);
+        if (instance) instance.setScene(i);
+      });
+      var cards = [].slice.call(stackEl.children);
+      // Each card slides up into place the first time it comes into view.
+      if ('IntersectionObserver' in window) {
+        var cardIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            e.target.classList.add('is-played');
+            cardIo.unobserve(e.target);
+          });
+        }, { threshold: 0.2 });
+        cards.forEach(function (c) { cardIo.observe(c); });
+      } else {
+        cards.forEach(function (c) { c.classList.add('is-played'); });
       }
     }
-    if ('ResizeObserver' in window) new ResizeObserver(fitMobile).observe(mountEl);
-    fitMobile();
+    if (!isPinned.matches) buildStack();
 
     var resizeTimer = null;
     window.addEventListener('resize', function () {
@@ -121,9 +149,7 @@
           fitFrame();
           widget.setScene(current);
         } else {
-          frame && frame.classList.remove('is-settled');
-          frame && (frame.style.height = '');
-          fitMobile();
+          buildStack();
         }
       }, 150);
     });

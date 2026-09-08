@@ -786,20 +786,26 @@
     return handle;
   }
 
+  function mountOne(el) {
+    if (el.__orli) return el.__orli;
+    el.classList.add('orli-live');
+    // [data-scrolly] makes the widget fill the pinned #demo card instead of
+    // style.css's own 400x580 frame (see widget.css), and steps the heading
+    // levels down to fit inside a page that already has an h1. A widget
+    // embedded anywhere else renders exactly as the real one does.
+    if (el.closest && el.closest('#demo')) el.setAttribute('data-scrolly', '');
+    el.__orli = mount(el);
+    return el.__orli;
+  }
+
   function init() {
-    var widgets = [].slice.call(document.querySelectorAll('[data-orli-widget]'));
-    widgets.forEach(function (el) {
-      el.classList.add('orli-live');
-      // [data-scrolly] makes the widget fill the pinned #demo card instead of
-      // style.css's own 400x580 frame (see widget.css), and steps the heading
-      // levels down to fit inside a page that already has an h1. A widget
-      // embedded anywhere else renders exactly as the real one does.
-      if (el.closest && el.closest('#demo')) el.setAttribute('data-scrolly', '');
-      el.__orli = mount(el);
-    });
+    [].slice.call(document.querySelectorAll('[data-orli-widget]')).forEach(mountOne);
     // No <html lang> observer: the site is Hebrew-only and nothing flips it.
     // The widget's own [data-lang] button is the only language control.
   }
+  // For widgets created after load: scrolly.js builds the phone layout's
+  // six step cards at runtime and mounts a widget into each.
+  window.OrliWidget = { mount: mountOne };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

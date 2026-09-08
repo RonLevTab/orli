@@ -417,6 +417,8 @@ html[dir="rtl"] .hero-veil {
 }
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
+/* The phone layout's card stack; see the max-width block. */
+.scrolly-stack { display: none; }
 /* The pinned columns carry their own lead-in, so the standard 56px under the
    heading stacked on top of it and pushed the whole demo down the page.
    Desktop only: below 920px the sticky is static and the steps have no
@@ -588,41 +590,30 @@ html[dir="rtl"] .hero-veil {
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
   .bridge-movie, .bm-site { min-height: 420px; }
-  .scrolly-grid { grid-template-columns: 1fr; gap: 0; }
-  .scrolly-sticky { position: static; height: auto; order: -1; margin-bottom: 4px; }
-  /* The card fits the step it is showing instead of holding the height of
-     the tallest one: the practitioner list is two rows, the confirm step
-     is a full form, and a fixed frame left the first mostly empty. The
-     widget sizes itself, scrolly.js writes that height onto the card, and
-     the card animates between steps so the tabs below glide rather than
-     jump. */
-  .scrolly-sticky .demo-browser { width: min(78vw, 340px); height: auto; margin-inline: auto; overflow: hidden; }
-  .scrolly-sticky .demo-browser.is-settled { transition: height .45s cubic-bezier(.2, .7, .2, 1); }
-  .scrolly-sticky .demo-browser [data-orli-widget] { height: auto; }
-  .scrolly-sticky .orli-live .obw-widget { height: auto; min-height: 320px; }
-  .scrolly-sticky .orli-live .obw-step { flex: none; overflow: visible; }
-  .scrolly-tabs { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
-  .scrolly-tab {
-    font: inherit; font-size: .84rem; font-weight: 700; letter-spacing: .04em;
-    width: 44px; height: 44px; display: grid; place-items: center;
-    border-radius: 50%; border: 1px solid var(--line); background: var(--surface);
-    color: var(--ink-soft); cursor: pointer;
-    transition: background .2s ease, border-color .2s ease, color .2s ease;
-  }
-  .scrolly-tab:hover { border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); color: var(--ink); }
-  .scrolly-tab.is-active { background: var(--teal); border-color: var(--teal); color: #f4fffe; }
-  .scrolly-steps { padding-block: 0; margin-top: 22px; }
-  /* Each step's text is a card that slides up into place when its tab is
-     tapped — the same motion the admin page's screen cards make on a phone,
-     so the two walkthroughs read as one family. */
-  .scrolly-step {
-    display: none; text-align: center; padding: 22px 20px 24px;
+  /* On a phone the section is the admin page's pattern instead: six cards
+     in flow, each with its own copy of the widget already at that step
+     above the step's text, sliding up into place as it is reached.
+     scrolly.js builds them from the desktop steps, so the copy lives once.
+     The desktop grid, its single widget and the numbered tabs are hidden. */
+  .scrolly-grid { display: none; }
+  /* minmax(0) and min-width:0: a grid item defaults to its content's
+     min-content width, and the widget's calendar is wider than a phone. */
+  .scrolly-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .scrolly-card {
+    min-width: 0; padding: 14px 14px 22px; text-align: center;
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm);
-    opacity: 1; transform: none;
   }
-  .scrolly-step.is-active { display: block; animation: card-up .5s cubic-bezier(.2, .7, .2, 1) both; }
-  .scrolly-step p { margin-inline: auto; }
-  @keyframes card-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+  /* The slide-up is gated on script.js having run (data-reveal-ready), the
+     same gate the admin page's cards use. */
+  html[data-reveal-ready] .scrolly-card { opacity: 0; transform: translateY(28px); transition: opacity .5s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
+  html[data-reveal-ready] .scrolly-card.is-played { opacity: 1; transform: none; }
+  /* Each card's widget is as tall as its own step, never scrolling inside. */
+  .scrolly-card .demo-browser { width: 100%; max-width: 340px; height: auto; margin: 0 auto 18px; box-shadow: var(--shadow); }
+  .scrolly-card .demo-browser [data-orli-widget] { height: auto; }
+  .scrolly-card .orli-live .obw-widget { height: auto; min-height: 320px; }
+  .scrolly-card .orli-live .obw-step { flex: none; overflow: visible; }
+  .scrolly-card .scrolly-step { opacity: 1; transform: none; text-align: center; }
+  .scrolly-card .scrolly-step p { margin-inline: auto; }
   /* Below this width the link row is hidden, and with no replacement the only
      thing left in the header was the CTA — a phone visitor had no route to any
      section on any of the four pages. Same <nav>, re-laid-out as a panel. */
@@ -687,8 +678,7 @@ html[dir="rtl"] .hero-veil {
   .bc-appt.is-landed { animation: none; }
   /* Demo steps: current one fades in place instead of rising. */
   .scrolly-step { transform: none; transition: opacity .2s ease; }
-  .scrolly-sticky .demo-browser.is-settled { transition: none; }
-  .scrolly-step.is-active { animation: none; }
+  html[data-reveal-ready] .scrolly-card { opacity: 1; transform: none; transition: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
@@ -892,8 +882,11 @@ html[dir="rtl"] .hero-veil {
 @keyframes contact-in { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
 /* Locking the page while the dialog is up drops the scrollbar, and the
    whole page used to shift sideways by its width. The gutter is reserved
-   permanently instead, so the layout is the same with the bar or without. */
-html { scrollbar-gutter: stable; }
+   permanently instead, so the layout is the same with the bar or without.
+   Wide screens only: a phone has no classic scrollbar to reserve for, and a
+   browser that reserves one anyway pushed every 100vw element past the
+   viewport's edge. */
+@media (min-width: 641px) { html { scrollbar-gutter: stable; } }
 html:has(dialog[open]) { overflow: hidden; }
 .contact-form { padding: 26px 28px 24px; text-align: start; }
 .contact-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }

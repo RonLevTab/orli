@@ -104,10 +104,17 @@ drives `widget.js` through a controller handle):
   around it. It mounts onto any `[data-orli-widget]` element, exposing a controller on
   `el.__orli` with `setScene(i)` and `render()`. Scoped entirely under `.orli-live` in
   `widget.css` so it never leaks into the marketing site's own styles.
-- **`scrolly.js`** — drives the pinned widget in the "See it in action" section: as
-  numbered `.scrolly-step` elements scroll past (tracked via `IntersectionObserver`
-  with a rootMargin centered on the viewport), it calls `mountEl.__orli.setScene(i)` to
-  advance the widget to the matching booking state.
+- **`scrolly.js`** — drives the "See it in action" section. On wide screens the
+  widget is pinned while numbered `.scrolly-step` elements scroll past, and it
+  calls `mountEl.__orli.setScene(i)` to advance the widget to the matching
+  booking state (an `IntersectionObserver` with a rootMargin band; the
+  visitor's own clicks inside the widget bring the page to the matching step,
+  and scrolling keeps driving afterwards). Below 921px it hides that grid and
+  builds six `.scrolly-card` elements in flow instead — the admin page's
+  pattern — each with its own copy of the widget, mounted through
+  `window.OrliWidget.mount()` and set to that step, above the step's text
+  cloned from the desktop steps; each card slides up into place as it comes
+  into view.
 - **`hero-gradient.js`** — dependency-free vanilla-WebGL animated gradient (simplex
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and
