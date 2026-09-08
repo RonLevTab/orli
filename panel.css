@@ -1,7 +1,7 @@
 /* ============================================================
-   Mock of the Orli clinic admin, for the panel.html walkthrough.
+   panel.html — the stack of admin screens, and the mock inside each.
 
-   SOURCE: orli-calendar/admin/src — AppShell.vue (topbar + sidebar),
+   SOURCE for the mock: orli-calendar/admin/src — AppShell.vue (topbar),
    style.css (surfaces, radii, .panel/.btn/.input conventions),
    i18n.ts (every Hebrew label), router.ts (section order).
 
@@ -10,127 +10,89 @@
    Heebo — so everything below is built from styles.css's own tokens
    rather than a second set of values.
 
-   Scoped entirely under .orli-panel so it can never leak into the
-   marketing site's styles, the same way widget.css is scoped under
-   .orli-live.
+   Scoped under .pcard / .orli-panel so nothing leaks into the marketing
+   site's styles, the same way widget.css is scoped under .orli-live.
+   Logical properties only: the page is RTL and every card starts at
+   the right.
    ============================================================ */
 
-.panel-frame {
-  width: 100%;
-  /* .browser caps at 380px, which suits the portrait booking widget on
-     index.html. An admin screen is landscape and needs the room. */
-  max-width: none;
-  height: 440px;
+/* ---------- the stack ---------- */
+.panel-stack { padding-block-end: 40px; }
+.pstack {
+  display: grid; gap: 28px;
+  /* Runway after the last card, so it has time on top before the page
+     moves on to the closing section. */
+  padding-block-end: 12vh;
+}
+
+.pcard {
+  display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: start;
+  padding: 34px 36px 36px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
-  border-radius: 18px;
-  overflow: hidden;
+  /* Every card sticks under the nav; each one 12px lower than the last,
+     so the cards it settled over peek out above it as a stacked deck. */
+  position: sticky; top: calc(var(--nav-h) + 22px + var(--i, 0) * 12px);
+  transform-origin: top center;
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .45s ease, filter .45s ease;
 }
+/* The ones underneath step back: a touch smaller, a touch dimmer, so the
+   card on top reads as the one being shown. */
+.pcard.is-behind { transform: scale(.965); opacity: .55; filter: saturate(.85); }
 
-/* The booking demo splits the row evenly; the panel needs more of it than its
-   step text does. Scoped to #panel so index.html is untouched — and to the
-   pinned layout only: an id selector outranks the single-column rule in the
-   920px media query, so without this guard it forced two columns onto a
-   phone and squeezed the frame to 260px. */
-@media (min-width: 921px) {
-  #panel .scrolly-grid { grid-template-columns: .82fr 1.18fr; }
+.pcard-text { text-align: start; padding-block-start: 4px; }
+.pcard-idx { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .02em; color: var(--teal); margin-bottom: 12px; }
+.pcard-title { font-family: var(--serif); font-weight: 500; font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1.2; margin: 0 0 16px; letter-spacing: -.01em; }
+.pcard-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.pcard-list li {
+  position: relative; padding-inline-start: 22px;
+  color: var(--ink-soft); font-size: 1.06rem; line-height: 1.5;
 }
+.pcard-list li::before {
+  content: ""; position: absolute; inset-inline-start: 2px; top: .62em;
+  width: 8px; height: 8px; border-radius: 50%; background: var(--teal);
+}
+.pcard-new, .opn-new {
+  display: inline-block; vertical-align: 2px; margin-inline-end: 8px; padding: 1px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep);
+  font-size: .66rem; font-weight: 700; letter-spacing: .04em;
+}
+.opn-new { vertical-align: 1px; margin-inline-end: 0; margin-inline-start: 6px; }
 
+.pcard--soon { border-style: dashed; border-color: #c4bda8; }
+
+/* ---------- the mock ---------- */
+.pcard-mock { min-width: 0; }
 .orli-panel {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: var(--cream);
-  color: var(--ink);
-  font-size: .82rem;
-  line-height: 1.45;
-  container-type: inline-size;
+  display: flex; flex-direction: column;
+  background: var(--cream); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  font-size: .82rem; line-height: 1.45;
 }
 .orli-panel * { box-sizing: border-box; }
 
-/* ---------- topbar ---------- */
 .opn-topbar {
-  flex: 0 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding: 9px 14px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 9px 14px; background: var(--surface); border-bottom: 1px solid var(--line);
 }
-.opn-brand { height: 20px; width: auto; display: block; }
-.opn-avatar {
-  width: 26px; height: 26px; flex: 0 0 26px;
-  display: grid; place-items: center; border-radius: 50%;
-  background: var(--cream-2); color: var(--ink-soft);
-  font-size: .62rem; font-weight: 700;
-}
+.opn-brand { height: 18px; width: auto; display: block; }
+.opn-crumb { font-size: .64rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ---------- shell: sidebar + workspace ---------- */
-.opn-shell { flex: 1 1 auto; display: grid; grid-template-columns: 168px 1fr; min-height: 0; }
+.opn-pane { padding: 14px 16px 16px; }
 
-.opn-sidebar {
-  border-inline-end: 1px solid var(--line);
-  background: var(--surface);
-  padding: 12px 10px;
-  overflow: hidden;
-}
-.opn-nav-label {
-  margin: 0 0 6px; padding-inline-start: 8px;
-  font-size: .58rem; font-weight: 700; letter-spacing: .02em;
-  color: var(--ink-soft);
-}
-.opn-nav { display: grid; gap: 2px; margin-bottom: 14px; }
-.opn-nav-btn {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 8px; border-radius: 9px;
-  font-size: .72rem; font-weight: 500; color: var(--ink-soft);
-  border: 1px solid transparent;
-  transition: background .22s ease, color .22s ease, border-color .22s ease;
-}
-/* The step being explained. Not :hover — nothing here is clickable; the
-   scroll position is what selects, exactly like the booking demo. */
-.opn-nav-btn.is-active {
-  background: color-mix(in srgb, var(--teal) 12%, transparent);
-  border-color: color-mix(in srgb, var(--teal) 30%, transparent);
-  color: var(--teal-deep); font-weight: 600;
-}
-.opn-icon { width: 15px; height: 15px; flex: 0 0 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.opn-nav-copy { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-
-/* SOURCE: AppShell.vue — the real admin marks this nav item .nav-coming-soon
-   with a .nav-soon-badge. Reproduced rather than invented, and matching the
-   roadmap's own "not shipped" treatment on index.html. */
-.opn-soon-badge {
-  display: inline-block; padding: 1px 6px; border-radius: 999px;
-  background: var(--cream-2); color: var(--ink-soft);
-  border: 1px dashed var(--line-strong, #c4bda8);
-  font-size: .54rem; font-weight: 700; white-space: nowrap;
-}
-.opn-nav-btn.opn-nav-soon.is-active {
-  background: var(--cream-2);
-  border-color: #c4bda8; border-style: dashed;
-  color: var(--ink-soft);
-}
-
-/* ---------- workspace ---------- */
-.opn-workspace { position: relative; min-width: 0; padding: 14px 16px; overflow: hidden; }
-.opn-pane {
-  position: absolute; inset: 14px 16px auto 16px;
-  opacity: 0; transform: translateY(6px);
-  transition: opacity .3s ease, transform .3s ease;
-  pointer-events: none;
-}
-.opn-pane.is-active { opacity: 1; transform: none; pointer-events: auto; }
-@media (prefers-reduced-motion: reduce) {
-  .opn-pane { transform: none; transition: opacity .2s ease; }
-  .opn-nav-btn { transition: none; }
-}
-
-.opn-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+.opn-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
 .opn-tab {
   padding: 4px 10px; border-radius: 999px;
   font-size: .64rem; font-weight: 600; color: var(--ink-soft);
   border: 1px solid var(--line); background: var(--surface);
+  transition: background .3s ease, color .3s ease, border-color .3s ease;
 }
 .opn-tab.is-active { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+.opn-tabs--sm .opn-tab { font-size: .6rem; padding: 3px 9px; }
+.opn-pane-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.opn-pane-head .opn-tabs { margin-bottom: 0; }
+.opn-ghost-btn { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: .64rem; font-weight: 600; color: var(--teal-deep); white-space: nowrap; }
 
 .opn-pane-title { margin: 0 0 10px; font-size: .82rem; font-weight: 700; color: var(--ink); }
 
@@ -141,123 +103,17 @@
   font-size: .74rem;
 }
 .opn-row--off { background: var(--cream-2); border-style: dashed; color: var(--ink-soft); }
+.opn-row--tight { padding-block: 6px; }
+.opn-row--flag { border-color: color-mix(in srgb, #b8322a 35%, var(--line)); }
 .opn-time { font-weight: 600; color: var(--ink); white-space: nowrap; }
 .opn-on { font-weight: 600; color: var(--teal-deep); white-space: nowrap; }
 .opn-off { font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
 .opn-note { margin: 10px 0 0; font-size: .66rem; color: var(--ink-soft); }
-
 .opn-field-label { margin: 0 0 7px; font-size: .66rem; font-weight: 700; color: var(--ink-soft); }
-.opn-swatches { display: flex; gap: 8px; margin-bottom: 14px; }
-.opn-swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
-.opn-swatch.is-active { border-color: var(--surface); box-shadow: 0 0 0 2px var(--teal-deep); }
+.opn-field-label--gap { margin-top: 12px; }
 
-.opn-preview {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 14px; border-radius: 12px;
-  background: var(--surface); border: 1px solid var(--line);
-}
-.opn-preview-label { font-size: .64rem; color: var(--ink-soft); }
-.opn-preview-btn {
-  padding: 7px 16px; border-radius: 999px;
-  background: var(--teal-deep); color: #fff;
-  font-size: .7rem; font-weight: 600;
-}
-
-.opn-mail { margin-top: 10px; padding: 11px 13px; border-radius: 10px; background: var(--cream-2); display: grid; gap: 5px; }
-.opn-mail-subject { font-size: .72rem; font-weight: 700; }
-.opn-mail-body { font-size: .68rem; color: var(--ink-soft); }
-
-.opn-soon-card {
-  display: grid; gap: 9px; justify-items: start;
-  padding: 16px; border-radius: 12px;
-  background: var(--surface); border: 1px dashed #c4bda8;
-}
-.opn-soon-badge--lg { font-size: .6rem; padding: 2px 9px; }
-/* The card's grid gap does the spacing; the title and note bring none. */
-.opn-soon-card .opn-pane-title, .opn-soon-card .opn-note { margin: 0; }
-
-/* ---------- narrow ---------- */
-/* The frame is a landscape admin screen; on a phone the sidebar would eat
-   the workspace, so it collapses to a single scrolling column with the nav
-   as a horizontal strip. */
-@media (max-width: 920px) {
-  .panel-frame { height: clamp(400px, 62vh, 500px); }
-  .opn-shell { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .opn-sidebar {
-    border-inline-end: 0; border-bottom: 1px solid var(--line);
-    padding: 9px 10px; display: flex; align-items: center; gap: 6px;
-    overflow-x: auto;
-    /* panel.js scrolls the strip itself to keep the highlighted item in
-       view, so the bar under it is noise inside a mock nobody can drag. */
-    scrollbar-width: none;
-  }
-  .opn-sidebar::-webkit-scrollbar { display: none; }
-  .opn-nav-label { display: none; }
-  .opn-nav { display: flex; gap: 6px; margin: 0; }
-  .opn-nav-btn { white-space: nowrap; font-size: .66rem; padding: 6px 9px; }
-  .opn-nav-btn .opn-icon { display: none; }
-  /* SOURCE: AppShell.vue drops the stacked "בקרוב" badge from its phone
-     bar too; the pane's own card still says it. */
-  .opn-sidebar .opn-soon-badge { display: none; }
-}
-
-/* ============================================================
-   DRAFT — additions to append to orli/panel.css once approved.
-   Everything is scoped to .orli-panel / #panel / .panel-news, built from
-   styles.css tokens, logical properties only (RTL-first).
-   ============================================================ */
-
-/* The step headings on this page are h2 (index.html uses h3); give them
-   the same serif treatment styles.css gives .scrolly-step h3. */
-#panel .scrolly-step h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.5rem, 2.6vw, 2.15rem); margin-bottom: 10px; }
-
-/* ---------- "חדש במסך הניהול" strip ---------- */
-.panel-news { padding-block: 8px 40px; }
-.panel-news-grid { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.panel-news-card {
-  position: relative; padding: 22px 22px 20px; border-radius: var(--radius);
-  background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
-  text-align: start;
-}
-.panel-news-card h2 { font-size: 1.12rem; font-weight: 700; margin: 10px 0 8px; letter-spacing: -.01em; }
-.panel-news-card p { margin: 0; color: var(--ink-soft); font-size: .98rem; }
-.panel-news-tag, .opn-new {
-  display: inline-block; padding: 2px 9px; border-radius: 999px;
-  background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep);
-  font-size: .68rem; font-weight: 700; letter-spacing: .04em;
-}
-@media (max-width: 760px) { .panel-news-grid { grid-template-columns: 1fr; } }
-
-/* ---------- account menu under the avatar ---------- */
-.opn-account { position: relative; }
-.opn-menu {
-  position: absolute; inset-inline-end: 0; top: calc(100% + 6px); z-index: 3;
-  min-width: 140px; padding: 4px; display: grid; gap: 1px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-lg);
-  opacity: 0; transform: translateY(-4px); pointer-events: none;
-  transition: opacity .25s ease, transform .25s ease;
-}
-.orli-panel.is-account .opn-menu { opacity: 1; transform: none; }
-.opn-menu-item { display: block; padding: 5px 9px; border-radius: 8px; font-size: .68rem; color: var(--ink-soft); }
-/* The open menu hangs over the top of the workspace, so the account pane
-   starts below it rather than under it. */
-.opn-pane { transition: opacity .3s ease, transform .3s ease, top .3s ease; }
-.orli-panel.is-account .opn-pane.is-active { top: 138px; }
-.opn-menu-item.is-active { background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal-deep); font-weight: 600; }
-/* The rail's "חשבון" stops exist only for the phone strip. */
-.opn-nav-label--account, .opn-nav--account { display: none; }
-
-/* ---------- pane pieces ---------- */
-.opn-pane-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
-.opn-pane-head .opn-tabs { margin-bottom: 0; }
-.opn-ghost-btn { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: .64rem; font-weight: 600; color: var(--teal-deep); white-space: nowrap; }
-.opn-tabs { flex-wrap: wrap; }
-.opn-tabs--sm .opn-tab { font-size: .6rem; padding: 3px 9px; }
-.opn-row--tight { padding-block: 6px; }
-.opn-row--flag { border-color: color-mix(in srgb, #b8322a 35%, var(--line)); }
-
-/* The check every confirmation carries (SavedMark.vue), and the two places
-   it shows: the save bar's "נשמר" and the practitioner-ready toast. */
+/* The check every confirmation carries (SavedMark.vue): the save bar's
+   "נשמר" and the practitioner-ready toast. */
 .opn-check { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep); }
 .opn-check svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .opn-savebar { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; padding: 5px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: .66rem; font-weight: 700; color: var(--teal-deep); }
@@ -267,31 +123,40 @@
   box-shadow: var(--shadow-sm); font-size: .7rem; font-weight: 600;
 }
 
-/* Two columns inside a pane (design, emails). */
+/* Two columns inside a pane (appearance, emails). */
 .opn-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
 .opn-cols--rail { grid-template-columns: 128px 1fr; }
 .opn-rail { display: grid; gap: 3px; }
 .opn-rail-item { padding: 5px 8px; border-radius: 8px; font-size: .66rem; color: var(--ink-soft); }
 .opn-rail-item.is-active { background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal-deep); font-weight: 600; }
-.opn-field-label--gap { margin-top: 12px; }
 
-/* Placement group + its mock-page preview (WidgetThemeSection.vue). */
+.opn-swatches { display: flex; gap: 8px; margin-bottom: 14px; }
+.opn-swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; box-shadow: 0 0 0 1px rgba(0,0,0,.08); }
+.opn-swatch.is-active { border-color: var(--surface); box-shadow: 0 0 0 2px var(--teal-deep); }
+
+/* Placement group + its mock-page preview (WidgetThemeSection.vue). The
+   preview is a sketch of the clinic's site: an accessibility button in the
+   bottom-right corner, and the booking button that moves clear of it. */
 .opn-place { display: grid; gap: 6px; margin-bottom: 10px; }
 .opn-place-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: .64rem; color: var(--ink-soft); }
 .opn-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); }
-.opn-seg i { font-style: normal; padding: 3px 7px; font-size: .58rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+.opn-seg i { font-style: normal; padding: 3px 7px; font-size: .58rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; transition: background .3s ease, color .3s ease; }
 .opn-seg i.is-on { background: var(--teal-deep); color: #fff; }
 .opn-site { position: relative; height: 74px; padding: 10px; border-radius: 10px; background: var(--cream-2); border: 1px solid var(--line); overflow: hidden; }
 .opn-site-line { display: block; height: 6px; width: 60%; border-radius: 999px; background: color-mix(in srgb, var(--ink-soft) 22%, transparent); margin-bottom: 6px; }
 .opn-site-line--short { width: 35%; }
-.opn-site-a11y { position: absolute; inset-inline-start: 8px; bottom: 8px; width: 16px; height: 16px; border-radius: 50%; background: #1f6feb; opacity: .55; }
-.opn-site-btn { position: absolute; inset-inline-start: 30px; bottom: 16px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid #e0e0e0; font-size: .54rem; font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.1); }
+.opn-site-a11y { position: absolute; right: 8px; bottom: 8px; width: 16px; height: 16px; border-radius: 50%; background: #1f6feb; opacity: .55; }
+.opn-site-btn { position: absolute; left: 8px; bottom: 16px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid #e0e0e0; font-size: .54rem; font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.1); white-space: nowrap; }
 
-/* Email preview's action, the embed line, the support form. */
+.opn-mail { margin-top: 10px; padding: 11px 13px; border-radius: 10px; background: var(--cream-2); display: grid; gap: 5px; }
+.opn-mail-subject { font-size: .72rem; font-weight: 700; }
+.opn-mail-body { font-size: .68rem; color: var(--ink-soft); }
 .opn-mail-btn { justify-self: start; margin-top: 4px; padding: 4px 10px; border-radius: 999px; background: var(--teal-deep); color: #fff; font-size: .62rem; font-weight: 600; }
-.opn-code { padding: 8px 10px; border-radius: 8px; background: #0c1a17; color: #d7e6e2; font: 600 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.opn-code { padding: 8px 10px; border-radius: 8px; background: #0c1a17; color: #d7e6e2; font: 600 .62rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 0 0 0 rgba(15, 138, 134, 0); }
+
 .opn-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
-.opn-choice { display: grid; gap: 2px; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: .68rem; font-weight: 700; }
+.opn-choice { display: grid; gap: 2px; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: .68rem; font-weight: 700; transition: border-color .3s ease, box-shadow .3s ease; }
 .opn-choice small { font-size: .58rem; font-weight: 400; color: var(--ink-soft); }
 .opn-choice.is-on { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
 .opn-textarea { height: 44px; padding: 6px 9px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: .62rem; color: var(--ink-soft); margin-bottom: 6px; }
@@ -299,26 +164,107 @@
 .opn-attach-thumb { width: 26px; height: 20px; border-radius: 5px; background: var(--cream-2); border: 1px dashed #c4bda8; }
 .opn-support-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .opn-support-foot .opn-note { margin: 0; }
+.opn-preview-btn { padding: 7px 16px; border-radius: 999px; background: var(--teal-deep); color: #fff; font-size: .7rem; font-weight: 600; }
+
+/* SOURCE: AppShell.vue / AutomationsView.vue — the real admin marks this
+   screen "בקרוב" with a dashed badge. Reproduced rather than invented. */
+.opn-soon-badge {
+  display: inline-block; padding: 1px 6px; border-radius: 999px;
+  background: var(--cream-2); color: var(--ink-soft);
+  border: 1px dashed #c4bda8;
+  font-size: .54rem; font-weight: 700; white-space: nowrap;
+}
+.opn-soon-badge--lg { font-size: .6rem; padding: 2px 9px; }
+.opn-soon-card { display: grid; gap: 9px; justify-items: start; padding: 16px; border-radius: 12px; background: var(--surface); border: 1px dashed #c4bda8; }
+.opn-soon-card .opn-pane-title, .opn-soon-card .opn-note { margin: 0; }
+
+/* ---------- one control per screen plays once ----------
+   Keyed on .is-played, which panel.js adds the first time a card comes
+   up and never removes; `both` fill keeps the settled state after. Every
+   run is under 600ms after its lead-in. */
+@keyframes opn-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes opn-draw { to { stroke-dashoffset: 0; } }
+@keyframes opn-pop { 0% { opacity: 0; transform: scale(.6); } 70% { opacity: 1; transform: scale(1.08); } 100% { opacity: 1; transform: none; } }
+@keyframes opn-slide { from { transform: translateX(var(--from, 120px)); } to { transform: none; } }
+@keyframes opn-glow {
+  0% { box-shadow: 0 0 0 0 rgba(15, 138, 134, .55); }
+  100% { box-shadow: 0 0 0 9px rgba(15, 138, 134, 0); }
+}
+
+/* 01: the blocked day lands, then the save bar's check draws itself. */
+.opn-fx-flag, .opn-fx-saved { opacity: 0; }
+.opn-fx-saved svg path { stroke-dasharray: 24; stroke-dashoffset: 24; }
+.pcard.is-played .opn-fx-flag { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .15s both; }
+.pcard.is-played .opn-fx-saved { animation: opn-rise .4s ease .55s both; }
+.pcard.is-played .opn-fx-saved svg path { animation: opn-draw .35s cubic-bezier(.2, .8, .2, 1) .75s both; }
+
+/* 02: the practitioner-ready toast rises. */
+.opn-fx-toast { opacity: 0; }
+.pcard.is-played .opn-fx-toast { animation: opn-rise .5s cubic-bezier(.2, .7, .2, 1) .3s both; }
+
+/* 03: the booking button slides from the right corner — where the
+   accessibility button already sits — to the chosen left one, and the
+   segment control switches with it. */
+.opn-fx-corner-from { background: var(--teal-deep); color: #fff; }
+.opn-fx-corner-to { transition-delay: .2s; }
+.opn-fx-corner-from { transition-delay: .2s; }
+.opn-fx-launcher { --from: 130px; transform: translateX(var(--from)); }
+.pcard.is-played .opn-fx-launcher { animation: opn-slide .55s cubic-bezier(.2, .8, .2, 1) .3s both; }
+.pcard.is-played .opn-fx-corner-from { background: var(--surface); color: var(--ink-soft); }
+.pcard.is-played .opn-fx-corner-to { background: var(--teal-deep); color: #fff; }
+
+/* 04: editing flips to preview, and the rendered email fades in. */
+.opn-fx-tab-from { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; transition-delay: .25s; }
+.opn-fx-tab-to { transition-delay: .25s; }
+.opn-fx-mail { opacity: 0; }
+.pcard.is-played .opn-fx-tab-from { background: var(--surface); border-color: var(--line); color: var(--ink-soft); }
+.pcard.is-played .opn-fx-tab-to { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+.pcard.is-played .opn-fx-mail { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .4s both; }
+
+/* 05: the one embed line gets its moment. */
+.pcard.is-played .opn-fx-code { animation: opn-glow .6s ease-out .3s both; }
+
+/* 06: the request type gets picked. */
+.opn-fx-choice { transition-delay: .3s; }
+.pcard.is-played .opn-fx-choice { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
+
+/* 07: the "בקרוב" badge pops in. */
+.opn-fx-badge { opacity: 0; }
+.pcard.is-played .opn-fx-badge { animation: opn-pop .5s cubic-bezier(.34, 1.56, .64, 1) .25s both; }
 
 /* ---------- narrow ---------- */
 @media (max-width: 920px) {
-  .opn-menu { display: none; }
-  /* No menu to clear on a phone, so the account panes start where every
-     other pane does. */
-  .orli-panel.is-account .opn-pane.is-active { top: 14px; }
-  .opn-nav-label--account { display: none; }
-  .opn-nav--account { display: flex; }
+  .pstack { gap: 20px; padding-block-end: 0; }
+  /* In flow on a phone: no stacking, the mock above its text. */
+  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; }
+  .pcard.is-behind { transform: none; opacity: 1; filter: none; }
+  .pcard-mock { order: -1; }
+  .pcard-list li { font-size: 1rem; }
   .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
   .opn-rail { display: flex; flex-wrap: wrap; gap: 4px; }
   .opn-rail .opn-field-label { width: 100%; margin: 4px 0 2px; }
   .opn-choices { grid-template-columns: 1fr; }
   .opn-choice small { display: none; }
+  .opn-crumb { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .opn-menu { transition: none; } }
+@media (min-width: 921px) and (max-width: 1100px) {
+  .pcard { grid-template-columns: 1fr 1fr; gap: 28px; padding: 28px; }
+}
 
-/* Seven step buttons (index.html has six) overran a 375px viewport by a few
-   pixels; the same tighter size styles.css uses on short phones, scoped here. */
-@media (max-width: 560px) {
-  #panel .scrolly-tabs { gap: 6px; }
-  #panel .scrolly-tab { width: 40px; height: 40px; }
+/* ---------- reduced motion ----------
+   No stacking motion and no control animation: every mock shows its
+   settled state at once, and the deck simply stacks without stepping back. */
+@media (prefers-reduced-motion: reduce) {
+  .pcard { transition: none; }
+  .pcard.is-behind { transform: none; filter: none; opacity: .7; }
+  .opn-tab, .opn-seg i, .opn-choice { transition: none; }
+  .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }
+  .opn-fx-saved svg path { stroke-dashoffset: 0; }
+  .opn-fx-launcher { transform: none; }
+  .opn-fx-corner-from, .opn-fx-tab-from { background: var(--surface); color: var(--ink-soft); border-color: var(--line); }
+  .opn-fx-corner-to, .opn-fx-tab-to { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
+  .opn-fx-choice { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
+  .pcard.is-played .opn-fx-flag, .pcard.is-played .opn-fx-saved, .pcard.is-played .opn-fx-saved svg path,
+  .pcard.is-played .opn-fx-toast, .pcard.is-played .opn-fx-launcher, .pcard.is-played .opn-fx-mail,
+  .pcard.is-played .opn-fx-code, .pcard.is-played .opn-fx-badge { animation: none; }
 }
