@@ -247,6 +247,11 @@
      floating in it read as empty. */
   .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: 0; }
   .pcard.is-behind { transform: none; opacity: 1; filter: none; }
+  /* Each card slides up into place as it is reached — the same motion the
+     home page's demo steps make on a phone. Gated on script.js having run
+     (data-reveal-ready), so a page without scripts shows every card. */
+  html[data-reveal-ready] .pcard { opacity: 0; transform: translateY(28px); transition: opacity .5s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
+  html[data-reveal-ready] .pcard.is-played { opacity: 1; transform: none; }
   .pcard-mock { order: -1; }
   .pcard-list li { font-size: 1rem; }
   .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
@@ -266,6 +271,7 @@
 @media (prefers-reduced-motion: reduce) {
   .pcard { transition: none; }
   .pcard.is-behind { transform: none; filter: none; opacity: .7; }
+  html[data-reveal-ready] .pcard { opacity: 1; transform: none; }
   .opn-tab, .opn-seg i, .opn-choice { transition: none; }
   .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }
   .opn-fx-saved svg path { stroke-dashoffset: 0; }

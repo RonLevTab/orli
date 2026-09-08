@@ -602,12 +602,17 @@ html[dir="rtl"] .hero-veil {
   .scrolly-tab:hover { border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); color: var(--ink); }
   .scrolly-tab.is-active { background: var(--teal); border-color: var(--teal); color: #f4fffe; }
   .scrolly-steps { padding-block: 0; margin-top: 22px; }
+  /* Each step's text is a card that slides up into place when its tab is
+     tapped — the same motion the admin page's screen cards make on a phone,
+     so the two walkthroughs read as one family. */
   .scrolly-step {
-    display: none; min-height: 0; opacity: 1; transform: none; text-align: center;
+    display: none; text-align: center; padding: 22px 20px 24px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    opacity: 1; transform: none;
   }
-  .scrolly-step.is-active { display: block; animation: scrolly-step-in .35s ease; }
+  .scrolly-step.is-active { display: block; animation: card-up .5s cubic-bezier(.2, .7, .2, 1) both; }
   .scrolly-step p { margin-inline: auto; }
-  @keyframes scrolly-step-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes card-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
   /* Below this width the link row is hidden, and with no replacement the only
      thing left in the header was the CTA — a phone visitor had no route to any
      section on any of the four pages. Same <nav>, re-laid-out as a panel. */
