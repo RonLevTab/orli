@@ -26,8 +26,14 @@
 }
 
 .pcard {
-  display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: start;
+  display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: center; align-content: center;
   padding: 34px 36px 36px;
+  /* One card per screen: each fills the viewport under the deck's stagger,
+     so the visitor reads one screen at a time and the next slides up over
+     it. Content sits in the middle of the card, not at its top. */
+  --deck: calc(var(--nav-h) + 22px + 6 * 12px);
+  min-height: calc(100vh - var(--deck) - 20px);
+  min-height: calc(100dvh - var(--deck) - 20px);
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   /* Every card sticks under the nav; each one 12px lower than the last,
@@ -42,8 +48,8 @@
 
 .pcard-text { text-align: start; padding-block-start: 4px; }
 .pcard-idx { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .02em; color: var(--teal); margin-bottom: 12px; }
-.pcard-title { font-family: var(--serif); font-weight: 500; font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1.2; margin: 0 0 16px; letter-spacing: -.01em; }
-.pcard-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.pcard-title { font-family: var(--serif); font-weight: 500; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.15; margin: 0 0 18px; letter-spacing: -.01em; }
+.pcard-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: 1.12rem; }
 .pcard-list li {
   position: relative; padding-inline-start: 22px;
   color: var(--ink-soft); font-size: 1.06rem; line-height: 1.5;
@@ -236,7 +242,7 @@
 @media (max-width: 920px) {
   .pstack { gap: 20px; padding-block-end: 0; }
   /* In flow on a phone: no stacking, the mock above its text. */
-  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; }
+  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: calc(100vh - var(--nav-h) - 24px); min-height: calc(100dvh - var(--nav-h) - 24px); }
   .pcard.is-behind { transform: none; opacity: 1; filter: none; }
   .pcard-mock { order: -1; }
   .pcard-list li { font-size: 1rem; }
