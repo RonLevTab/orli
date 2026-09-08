@@ -47,6 +47,12 @@
         ],
         "createdAt": "2026-09-07T17:30:59.368Z",
         "reason": "Detector artifact, not a flat hierarchy: in degraded mode (no css-tree) it reads both bounds of the h1's inline clamp() as two separate sizes and sees only inline styles, so body (16px) and .section-lead (17.9px) from styles.css are invisible to it. Real ladder on this page: 16 -> 17.9 -> 22.4 -> 32-41.6px, every step >= the 1.25 it asks for. Its own reported ratio exceeds its own threshold."
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.34, 1.56, .64, 1)",
+        "createdAt": "2026-09-08T20:54:16.702Z",
+        "reason": "coordinator: the same overshoot pop the user asked for on the home film's calendar row today (2026-09-08); one small badge, 0.5s, off under reduced motion"
       }
     ]
   }
