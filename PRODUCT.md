@@ -120,8 +120,8 @@ to Optima's product.
 
 **Status (confirmed 2026-09-07): in talks, nothing signed.** Until that changes,
 no surface may state or imply an approval, a partnership, or that Orli is
-"built on" Optima's platform — the footer says "עובד עם אופטימה" (works with
-Optima), not "built on", for exactly this reason. Revisit this section the day
+"built on" Optima's platform — the footer names no relationship at all
+(Ron dropped "עובד עם אופטימה" on 2026-09-08). Revisit this section the day
 something is signed.
 
 ## Brand Commitments
