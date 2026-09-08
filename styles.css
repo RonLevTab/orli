@@ -354,14 +354,6 @@ html[dir="rtl"] .hero-veil {
   transition: background .25s ease, color .25s ease, border-color .25s ease;
 }
 .bridge-site.is-picked .bw-slots .bw-target { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
-/* At the pick, everything around the chosen slot recedes — the page behind
-   dims further and the panel's other slots and copy fade — so the eye lands
-   on 10:30 turning teal, the beat the whole film is about. */
-.bs-backdrop { transition: opacity .3s ease, background .5s ease; }
-.bridge-site.is-picked .bs-backdrop { background: rgba(0, 0, 0, .42); }
-.bw-title, .bw-date, .bw-btn, .bw-slots span:not(.bw-target) { transition: opacity .5s ease; }
-.bridge-site.is-picked :is(.bw-title, .bw-date, .bw-btn, .bw-slots span:not(.bw-target)) { opacity: .35; }
-.bridge-site.is-confirmed .bs-backdrop { background: rgba(0, 0, 0, .18); }
 .bw-tap { position: absolute; inset: -2px; border-radius: 999px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
 .bw-target.is-picking .bw-tap { animation: bridge-tap .8s cubic-bezier(0, 0, .2, 1) forwards; }
 @keyframes bridge-tap { 0% { transform: scale(.9); opacity: .9; } 100% { transform: scale(1.5); opacity: 0; } }
@@ -406,12 +398,19 @@ html[dir="rtl"] .hero-veil {
   border-inline-start: 3px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .bc-appt--site {
-  opacity: 0;
+  position: relative; overflow: visible; opacity: 0;
   background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-inline-start-color: var(--teal-deep); color: var(--teal-deep);
 }
-/* The new booking settles into its row: a soft fade and a slight grow. */
+/* The new booking settles into its row: a soft fade and a slight grow, and
+   then the same ring that bloomed out of the tapped slot and the success
+   mark blooms out of the row — the film's last beat gets the same
+   emphasis as its first. overflow:visible on this one chip so the ring is
+   not clipped; its text is short enough never to need the ellipsis. */
 .bc-appt.is-landed { opacity: 1; animation: bridge-pop .8s cubic-bezier(.2, .7, .2, 1) both; }
+.bc-appt--site::after { content: ""; position: absolute; inset: -3px; border-radius: 11px; border: 2px solid var(--teal); opacity: 0; pointer-events: none; }
+.bc-appt.is-landed::after { animation: bridge-land-ring 1s cubic-bezier(0, 0, .2, 1) .35s forwards; }
 @keyframes bridge-pop { 0% { opacity: 0; transform: scale(.92); } 100% { opacity: 1; transform: none; } }
+@keyframes bridge-land-ring { 0% { transform: scale(.98); opacity: .9; } 100% { transform: scale(1.14, 1.5); opacity: 0; } }
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
 /* The pinned columns carry their own lead-in, so the standard 56px under the
@@ -666,7 +665,7 @@ html[dir="rtl"] .hero-veil {
   .bridge-movie .bm-cal { transform: translate(-50%, -50%); }
   .bridge-site.is-tapping .bs-launcher--pill, .bridge-site.is-tapping .bs-launcher--pill .bw-tap,
   .bw-target.is-picking .bw-tap, .bridge-site.is-confirmed .bw-check, .bridge-site.is-confirmed .bw-check::after,
-  .bc-appt.is-landed { animation: none; }
+  .bc-appt.is-landed, .bc-appt.is-landed::after { animation: none; }
   /* Demo steps: current one fades in place instead of rising. */
   .scrolly-step { transform: none; transition: opacity .2s ease; }
   .scrolly-step.is-active { animation: none; }
