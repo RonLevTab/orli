@@ -590,30 +590,37 @@ html[dir="rtl"] .hero-veil {
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
   .bridge-movie, .bm-site { min-height: 420px; }
-  /* On a phone the section is the admin page's pattern instead: six cards
-     in flow, each with its own copy of the widget already at that step
-     above the step's text, sliding up into place as it is reached.
-     scrolly.js builds them from the desktop steps, so the copy lives once.
-     The desktop grid, its single widget and the numbered tabs are hidden. */
+  /* On a phone the section is the admin page's deck instead: six cards,
+     each with the step's text above its own copy of the widget already at
+     that step. Every card is one screen tall and sticks under the nav, each
+     10px lower than the last, so the next one slides up over it and the
+     ones underneath step back. scrolly.js builds the cards from the desktop
+     steps (so the copy lives once) and marks which card is on top. The
+     desktop grid, its single widget and the numbered tabs are hidden. */
   .scrolly-grid { display: none; }
   /* minmax(0) and min-width:0: a grid item defaults to its content's
-     min-content width, and the widget's calendar is wider than a phone. */
-  .scrolly-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+     min-content width, and the widget's calendar is wider than a phone.
+     The runway after the last card gives it time on top. */
+  .scrolly-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block-end: 14vh; }
   .scrolly-card {
-    min-width: 0; padding: 14px 14px 22px; text-align: center;
-    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    --deck: calc(var(--nav-h) + 12px + 5 * 10px);
+    position: sticky; top: calc(var(--nav-h) + 12px + var(--i, 0) * 10px);
+    height: calc(100vh - var(--deck) - 12px);
+    height: calc(100dvh - var(--deck) - 12px);
+    min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 14px 14px 16px; text-align: center;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+    transform-origin: top center;
+    transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .45s ease, filter .45s ease;
   }
-  /* The slide-up is gated on script.js having run (data-reveal-ready), the
-     same gate the admin page's cards use. */
-  html[data-reveal-ready] .scrolly-card { opacity: 0; transform: translateY(28px); transition: opacity .5s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
-  html[data-reveal-ready] .scrolly-card.is-played { opacity: 1; transform: none; }
-  /* Each card's widget is as tall as its own step, never scrolling inside. */
-  .scrolly-card .demo-browser { width: 100%; max-width: 340px; height: auto; margin: 0 auto 18px; box-shadow: var(--shadow); }
-  .scrolly-card .demo-browser [data-orli-widget] { height: auto; }
-  .scrolly-card .orli-live .obw-widget { height: auto; min-height: 320px; }
-  .scrolly-card .orli-live .obw-step { flex: none; overflow: visible; }
-  .scrolly-card .scrolly-step { opacity: 1; transform: none; text-align: center; }
-  .scrolly-card .scrolly-step p { margin-inline: auto; }
+  .scrolly-card.is-behind { transform: scale(.965); opacity: .55; filter: saturate(.85); }
+  /* Text first, so it is what stays readable once the card is stuck; the
+     widget takes the rest and scrolls inside on the taller steps, as the
+     real widget does on a phone. */
+  .scrolly-card .scrolly-step { order: -1; opacity: 1; transform: none; text-align: center; flex: none; }
+  .scrolly-card .scrolly-step h3 { font-size: 1.35rem; margin-bottom: 6px; }
+  .scrolly-card .scrolly-step p { margin-inline: auto; font-size: .95rem; }
+  .scrolly-card .demo-browser { flex: 1; min-height: 0; width: 100%; max-width: 340px; margin: 0 auto; box-shadow: var(--shadow); }
+  .scrolly-card .demo-browser [data-orli-widget] { height: 100%; }
   /* Below this width the link row is hidden, and with no replacement the only
      thing left in the header was the CTA — a phone visitor had no route to any
      section on any of the four pages. Same <nav>, re-laid-out as a panel. */
@@ -678,7 +685,8 @@ html[dir="rtl"] .hero-veil {
   .bc-appt.is-landed { animation: none; }
   /* Demo steps: current one fades in place instead of rising. */
   .scrolly-step { transform: none; transition: opacity .2s ease; }
-  html[data-reveal-ready] .scrolly-card { opacity: 1; transform: none; transition: none; }
+  .scrolly-card { transition: none; }
+  .scrolly-card.is-behind { transform: none; filter: none; opacity: .7; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }

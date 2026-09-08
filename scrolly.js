@@ -98,10 +98,13 @@
     fitFrame();
 
     // Phone layout: the pinned grid above is hidden, and the section is six
-    // cards in flow instead — the admin page's pattern — each with its own
-    // copy of the widget, already at that step, above the step's text. Built
-    // once, the first time the phone layout is in effect, from the desktop
-    // steps so the copy lives in one place. widget.js mounts each copy.
+    // cards instead — the admin page's deck — each with the step's text
+    // above its own copy of the widget, already at that step. Built once,
+    // the first time the phone layout is in effect, from the desktop steps
+    // so the copy lives in one place. widget.js mounts each copy. The cards
+    // are sticky (styles.css); this only marks which one is on top, so the
+    // ones underneath can step back — measured from the cards' boxes on each
+    // scroll frame, the way panel.js does it.
     var stackEl = section.querySelector('[data-scrolly-stack]');
     var stackBuilt = false;
     function buildStack() {
@@ -110,6 +113,7 @@
       steps.forEach(function (step, i) {
         var card = document.createElement('article');
         card.className = 'scrolly-card';
+        card.style.setProperty('--i', String(i));
         var cardFrame = document.createElement('div');
         cardFrame.className = 'browser demo-browser demo-browser--bare';
         var el = document.createElement('div');
@@ -125,19 +129,25 @@
         if (instance) instance.setScene(i);
       });
       var cards = [].slice.call(stackEl.children);
-      // Each card slides up into place the first time it comes into view.
-      if ('IntersectionObserver' in window) {
-        var cardIo = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) {
-            if (!e.isIntersecting) return;
-            e.target.classList.add('is-played');
-            cardIo.unobserve(e.target);
-          });
-        }, { threshold: 0.2 });
-        cards.forEach(function (c) { cardIo.observe(c); });
-      } else {
-        cards.forEach(function (c) { c.classList.add('is-played'); });
+      var onTop = -1;
+      function pickTop() {
+        var top = 0;
+        for (var i = 0; i < cards.length; i++) {
+          var r = cards[i].getBoundingClientRect();
+          var stickAt = parseFloat(getComputedStyle(cards[i]).top) || 0;
+          if (r.top <= stickAt + 2) top = i;
+        }
+        if (top === onTop) return;
+        onTop = top;
+        cards.forEach(function (c, idx) { c.classList.toggle('is-behind', idx < top); });
       }
+      var deckTicking = false;
+      window.addEventListener('scroll', function () {
+        if (deckTicking || isPinned.matches) return;
+        deckTicking = true;
+        window.requestAnimationFrame(function () { deckTicking = false; pickTop(); });
+      }, { passive: true });
+      pickTop();
     }
     if (!isPinned.matches) buildStack();
 

@@ -110,11 +110,11 @@ drives `widget.js` through a controller handle):
   booking state (an `IntersectionObserver` with a rootMargin band; the
   visitor's own clicks inside the widget bring the page to the matching step,
   and scrolling keeps driving afterwards). Below 921px it hides that grid and
-  builds six `.scrolly-card` elements in flow instead — the admin page's
-  pattern — each with its own copy of the widget, mounted through
-  `window.OrliWidget.mount()` and set to that step, above the step's text
-  cloned from the desktop steps; each card slides up into place as it comes
-  into view.
+  builds six sticky `.scrolly-card` elements instead — the admin page's
+  deck — each with the step's text (cloned from the desktop steps) above its
+  own copy of the widget, mounted through `window.OrliWidget.mount()` and set
+  to that step; each card is one screen tall and slides up over the previous
+  one, which steps back (`is-behind`).
 - **`hero-gradient.js`** — dependency-free vanilla-WebGL animated gradient (simplex
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and
@@ -130,7 +130,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260909` today). Bump them all
+  carries the **same** token on every page (`?v=20260909b` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - Page-level layout lives in `styles.css` modifiers (`.page-head`, `.display--page`,
