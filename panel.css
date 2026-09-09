@@ -30,11 +30,9 @@
 }
 /* The text column: first in the DOM, so it starts at the right (inline
    start) on this RTL page — the mirror of the component's left column. */
-/* The list starts near the lower third of the pinned panel, so the active
-   screen's title and bullets sit at the panel's own height; the screens
-   already shown are gone from the list, so the active one is always the
-   first thing under that line. */
-.ptabs-text { display: flex; flex-direction: column; justify-content: flex-start; min-width: 0; padding-block-start: 150px; }
+/* The text column is as tall as the panel beside it and centres the roller,
+   so the active screen's title sits at the panel's own middle. */
+.ptabs-text { display: flex; flex-direction: column; justify-content: center; align-self: stretch; min-width: 0; }
 
 /* The roller: a box of one fixed height with faded top and bottom edges.
    The active screen sits fully visible in the middle; a third of the one
