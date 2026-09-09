@@ -47,7 +47,9 @@
       if (!bar) return;
       // Back to zero without a transition, then let the CSS transition
       // (AUTO_PLAY_DURATION, linear) carry it to full.
-      tab.classList.remove('is-running');
+      tab.classList.remove('is-running', 'is-paused', 'is-done');
+      // Picked by hand: the line shows full, and the clock does not run.
+      if (manual) { tab.classList.add('is-done'); return; }
       tab.classList.toggle('is-paused', paused);
       void bar.offsetHeight;
       if (!paused && !still) tab.classList.add('is-running');
@@ -62,6 +64,7 @@
 
       tabs.forEach(function (t, i) {
         t.classList.toggle('is-active', i === next);
+        t.classList.toggle('is-past', i < next);
         if (i === next) t.setAttribute('aria-current', 'step');
         else t.removeAttribute('aria-current');
         if (i !== next) t.classList.remove('is-running', 'is-paused');

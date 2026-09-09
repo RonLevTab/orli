@@ -30,7 +30,11 @@
 }
 /* The text column: first in the DOM, so it starts at the right (inline
    start) on this RTL page — the mirror of the component's left column. */
-.ptabs-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-block-start: 16px; }
+/* The list starts near the lower third of the pinned panel, so the active
+   screen's title and bullets sit at the panel's own height; the screens
+   already shown are gone from the list, so the active one is always the
+   first thing under that line. */
+.ptabs-text { display: flex; flex-direction: column; justify-content: flex-start; min-width: 0; padding-block-start: 230px; }
 
 .ptabs-list { display: flex; flex-direction: column; }
 .ptab {
@@ -52,6 +56,12 @@
 .ptab-progress { position: absolute; top: 0; inset-inline: 0; height: 100%; background: var(--ink); transform-origin: top; transform: scaleY(0); }
 .ptab.is-active .ptab-progress { transition: transform var(--ptabs-clock, 5s) linear; }
 .ptab.is-active.is-running .ptab-progress { transform: scaleY(1); }
+/* Picked by hand: the line is full, not running. */
+.ptab.is-done .ptab-progress { transform: scaleY(1); transition: none; }
+/* Screens already shown leave the list; the newly active one rises in. */
+.ptab.is-past { display: none; }
+.ptab.is-active .ptab-body { animation: ptab-in .45s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes ptab-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .ptab.is-paused .ptab-progress { transform: scaleY(0); transition: none; }
 .ptab-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
 .ptab-title {
@@ -297,7 +307,7 @@
 @media (max-width: 640px) {
   /* 4/5 like the component; the floor keeps the tallest mock clear of the
      arrows on a narrow phone. */
-  .ptabs-panel { aspect-ratio: 4 / 5; min-height: 500px; }
+  .ptabs-panel { aspect-ratio: 4 / 5; min-height: 420px; }
 }
 @media (min-width: 921px) and (max-width: 1100px) {
   .ptabs { gap: 40px; }
@@ -310,6 +320,7 @@
    its settled state. */
 @media (prefers-reduced-motion: reduce) {
   .ptabs-pane, .ptab, .ptab-title, .ptab-desc { transition: none; }
+  .ptab.is-active .ptab-body { animation: none; }
   .ptabs-pane { transform: none; }
   .ptabs-pane.is-leaving { visibility: hidden; }
   .ptab-rule { display: none; }
