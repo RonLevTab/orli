@@ -102,17 +102,6 @@
 .ptabs-pane .orli-panel { width: 100%; max-width: 520px; }
 /* The bottom shade the component lays over its picture, kept faint. */
 .ptabs-panel::after { content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 33%; background: linear-gradient(to top, rgba(0, 0, 0, .06), transparent); pointer-events: none; z-index: 2; }
-.ptabs-nav { position: absolute; bottom: 32px; inset-inline-start: 32px; display: flex; gap: 12px; z-index: 3; }
-.ptabs-arrow {
-  display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
-  background: color-mix(in srgb, var(--surface) 80%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  color: var(--ink); cursor: pointer; transition: background .2s ease, transform .15s ease;
-}
-.ptabs-arrow:hover { background: var(--surface); }
-.ptabs-arrow:active { transform: scale(.9); }
-.ptabs-arrow:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 2px; }
-.ptabs-arrow svg { width: 20px; height: 20px; }
 
 /* ---------- the mock ---------- */
 .orli-panel {
@@ -292,10 +281,6 @@
   .ptabs-panel-col { order: -1; position: static; }
   .ptabs-text { padding-block-start: 0; }
   .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
-  /* Room under the mock for the arrows, which sit over the panel's corner. */
-  .ptabs-pane { padding: 16px 16px 76px; }
-  .ptabs-nav { bottom: 20px; inset-inline-start: 20px; gap: 8px; }
-  .ptabs-arrow { width: 40px; height: 40px; }
   .ptab { padding: 22px 0; gap: 12px; }
   .ptab-rule { inset-inline-start: -12px; }
   .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
@@ -308,7 +293,7 @@
 @media (max-width: 640px) {
   /* 4/5 like the component; the floor keeps the tallest mock clear of the
      arrows on a narrow phone. */
-  .ptabs-panel { aspect-ratio: 4 / 5; min-height: 560px; }
+  .ptabs-panel { aspect-ratio: 4 / 5; min-height: 500px; }
 }
 @media (min-width: 921px) and (max-width: 1100px) {
   .ptabs { gap: 40px; }
@@ -320,7 +305,7 @@
    visitor drives the panel with the tabs and arrows, and every mock shows
    its settled state. */
 @media (prefers-reduced-motion: reduce) {
-  .ptabs-pane, .ptab, .ptab-title, .ptab-desc, .ptabs-arrow { transition: none; }
+  .ptabs-pane, .ptab, .ptab-title, .ptab-desc { transition: none; }
   .ptabs-pane { transform: none; }
   .ptabs-pane.is-leaving { visibility: hidden; }
   .ptab-rule { display: none; }

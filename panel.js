@@ -31,8 +31,6 @@
     var tabs = [].slice.call(root.querySelectorAll('.ptab'));
     var panes = [].slice.call(root.querySelectorAll('.ptabs-pane'));
     var panel = root.querySelector('[data-ptabs-panel]');
-    var prevBtn = root.querySelector('[data-ptabs-prev]');
-    var nextBtn = root.querySelector('[data-ptabs-next]');
     if (!tabs.length || tabs.length !== panes.length || !panel) return;
 
     var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -119,8 +117,6 @@
     panel.addEventListener('click', goNext);
     panel.addEventListener('mouseenter', function () { setPaused(true); });
     panel.addEventListener('mouseleave', function () { setPaused(false); });
-    if (prevBtn) prevBtn.addEventListener('click', function (e) { e.stopPropagation(); goPrev(); });
-    if (nextBtn) nextBtn.addEventListener('click', function (e) { e.stopPropagation(); goNext(); });
 
     // Not worth advancing in a background tab; pick up where it left off.
     document.addEventListener('visibilitychange', function () {
