@@ -116,6 +116,12 @@ drives `widget.js` through a controller handle):
   rolls the caption over (`rollCaption`: the old text rolls up and out, the
   new one rolls up into place). `widget.js` also exposes
   `window.OrliWidget.mount()` for widgets created after load.
+- **`lock.js`** — desktop section lock-in for `index.html`: styles.css makes every
+  top-level section (and each demo step) a full-viewport `scroll-snap` stop on wide,
+  tall screens without reduced motion; this script swallows wheel, touch and
+  keyboard scrolling for two seconds after each stop settles and fills the nav's
+  hairline meanwhile (`html.is-holding`). Off on phones, never while the contact
+  dialog is open.
 - **`hero-gradient.js`** — dependency-free vanilla-WebGL animated gradient (simplex
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and
@@ -131,9 +137,13 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260909v` today). Bump them all
+  carries the **same** token on every page (`?v=20260909w` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
+- On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
+  section per screen: every `main > section` and the footer carry
+  `data-lock-stop="start"`, the demo's steps `data-lock-stop="center"`; a new
+  top-level section needs the attribute or it will not be a stop.
 - Page-level layout lives in `styles.css` modifiers (`.page-head`, `.display--page`,
   `.display--sub`, `.section--tail`, `.section-lead--intro`, `.code-inline`, …), not in
   `style=""` attributes. The only inline styles left are the colour swatches on

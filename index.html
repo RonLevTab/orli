@@ -22,8 +22,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260909v" />
-  <link rel="stylesheet" href="widget.css?v=20260909v" />
+  <link rel="stylesheet" href="styles.css?v=20260909w" />
+  <link rel="stylesheet" href="widget.css?v=20260909w" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 
@@ -56,7 +56,7 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260909v" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260909w" width="480" height="151" alt="אורלי" />
         </a>
         <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html" aria-current="page">ראשי</a>
@@ -78,7 +78,7 @@
 
   <main>
     <!-- HERO -->
-    <section class="hero">
+    <section class="hero" data-lock-stop="start">
       <canvas class="hero-canvas" id="heroGradient" aria-hidden="true"></canvas>
       <div class="hero-veil" aria-hidden="true"></div>
       <div class="wrap hero-grid">
@@ -143,7 +143,7 @@
     </section>
 
     <!-- PROBLEM -->
-    <section class="section section--bridge">
+    <section class="section section--bridge" data-lock-stop="start">
       <div class="wrap narrow">
         <div class="section-head section-head--tight">
           <h2 class="display">מהאתר של המרפאה, <span class="ital">ישר ליומן.</span></h2>
@@ -217,7 +217,7 @@
     </section>
 
     <!-- LIVE DEMO, scroll-pinned (Vectrix-style scrollytelling) -->
-    <section class="section scrolly" id="demo">
+    <section class="section scrolly" id="demo" data-lock-stop="start">
       <div class="wrap">
         <div class="section-divider" aria-hidden="true"></div>
         <div class="section-head">
@@ -228,32 +228,32 @@
       </div>
       <div class="wrap scrolly-grid">
         <div class="scrolly-steps">
-          <article class="scrolly-step" data-scene="0">
+          <article class="scrolly-step" data-lock-stop="center" data-scene="0">
             <span class="scrolly-idx">01 · בחירה</span>
             <h3>בחירת מטפל וטיפול</h3>
             <p>המטופל נכנס לאתר שלכם, בוחר מטפל ואז טיפול. הרשימה מגיעה בזמן אמת מאופטימה.</p>
           </article>
-          <article class="scrolly-step" data-scene="1">
+          <article class="scrolly-step" data-lock-stop="center" data-scene="1">
             <span class="scrolly-idx">02 · תאריך</span>
             <h3>בחירת יום</h3>
             <p>אורלי מציגה רק ימים עם זמינות אמיתית, לפי השעות והימים החופשיים של כל רופא, כך שזו אף פעם לא שעה שאינה באמת פנויה.</p>
           </article>
-          <article class="scrolly-step" data-scene="2">
+          <article class="scrolly-step" data-lock-stop="center" data-scene="2">
             <span class="scrolly-idx">03 · שעה</span>
             <h3>בחירת שעה</h3>
             <p>השעות הפנויות לאותו יום מופיעות מיד, ישירות מהיומן המעודכן.</p>
           </article>
-          <article class="scrolly-step" data-scene="3">
+          <article class="scrolly-step" data-lock-stop="center" data-scene="3">
             <span class="scrolly-idx">04 · פרטים</span>
             <h3>מי קובע את הפגישה</h3>
             <p>שם, טלפון ואימייל, פעם אחת. אין חשבון לפתוח ואין מה לזכור, והאימייל משמש לאימות מהיר ולשליחת האישור.</p>
           </article>
-          <article class="scrolly-step" data-scene="4">
+          <article class="scrolly-step" data-lock-stop="center" data-scene="4">
             <span class="scrolly-idx">05 · אימות</span>
             <h3>אימות בקוד</h3>
             <p>קוד מהיר מאמת את המטופל ממש לפני שאורלי קובעת משהו. זה חוסם ספאם וזה המקום שבו נאספת ההסכמה.</p>
           </article>
-          <article class="scrolly-step" data-scene="5">
+          <article class="scrolly-step" data-lock-stop="center" data-scene="5">
             <span class="scrolly-idx">06 · נקבע</span>
             <h3>נכתב לאופטימה</h3>
             <p>הפגישה נוחתת ביומן האמיתי שלכם והמטופל מקבל אישור. בלי הקלדה מחדש, בלי טלפונים חוזרים. זהו.</p>
@@ -287,7 +287,7 @@
     </section>
 
     <!-- COMPARISON (Without / With, Petaron pattern) -->
-    <section class="section alt" id="compare">
+    <section class="section alt" id="compare" data-lock-stop="start">
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">לפני ואחרי</p>
@@ -317,7 +317,7 @@
     </section>
 
     <!-- EMBED SNIPPET -->
-    <section class="section alt embed">
+    <section class="section alt embed" data-lock-stop="start">
       <div class="wrap narrow center">
         <div class="section-divider" aria-hidden="true"></div>
         <p class="eyebrow">קל להוספה</p>
@@ -332,7 +332,7 @@
     </section>
 
     <!-- ROADMAP -->
-    <section class="section alt" id="roadmap">
+    <section class="section alt" id="roadmap" data-lock-stop="start">
       <div class="wrap">
         <div class="section-divider" aria-hidden="true"></div>
         <div class="section-head">
@@ -367,7 +367,7 @@
     </section>
 
     <!-- FAQ (Petaron accordion) -->
-    <section class="section" id="faq">
+    <section class="section" id="faq" data-lock-stop="start">
       <div class="wrap narrow">
         <div class="section-head">
           <h2 class="display">שאלות <span class="ital">ותשובות.</span></h2>
@@ -420,7 +420,7 @@
     </section>
 
     <!-- CTA, teal full-bleed band (nod to Iris on the Move) -->
-    <section class="cta-band" id="contact">
+    <section class="cta-band" id="contact" data-lock-stop="start">
       <div class="wrap narrow center">
         <p class="eyebrow light">כשתהיו מוכנים</p>
         <h2 class="display">הפכו את יומן האופטימה <span class="ital">למנוע קביעת פגישות.</span></h2>
@@ -472,11 +472,11 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="footer">
+  <footer class="footer" data-lock-stop="start">
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260909v" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260909w" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
@@ -510,11 +510,13 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260909v"></script>
-  <script src="hero-gradient.js?v=20260909v"></script>
+  <script src="script.js?v=20260909w"></script>
+  <script src="hero-gradient.js?v=20260909w"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->
-  <script src="widget.js?v=20260909v"></script>
-  <script src="scrolly.js?v=20260909v"></script>
+  <script src="widget.js?v=20260909w"></script>
+  <script src="scrolly.js?v=20260909w"></script>
+  <!-- Desktop section lock-in: two-second hold on each snap stop. -->
+  <script src="lock.js?v=20260909w"></script>
 </body>
 </html>
