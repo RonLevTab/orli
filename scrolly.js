@@ -181,6 +181,16 @@
     function scrollToStep(i) {
       if (io) io.disconnect();
       clearTimeout(pausedTimer);
+      // On a phone the step list is invisible scroll distance under a pinned
+      // block, so nothing on screen moves when the page jumps: jump at once
+      // and re-arm on the next frame. A smooth scroll here could be cut
+      // short by the visitor's own touch, and the observer then re-armed
+      // onto the old spacer and snapped the widget back to the old step.
+      if (!isPinned.matches) {
+        steps[i].scrollIntoView({ block: 'center', behavior: 'instant' });
+        pausedTimer = setTimeout(observeSteps, 50);
+        return;
+      }
       steps[i].scrollIntoView(scrollTo);
       // Re-arm once the scroll has actually stopped: a fixed delay re-armed
       // mid-flight on the long way back from step 06 to 01 (the restart),
