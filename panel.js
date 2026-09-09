@@ -64,12 +64,12 @@
 
       tabs.forEach(function (t, i) {
         t.classList.toggle('is-active', i === next);
-        t.classList.toggle('is-past', i < next);
         if (i === next) t.setAttribute('aria-current', 'step');
         else t.removeAttribute('aria-current');
         if (i !== next) t.classList.remove('is-running', 'is-paused');
       });
       restartClock(tabs[next]);
+      rollTo();
 
       panes.forEach(function (p, i) {
         p.classList.remove('is-leaving');
@@ -131,29 +131,34 @@
       else { restartClock(tabs[active]); schedule(); }
     });
 
-    // The list keeps the height it has with every screen listed, so the
-    // section does not shrink as the screens already shown leave it.
+    // The roller: bring the active screen to the middle of the box. Once
+    // at the change, and again when the descriptions have finished
+    // folding, since the tabs above shift by the folded height.
+    var roller = root.querySelector('.ptabs-roller');
     var list = root.querySelector('.ptabs-list');
-    function holdListHeight() {
-      if (!list) return;
-      list.style.minHeight = '';
-      var hidden = tabs.filter(function (t) { return t.classList.contains('is-past'); });
-      hidden.forEach(function (t) { t.classList.remove('is-past'); });
-      var h = list.offsetHeight;
-      hidden.forEach(function (t) { t.classList.add('is-past'); });
-      list.style.minHeight = h + 'px';
+    var centerTimer = null;
+    function centerList() {
+      if (!roller || !list) return;
+      var tab = tabs[active];
+      var y = tab.offsetTop + tab.offsetHeight / 2 - roller.clientHeight / 2;
+      list.style.transform = 'translateY(' + (-Math.round(y)) + 'px)';
     }
-    var holdTimer = null;
+    function rollTo() {
+      clearTimeout(centerTimer);
+      centerList();
+      centerTimer = setTimeout(centerList, 340);
+    }
+    var rollResize = null;
     window.addEventListener('resize', function () {
-      clearTimeout(holdTimer);
-      holdTimer = setTimeout(holdListHeight, 150);
+      clearTimeout(rollResize);
+      rollResize = setTimeout(centerList, 150);
     });
-    holdListHeight();
 
     // Initial state: the first pane is already active in the markup; its
     // control plays now, and the clock starts.
     tabs[0].classList.add('is-active');
     panes[0].classList.add('is-played');
+    rollTo();
     restartClock(tabs[0]);
     schedule();
   }

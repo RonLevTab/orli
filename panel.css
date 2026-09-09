@@ -34,11 +34,19 @@
    screen's title and bullets sit at the panel's own height; the screens
    already shown are gone from the list, so the active one is always the
    first thing under that line. */
-.ptabs-text { display: flex; flex-direction: column; justify-content: flex-start; min-width: 0; padding-block-start: 230px; }
+.ptabs-text { display: flex; flex-direction: column; justify-content: flex-start; min-width: 0; padding-block-start: 150px; }
 
-/* panel.js fixes the list's min-height to its full height at load, so the
-   section keeps one size as the screens already shown leave the list. */
-.ptabs-list { display: flex; flex-direction: column; }
+/* The roller: a box of one fixed height with faded top and bottom edges.
+   The active screen sits fully visible in the middle; a third of the one
+   before shows above it and a third of the next below, both fading out.
+   panel.js rolls the list (a transform) to bring each new screen to the
+   middle. One height, whatever is inside, so the section never moves. */
+.ptabs-roller {
+  position: relative; height: 280px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
+}
+.ptabs-list { display: flex; flex-direction: column; transition: transform .55s cubic-bezier(.2, .7, .2, 1); will-change: transform; }
 .ptab {
   position: relative; display: flex; align-items: flex-start; gap: 16px;
   width: 100%; padding: 26px 0; margin: 0;
@@ -60,10 +68,7 @@
 .ptab.is-active.is-running .ptab-progress { transform: scaleY(1); }
 /* Picked by hand: the line is full, not running. */
 .ptab.is-done .ptab-progress { transform: scaleY(1); transition: none; }
-/* Screens already shown leave the list; the newly active one rises in. */
-.ptab.is-past { display: none; }
-.ptab.is-active .ptab-body { animation: ptab-in .45s cubic-bezier(.2, .7, .2, 1) both; }
-@keyframes ptab-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
 .ptab.is-paused .ptab-progress { transform: scaleY(0); transition: none; }
 .ptab-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
 .ptab-title {
@@ -291,6 +296,7 @@
   .ptabs { grid-template-columns: 1fr; gap: 40px; }
   .ptabs-panel-col { order: -1; position: static; }
   .ptabs-text { padding-block-start: 0; }
+  .ptabs-roller { height: 250px; }
   .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
   .ptab { padding: 22px 0; gap: 12px; }
   .ptab-rule { inset-inline-start: -12px; }
@@ -317,7 +323,7 @@
    its settled state. */
 @media (prefers-reduced-motion: reduce) {
   .ptabs-pane, .ptab, .ptab-title, .ptab-desc { transition: none; }
-  .ptab.is-active .ptab-body { animation: none; }
+  .ptabs-list { transition: none; }
   .ptabs-pane { transform: none; }
   .ptabs-pane.is-leaving { visibility: hidden; }
   .ptab-rule { display: none; }
