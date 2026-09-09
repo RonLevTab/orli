@@ -417,8 +417,8 @@ html[dir="rtl"] .hero-veil {
 }
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
-/* The phone layout's card stack; see the max-width block. */
-.scrolly-stack { display: none; }
+/* The phone layout's caption above the widget; see the max-width block. */
+.scrolly-caption { display: none; }
 /* The pinned columns carry their own lead-in, so the standard 56px under the
    heading stacked on top of it and pushed the whole demo down the page.
    Desktop only: below 920px the sticky is static and the steps have no
@@ -596,37 +596,41 @@ html[dir="rtl"] .hero-veil {
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
   .bridge-movie, .bm-site { min-height: 420px; }
-  /* On a phone the section is the admin page's deck instead: six cards,
-     each with the step's text above its own copy of the widget already at
-     that step. Every card is one screen tall and sticks under the nav, each
-     10px lower than the last, so the next one slides up over it and the
-     ones underneath step back. scrolly.js builds the cards from the desktop
-     steps (so the copy lives once) and marks which card is on top. The
-     desktop grid, its single widget and the numbered tabs are hidden. */
-  .scrolly-grid { display: none; }
-  /* minmax(0) and min-width:0: a grid item defaults to its content's
-     min-content width, and the widget's calendar is wider than a phone.
-     The runway after the last card gives it time on top. */
-  .scrolly-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block-end: 14vh; }
-  .scrolly-card {
-    --deck: calc(var(--nav-h) + 12px + 5 * 10px);
-    position: sticky; top: calc(var(--nav-h) + 12px + var(--i, 0) * 10px);
-    height: calc(100vh - var(--deck) - 12px);
-    height: calc(100dvh - var(--deck) - 12px);
-    min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 14px 14px 16px; text-align: center;
-    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-lg);
-    transform-origin: top center;
-    transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .45s ease, filter .45s ease;
+  /* On a phone the same narrative runs in one screen: the current step's
+     text sits above the widget in a block pinned under the nav, and the
+     step list below is invisible spacers that scrolling passes through, so
+     the observer advances the widget exactly as it does on wide screens.
+     Every step change rolls the caption over (scrolly.js). No numbered
+     tabs: scrolling, or clicking through the widget, is the control. */
+  .scrolly-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .scrolly-sticky {
+    position: sticky; top: calc(var(--nav-h) + 8px); z-index: 2; order: -1;
+    height: auto; margin: 0; padding: 10px 0 8px; background: var(--cream); align-items: stretch; justify-content: flex-start;
   }
-  .scrolly-card.is-behind { transform: scale(.965); opacity: .55; filter: saturate(.85); }
-  /* Text first, so it is what stays readable once the card is stuck; the
-     widget takes the rest and scrolls inside on the taller steps, as the
-     real widget does on a phone. */
-  .scrolly-card .scrolly-step { order: -1; min-height: 0; display: block; opacity: 1; transform: none; transition: none; text-align: center; flex: none; padding-block: 4px 2px; }
-  .scrolly-card .scrolly-step h3 { font-size: 1.35rem; margin-bottom: 6px; }
-  .scrolly-card .scrolly-step p { margin-inline: auto; font-size: .95rem; }
-  .scrolly-card .demo-browser { flex: 1; min-height: 0; width: 100%; max-width: 340px; margin: 0 auto; box-shadow: var(--shadow); }
-  .scrolly-card .demo-browser [data-orli-widget] { height: 100%; }
+  .scrolly-tabs { display: none; }
+  .scrolly-caption { display: block; position: relative; width: 100%; min-height: 112px; margin: 0 0 10px; padding-inline: 4px; text-align: center; overflow: hidden; }
+  .scrolly-caption-inner { position: relative; }
+  .scrolly-caption .scrolly-idx { margin-bottom: 6px; }
+  .scrolly-caption h3 { font-family: var(--serif); font-weight: 500; font-size: 1.35rem; line-height: 1.2; margin: 0 0 6px; }
+  .scrolly-caption p { color: var(--ink-soft); font-size: .95rem; line-height: 1.45; margin: 0 auto; max-width: 32em; }
+  /* The roll-over: the old text rolls up and out while the new one rolls up
+     into place, like a counter ticking to the next step. The leaving copy is
+     lifted out of flow so the block never changes height mid-roll. */
+  .scrolly-caption-inner.is-leaving { position: absolute; inset: 0; animation: caption-out .32s cubic-bezier(.4, 0, .6, 1) both; pointer-events: none; }
+  .scrolly-caption-inner.is-entering { animation: caption-in .42s cubic-bezier(.2, .7, .2, 1) both; }
+  @keyframes caption-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-18px); } }
+  @keyframes caption-in { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  /* The widget takes what is left of the screen under the caption, and the
+     step area scrolls inside on the taller steps, as the real widget does. */
+  .scrolly-sticky .demo-browser {
+    width: min(100%, 340px); margin-inline: auto;
+    height: calc(100vh - var(--nav-h) - 8px - 18px - 122px - 16px);
+    height: calc(100dvh - var(--nav-h) - 8px - 18px - 122px - 16px);
+  }
+  /* The spacers: the step copy is already in the caption, so the list is
+     only scroll distance — one viewport's worth per step, invisible. */
+  .scrolly-steps { padding-block: 0 12vh; margin-top: 0; }
+  .scrolly-step { min-height: 70vh; visibility: hidden; opacity: 0; transform: none; transition: none; }
   /* Below this width the link row is hidden, and with no replacement the only
      thing left in the header was the CTA — a phone visitor had no route to any
      section on any of the four pages. Same <nav>, re-laid-out as a panel. */
@@ -691,8 +695,8 @@ html[dir="rtl"] .hero-veil {
   .bc-appt.is-landed { animation: none; }
   /* Demo steps: current one fades in place instead of rising. */
   .scrolly-step { transform: none; transition: opacity .2s ease; }
-  .scrolly-card { transition: none; }
-  .scrolly-card.is-behind { transform: none; filter: none; opacity: .7; }
+  .scrolly-caption-inner.is-leaving { display: none; }
+  .scrolly-caption-inner.is-entering { animation: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }

@@ -32,11 +32,11 @@
     var STEP_NAMES = ['practitioner', 'date', 'time', 'patient', 'confirm', 'success'];
     var SCENE_OF = { practitioner: 0, treatment: 0, date: 1, time: 2, patient: 3, confirm: 4, success: 5 };
     var current = -1;
-    // Below this breakpoint .scrolly-sticky is position:static and the widget
-    // is driven by the tap-through tabs instead of scroll-jacking (see
-    // styles.css). Only the pinned desktop layout should follow the widget's
-    // own step changes with scrollIntoView — on mobile that yanked the page
-    // out from under the user's finger on every tap inside the widget.
+    // Below this breakpoint the widget and its caption are pinned in one
+    // block under the nav and the step list is invisible scroll distance
+    // (see styles.css); the same observer drives both layouts. The
+    // difference is only in sizing: the desktop frame is measured to the
+    // tallest scene, the phone frame takes the screen.
     var isPinned = window.matchMedia('(min-width: 921px)');
     // Following the visitor's own clicks with a smooth scroll is movement
     // they did not ask for; under reduced motion the page jumps instead.
@@ -48,6 +48,31 @@
     // nothing. They are what they look like instead: buttons that jump the
     // demo to a step in a sequence, with aria-current="step" marking where
     // the visitor is. See the markup in index.html.
+    // On a phone the step's text lives in a caption above the widget
+    // (styles.css hides the step list there and turns it into scroll
+    // distance). Each change rolls the caption over: the old copy rolls up
+    // and out, the new one rolls up into place.
+    var caption = section.querySelector('[data-scrolly-caption]');
+    var captionStep = -1;
+    function rollCaption(i) {
+      if (!caption || i === captionStep) return;
+      var first = captionStep < 0;
+      captionStep = i;
+      [].slice.call(caption.children).forEach(function (old) {
+        if (old.classList.contains('is-leaving')) { old.remove(); return; }
+        old.classList.remove('is-entering');
+        old.classList.add('is-leaving');
+        old.addEventListener('animationend', function () { old.remove(); });
+        // Under reduced motion the leaving copy is display:none and never
+        // animates; drop it on the next frame instead.
+        setTimeout(function () { if (old.parentNode) old.remove(); }, 400);
+      });
+      var next = document.createElement('div');
+      next.className = 'scrolly-caption-inner' + (first ? '' : ' is-entering');
+      [].slice.call(steps[i].children).forEach(function (child) { next.appendChild(child.cloneNode(true)); });
+      caption.appendChild(next);
+    }
+
     function setActiveUI(i) {
       current = i;
       steps.forEach(function (s, idx) { s.classList.toggle('is-active', idx === i); });
@@ -56,6 +81,7 @@
         if (idx === i) t.setAttribute('aria-current', 'step');
         else t.removeAttribute('aria-current');
       });
+      rollCaption(i);
     }
 
     function activate(i) {
@@ -79,8 +105,9 @@
     var measuring = false;
     function fitFrame() {
       if (!frame) return;
-      // On a phone the pinned grid is hidden and the cards size themselves
-      // (see buildStack below), so there is no tallest scene to size for.
+      // On a phone the frame takes the screen under the caption (styles.css)
+      // and the step area scrolls inside, so there is no tallest scene to
+      // size for.
       if (!isPinned.matches) { frame.style.height = ''; return; }
       measuring = true;
       frame.style.height = '';
@@ -97,59 +124,6 @@
     }
     fitFrame();
 
-    // Phone layout: the pinned grid above is hidden, and the section is six
-    // cards instead — the admin page's deck — each with the step's text
-    // above its own copy of the widget, already at that step. Built once,
-    // the first time the phone layout is in effect, from the desktop steps
-    // so the copy lives in one place. widget.js mounts each copy. The cards
-    // are sticky (styles.css); this only marks which one is on top, so the
-    // ones underneath can step back — measured from the cards' boxes on each
-    // scroll frame, the way panel.js does it.
-    var stackEl = section.querySelector('[data-scrolly-stack]');
-    var stackBuilt = false;
-    function buildStack() {
-      if (stackBuilt || !stackEl || !window.OrliWidget) return;
-      stackBuilt = true;
-      steps.forEach(function (step, i) {
-        var card = document.createElement('article');
-        card.className = 'scrolly-card';
-        card.style.setProperty('--i', String(i));
-        var cardFrame = document.createElement('div');
-        cardFrame.className = 'browser demo-browser demo-browser--bare';
-        var el = document.createElement('div');
-        el.setAttribute('data-orli-widget', '');
-        cardFrame.appendChild(el);
-        var text = step.cloneNode(true);
-        text.classList.add('is-active');
-        text.removeAttribute('data-scene');
-        card.appendChild(cardFrame);
-        card.appendChild(text);
-        stackEl.appendChild(card);
-        var instance = window.OrliWidget.mount(el);
-        if (instance) instance.setScene(i);
-      });
-      var cards = [].slice.call(stackEl.children);
-      var onTop = -1;
-      function pickTop() {
-        var top = 0;
-        for (var i = 0; i < cards.length; i++) {
-          var r = cards[i].getBoundingClientRect();
-          var stickAt = parseFloat(getComputedStyle(cards[i]).top) || 0;
-          if (r.top <= stickAt + 2) top = i;
-        }
-        if (top === onTop) return;
-        onTop = top;
-        cards.forEach(function (c, idx) { c.classList.toggle('is-behind', idx < top); });
-      }
-      var deckTicking = false;
-      window.addEventListener('scroll', function () {
-        if (deckTicking || isPinned.matches) return;
-        deckTicking = true;
-        window.requestAnimationFrame(function () { deckTicking = false; pickTop(); });
-      }, { passive: true });
-      pickTop();
-    }
-    if (!isPinned.matches) buildStack();
 
     var resizeTimer = null;
     window.addEventListener('resize', function () {
@@ -158,8 +132,6 @@
         if (isPinned.matches) {
           fitFrame();
           widget.setScene(current);
-        } else {
-          buildStack();
         }
       }, 150);
     });
@@ -192,7 +164,6 @@
     // the smooth scroll crosses on the way — that flicked the widget through
     // the whole flow. The observer is re-armed once the scroll has landed.
     function scrollToStep(i) {
-      if (!isPinned.matches) return;
       if (io) io.disconnect();
       clearTimeout(pausedTimer);
       steps[i].scrollIntoView(scrollTo);
