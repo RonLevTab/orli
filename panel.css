@@ -53,7 +53,6 @@
 .ptab.is-active .ptab-progress { transition: transform var(--ptabs-clock, 5s) linear; }
 .ptab.is-active.is-running .ptab-progress { transform: scaleY(1); }
 .ptab.is-paused .ptab-progress { transform: scaleY(0); transition: none; }
-.ptab-idx { flex: none; margin-top: 6px; font-size: .62rem; font-weight: 500; letter-spacing: .02em; font-variant-numeric: tabular-nums; opacity: .5; white-space: nowrap; }
 .ptab-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
 .ptab-title {
   font-family: var(--serif); font-weight: 500; letter-spacing: -.01em; line-height: 1.15;
