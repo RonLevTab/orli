@@ -19,6 +19,9 @@
 /* ---------- the stack ---------- */
 .panel-stack { padding-block-end: 40px; }
 .pstack {
+  /* A column, not the whole page: the card is a sheet the visitor reads,
+     not a section. */
+  max-width: 940px; margin-inline: auto;
   display: grid; gap: 28px;
   /* Runway after the last card, so it has time on top before the page
      moves on to the closing section. */
@@ -46,6 +49,20 @@
   position: sticky; top: var(--deck);
 }
 .pcard:first-child { box-shadow: var(--shadow); }
+/* A card is invisible on its way up and fades in, rising the last 28px,
+   the moment it reaches its pinned spot over the previous one. Gated on
+   script.js having run, so a page without scripts shows every card. */
+html[data-reveal-ready] .pcard { opacity: 0; transition: opacity .5s ease; }
+/* The rise is on the contents, not the card: a transform on the sticky
+   card itself would shift the box panel.js measures to tell it has reached
+   its spot. */
+html[data-reveal-ready] .pcard > * { transform: translateY(28px); transition: transform .55s cubic-bezier(.2, .7, .2, 1); }
+html[data-reveal-ready] .pcard:first-child,
+html[data-reveal-ready] .pcard.is-active,
+html[data-reveal-ready] .pcard.is-behind { opacity: 1; }
+html[data-reveal-ready] .pcard:first-child > *,
+html[data-reveal-ready] .pcard.is-active > *,
+html[data-reveal-ready] .pcard.is-behind > * { transform: none; }
 /* A covered card stays exactly where it is: the card on top hides it in
    full, so it needs no shrinking or dimming of its own. */
 .pcard.is-behind { transform: none; opacity: 1; filter: none; }
@@ -274,6 +291,8 @@
    No stacking motion and no control animation: every mock shows its
    settled state at once, and the deck simply stacks without stepping back. */
 @media (prefers-reduced-motion: reduce) {
+  html[data-reveal-ready] .pcard { opacity: 1; transition: none; }
+  html[data-reveal-ready] .pcard > * { transform: none; transition: none; }
   html[data-reveal-ready] .pcard { opacity: 1; transform: none; }
   .opn-tab, .opn-seg i, .opn-choice { transition: none; }
   .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }
