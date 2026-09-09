@@ -52,17 +52,19 @@
 /* A card is invisible on its way up and fades in, rising the last 28px,
    the moment it reaches its pinned spot over the previous one. Gated on
    script.js having run, so a page without scripts shows every card. */
-html[data-reveal-ready] .pcard { opacity: 0; transition: opacity .5s ease; }
-/* The rise is on the contents, not the card: a transform on the sticky
-   card itself would shift the box panel.js measures to tell it has reached
-   its spot. */
-html[data-reveal-ready] .pcard > * { transform: translateY(28px); transition: transform .55s cubic-bezier(.2, .7, .2, 1); }
+/* The sheet itself appears at once, so it covers the previous card in full
+   from the first frame; only its contents fade in and rise. A translucent
+   sheet let the old card's contents ghost through mid-fade. The rise is on
+   the contents, not the card, since a transform on the sticky card would
+   shift the box panel.js measures to tell it has reached its spot. */
+html[data-reveal-ready] .pcard { opacity: 0; }
+html[data-reveal-ready] .pcard > * { opacity: 0; transform: translateY(28px); transition: opacity .5s ease, transform .55s cubic-bezier(.2, .7, .2, 1); }
 html[data-reveal-ready] .pcard:first-child,
 html[data-reveal-ready] .pcard.is-active,
 html[data-reveal-ready] .pcard.is-behind { opacity: 1; }
 html[data-reveal-ready] .pcard:first-child > *,
 html[data-reveal-ready] .pcard.is-active > *,
-html[data-reveal-ready] .pcard.is-behind > * { transform: none; }
+html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
 /* A covered card stays exactly where it is: the card on top hides it in
    full, so it needs no shrinking or dimming of its own. */
 .pcard.is-behind { transform: none; opacity: 1; filter: none; }
@@ -291,8 +293,8 @@ html[data-reveal-ready] .pcard.is-behind > * { transform: none; }
    No stacking motion and no control animation: every mock shows its
    settled state at once, and the deck simply stacks without stepping back. */
 @media (prefers-reduced-motion: reduce) {
-  html[data-reveal-ready] .pcard { opacity: 1; transition: none; }
-  html[data-reveal-ready] .pcard > * { transform: none; transition: none; }
+  html[data-reveal-ready] .pcard { opacity: 1; }
+  html[data-reveal-ready] .pcard > * { opacity: 1; transform: none; transition: none; }
   html[data-reveal-ready] .pcard { opacity: 1; transform: none; }
   .opn-tab, .opn-seg i, .opn-choice { transition: none; }
   .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }
