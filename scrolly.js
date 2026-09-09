@@ -54,23 +54,38 @@
     // and out, the new one rolls up into place.
     var caption = section.querySelector('[data-scrolly-caption]');
     var captionStep = -1;
+    var captionTimer = null;
+    var stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function showCaption(i, entering) {
+      var next = document.createElement('div');
+      next.className = 'scrolly-caption-inner' + (entering ? ' is-entering' : '');
+      [].slice.call(steps[i].children).forEach(function (child) { next.appendChild(child.cloneNode(true)); });
+      caption.appendChild(next);
+    }
+    // In two beats, never at once: the old text rolls up and out, and only
+    // once it has gone does the new one roll up into place — overlapping
+    // the two read as a glitch. A step change that lands mid-roll replaces
+    // the one waiting to come in, so a fast scroll settles on the last step.
     function rollCaption(i) {
       if (!caption || i === captionStep) return;
       var first = captionStep < 0;
       captionStep = i;
-      [].slice.call(caption.children).forEach(function (old) {
-        if (old.classList.contains('is-leaving')) { old.remove(); return; }
+      clearTimeout(captionTimer);
+      var leaving = [].slice.call(caption.children).filter(function (el) { return !el.classList.contains('is-leaving'); });
+      if (first || stillMotion) {
+        [].slice.call(caption.children).forEach(function (el) { el.remove(); });
+        showCaption(i, false);
+        return;
+      }
+      leaving.forEach(function (old) {
         old.classList.remove('is-entering');
         old.classList.add('is-leaving');
-        old.addEventListener('animationend', function () { old.remove(); });
-        // Under reduced motion the leaving copy is display:none and never
-        // animates; drop it on the next frame instead.
-        setTimeout(function () { if (old.parentNode) old.remove(); }, 400);
       });
-      var next = document.createElement('div');
-      next.className = 'scrolly-caption-inner' + (first ? '' : ' is-entering');
-      [].slice.call(steps[i].children).forEach(function (child) { next.appendChild(child.cloneNode(true)); });
-      caption.appendChild(next);
+      var wait = leaving.length ? 320 : 0;
+      captionTimer = setTimeout(function () {
+        [].slice.call(caption.children).forEach(function (el) { el.remove(); });
+        showCaption(i, true);
+      }, wait);
     }
 
     function setActiveUI(i) {
