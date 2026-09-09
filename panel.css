@@ -49,13 +49,13 @@
 .ptab:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 4px; border-radius: 6px; }
 /* The thin rule beside the list — on the outer edge, to the right of the
    buttons — and the fill that grows down it as the autoplay clock runs.
-   The height transition is the clock: panel.js restarts it on every
+   The scale transition is the clock: panel.js restarts it on every
    activation and drops it to zero when the panel is paused. */
 .ptab-rule { position: absolute; inset-block: 0; inset-inline-start: -16px; width: 2px; background: color-mix(in srgb, var(--line) 80%, transparent); }
-.ptab-progress { position: absolute; top: 0; inset-inline: 0; height: 0; background: var(--ink); transform-origin: top; }
-.ptab.is-active .ptab-progress { transition: height var(--ptabs-clock, 5s) linear; }
-.ptab.is-active.is-running .ptab-progress { height: 100%; }
-.ptab.is-paused .ptab-progress { height: 0; transition: none; }
+.ptab-progress { position: absolute; top: 0; inset-inline: 0; height: 100%; background: var(--ink); transform-origin: top; transform: scaleY(0); }
+.ptab.is-active .ptab-progress { transition: transform var(--ptabs-clock, 5s) linear; }
+.ptab.is-active.is-running .ptab-progress { transform: scaleY(1); }
+.ptab.is-paused .ptab-progress { transform: scaleY(0); transition: none; }
 .ptab-idx { flex: none; margin-top: 6px; font-size: .62rem; font-weight: 500; letter-spacing: .02em; font-variant-numeric: tabular-nums; opacity: .5; white-space: nowrap; }
 .ptab-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
 .ptab-title {

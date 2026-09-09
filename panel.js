@@ -12,7 +12,7 @@
      resumes; clicking a tab jumps there and un-pauses; the arrows and a
      click on the panel itself step it. Reduced motion: no autoplay at
      all, the visitor drives it.
-   - The progress rule beside the active tab is a CSS height transition
+   - The progress rule beside the active tab is a CSS transform transition
      of AUTO_PLAY_DURATION; it is restarted from zero on every activation.
    - .is-played is added to a pane the first time it is shown and never
      removed; panel.css keys each mock's one-shot control animation on it.
