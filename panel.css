@@ -38,9 +38,14 @@
   height: calc(100vh - var(--deck) - 20px);
   height: calc(100dvh - var(--deck) - 20px);
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  /* One shadow for the whole stack, not one per card: the first card stays
+     pinned in the same spot for the entire section, so its shadow outlines
+     the stack throughout, and the cards sliding in over it carry none —
+     seven shadows on top of each other read as a smear. */
+  box-shadow: none;
   position: sticky; top: var(--deck);
 }
+.pcard:first-child { box-shadow: var(--shadow); }
 /* A covered card stays exactly where it is: the card on top hides it in
    full, so it needs no shrinking or dimming of its own. */
 .pcard.is-behind { transform: none; opacity: 1; filter: none; }
@@ -246,6 +251,7 @@
      floating in it read as empty. */
   .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: 0; }
   .pcard.is-behind { transform: none; opacity: 1; filter: none; }
+  .pcard, .pcard:first-child { box-shadow: var(--shadow-sm); }
   /* Each card slides up into place as it is reached — the same motion the
      home page's demo steps make on a phone. Gated on script.js having run
      (data-reveal-ready), so a page without scripts shows every card. */
