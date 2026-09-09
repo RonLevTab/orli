@@ -59,8 +59,10 @@
       if (next === active) return;
       var prev = active;
       active = next;
-      var from = direction > 0 ? '-100%' : '100%';
-      var to = direction > 0 ? '100%' : '-100%';
+      // Same way as the list beside it: forward, the new screen comes up
+      // from below and the old one leaves upward; back, the reverse.
+      var from = direction > 0 ? '100%' : '-100%';
+      var to = direction > 0 ? '-100%' : '100%';
 
       tabs.forEach(function (t, i) {
         t.classList.toggle('is-active', i === next);

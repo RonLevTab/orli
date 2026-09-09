@@ -43,6 +43,8 @@
    middle. One height, whatever is inside, so the section never moves. */
 .ptabs-roller {
   position: relative; height: 280px; overflow: hidden;
+  /* Room for the timer line, which sits just outside each tab's edge. */
+  padding-inline-start: 18px;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
 }
@@ -111,8 +113,11 @@
 .ptabs-pane {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 26px;
   opacity: 0; visibility: hidden; transform: translateY(var(--pane-from, -100%));
-  transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .4s ease, visibility 0s linear .5s;
 }
+/* Only an entering or leaving pane animates. With the transition on every
+   pane, setting a pane's start edge began sliding it across the frame
+   before its real entrance, which then took over from mid-way. */
+.ptabs-pane.is-active, .ptabs-pane.is-leaving { transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .4s ease, visibility 0s linear .5s; }
 .ptabs-pane.is-active { opacity: 1; visibility: visible; transform: none; z-index: 1; transition-delay: 0s; }
 .ptabs-pane.is-leaving { opacity: 0; visibility: visible; transform: translateY(var(--pane-to, 100%)); z-index: 0; transition-delay: 0s; }
 .ptabs-pane .orli-panel { width: 100%; max-width: 520px; }
@@ -296,7 +301,7 @@
   .ptabs { grid-template-columns: 1fr; gap: 40px; }
   .ptabs-panel-col { order: -1; position: static; }
   .ptabs-text { padding-block-start: 0; }
-  .ptabs-roller { height: 250px; }
+  .ptabs-roller { height: 250px; padding-inline-start: 14px; }
   .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
   .ptab { padding: 22px 0; gap: 12px; }
   .ptab-rule { inset-inline-start: -12px; }
