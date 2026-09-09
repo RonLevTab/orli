@@ -22,8 +22,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260909i" />
-  <link rel="stylesheet" href="panel.css?v=20260909i" />
+  <link rel="stylesheet" href="styles.css?v=20260909j" />
+  <link rel="stylesheet" href="panel.css?v=20260909j" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 
@@ -56,7 +56,7 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="אורלי" />
         </a>
         <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html">ראשי</a>
@@ -85,260 +85,294 @@
       </div>
     </section>
 
-    <!-- THE SCREENS: a stack of cards. Each card is one admin screen — its
-         mock on one side, a title and up to three bullets on the other. On a
-         wide viewport the cards are sticky, so each one slides up and settles
-         over the previous as the visitor scrolls (panel.css), and panel.js
-         marks which is on top so the ones beneath step back. The first time a
-         card reaches the top, one control inside its mock plays once.
+    <!-- THE SCREENS: vertical tabs. One tab per admin screen on the right —
+         its index, title and two bullets (the bullets unfold only on the
+         active tab) — and a panel on the left showing that screen's mock.
+         The panel advances on its own every five seconds and on a click,
+         with the next mock sliding in from the top; the thin rule beside
+         the tabs fills as the clock runs, and hovering the panel pauses it.
+         Ported from a 21st.dev "VerticalTabs" React component into this
+         site's plain JS and CSS (panel.js, panel.css). The first time a
+         mock is shown, one control inside it plays once.
          SOURCE for every label: orli-calendar/admin/src/i18n.ts; the section
          order follows the admin's own rail and tabs (AppShell.vue, router.ts). -->
-    <section class="section panel-stack" id="panel">
-      <div class="wrap">
-        <div class="section-head section-head--tight">
-          <p class="eyebrow">המסכים</p>
-          <h2 class="display">שבעה מסכים, <span class="ital">יומן אחד.</span></h2>
-          <p class="section-lead">גללו, וכל מסך עולה על הקודם.</p>
+    <section class="section panel-tabs" id="panel">
+      <div class="wrap ptabs" data-ptabs>
+        <div class="ptabs-text">
+          <div class="ptabs-head">
+            <h2 class="display">שבעה מסכים, <span class="ital">יומן אחד.</span></h2>
+            <span class="ptabs-label">(המסכים)</span>
+          </div>
+          <div class="ptabs-list">
+            <button type="button" class="ptab is-active" data-tab="0" aria-current="step">
+              <span class="ptab-rule" aria-hidden="true"><span class="ptab-progress"></span></span>
+              <span class="ptab-idx">01 · זמינות</span>
+              <span class="ptab-body">
+                <span class="ptab-title">מתי אתם באמת פנויים</span>
+                <span class="ptab-desc"><span class="ptab-desc-inner">
+                  <ul class="ptab-list">
+                    <li>שעות עבודה לכל מטפל, וימים חסומים.</li>
+                    <li>המטופל רואה רק שעות שבאמת פנויות.</li>
+                  </ul>
+                </span></span>
+              </span>
+            </button>
+            <button type="button" class="ptab" data-tab="1">
+              <span class="ptab-rule" aria-hidden="true"><span class="ptab-progress"></span></span>
+              <span class="ptab-idx">02 · מטפלים ושירותים</span>
+              <span class="ptab-body">
+                <span class="ptab-title">מי נותן מה</span>
+                <span class="ptab-desc"><span class="ptab-desc-inner">
+                  <ul class="ptab-list">
+                    <li>המטפלים מיובאים מאופטימה בלחיצה.</li>
+                    <li>לכל מטפל הטיפולים שלו ומשך כל טיפול.</li>
+                  </ul>
+                </span></span>
+              </span>
+            </button>
+            <button type="button" class="ptab" data-tab="2">
+              <span class="ptab-rule" aria-hidden="true"><span class="ptab-progress"></span></span>
+              <span class="ptab-idx">03 · עיצוב הזמנת תור</span>
+              <span class="ptab-body">
+                <span class="ptab-title">נראה כמו האתר שלכם</span>
+                <span class="ptab-desc"><span class="ptab-desc-inner">
+                  <ul class="ptab-list">
+                    <li>צבע, לוגו וגופן, עם תצוגה מקדימה.</li>
+                    <li><span class="ptab-new">חדש</span>באיזו פינה באתר יושב הכפתור.</li>
+                  </ul>
+                </span></span>
+              </span>
+            </button>
+            <button type="button" class="ptab" data-tab="3">
+              <span class="ptab-rule" aria-hidden="true"><span class="ptab-progress"></span></span>
+              <span class="ptab-idx">04 · תבניות אימייל</span>
+              <span class="ptab-body">
+                <span class="ptab-title">מה נשלח אחרי הקביעה</span>
+                <span class="ptab-desc"><span class="ptab-desc-inner">
+                  <ul class="ptab-list">
+                    <li>אישור, שינוי, ביטול וקוד אימות למטופל.</li>
+                    <li>יוצא לבד, בנוסח שלכם.</li>
+                  </ul>
+                </span></span>
+              </span>
+            </button>
+            <button type="button" class="ptab" data-tab="4">
+              <span class="ptab-rule" aria-hidden="true"><span class="ptab-progress"></span></span>
+              <span class="ptab-idx">05 · הגדרות מרפאה</span>
+              <span class="ptab-body">
+                <span class="ptab-title">הגבולות של היומן הפתוח</span>
+                <span class="ptab-desc"><span class="ptab-desc-inner">
+                  <ul class="ptab-list">
+                    <li>כמה חודשים קדימה, ומי בצוות מקבל עדכון.</li>
+                    <li><span class="ptab-new">חדש</span>שורת הטמעה אחת, שלא משתנה.</li>
+                  </ul>
+                </span></span>
+              </span>
+            </button>
+            <button type="button" class="ptab" data-tab="5">
+              <span class="ptab-rule" aria-hidden="true"><span class="ptab-progress"></span></span>
+              <span class="ptab-idx">06 · עזרה ותמיכה</span>
+              <span class="ptab-body">
+                <span class="ptab-title">שאלה? מהמסך, לא מהטלפון</span>
+                <span class="ptab-desc"><span class="ptab-desc-inner">
+                  <ul class="ptab-list">
+                    <li><span class="ptab-new">חדש</span>תקלה, שאלה או רעיון, ישר מהמסך.</li>
+                    <li>עם צילומי מסך, ישר לצוות אורלי.</li>
+                  </ul>
+                </span></span>
+              </span>
+            </button>
+            <button type="button" class="ptab ptab--soon" data-tab="6">
+              <span class="ptab-rule" aria-hidden="true"><span class="ptab-progress"></span></span>
+              <span class="ptab-idx">07 · בקרוב</span>
+              <span class="ptab-body">
+                <span class="ptab-title">אוטומציות ומעקב</span>
+                <span class="ptab-desc"><span class="ptab-desc-inner">
+                  <ul class="ptab-list">
+                    <li>עוזר AI שעונה למטופלים וקובע פגישה.</li>
+                    <li>תזכורות שיודעות מתי הביקור הבא.</li>
+                  </ul>
+                </span></span>
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="wrap">
-        <div class="pstack" data-pstack>
 
+        <div class="ptabs-panel-col">
+          <div class="ptabs-panel" data-ptabs-panel>
           <!-- 01 — availability. SOURCE: WorkingScheduleEditor.vue (weekly
                hours), AbsenceEditor.vue (blocked day), HolidaysPanel.vue
                (closures + Hebcal sync), SaveBar + SavedMark ("נשמר"). -->
-          <article class="pcard" data-card="0" style="--i: 0">
-            <div class="pcard-text">
-              <span class="pcard-idx">01 · זמינות</span>
-              <h3 class="pcard-title">מתי אתם באמת פנויים</h3>
-              <ul class="pcard-list">
-                <li>שעות עבודה לכל מטפל, וימים חסומים.</li>
-                <li>המטופל רואה רק שעות שבאמת פנויות.</li>
-              </ul>
-            </div>
-            <div class="pcard-mock">
-              <div class="orli-panel" dir="rtl" role="img" aria-label="מסך הזמינות של מטפל: שעות שבועיות, יום חסום, ואישור שמירה">
-                <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="" /><span class="opn-crumb">מטפלים ושירותים · ד"ר כהן</span></div>
-                <div class="opn-pane">
-                  <div class="opn-tabs"><span class="opn-tab">פרטים</span><span class="opn-tab is-active">זמינות</span><span class="opn-tab">שירותים וטיפולים</span></div>
-                  <p class="opn-pane-title">שעות שבועיות</p>
-                  <div class="opn-row"><span>ראשון–שלישי</span><span class="opn-time">09:00 – 16:00</span></div>
-                  <div class="opn-row"><span>רביעי</span><span class="opn-time">09:00 – 13:00</span></div>
-                  <div class="opn-row opn-row--off"><span>שישי–שבת</span><span class="opn-off">סגור</span></div>
-                  <div class="opn-row opn-row--flag opn-fx-flag"><span>היעדרות · 14.10</span><span class="opn-off">יום חסום</span></div>
-                  <div class="opn-savebar opn-fx-saved"><span class="opn-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>נשמר</div>
-                </div>
+          <div class="ptabs-pane is-active" data-pane="0">
+            <div class="orli-panel" dir="rtl" role="img" aria-label="מסך הזמינות של מטפל: שעות שבועיות, יום חסום, ואישור שמירה">
+              <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="" /><span class="opn-crumb">מטפלים ושירותים · ד"ר כהן</span></div>
+              <div class="opn-pane">
+                <div class="opn-tabs"><span class="opn-tab">פרטים</span><span class="opn-tab is-active">זמינות</span><span class="opn-tab">שירותים וטיפולים</span></div>
+                <p class="opn-pane-title">שעות שבועיות</p>
+                <div class="opn-row"><span>ראשון–שלישי</span><span class="opn-time">09:00 – 16:00</span></div>
+                <div class="opn-row"><span>רביעי</span><span class="opn-time">09:00 – 13:00</span></div>
+                <div class="opn-row opn-row--off"><span>שישי–שבת</span><span class="opn-off">סגור</span></div>
+                <div class="opn-row opn-row--flag opn-fx-flag"><span>היעדרות · 14.10</span><span class="opn-off">יום חסום</span></div>
+                <div class="opn-savebar opn-fx-saved"><span class="opn-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>נשמר</div>
               </div>
             </div>
-          </article>
+          </div>
 
           <!-- 02 — practitioners and services. SOURCE: PractitionersWorkspace
                .vue (rail + tabs), DoctorServicesTab.vue, OptimaImportDialog
                .vue, the practitionerReadyToast milestone. No prices shown. -->
-          <article class="pcard" data-card="1" style="--i: 1">
-            <div class="pcard-text">
-              <span class="pcard-idx">02 · מטפלים ושירותים</span>
-              <h3 class="pcard-title">מי נותן מה</h3>
-              <ul class="pcard-list">
-                <li>המטפלים מיובאים מאופטימה בלחיצה.</li>
-                <li>לכל מטפל הטיפולים שלו ומשך כל טיפול.</li>
-              </ul>
-            </div>
-            <div class="pcard-mock">
-              <div class="orli-panel" dir="rtl" role="img" aria-label="מסך השירותים של מטפל: רשימת טיפולים ומשך כל טיפול, וההודעה שאפשר לקבוע איתו">
-                <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="" /><span class="opn-crumb">מטפלים ושירותים · ד"ר כהן</span></div>
-                <div class="opn-pane">
-                  <div class="opn-pane-head">
-                    <div class="opn-tabs"><span class="opn-tab">פרטים</span><span class="opn-tab">זמינות</span><span class="opn-tab is-active">שירותים וטיפולים</span></div>
-                    <span class="opn-ghost-btn">ייבוא מאופטימה</span>
-                  </div>
-                  <div class="opn-row"><span>ייעוץ ראשוני</span><span class="opn-time">30 דק׳</span></div>
-                  <div class="opn-row"><span>ניקוי אבנית</span><span class="opn-time">45 דק׳</span></div>
-                  <div class="opn-row opn-row--off"><span>הלבנה</span><span class="opn-off">לא מוצע</span></div>
-                  <div class="opn-toast opn-fx-toast">
-                    <span class="opn-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
-                    מעכשיו אפשר לקבוע פגישות עם ד"ר כהן.
-                  </div>
+          <div class="ptabs-pane" data-pane="1">
+            <div class="orli-panel" dir="rtl" role="img" aria-label="מסך השירותים של מטפל: רשימת טיפולים ומשך כל טיפול, וההודעה שאפשר לקבוע איתו">
+              <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="" /><span class="opn-crumb">מטפלים ושירותים · ד"ר כהן</span></div>
+              <div class="opn-pane">
+                <div class="opn-pane-head">
+                  <div class="opn-tabs"><span class="opn-tab">פרטים</span><span class="opn-tab">זמינות</span><span class="opn-tab is-active">שירותים וטיפולים</span></div>
+                  <span class="opn-ghost-btn">ייבוא מאופטימה</span>
+                </div>
+                <div class="opn-row"><span>ייעוץ ראשוני</span><span class="opn-time">30 דק׳</span></div>
+                <div class="opn-row"><span>ניקוי אבנית</span><span class="opn-time">45 דק׳</span></div>
+                <div class="opn-row opn-row--off"><span>הלבנה</span><span class="opn-off">לא מוצע</span></div>
+                <div class="opn-toast opn-fx-toast">
+                  <span class="opn-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>
+                  מעכשיו אפשר לקבוע פגישות עם ד"ר כהן.
                 </div>
               </div>
             </div>
-          </article>
+          </div>
 
           <!-- 03 — appearance. SOURCE: WidgetThemeSection.vue — presets
                (branding.ts THEME_PRESETS), logo, font, and the placement group
                with its mock-page preview (ADR-0011). -->
-          <article class="pcard" data-card="2" style="--i: 2">
-            <div class="pcard-text">
-              <span class="pcard-idx">03 · עיצוב הזמנת תור</span>
-              <h3 class="pcard-title">נראה כמו האתר שלכם</h3>
-              <ul class="pcard-list">
-                <li>צבע, לוגו וגופן, עם תצוגה מקדימה.</li>
-                <li><span class="pcard-new">חדש</span>באיזו פינה באתר יושב הכפתור.</li>
-              </ul>
-            </div>
-            <div class="pcard-mock">
-              <div class="orli-panel" dir="rtl" role="img" aria-label="מסך עיצוב הזמנת תור: ערכות צבע, לוגו וגופן, ומיקום הכפתור באתר עם תצוגה מקדימה">
-                <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="" /><span class="opn-crumb">עיצוב הזמנת תור</span></div>
-                <div class="opn-pane">
-                  <div class="opn-cols">
-                    <div>
-                      <p class="opn-field-label">צבע ראשי</p>
-                      <div class="opn-swatches">
-                        <span class="opn-swatch is-active" style="background:#0f8a86" title="ברירת מחדל"></span>
-                        <span class="opn-swatch" style="background:#c2612f" title="חמים"></span>
-                        <span class="opn-swatch" style="background:#2f6b45" title="ירוק"></span>
-                        <span class="opn-swatch" style="background:#b23a67" title="ורוד"></span>
-                        <span class="opn-swatch" style="background:#a3730a" title="ענבר"></span>
-                      </div>
-                      <div class="opn-row opn-row--tight"><span>לוגו</span><span class="opn-on">הועלה</span></div>
-                      <div class="opn-row opn-row--tight"><span>גופן</span><span class="opn-time">Heebo</span></div>
+          <div class="ptabs-pane" data-pane="2">
+            <div class="orli-panel" dir="rtl" role="img" aria-label="מסך עיצוב הזמנת תור: ערכות צבע, לוגו וגופן, ומיקום הכפתור באתר עם תצוגה מקדימה">
+              <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="" /><span class="opn-crumb">עיצוב הזמנת תור</span></div>
+              <div class="opn-pane">
+                <div class="opn-cols">
+                  <div>
+                    <p class="opn-field-label">צבע ראשי</p>
+                    <div class="opn-swatches">
+                      <span class="opn-swatch is-active" style="background:#0f8a86" title="ברירת מחדל"></span>
+                      <span class="opn-swatch" style="background:#c2612f" title="חמים"></span>
+                      <span class="opn-swatch" style="background:#2f6b45" title="ירוק"></span>
+                      <span class="opn-swatch" style="background:#b23a67" title="ורוד"></span>
+                      <span class="opn-swatch" style="background:#a3730a" title="ענבר"></span>
                     </div>
-                    <div>
-                      <p class="opn-field-label">מיקום הכפתור באתר <span class="opn-new">חדש</span></p>
-                      <div class="opn-place">
-                        <div class="opn-place-row"><span>פינה</span><span class="opn-seg"><i class="opn-fx-corner-from">ימין למטה</i><i class="opn-fx-corner-to">שמאל למטה</i></span></div>
-                        <div class="opn-place-row"><span>גובה</span><span class="opn-seg"><i>רגיל</i><i class="is-on">מעט גבוה יותר</i><i>גבוה</i></span></div>
-                      </div>
-                      <div class="opn-site" aria-hidden="true">
-                        <span class="opn-site-line"></span><span class="opn-site-line opn-site-line--short"></span>
-                        <span class="opn-site-a11y"></span>
-                        <span class="opn-site-btn opn-fx-launcher">קביעת פגישה</span>
-                      </div>
+                    <div class="opn-row opn-row--tight"><span>לוגו</span><span class="opn-on">הועלה</span></div>
+                    <div class="opn-row opn-row--tight"><span>גופן</span><span class="opn-time">Heebo</span></div>
+                  </div>
+                  <div>
+                    <p class="opn-field-label">מיקום הכפתור באתר <span class="opn-new">חדש</span></p>
+                    <div class="opn-place">
+                      <div class="opn-place-row"><span>פינה</span><span class="opn-seg"><i class="opn-fx-corner-from">ימין למטה</i><i class="opn-fx-corner-to">שמאל למטה</i></span></div>
+                      <div class="opn-place-row"><span>גובה</span><span class="opn-seg"><i>רגיל</i><i class="is-on">מעט גבוה יותר</i><i>גבוה</i></span></div>
+                    </div>
+                    <div class="opn-site" aria-hidden="true">
+                      <span class="opn-site-line"></span><span class="opn-site-line opn-site-line--short"></span>
+                      <span class="opn-site-a11y"></span>
+                      <span class="opn-site-btn opn-fx-launcher">קביעת פגישה</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </article>
+          </div>
 
           <!-- 04 — email templates. SOURCE: EmailTemplateWorkspace.vue (rail
                grouped מיילים למטופל / מיילים לצוות), EmailSection.vue's
                עריכה / תצוגה מקדימה toggle. -->
-          <article class="pcard" data-card="3" style="--i: 3">
-            <div class="pcard-text">
-              <span class="pcard-idx">04 · תבניות אימייל</span>
-              <h3 class="pcard-title">מה נשלח אחרי הקביעה</h3>
-              <ul class="pcard-list">
-                <li>אישור, שינוי, ביטול וקוד אימות למטופל.</li>
-                <li>יוצא לבד, בנוסח שלכם.</li>
-              </ul>
-            </div>
-            <div class="pcard-mock">
-              <div class="orli-panel" dir="rtl" role="img" aria-label="מסך תבניות האימייל: רשימת המיילים למטופל ולצוות, ותצוגה מקדימה של מייל האישור">
-                <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="" /><span class="opn-crumb">תבניות אימייל</span></div>
-                <div class="opn-pane">
-                  <div class="opn-cols opn-cols--rail">
-                    <div class="opn-rail">
-                      <p class="opn-field-label">מיילים למטופל</p>
-                      <span class="opn-rail-item is-active">מייל אישור הזמנה</span>
-                      <span class="opn-rail-item">מייל שינוי מועד</span>
-                      <span class="opn-rail-item">מייל ביטול</span>
-                      <span class="opn-rail-item">מייל קוד אימות</span>
-                      <p class="opn-field-label">מיילים לצוות</p>
-                      <span class="opn-rail-item">התראה על פגישה חדשה</span>
-                    </div>
-                    <div>
-                      <div class="opn-tabs opn-tabs--sm"><span class="opn-tab opn-fx-tab-from">עריכה</span><span class="opn-tab opn-fx-tab-to">תצוגה מקדימה</span></div>
-                      <div class="opn-mail opn-fx-mail">
-                        <span class="opn-mail-subject">הפגישה שלך במרפאת השיניים נקבעה</span>
-                        <span class="opn-mail-body">שלום ישראל, הפגישה שלך עם ד"ר כהן נקבעה ליום חמישי, 10:30. לשינוי או ביטול, לחצו כאן.</span>
-                        <span class="opn-mail-btn">ניהול הפגישה</span>
-                      </div>
+          <div class="ptabs-pane" data-pane="3">
+            <div class="orli-panel" dir="rtl" role="img" aria-label="מסך תבניות האימייל: רשימת המיילים למטופל ולצוות, ותצוגה מקדימה של מייל האישור">
+              <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="" /><span class="opn-crumb">תבניות אימייל</span></div>
+              <div class="opn-pane">
+                <div class="opn-cols opn-cols--rail">
+                  <div class="opn-rail">
+                    <p class="opn-field-label">מיילים למטופל</p>
+                    <span class="opn-rail-item is-active">מייל אישור הזמנה</span>
+                    <span class="opn-rail-item">מייל שינוי מועד</span>
+                    <span class="opn-rail-item">מייל ביטול</span>
+                    <span class="opn-rail-item">מייל קוד אימות</span>
+                    <p class="opn-field-label">מיילים לצוות</p>
+                    <span class="opn-rail-item">התראה על פגישה חדשה</span>
+                  </div>
+                  <div>
+                    <div class="opn-tabs opn-tabs--sm"><span class="opn-tab opn-fx-tab-from">עריכה</span><span class="opn-tab opn-fx-tab-to">תצוגה מקדימה</span></div>
+                    <div class="opn-mail opn-fx-mail">
+                      <span class="opn-mail-subject">הפגישה שלך במרפאת השיניים נקבעה</span>
+                      <span class="opn-mail-body">שלום ישראל, הפגישה שלך עם ד"ר כהן נקבעה ליום חמישי, 10:30. לשינוי או ביטול, לחצו כאן.</span>
+                      <span class="opn-mail-btn">ניהול הפגישה</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </article>
+          </div>
 
           <!-- 05 — clinic settings (avatar menu > הגדרות מרפאה). SOURCE:
                SettingsView.vue's tabs (i18n settingsTab*),
                BookingSettingsPanel (horizon), GeneralSettingsPanel (team
                emails), UsersSettingsPanel (roles), EmbedSnippetBuilder
                (ADR-0011: one line, never changes). -->
-          <article class="pcard" data-card="4" style="--i: 4">
-            <div class="pcard-text">
-              <span class="pcard-idx">05 · הגדרות מרפאה</span>
-              <h3 class="pcard-title">הגבולות של היומן הפתוח</h3>
-              <ul class="pcard-list">
-                <li>כמה חודשים קדימה, ומי בצוות מקבל עדכון.</li>
-                <li><span class="pcard-new">חדש</span>שורת הטמעה אחת, שלא משתנה.</li>
-              </ul>
-            </div>
-            <div class="pcard-mock">
-              <div class="orli-panel" dir="rtl" role="img" aria-label="מסך הגדרות המרפאה: טווח קביעת תורים, כתובות לעדכונים, ושורת ההטמעה באתר">
-                <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="" /><span class="opn-crumb">חשבון · הגדרות מרפאה</span></div>
-                <div class="opn-pane">
-                  <div class="opn-tabs"><span class="opn-tab">פרטי המרפאה</span><span class="opn-tab">סגירות וחגים</span><span class="opn-tab is-active">הזמנות</span><span class="opn-tab">הגדרות מתקדמות</span><span class="opn-tab">משתמשים</span></div>
-                  <div class="opn-row"><span>טווח קביעת תורים (חודשים)</span><span class="opn-time">3</span></div>
-                  <div class="opn-row"><span>כתובות אימייל לעדכונים</span><span class="opn-time" dir="ltr">office@clinic.co.il</span></div>
-                  <p class="opn-field-label opn-field-label--gap">הטמעה באתר</p>
-                  <div class="opn-code opn-fx-code" dir="ltr">&lt;script src="…/embed.js" data-clinic-id="your-clinic"&gt;&lt;/script&gt;</div>
-                  <p class="opn-note">שורה אחת, פעם אחת. המראה והמיקום מגיעים מההגדרות, לא מהקוד.</p>
-                </div>
+          <div class="ptabs-pane" data-pane="4">
+            <div class="orli-panel" dir="rtl" role="img" aria-label="מסך הגדרות המרפאה: טווח קביעת תורים, כתובות לעדכונים, ושורת ההטמעה באתר">
+              <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="" /><span class="opn-crumb">חשבון · הגדרות מרפאה</span></div>
+              <div class="opn-pane">
+                <div class="opn-tabs"><span class="opn-tab">פרטי המרפאה</span><span class="opn-tab">סגירות וחגים</span><span class="opn-tab is-active">הזמנות</span><span class="opn-tab">הגדרות מתקדמות</span><span class="opn-tab">משתמשים</span></div>
+                <div class="opn-row"><span>טווח קביעת תורים (חודשים)</span><span class="opn-time">3</span></div>
+                <div class="opn-row"><span>כתובות אימייל לעדכונים</span><span class="opn-time" dir="ltr">office@clinic.co.il</span></div>
+                <p class="opn-field-label opn-field-label--gap">הטמעה באתר</p>
+                <div class="opn-code opn-fx-code" dir="ltr">&lt;script src="…/embed.js" data-clinic-id="your-clinic"&gt;&lt;/script&gt;</div>
+                <p class="opn-note">שורה אחת, פעם אחת. המראה והמיקום מגיעים מההגדרות, לא מהקוד.</p>
               </div>
             </div>
-          </article>
+          </div>
 
           <!-- 06 — help and support (avatar menu > עזרה ותמיכה). SOURCE:
                SupportRequestForm.vue (type, description, screenshots),
                SupportHistory.vue; ADR-0010. -->
-          <article class="pcard" data-card="5" style="--i: 5">
-            <div class="pcard-text">
-              <span class="pcard-idx">06 · עזרה ותמיכה</span>
-              <h3 class="pcard-title">שאלה? מהמסך, לא מהטלפון</h3>
-              <ul class="pcard-list">
-                <li><span class="pcard-new">חדש</span>תקלה, שאלה או רעיון, ישר מהמסך.</li>
-                <li>עם צילומי מסך, ישר לצוות אורלי.</li>
-              </ul>
-            </div>
-            <div class="pcard-mock">
-              <div class="orli-panel" dir="rtl" role="img" aria-label="מסך עזרה ותמיכה: בחירת סוג פנייה, תיאור, צירוף תמונות ושליחה">
-                <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="" /><span class="opn-crumb">חשבון · עזרה ותמיכה</span></div>
-                <div class="opn-pane">
-                  <p class="opn-field-label">סוג הפנייה</p>
-                  <div class="opn-choices">
-                    <span class="opn-choice opn-fx-choice">תקלה<small>משהו לא עובד כמו שצריך</small></span>
-                    <span class="opn-choice">שאלה<small>איך עושים משהו במערכת</small></span>
-                    <span class="opn-choice">רעיון<small>משהו שהיה עוזר לכם</small></span>
-                  </div>
-                  <div class="opn-textarea">תיאור</div>
-                  <div class="opn-attach"><span class="opn-attach-thumb"></span><span>צירוף תמונה · עד 5 תמונות</span></div>
-                  <div class="opn-support-foot">
-                    <span class="opn-preview-btn">שליחת הפנייה</span>
-                    <span class="opn-note">פניות קודמות · 2</span>
-                  </div>
+          <div class="ptabs-pane" data-pane="5">
+            <div class="orli-panel" dir="rtl" role="img" aria-label="מסך עזרה ותמיכה: בחירת סוג פנייה, תיאור, צירוף תמונות ושליחה">
+              <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="" /><span class="opn-crumb">חשבון · עזרה ותמיכה</span></div>
+              <div class="opn-pane">
+                <p class="opn-field-label">סוג הפנייה</p>
+                <div class="opn-choices">
+                  <span class="opn-choice opn-fx-choice">תקלה<small>משהו לא עובד כמו שצריך</small></span>
+                  <span class="opn-choice">שאלה<small>איך עושים משהו במערכת</small></span>
+                  <span class="opn-choice">רעיון<small>משהו שהיה עוזר לכם</small></span>
+                </div>
+                <div class="opn-textarea">תיאור</div>
+                <div class="opn-attach"><span class="opn-attach-thumb"></span><span>צירוף תמונה · עד 5 תמונות</span></div>
+                <div class="opn-support-foot">
+                  <span class="opn-preview-btn">שליחת הפנייה</span>
+                  <span class="opn-note">פניות קודמות · 2</span>
                 </div>
               </div>
             </div>
-          </article>
+          </div>
 
           <!-- 07 — automations, not shipped. SOURCE: AutomationsView.vue
                (automationsComingSoonTitle / Copy); the real admin marks the
                rail item בקרוב too (AppShell.vue nav-coming-soon). -->
-          <article class="pcard pcard--soon" data-card="6" style="--i: 6">
-            <div class="pcard-text">
-              <span class="pcard-idx">07 · בקרוב</span>
-              <h3 class="pcard-title">אוטומציות ומעקב</h3>
-              <ul class="pcard-list">
-                <li>עוזר AI שעונה למטופלים וקובע פגישה.</li>
-                <li>תזכורות שיודעות מתי הביקור הבא.</li>
-              </ul>
-            </div>
-            <div class="pcard-mock">
-              <div class="orli-panel" dir="rtl" role="img" aria-label="מסך האוטומציות, מסומן בקרוב">
-                <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="" /><span class="opn-crumb">אוטומציות ומעקב</span></div>
-                <div class="opn-pane">
-                  <div class="opn-soon-card">
-                    <span class="opn-soon-badge opn-soon-badge--lg opn-fx-badge">בקרוב</span>
-                    <p class="opn-pane-title">אוטומציות חכמות בדרך לאורלי</p>
-                    <p class="opn-note">תזכורות חכמות לפי קצב הטיפול, וצ׳אטבוט שקובע פגישה בשיחה. בפיתוח.</p>
-                  </div>
+          <div class="ptabs-pane" data-pane="6">
+            <div class="orli-panel" dir="rtl" role="img" aria-label="מסך האוטומציות, מסומן בקרוב">
+              <div class="opn-topbar"><img class="opn-brand" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="" /><span class="opn-crumb">אוטומציות ומעקב</span></div>
+              <div class="opn-pane">
+                <div class="opn-soon-card">
+                  <span class="opn-soon-badge opn-soon-badge--lg opn-fx-badge">בקרוב</span>
+                  <p class="opn-pane-title">אוטומציות חכמות בדרך לאורלי</p>
+                  <p class="opn-note">תזכורות חכמות לפי קצב הטיפול, וצ׳אטבוט שקובע פגישה בשיחה. בפיתוח.</p>
                 </div>
               </div>
             </div>
-          </article>
-
+          </div>
+            <div class="ptabs-nav">
+              <button type="button" class="ptabs-arrow" data-ptabs-prev aria-label="הקודם">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </button>
+              <button type="button" class="ptabs-arrow" data-ptabs-next aria-label="הבא">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -370,7 +404,7 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260909i" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260909j" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
@@ -404,7 +438,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260909i"></script>
-  <script src="panel.js?v=20260909i"></script>
+  <script src="script.js?v=20260909j"></script>
+  <script src="panel.js?v=20260909j"></script>
 </body>
 </html>

@@ -1,93 +1,123 @@
 /* ============================================================
-   panel.html — the stack of admin screens, and the mock inside each.
+   panel.html — the admin screens as vertical tabs, and the mock inside
+   each.
 
    SOURCE for the mock: orli-calendar/admin/src — AppShell.vue (topbar),
    style.css (surfaces, radii, .panel/.btn/.input conventions),
    i18n.ts (every Hebrew label), router.ts (section order).
+
+   The tabs and panel are a port of a 21st.dev "VerticalTabs" React
+   component (motion/react, Tailwind) into this site's plain CSS and JS:
+   a list of tab buttons whose active one unfolds its description and
+   carries a filling progress rule, beside a panel where the active
+   screen slides in vertically, auto-advancing every five seconds.
 
    The admin already shares this site's palette exactly — see
    orli-calendar/DESIGN.md: teal #0f8a86, cream #f7f5ef, ink #1b2523,
    Heebo — so everything below is built from styles.css's own tokens
    rather than a second set of values.
 
-   Scoped under .pcard / .orli-panel so nothing leaks into the marketing
+   Scoped under .ptabs / .orli-panel so nothing leaks into the marketing
    site's styles, the same way widget.css is scoped under .orli-live.
-   Logical properties only: the page is RTL and every card starts at
+   Logical properties only: the page is RTL and the tab list starts at
    the right.
    ============================================================ */
 
-/* ---------- the stack ---------- */
-.panel-stack { padding-block-end: 40px; }
-.pstack {
-  /* A column, not the whole page: the card is a sheet the visitor reads,
-     not a section. */
-  max-width: 860px; margin-inline: auto;
-  display: grid; gap: 28px;
-  /* Runway after the last card, so it has time on top before the page
-     moves on to the closing section. */
-  padding-block-end: 12vh;
+/* ---------- the tabs and the panel ---------- */
+.panel-tabs { padding-block: 24px 56px; }
+.ptabs {
+  display: grid; grid-template-columns: 5fr 7fr; gap: 64px; align-items: start;
 }
+/* The text column: first in the DOM, so it starts at the right (inline
+   start) on this RTL page — the mirror of the component's left column. */
+.ptabs-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-block-start: 16px; }
+.ptabs-head { margin-bottom: 40px; }
+.ptabs-head .display { margin: 0; text-wrap: balance; }
+.ptabs-label { display: block; margin-top: 4px; margin-inline-start: 2px; font-size: .68rem; font-weight: 500; letter-spacing: .18em; color: var(--ink-soft); }
 
-.pcard {
-  display: grid; grid-template-columns: .9fr 1.1fr; gap: 32px; align-items: center; align-content: center;
-  /* A compact sheet, the same size for every card so each covers the last
-     exactly: as tall as the tallest content needs, not the screen, so no
-     blank field surrounds the text and the mock. */
-  --deck: calc(var(--nav-h) + 22px);
-  height: 420px;
-  padding: 28px 36px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  /* One shadow for the whole stack, not one per card: the first card stays
-     pinned in the same spot for the entire section, so its shadow outlines
-     the stack throughout, and the cards sliding in over it carry none —
-     seven shadows on top of each other read as a smear. */
-  box-shadow: none;
-  position: sticky; top: var(--deck);
+.ptabs-list { display: flex; flex-direction: column; }
+.ptab {
+  position: relative; display: flex; align-items: flex-start; gap: 16px;
+  width: 100%; padding: 26px 0; margin: 0;
+  background: none; border: 0; border-top: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+  font: inherit; text-align: start; cursor: pointer;
+  color: color-mix(in srgb, var(--ink-soft) 62%, transparent);
+  transition: color .5s ease;
 }
-.pcard:first-child { box-shadow: var(--shadow); }
-/* A card is invisible on its way up and fades in, rising the last 28px,
-   the moment it reaches its pinned spot over the previous one. Gated on
-   script.js having run, so a page without scripts shows every card. */
-/* The sheet itself appears at once, so it covers the previous card in full
-   from the first frame; only its contents fade in and rise. A translucent
-   sheet let the old card's contents ghost through mid-fade. The rise is on
-   the contents, not the card, since a transform on the sticky card would
-   shift the box panel.js measures to tell it has reached its spot. */
-html[data-reveal-ready] .pcard { opacity: 0; }
-html[data-reveal-ready] .pcard > * { opacity: 0; transform: translateY(28px); transition: opacity .5s ease, transform .55s cubic-bezier(.2, .7, .2, 1); }
-html[data-reveal-ready] .pcard:first-child,
-html[data-reveal-ready] .pcard.is-active,
-html[data-reveal-ready] .pcard.is-behind { opacity: 1; }
-html[data-reveal-ready] .pcard:first-child > *,
-html[data-reveal-ready] .pcard.is-active > *,
-html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
-/* A covered card stays exactly where it is: the card on top hides it in
-   full, so it needs no shrinking or dimming of its own. */
-.pcard.is-behind { transform: none; opacity: 1; filter: none; }
-
-.pcard-text { text-align: start; padding-block-start: 4px; }
-.pcard-idx { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .02em; color: var(--teal); margin-bottom: 12px; }
-.pcard-title { font-family: var(--serif); font-weight: 500; font-size: clamp(1.7rem, 3vw, 2.5rem); line-height: 1.15; margin: 0 0 18px; letter-spacing: -.01em; }
-.pcard-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; font-size: 1.12rem; }
-.pcard-list li {
-  position: relative; padding-inline-start: 22px;
-  color: var(--ink-soft); font-size: 1.06rem; line-height: 1.5;
+.ptab:first-child { border-top: 0; }
+.ptab:hover, .ptab.is-active { color: var(--ink); }
+.ptab:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 4px; border-radius: 6px; }
+/* The thin rule beside the list — on the outer edge, to the right of the
+   buttons — and the fill that grows down it as the autoplay clock runs.
+   The height transition is the clock: panel.js restarts it on every
+   activation and drops it to zero when the panel is paused. */
+.ptab-rule { position: absolute; inset-block: 0; inset-inline-start: -16px; width: 2px; background: color-mix(in srgb, var(--line) 80%, transparent); }
+.ptab-progress { position: absolute; top: 0; inset-inline: 0; height: 0; background: var(--ink); transform-origin: top; }
+.ptab.is-active .ptab-progress { transition: height var(--ptabs-clock, 5s) linear; }
+.ptab.is-active.is-running .ptab-progress { height: 100%; }
+.ptab.is-paused .ptab-progress { height: 0; transition: none; }
+.ptab-idx { flex: none; margin-top: 6px; font-size: .62rem; font-weight: 500; letter-spacing: .02em; font-variant-numeric: tabular-nums; opacity: .5; white-space: nowrap; }
+.ptab-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+.ptab-title {
+  font-family: var(--serif); font-weight: 500; letter-spacing: -.01em; line-height: 1.15;
+  font-size: clamp(1.5rem, 2.6vw, 2.15rem); transition: color .5s ease;
 }
-.pcard-list li::before {
+/* The description unfolds only on the active tab: a 0fr -> 1fr grid row,
+   the same trick the FAQ uses, so "height: auto" can animate. */
+.ptab-desc { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .3s cubic-bezier(.23, 1, .32, 1), opacity .3s cubic-bezier(.23, 1, .32, 1); }
+.ptab-desc-inner { min-height: 0; overflow: hidden; }
+.ptab.is-active .ptab-desc { grid-template-rows: 1fr; opacity: 1; }
+.ptab-list { list-style: none; margin: 0; padding: 0 0 8px; display: grid; gap: 8px; max-width: 26em; }
+.ptab-list li { position: relative; padding-inline-start: 20px; color: var(--ink-soft); font-size: 1rem; line-height: 1.55; }
+.ptab-list li::before {
   content: ""; position: absolute; inset-inline-start: 2px; top: .62em;
-  width: 8px; height: 8px; border-radius: 50%; background: var(--teal);
+  width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
 }
-.pcard-new, .opn-new {
+.ptab-new, .opn-new {
   display: inline-block; vertical-align: 2px; margin-inline-end: 8px; padding: 1px 8px; border-radius: 999px;
   background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep);
   font-size: .66rem; font-weight: 700; letter-spacing: .04em;
 }
 .opn-new { vertical-align: 1px; margin-inline-end: 0; margin-inline-start: 6px; }
+.ptab--soon .ptab-title::after { content: "בקרוב"; display: inline-block; vertical-align: middle; margin-inline-start: 10px; padding: 1px 8px; border-radius: 999px; border: 1px dashed #c4bda8; background: var(--cream-2); color: var(--ink-soft); font: 700 .6rem/1.6 var(--sans, inherit); letter-spacing: .04em; }
 
-.pcard--soon { border-style: dashed; border-color: #c4bda8; }
+/* The panel: a rounded, bordered box with a fixed aspect, the active
+   screen's mock centred in it. Panes are stacked on top of each other;
+   only the active one is visible, and a change slides the new one in
+   from one edge while the old leaves by the other (panel.js sets the
+   direction). Clicking the panel advances it. */
+/* The component aligns its picture to the column's end; with seven tabs the
+   column is taller than a screen, which put the panel below the fold. It is
+   pinned under the nav instead, so it stays beside whichever tab is active. */
+.ptabs-panel-col { display: flex; flex-direction: column; min-width: 0; position: sticky; top: calc(var(--nav-h) + 22px); align-self: start; }
+.ptabs-panel {
+  position: relative; aspect-ratio: 16 / 11; overflow: hidden; cursor: pointer;
+  border-radius: 40px; border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  background: color-mix(in srgb, var(--cream-2) 60%, var(--surface));
+}
+.ptabs-pane {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 26px;
+  opacity: 0; visibility: hidden; transform: translateY(var(--pane-from, -100%));
+  transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .4s ease, visibility 0s linear .5s;
+}
+.ptabs-pane.is-active { opacity: 1; visibility: visible; transform: none; z-index: 1; transition-delay: 0s; }
+.ptabs-pane.is-leaving { opacity: 0; visibility: visible; transform: translateY(var(--pane-to, 100%)); z-index: 0; transition-delay: 0s; }
+.ptabs-pane .orli-panel { width: 100%; max-width: 520px; }
+/* The bottom shade the component lays over its picture, kept faint. */
+.ptabs-panel::after { content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 33%; background: linear-gradient(to top, rgba(0, 0, 0, .06), transparent); pointer-events: none; z-index: 2; }
+.ptabs-nav { position: absolute; bottom: 32px; inset-inline-start: 32px; display: flex; gap: 12px; z-index: 3; }
+.ptabs-arrow {
+  display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  background: color-mix(in srgb, var(--surface) 80%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  color: var(--ink); cursor: pointer; transition: background .2s ease, transform .15s ease;
+}
+.ptabs-arrow:hover { background: var(--surface); }
+.ptabs-arrow:active { transform: scale(.9); }
+.ptabs-arrow:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 2px; }
+.ptabs-arrow svg { width: 20px; height: 20px; }
 
 /* ---------- the mock ---------- */
-.pcard-mock { min-width: 0; }
 .orli-panel {
   display: flex; flex-direction: column;
   background: var(--cream); color: var(--ink);
@@ -204,8 +234,8 @@ html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
 .opn-soon-card .opn-pane-title, .opn-soon-card .opn-note { margin: 0; }
 
 /* ---------- one control per screen plays once ----------
-   Keyed on .is-played, which panel.js adds the first time a card comes
-   up and never removes; `both` fill keeps the settled state after. Every
+   Keyed on .is-played, which panel.js adds the first time a pane is
+   shown and never removes; `both` fill keeps the settled state after. Every
    run is under 600ms after its lead-in. */
 @keyframes opn-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes opn-draw { to { stroke-dashoffset: 0; } }
@@ -219,13 +249,13 @@ html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
 /* 01: the blocked day lands, then the save bar's check draws itself. */
 .opn-fx-flag, .opn-fx-saved { opacity: 0; }
 .opn-fx-saved svg path { stroke-dasharray: 24; stroke-dashoffset: 24; }
-.pcard.is-played .opn-fx-flag { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .15s both; }
-.pcard.is-played .opn-fx-saved { animation: opn-rise .4s ease .55s both; }
-.pcard.is-played .opn-fx-saved svg path { animation: opn-draw .35s cubic-bezier(.2, .8, .2, 1) .75s both; }
+.ptabs-pane.is-played .opn-fx-flag { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .15s both; }
+.ptabs-pane.is-played .opn-fx-saved { animation: opn-rise .4s ease .55s both; }
+.ptabs-pane.is-played .opn-fx-saved svg path { animation: opn-draw .35s cubic-bezier(.2, .8, .2, 1) .75s both; }
 
 /* 02: the practitioner-ready toast rises. */
 .opn-fx-toast { opacity: 0; }
-.pcard.is-played .opn-fx-toast { animation: opn-rise .5s cubic-bezier(.2, .7, .2, 1) .3s both; }
+.ptabs-pane.is-played .opn-fx-toast { animation: opn-rise .5s cubic-bezier(.2, .7, .2, 1) .3s both; }
 
 /* 03: the booking button slides from the right corner — where the
    accessibility button already sits — to the chosen left one, and the
@@ -234,46 +264,44 @@ html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
 .opn-fx-corner-to { transition-delay: .2s; }
 .opn-fx-corner-from { transition-delay: .2s; }
 .opn-fx-launcher { --from: 130px; transform: translateX(var(--from)); }
-.pcard.is-played .opn-fx-launcher { animation: opn-slide .55s cubic-bezier(.2, .8, .2, 1) .3s both; }
-.pcard.is-played .opn-fx-corner-from { background: var(--surface); color: var(--ink-soft); }
-.pcard.is-played .opn-fx-corner-to { background: var(--teal-deep); color: #fff; }
+.ptabs-pane.is-played .opn-fx-launcher { animation: opn-slide .55s cubic-bezier(.2, .8, .2, 1) .3s both; }
+.ptabs-pane.is-played .opn-fx-corner-from { background: var(--surface); color: var(--ink-soft); }
+.ptabs-pane.is-played .opn-fx-corner-to { background: var(--teal-deep); color: #fff; }
 
 /* 04: editing flips to preview, and the rendered email fades in. */
 .opn-fx-tab-from { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; transition-delay: .25s; }
 .opn-fx-tab-to { transition-delay: .25s; }
 .opn-fx-mail { opacity: 0; }
-.pcard.is-played .opn-fx-tab-from { background: var(--surface); border-color: var(--line); color: var(--ink-soft); }
-.pcard.is-played .opn-fx-tab-to { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
-.pcard.is-played .opn-fx-mail { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .4s both; }
+.ptabs-pane.is-played .opn-fx-tab-from { background: var(--surface); border-color: var(--line); color: var(--ink-soft); }
+.ptabs-pane.is-played .opn-fx-tab-to { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+.ptabs-pane.is-played .opn-fx-mail { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .4s both; }
 
 /* 05: the one embed line gets its moment. */
-.pcard.is-played .opn-fx-code { animation: opn-glow .6s ease-out .3s both; }
+.ptabs-pane.is-played .opn-fx-code { animation: opn-glow .6s ease-out .3s both; }
 
 /* 06: the request type gets picked. */
 .opn-fx-choice { transition-delay: .3s; }
-.pcard.is-played .opn-fx-choice { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
+.ptabs-pane.is-played .opn-fx-choice { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
 
 /* 07: the "בקרוב" badge pops in. */
 .opn-fx-badge { opacity: 0; }
-.pcard.is-played .opn-fx-badge { animation: opn-pop .5s cubic-bezier(.34, 1.56, .64, 1) .25s both; }
+.ptabs-pane.is-played .opn-fx-badge { animation: opn-pop .5s cubic-bezier(.34, 1.56, .64, 1) .25s both; }
 
 /* ---------- narrow ---------- */
 @media (max-width: 920px) {
-  .pstack { gap: 20px; padding-block-end: 0; }
-  /* In flow on a phone: no stacking, the mock above its text. */
-  /* In flow on a phone: no stacking, the mock above its text, and the card
-     as tall as its content — a screen-tall card with the mock and two lines
-     floating in it read as empty. */
-  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: 0; height: auto; }
-  .pcard.is-behind { transform: none; opacity: 1; filter: none; }
-  .pcard, .pcard:first-child { box-shadow: var(--shadow-sm); }
-  /* Each card slides up into place as it is reached — the same motion the
-     home page's demo steps make on a phone. Gated on script.js having run
-     (data-reveal-ready), so a page without scripts shows every card. */
-  html[data-reveal-ready] .pcard { opacity: 0; transform: translateY(28px); transition: opacity .5s ease, transform .5s cubic-bezier(.2, .7, .2, 1); }
-  html[data-reveal-ready] .pcard.is-played { opacity: 1; transform: none; }
-  .pcard-mock { order: -1; }
-  .pcard-list li { font-size: 1rem; }
+  .panel-tabs { padding-block: 8px 40px; }
+  /* One column: the panel first, the tabs under it. */
+  .ptabs { grid-template-columns: 1fr; gap: 40px; }
+  .ptabs-panel-col { order: -1; position: static; }
+  .ptabs-text { padding-block-start: 0; }
+  .ptabs-head { margin-bottom: 28px; }
+  .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
+  /* Room under the mock for the arrows, which sit over the panel's corner. */
+  .ptabs-pane { padding: 16px 16px 76px; }
+  .ptabs-nav { bottom: 20px; inset-inline-start: 20px; gap: 8px; }
+  .ptabs-arrow { width: 40px; height: 40px; }
+  .ptab { padding: 22px 0; gap: 12px; }
+  .ptab-rule { inset-inline-start: -12px; }
   .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
   .opn-rail { display: flex; flex-wrap: wrap; gap: 4px; }
   .opn-rail .opn-field-label { width: 100%; margin: 4px 0 2px; }
@@ -281,17 +309,25 @@ html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
   .opn-choice small { display: none; }
   .opn-crumb { display: none; }
 }
+@media (max-width: 640px) {
+  /* 4/5 like the component; the floor keeps the tallest mock clear of the
+     arrows on a narrow phone. */
+  .ptabs-panel { aspect-ratio: 4 / 5; min-height: 560px; }
+}
 @media (min-width: 921px) and (max-width: 1100px) {
-  .pcard { grid-template-columns: 1fr 1fr; gap: 28px; padding: 28px; }
+  .ptabs { gap: 40px; }
+  .ptab-rule { inset-inline-start: -14px; }
 }
 
 /* ---------- reduced motion ----------
-   No stacking motion and no control animation: every mock shows its
-   settled state at once, and the deck simply stacks without stepping back. */
+   No slide, no clock and no control animation: panes swap at once, the
+   visitor drives the panel with the tabs and arrows, and every mock shows
+   its settled state. */
 @media (prefers-reduced-motion: reduce) {
-  html[data-reveal-ready] .pcard { opacity: 1; }
-  html[data-reveal-ready] .pcard > * { opacity: 1; transform: none; transition: none; }
-  html[data-reveal-ready] .pcard { opacity: 1; transform: none; }
+  .ptabs-pane, .ptab, .ptab-title, .ptab-desc, .ptabs-arrow { transition: none; }
+  .ptabs-pane { transform: none; }
+  .ptabs-pane.is-leaving { visibility: hidden; }
+  .ptab-rule { display: none; }
   .opn-tab, .opn-seg i, .opn-choice { transition: none; }
   .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }
   .opn-fx-saved svg path { stroke-dashoffset: 0; }
@@ -299,7 +335,7 @@ html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
   .opn-fx-corner-from, .opn-fx-tab-from { background: var(--surface); color: var(--ink-soft); border-color: var(--line); }
   .opn-fx-corner-to, .opn-fx-tab-to { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
   .opn-fx-choice { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
-  .pcard.is-played .opn-fx-flag, .pcard.is-played .opn-fx-saved, .pcard.is-played .opn-fx-saved svg path,
-  .pcard.is-played .opn-fx-toast, .pcard.is-played .opn-fx-launcher, .pcard.is-played .opn-fx-mail,
-  .pcard.is-played .opn-fx-code, .pcard.is-played .opn-fx-badge { animation: none; }
+  .ptabs-pane.is-played .opn-fx-flag, .ptabs-pane.is-played .opn-fx-saved, .ptabs-pane.is-played .opn-fx-saved svg path,
+  .ptabs-pane.is-played .opn-fx-toast, .ptabs-pane.is-played .opn-fx-launcher, .ptabs-pane.is-played .opn-fx-mail,
+  .ptabs-pane.is-played .opn-fx-code, .ptabs-pane.is-played .opn-fx-badge { animation: none; }
 }

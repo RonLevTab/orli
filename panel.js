@@ -1,100 +1,139 @@
 /* ============================================================
-   Drives the stack of screen cards on panel.html.
+   Drives the vertical tabs on panel.html.
 
-   The cards are sticky (panel.css), so the browser does the stacking on
-   its own. This only answers two questions the stylesheet cannot:
+   A port of a 21st.dev "VerticalTabs" React component (useState +
+   motion/react) into plain JS. One state, the active index, and one
+   direction (+1 forward, -1 back) that decides which edge the next pane
+   slides in from: forward, the new pane enters from the top and the old
+   leaves by the bottom; back, the reverse — the component's `variants`.
 
-   1. Which card is on top right now? Everything before it is marked
-      .is-behind (covered in full by the card on top). Measured from the
-      cards' own boxes on each scroll frame — a card is "reached" once it
-      has climbed to its sticky offset — because an observer only reports
-      crossings, and a scroll that crosses nothing left the stack stale.
-
-   2. Has a card been reached for the first time? .is-played is added once
-      and never removed, and panel.css keys each mock's one-shot control
-      animation on it, so a control plays when its screen first comes up
-      and stays settled on the way back.
-
-   Below 921px the cards sit in normal flow (no stacking), so only the
-   second question applies, and an IntersectionObserver answers it.
+   - Autoplay: every AUTO_PLAY_DURATION the panel advances and wraps.
+     Hovering the panel pauses it (and empties the progress rule), leaving
+     resumes; clicking a tab jumps there and un-pauses; the arrows and a
+     click on the panel itself step it. Reduced motion: no autoplay at
+     all, the visitor drives it.
+   - The progress rule beside the active tab is a CSS height transition
+     of AUTO_PLAY_DURATION; it is restarted from zero on every activation.
+   - .is-played is added to a pane the first time it is shown and never
+     removed; panel.css keys each mock's one-shot control animation on it.
 
    Deliberately not sharing scrolly.js: that file drives the booking
-   widget through a controller handle and hands control to the visitor on
-   first touch — none of which exists here.
+   widget from the page's scroll; nothing here scrolls.
    ============================================================ */
 (function () {
   'use strict';
 
+  var AUTO_PLAY_DURATION = 5000;
+
   function start() {
-    var stack = document.querySelector('[data-pstack]');
-    if (!stack) return;
-    var cards = [].slice.call(stack.querySelectorAll('.pcard'));
-    if (!cards.length) return;
+    var root = document.querySelector('[data-ptabs]');
+    if (!root) return;
+    var tabs = [].slice.call(root.querySelectorAll('.ptab'));
+    var panes = [].slice.call(root.querySelectorAll('.ptabs-pane'));
+    var panel = root.querySelector('[data-ptabs-panel]');
+    var prevBtn = root.querySelector('[data-ptabs-prev]');
+    var nextBtn = root.querySelector('[data-ptabs-next]');
+    if (!tabs.length || tabs.length !== panes.length || !panel) return;
 
-    var isStacked = window.matchMedia('(min-width: 921px)');
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var count = tabs.length;
+    var active = 0;
+    var paused = false;
+    var timer = null;
 
-    function play(card) {
-      if (!card.classList.contains('is-played')) card.classList.add('is-played');
+    function restartClock(tab) {
+      var bar = tab.querySelector('.ptab-progress');
+      if (!bar) return;
+      // Back to zero without a transition, then let the CSS transition
+      // (AUTO_PLAY_DURATION, linear) carry it to full.
+      tab.classList.remove('is-running');
+      tab.classList.toggle('is-paused', paused);
+      void bar.offsetHeight;
+      if (!paused && !still) tab.classList.add('is-running');
     }
 
-    var active = -1;
-    function setActive(i) {
-      if (i === active) return;
-      active = i;
-      cards.forEach(function (c, idx) {
-        c.classList.toggle('is-active', idx === i);
-        c.classList.toggle('is-behind', idx < i);
+    function show(next, direction) {
+      if (next === active) return;
+      var prev = active;
+      active = next;
+      var from = direction > 0 ? '-100%' : '100%';
+      var to = direction > 0 ? '100%' : '-100%';
+
+      tabs.forEach(function (t, i) {
+        t.classList.toggle('is-active', i === next);
+        if (i === next) t.setAttribute('aria-current', 'step');
+        else t.removeAttribute('aria-current');
+        if (i !== next) t.classList.remove('is-running', 'is-paused');
       });
-      play(cards[i]);
+      restartClock(tabs[next]);
+
+      panes.forEach(function (p, i) {
+        p.classList.remove('is-leaving');
+        if (i === prev) {
+          p.style.setProperty('--pane-to', to);
+          p.classList.remove('is-active');
+          if (!still) p.classList.add('is-leaving');
+        } else if (i === next) {
+          p.style.setProperty('--pane-from', from);
+          // Let the start position land before the transition to centre.
+          void p.offsetHeight;
+          p.classList.add('is-active', 'is-played');
+        } else {
+          p.classList.remove('is-active');
+        }
+      });
+      panes[prev].addEventListener('transitionend', function done() {
+        panes[prev].removeEventListener('transitionend', done);
+        panes[prev].classList.remove('is-leaving');
+      });
+      schedule();
     }
 
-    // A card has been reached when its top has climbed to (or past) the
-    // offset it sticks at; the last such card is the one on top.
-    var ticking = false;
-    function pick() {
-      ticking = false;
-      if (!isStacked.matches) return;
-      var top = 0;
-      for (var i = 0; i < cards.length; i++) {
-        var r = cards[i].getBoundingClientRect();
-        var stickAt = parseFloat(getComputedStyle(cards[i]).top) || 0;
-        if (r.top <= stickAt + 2) top = i;
-      }
-      setActive(top);
-    }
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(pick);
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    function goNext() { show((active + 1) % count, 1); }
+    function goPrev() { show((active - 1 + count) % count, -1); }
 
-    // In flow (phones), and as a second trigger when stacked: a card that
-    // comes well into view has been seen, so its control plays.
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          if (isStacked.matches) onScroll(); else play(e.target);
-        });
-      }, { threshold: 0.35 });
-      cards.forEach(function (c) { io.observe(c); });
-    } else {
-      cards.forEach(play);
+    // The React effect: a fresh interval after every change, none while
+    // paused. Under reduced motion the panel never moves on its own.
+    function schedule() {
+      clearInterval(timer);
+      timer = null;
+      if (paused || still) return;
+      timer = setInterval(goNext, AUTO_PLAY_DURATION);
     }
 
-    // Leaving the stacked layout: nothing is "behind" in a single column.
-    isStacked.addEventListener('change', function () {
-      if (!isStacked.matches) {
-        active = -1;
-        cards.forEach(function (c) { c.classList.remove('is-active', 'is-behind'); });
-      } else {
-        onScroll();
-      }
+    function setPaused(state) {
+      if (paused === state) return;
+      paused = state;
+      restartClock(tabs[active]);
+      schedule();
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () {
+        if (i === active) return;
+        var direction = i > active ? 1 : -1;
+        paused = false;
+        show(i, direction);
+      });
+    });
+    panel.addEventListener('click', goNext);
+    panel.addEventListener('mouseenter', function () { setPaused(true); });
+    panel.addEventListener('mouseleave', function () { setPaused(false); });
+    if (prevBtn) prevBtn.addEventListener('click', function (e) { e.stopPropagation(); goPrev(); });
+    if (nextBtn) nextBtn.addEventListener('click', function (e) { e.stopPropagation(); goNext(); });
+
+    // Not worth advancing in a background tab; pick up where it left off.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { clearInterval(timer); timer = null; }
+      else { restartClock(tabs[active]); schedule(); }
     });
 
-    pick();
+    // Initial state: the first pane is already active in the markup; its
+    // control plays now, and the clock starts.
+    tabs[0].classList.add('is-active');
+    panes[0].classList.add('is-played');
+    restartClock(tabs[0]);
+    schedule();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

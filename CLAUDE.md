@@ -21,8 +21,9 @@ Five pages, all sharing the same header/footer shell and `styles.css`:
   aspirational — see `PRODUCT.md` for why this page exists and what it must not claim.
 - **`panel.html`** — a walkthrough of the clinic admin, answering the objection an
   owner actually holds: opening the calendar to patients does not mean losing control
-  of it. Five scrollytelling steps over a **static mock** of `orli-calendar/admin`
-  (`panel.js` + `panel.css`, scoped under `.orli-panel`). Every label, the sidebar
+  of it. Seven vertical tabs beside a panel that auto-advances every five seconds
+  through a **static mock** of `orli-calendar/admin` (`panel.js` + `panel.css`,
+  scoped under `.orli-panel`; ported from a 21st.dev "VerticalTabs" component). Every label, the sidebar
   grouping and the section order are copied from the real admin's `i18n.ts`,
   `AppShell.vue` and `router.ts` — refresh it against those, don't invent screens.
   Note the automations step is marked `בקרוב` because the **real admin marks it that
@@ -130,7 +131,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260909i` today). Bump them all
+  carries the **same** token on every page (`?v=20260909j` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - Page-level layout lives in `styles.css` modifiers (`.page-head`, `.display--page`,
