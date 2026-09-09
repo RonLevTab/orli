@@ -28,23 +28,22 @@
 .pcard {
   display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: center; align-content: center;
   padding: 34px 36px 36px;
-  /* One card per screen: each fills the viewport under the deck's stagger,
-     so the visitor reads one screen at a time and the next slides up over
-     it. Content sits in the middle of the card, not at its top. */
-  --deck: calc(var(--nav-h) + 22px + 6 * 12px);
+  /* One card per screen: each fills the viewport under the nav, so the
+     visitor reads one screen at a time and the next slides up over it and
+     covers it exactly — same top, same size, nothing peeking out. Content
+     sits in the middle of the card, not at its top. */
+  --deck: calc(var(--nav-h) + 22px);
   min-height: calc(100vh - var(--deck) - 20px);
   min-height: calc(100dvh - var(--deck) - 20px);
+  height: calc(100vh - var(--deck) - 20px);
+  height: calc(100dvh - var(--deck) - 20px);
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  /* Every card sticks under the nav; each one 12px lower than the last,
-     so the cards it settled over peek out above it as a stacked deck. */
-  position: sticky; top: calc(var(--nav-h) + 22px + var(--i, 0) * 12px);
-  transform-origin: top center;
-  transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .45s ease, filter .45s ease;
+  box-shadow: var(--shadow);
+  position: sticky; top: var(--deck);
 }
-/* The ones underneath step back: a touch smaller, a touch dimmer, so the
-   card on top reads as the one being shown. */
-.pcard.is-behind { transform: scale(.965); opacity: .55; filter: saturate(.85); }
+/* A covered card stays exactly where it is: the card on top hides it in
+   full, so it needs no shrinking or dimming of its own. */
+.pcard.is-behind { transform: none; opacity: 1; filter: none; }
 
 .pcard-text { text-align: start; padding-block-start: 4px; }
 .pcard-idx { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .02em; color: var(--teal); margin-bottom: 12px; }
@@ -269,8 +268,6 @@
    No stacking motion and no control animation: every mock shows its
    settled state at once, and the deck simply stacks without stepping back. */
 @media (prefers-reduced-motion: reduce) {
-  .pcard { transition: none; }
-  .pcard.is-behind { transform: none; filter: none; opacity: .7; }
   html[data-reveal-ready] .pcard { opacity: 1; transform: none; }
   .opn-tab, .opn-seg i, .opn-choice { transition: none; }
   .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }

@@ -4,8 +4,8 @@
    The cards are sticky (panel.css), so the browser does the stacking on
    its own. This only answers two questions the stylesheet cannot:
 
-   1. Which card is on top right now? Everything before it steps back
-      (.is-behind: a little smaller, a little dimmer). Measured from the
+   1. Which card is on top right now? Everything before it is marked
+      .is-behind (covered in full by the card on top). Measured from the
       cards' own boxes on each scroll frame — a card is "reached" once it
       has climbed to its sticky offset — because an observer only reports
       crossings, and a scroll that crosses nothing left the stack stale.
