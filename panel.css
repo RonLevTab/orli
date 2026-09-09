@@ -36,6 +36,8 @@
    first thing under that line. */
 .ptabs-text { display: flex; flex-direction: column; justify-content: flex-start; min-width: 0; padding-block-start: 230px; }
 
+/* panel.js fixes the list's min-height to its full height at load, so the
+   section keeps one size as the screens already shown leave the list. */
 .ptabs-list { display: flex; flex-direction: column; }
 .ptab {
   position: relative; display: flex; align-items: flex-start; gap: 16px;
@@ -288,11 +290,6 @@
   /* One column: the panel first, the tabs under it. */
   .ptabs { grid-template-columns: 1fr; gap: 40px; }
   .ptabs-panel-col { order: -1; position: static; }
-  /* On a phone the panes move sideways, left to right: the next one comes
-     in from the left edge and the old one leaves to the right. */
-  .ptabs-pane { transform: translateX(var(--pane-from, -100%)); }
-  .ptabs-pane.is-active { transform: none; }
-  .ptabs-pane.is-leaving { transform: translateX(var(--pane-to, 100%)); }
   .ptabs-text { padding-block-start: 0; }
   .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
   .ptab { padding: 22px 0; gap: 12px; }

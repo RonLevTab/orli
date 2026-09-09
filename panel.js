@@ -131,6 +131,25 @@
       else { restartClock(tabs[active]); schedule(); }
     });
 
+    // The list keeps the height it has with every screen listed, so the
+    // section does not shrink as the screens already shown leave it.
+    var list = root.querySelector('.ptabs-list');
+    function holdListHeight() {
+      if (!list) return;
+      list.style.minHeight = '';
+      var hidden = tabs.filter(function (t) { return t.classList.contains('is-past'); });
+      hidden.forEach(function (t) { t.classList.remove('is-past'); });
+      var h = list.offsetHeight;
+      hidden.forEach(function (t) { t.classList.add('is-past'); });
+      list.style.minHeight = h + 'px';
+    }
+    var holdTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(holdListHeight, 150);
+    });
+    holdListHeight();
+
     // Initial state: the first pane is already active in the markup; its
     // control plays now, and the clock starts.
     tabs[0].classList.add('is-active');
