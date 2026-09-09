@@ -37,6 +37,9 @@
     var count = tabs.length;
     var active = 0;
     var paused = false;
+    // Once the visitor has picked a screen, the panel stops running on its
+    // own: they are reading, not watching.
+    var manual = false;
     var timer = null;
 
     function restartClock(tab) {
@@ -110,13 +113,14 @@
       tab.addEventListener('click', function () {
         if (i === active) return;
         var direction = i > active ? 1 : -1;
-        paused = false;
+        manual = true;
+        paused = true;
         show(i, direction);
       });
     });
-    panel.addEventListener('click', goNext);
+    panel.addEventListener('click', function () { manual = true; paused = true; goNext(); });
     panel.addEventListener('mouseenter', function () { setPaused(true); });
-    panel.addEventListener('mouseleave', function () { setPaused(false); });
+    panel.addEventListener('mouseleave', function () { if (!manual) setPaused(false); });
 
     // Not worth advancing in a background tab; pick up where it left off.
     document.addEventListener('visibilitychange', function () {
