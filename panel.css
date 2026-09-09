@@ -31,9 +31,6 @@
 /* The text column: first in the DOM, so it starts at the right (inline
    start) on this RTL page — the mirror of the component's left column. */
 .ptabs-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-block-start: 16px; }
-.ptabs-head { margin-bottom: 40px; }
-.ptabs-head .display { margin: 0; text-wrap: balance; }
-.ptabs-label { display: block; margin-top: 4px; margin-inline-start: 2px; font-size: .68rem; font-weight: 500; letter-spacing: .18em; color: var(--ink-soft); }
 
 .ptabs-list { display: flex; flex-direction: column; }
 .ptab {
@@ -294,7 +291,6 @@
   .ptabs { grid-template-columns: 1fr; gap: 40px; }
   .ptabs-panel-col { order: -1; position: static; }
   .ptabs-text { padding-block-start: 0; }
-  .ptabs-head { margin-bottom: 28px; }
   .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
   /* Room under the mock for the arrows, which sit over the panel's corner. */
   .ptabs-pane { padding: 16px 16px 76px; }
