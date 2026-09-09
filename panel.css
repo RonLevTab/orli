@@ -300,6 +300,8 @@
   .ptabs-panel-col { order: -1; position: static; }
   .ptabs-text { padding-block-start: 0; }
   .ptabs-roller { height: 250px; padding-inline-start: 14px; }
+  /* One line per bullet on a phone too. */
+  .ptab-list li { font-size: .88rem; }
   .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
   .ptab { padding: 22px 0; gap: 12px; }
   .ptab-rule { inset-inline-start: -12px; }
