@@ -21,7 +21,7 @@
 .pstack {
   /* A column, not the whole page: the card is a sheet the visitor reads,
      not a section. */
-  max-width: 940px; margin-inline: auto;
+  max-width: 860px; margin-inline: auto;
   display: grid; gap: 28px;
   /* Runway after the last card, so it has time on top before the page
      moves on to the closing section. */
@@ -29,17 +29,13 @@
 }
 
 .pcard {
-  display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: center; align-content: center;
-  padding: 34px 36px 36px;
-  /* One card per screen: each fills the viewport under the nav, so the
-     visitor reads one screen at a time and the next slides up over it and
-     covers it exactly — same top, same size, nothing peeking out. Content
-     sits in the middle of the card, not at its top. */
+  display: grid; grid-template-columns: .9fr 1.1fr; gap: 32px; align-items: center; align-content: center;
+  /* A compact sheet, the same size for every card so each covers the last
+     exactly: as tall as the tallest content needs, not the screen, so no
+     blank field surrounds the text and the mock. */
   --deck: calc(var(--nav-h) + 22px);
-  min-height: calc(100vh - var(--deck) - 20px);
-  min-height: calc(100dvh - var(--deck) - 20px);
-  height: calc(100vh - var(--deck) - 20px);
-  height: calc(100dvh - var(--deck) - 20px);
+  height: 420px;
+  padding: 28px 36px;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
   /* One shadow for the whole stack, not one per card: the first card stays
      pinned in the same spot for the entire section, so its shadow outlines
@@ -268,7 +264,7 @@ html[data-reveal-ready] .pcard.is-behind > * { opacity: 1; transform: none; }
   /* In flow on a phone: no stacking, the mock above its text, and the card
      as tall as its content — a screen-tall card with the mock and two lines
      floating in it read as empty. */
-  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: 0; }
+  .pcard { position: static; grid-template-columns: 1fr; gap: 20px; padding: 18px 18px 22px; transform: none; opacity: 1; filter: none; min-height: 0; height: auto; }
   .pcard.is-behind { transform: none; opacity: 1; filter: none; }
   .pcard, .pcard:first-child { box-shadow: var(--shadow-sm); }
   /* Each card slides up into place as it is reached — the same motion the
