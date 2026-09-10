@@ -48,44 +48,42 @@
     // nothing. They are what they look like instead: buttons that jump the
     // demo to a step in a sequence, with aria-current="step" marking where
     // the visitor is. See the markup in index.html.
-    // On a phone the step's text lives in a caption above the widget
+    // On a phone all six steps sit in one short list above the widget
     // (styles.css hides the step list there and turns it into scroll
-    // distance). Each change rolls the caption over: the old copy rolls up
-    // and out, the new one rolls up into place.
+    // distance). The list is built once from the steps; each change opens
+    // the current step's text and ticks the ones passed. The list has one
+    // fixed height, so the widget under it never moves between steps.
     var caption = section.querySelector('[data-scrolly-caption]');
-    var captionStep = -1;
-    var captionTimer = null;
-    var stillMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function showCaption(i, entering) {
-      var next = document.createElement('div');
-      next.className = 'scrolly-caption-inner' + (entering ? ' is-entering' : '');
-      [].slice.call(steps[i].children).forEach(function (child) { next.appendChild(child.cloneNode(true)); });
-      caption.appendChild(next);
-    }
-    // In two beats, never at once: the old text rolls up and out, and only
-    // once it has gone does the new one roll up into place — overlapping
-    // the two read as a glitch. A step change that lands mid-roll replaces
-    // the one waiting to come in, so a fast scroll settles on the last step.
-    function rollCaption(i) {
-      if (!caption || i === captionStep) return;
-      var first = captionStep < 0;
-      captionStep = i;
-      clearTimeout(captionTimer);
-      var leaving = [].slice.call(caption.children).filter(function (el) { return !el.classList.contains('is-leaving'); });
-      if (first || stillMotion) {
-        [].slice.call(caption.children).forEach(function (el) { el.remove(); });
-        showCaption(i, false);
-        return;
-      }
-      leaving.forEach(function (old) {
-        old.classList.remove('is-entering');
-        old.classList.add('is-leaving');
+    var capItems = [];
+    if (caption) {
+      steps.forEach(function (step, i) {
+        var item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'scrolly-cap';
+        item.innerHTML =
+          '<span class="scrolly-cap-n" aria-hidden="true"><span class="scrolly-cap-num"></span>' +
+          '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5l2.3 2.3L9.5 3.8"/></svg></span>' +
+          '<span class="scrolly-cap-body"><span class="scrolly-cap-t"></span>' +
+          '<span class="scrolly-cap-d"><span class="scrolly-cap-p"></span></span></span>';
+        item.querySelector('.scrolly-cap-num').textContent = String(i + 1);
+        item.querySelector('.scrolly-cap-t').textContent = step.querySelector('h3').textContent;
+        item.querySelector('.scrolly-cap-p').textContent = step.querySelector('p').textContent;
+        item.addEventListener('click', function () {
+          if (i === current) return;
+          activate(i);
+          scrollToStep(i);
+        });
+        caption.appendChild(item);
+        capItems.push(item);
       });
-      var wait = leaving.length ? 320 : 0;
-      captionTimer = setTimeout(function () {
-        [].slice.call(caption.children).forEach(function (el) { el.remove(); });
-        showCaption(i, true);
-      }, wait);
+    }
+    function setCaption(i) {
+      capItems.forEach(function (item, k) {
+        item.classList.toggle('is-done', k < i);
+        item.classList.toggle('is-active', k === i);
+        if (k === i) item.setAttribute('aria-current', 'step');
+        else item.removeAttribute('aria-current');
+      });
     }
 
     function setActiveUI(i) {
@@ -96,7 +94,7 @@
         if (idx === i) t.setAttribute('aria-current', 'step');
         else t.removeAttribute('aria-current');
       });
-      rollCaption(i);
+      setCaption(i);
     }
 
     function activate(i) {

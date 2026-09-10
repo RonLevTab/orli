@@ -111,10 +111,11 @@ drives `widget.js` through a controller handle):
   booking state (an `IntersectionObserver` with a rootMargin band; the
   visitor's own clicks inside the widget bring the page to the matching step,
   and scrolling keeps driving afterwards). Below 921px the same mechanism
-  runs in one screen: the widget and a caption above it are pinned under the
-  nav, the step list becomes invisible scroll distance, and every step change
-  rolls the caption over (`rollCaption`: the old text rolls up and out, the
-  new one rolls up into place). `widget.js` also exposes
+  runs in one screen: the widget and a short list of all six steps above it
+  are pinned under the nav, the step list becomes invisible scroll distance,
+  and every step change opens the current step's text in that list and ticks
+  the ones passed (`setCaption`); tapping a step jumps to it. The list has
+  one fixed height (`--cap-h`) so the widget never moves. `widget.js` also exposes
   `window.OrliWidget.mount()` for widgets created after load.
 - **`lock.js`** — desktop section lock-in for `index.html`: styles.css makes every
   top-level section (and each demo step) a full-viewport `scroll-snap` stop on wide,
@@ -137,7 +138,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260909w` today). Bump them all
+  carries the **same** token on every page (`?v=20260909x` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one

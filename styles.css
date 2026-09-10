@@ -417,7 +417,7 @@ html[dir="rtl"] .hero-veil {
 }
 /* scroll-pinned live demo (Vectrix-style scrollytelling) */
 .scrolly-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; margin-top: 4px; }
-/* The phone layout's caption above the widget; see the max-width block. */
+/* The phone layout's step list above the widget; see the max-width block. */
 .scrolly-caption { display: none; }
 /* The pinned columns carry their own lead-in, so the standard 56px under the
    heading stacked on top of it and pushed the whole demo down the page.
@@ -596,36 +596,60 @@ html[dir="rtl"] .hero-veil {
      and the visible step text, so the "watch it update" payoff survives
      without fighting page scroll for control. */
   .bridge-movie, .bm-site { min-height: 420px; }
-  /* On a phone the same narrative runs in one screen: the current step's
-     text sits above the widget in a block pinned under the nav, and the
-     step list below is invisible spacers that scrolling passes through, so
-     the observer advances the widget exactly as it does on wide screens.
-     Every step change rolls the caption over (scrolly.js). No numbered
-     tabs: scrolling, or clicking through the widget, is the control. */
+  /* On a phone the same narrative runs in one screen: all six steps sit
+     in a short list above the widget, in a block pinned under the nav, and
+     the step list below is invisible spacers that scrolling passes through,
+     so the observer advances the widget exactly as it does on wide screens.
+     The current step is open with its text, passed steps are ticked, and a
+     tap on any step jumps to it (scrolly.js). The list is one fixed height
+     so the widget never moves between steps. */
   .scrolly-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .scrolly-sticky {
     position: sticky; top: calc(var(--nav-h) + 8px); z-index: 2; order: -1;
     height: auto; margin: 0; padding: 10px 0 8px; background: var(--cream); align-items: stretch; justify-content: flex-start;
   }
   .scrolly-tabs { display: none; }
-  .scrolly-caption { display: block; position: relative; width: 100%; min-height: 112px; margin: 0 0 10px; padding-inline: 4px; text-align: center; overflow: hidden; }
-  .scrolly-caption-inner { position: relative; }
-  .scrolly-caption .scrolly-idx { margin-bottom: 6px; }
-  .scrolly-caption h3 { font-family: var(--serif); font-weight: 500; font-size: 1.35rem; line-height: 1.2; margin: 0 0 6px; }
-  .scrolly-caption p { color: var(--ink-soft); font-size: .95rem; line-height: 1.45; margin: 0 auto; max-width: 32em; }
-  /* The roll-over: the old text rolls up and out while the new one rolls up
-     into place, like a counter ticking to the next step. The leaving copy is
-     lifted out of flow so the block never changes height mid-roll. */
-  .scrolly-caption-inner.is-leaving { position: absolute; inset: 0; animation: caption-out .32s cubic-bezier(.4, 0, .6, 1) both; pointer-events: none; }
-  .scrolly-caption-inner.is-entering { animation: caption-in .42s cubic-bezier(.2, .7, .2, 1) both; }
-  @keyframes caption-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-18px); } }
-  @keyframes caption-in { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
-  /* The widget takes what is left of the screen under the caption, and the
+  .scrolly-caption { display: grid; align-content: start; width: 100%; height: var(--cap-h); margin: 0 0 10px; padding-inline: 6px; overflow: hidden; }
+  .scrolly-cap {
+    display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 10px; align-items: start;
+    margin: 0; padding: 2px 0; border: 0; background: none; font: inherit; color: var(--ink-soft);
+    text-align: start; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .scrolly-cap:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 6px; }
+  /* The marker: a number that becomes a tick once the step has passed. */
+  .scrolly-cap-n {
+    position: relative; width: 20px; height: 20px; margin-top: 1px; border-radius: 50%;
+    border: 1.5px solid var(--line); display: grid; place-items: center;
+    font-size: .66rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums;
+    transition: background-color .3s ease, border-color .3s ease, color .3s ease;
+  }
+  .scrolly-cap-n svg { position: absolute; width: 11px; height: 11px; opacity: 0; transform: scale(.6); transition: opacity .25s ease, transform .3s cubic-bezier(.2, .7, .2, 1); }
+  .scrolly-cap-num { transition: opacity .2s ease; }
+  .scrolly-cap.is-done .scrolly-cap-n { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .scrolly-cap.is-done .scrolly-cap-num { opacity: 0; }
+  .scrolly-cap.is-done .scrolly-cap-n svg { opacity: 1; transform: none; }
+  .scrolly-cap.is-active .scrolly-cap-n { border-color: var(--teal); color: var(--teal-deep); }
+  .scrolly-cap-body { min-width: 0; }
+  .scrolly-cap-t { display: block; font-size: .92rem; line-height: 1.4; transition: color .3s ease; }
+  .scrolly-cap.is-active .scrolly-cap-t { color: var(--ink); font-weight: 500; }
+  /* The text opens under the current step and closes under the one it
+     leaves, one motion for both, so the list reads as a single thing
+     shifting rather than two things appearing and vanishing. */
+  .scrolly-cap-d { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.2, .7, .2, 1); }
+  .scrolly-cap-p {
+    display: block; min-height: 0; overflow: hidden;
+    font-size: .84rem; line-height: 1.4; color: var(--ink-soft);
+    opacity: 0; transform: translateY(-4px); transition: opacity .2s ease, transform .25s ease;
+  }
+  .scrolly-cap.is-active .scrolly-cap-d { grid-template-rows: 1fr; }
+  .scrolly-cap.is-active .scrolly-cap-p { opacity: 1; transform: none; transition: opacity .3s ease .12s, transform .35s cubic-bezier(.2, .7, .2, 1) .12s; }
+  /* The widget takes what is left of the screen under the list, and the
      step area scrolls inside on the taller steps, as the real widget does. */
+  .scrolly-sticky { --cap-h: 210px; }
   .scrolly-sticky .demo-browser {
     width: min(100%, 340px); margin-inline: auto;
-    height: calc(100vh - var(--nav-h) - 8px - 18px - 122px - 16px);
-    height: calc(100dvh - var(--nav-h) - 8px - 18px - 122px - 16px);
+    height: calc(100vh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
+    height: calc(100dvh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
   }
   /* The spacers: the step copy is already in the caption, so the list is
      only scroll distance — one viewport's worth per step, invisible. */
@@ -695,8 +719,7 @@ html[dir="rtl"] .hero-veil {
   .bc-appt.is-landed { animation: none; }
   /* Demo steps: current one fades in place instead of rising. */
   .scrolly-step { transform: none; transition: opacity .2s ease; }
-  .scrolly-caption-inner.is-leaving { display: none; }
-  .scrolly-caption-inner.is-entering { animation: none; }
+  .scrolly-cap-n, .scrolly-cap-n svg, .scrolly-cap-num, .scrolly-cap-t, .scrolly-cap-d, .scrolly-cap-p { transition: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
