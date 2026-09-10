@@ -906,42 +906,47 @@ html[dir="rtl"] .hero-veil {
   .ladder-note a, .faq-panel-inner a { padding-block: 10px; }
 }
 
-/* ===== Section lock-in (desktop) =====
+/* ===== Section stepping (desktop) =====
    On a wide, tall screen the page reads one section at a time: every
-   top-level section is a full-viewport snap stop with its content centred,
-   and each step of the demo is a stop of its own. lock.js adds the
-   two-second hold on each stop and fills the nav's hairline while it holds.
-   Off on phones, short screens and under reduced motion — the page then
-   scrolls as it always did. */
+   top-level section fills the screen under the nav and is a snap stop with
+   its content centred, and each step of the demo is a stop of its own.
+   lock.js moves the wheel and the scrolling keys one stop at a time.
+   Nothing holds the page: it rests on a section until the visitor moves
+   it. Off on phones, short screens and under reduced motion — the page then
+   scrolls as it always did (phones get a lighter snap; see the phone block). */
 @media (min-width: 921px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
-  html { scroll-snap-type: y mandatory; scroll-padding-top: 0; }
+  /* The nav is a sticky block above main, so every stop rests under it:
+     the hero's own rest is scroll position 0. */
+  html { scroll-snap-type: y mandatory; scroll-padding-top: var(--nav-h); }
   [data-lock-stop="start"] { scroll-snap-align: start; scroll-snap-stop: always; }
   main > section[data-lock-stop] {
-    min-height: 100vh; min-height: 100dvh; box-sizing: border-box;
-    display: flex; flex-direction: column; justify-content: center;
-    /* The nav overlays the top; keep content clear of it. */
-    padding-top: calc(var(--nav-h) + 24px); padding-bottom: 32px;
+    min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: safe center;
+    padding-top: 24px; padding-bottom: 32px;
+    /* A section that outgrows a short screen (an opened FAQ answer, the
+       roadmap at the 700px floor) scrolls inside itself rather than break
+       the snap; lock.js hands the wheel to it while it has room. */
+    max-height: calc(100vh - var(--nav-h)); max-height: calc(100dvh - var(--nav-h)); overflow-y: auto;
   }
-  .hero[data-lock-stop] { padding-top: calc(var(--nav-h) + 24px); }
-  /* Sections that can outgrow a short screen (an opened FAQ answer) scroll
-     inside themselves rather than break the snap. */
-  #faq[data-lock-stop], #roadmap[data-lock-stop] { max-height: 100vh; max-height: 100dvh; overflow-y: auto; justify-content: safe center; }
   #faq[data-lock-stop] .section-head, #roadmap[data-lock-stop] .section-head { margin-bottom: 32px; }
   #roadmap[data-lock-stop] .ladder-note { margin-top: 24px; }
-  .cta-band[data-lock-stop] { justify-content: center; }
   .footer[data-lock-stop] { scroll-snap-align: end; }
   /* The demo: its head is one stop, then the pinned widget with one step
-     per screen. The section is a long narrative, so it is not centred. */
-  #demo[data-lock-stop] { min-height: 0; justify-content: flex-start; padding-bottom: 0; }
+     per screen. The section is a long narrative, so it is neither centred
+     nor capped (a scroll container would unpin the widget). */
+  #demo[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; justify-content: flex-start; padding-bottom: 0; }
   .scrolly-steps { padding-block: 0 0; }
-  .scrolly-step[data-lock-stop] { scroll-snap-align: center; scroll-snap-stop: always; min-height: 100vh; min-height: 100dvh; box-sizing: border-box; }
-  /* The nav's hairline fills over the hold. */
-  .nav::after {
-    content: ""; position: absolute; inset-inline-start: 0; bottom: -1px; height: 2px; width: 100%;
-    background: var(--teal); transform: scaleX(0); transform-origin: 0 50%;
-  }
-  html[dir="rtl"] .nav::after { transform-origin: 100% 50%; }
-  html.is-holding .nav::after { transform: scaleX(1); transition: transform 2s linear; }
+  .scrolly-step[data-lock-stop] { scroll-snap-align: center; scroll-snap-stop: always; min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
+}
+
+/* ===== Section snap (phones) =====
+   The same idea, lighter: a scroll that ends near the top of a section
+   settles on it, so each section starts with its heading in view. Proximity,
+   not mandatory, because several sections are taller than a phone screen
+   and a mandatory snap could never rest on their lower half. */
+@media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
+  html { scroll-snap-type: y proximity; }
+  main > section[data-lock-stop] { scroll-snap-align: start; }
 }
 
 /* ===== Contact dialog =====

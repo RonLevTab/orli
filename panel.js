@@ -1,29 +1,34 @@
 /* ============================================================
-   Drives the vertical tabs on panel.html.
+   Drives the vertical tabs on panel.html from the page's scroll.
 
    A port of a 21st.dev "VerticalTabs" React component (useState +
    motion/react) into plain JS. One state, the active index, and one
    direction (+1 forward, -1 back) that decides which edge the next pane
-   slides in from: forward, the new pane enters from the top and the old
-   leaves by the bottom; back, the reverse — the component's `variants`.
+   slides in from: forward, the new pane enters from below and the old
+   leaves upward; back, the reverse — the component's `variants`.
 
-   - Autoplay: every AUTO_PLAY_DURATION the panel advances and wraps.
-     Hovering the panel pauses it (and empties the progress rule), leaving
-     resumes; clicking a tab jumps there and un-pauses; the arrows and a
-     click on the panel itself step it. Reduced motion: no autoplay at
-     all, the visitor drives it.
-   - The progress rule beside the active tab is a CSS transform transition
-     of AUTO_PLAY_DURATION; it is restarted from zero on every activation.
+   The component advanced on a clock. Here the visitor's scroll is the
+   clock: the whole block (tabs and panel) pins under the nav while an
+   invisible track of one spacer per screen (.ptabs-stop, panel.html)
+   scrolls under it, and how far the track has gone picks the screen —
+   the same mechanism as the booking demo on the home page. Reaching the
+   end of the track lets the page go on. The thin rule beside the active
+   tab fills with the visitor's progress through that screen's stretch
+   of track; the rules of screens already passed stay full.
+
+   - Clicking a tab (or the panel, for the next screen) scrolls the page
+     to that screen's stretch of track — at once on phones, smoothly on
+     wide screens with the scroll driver ignoring the screens crossed on
+     the way, so the panel does not flick through them.
    - .is-played is added to a pane the first time it is shown and never
      removed; panel.css keys each mock's one-shot control animation on it.
 
    Deliberately not sharing scrolly.js: that file drives the booking
-   widget from the page's scroll; nothing here scrolls.
+   widget through an IntersectionObserver and a controller handle; this
+   one needs a continuous position, not just a step.
    ============================================================ */
 (function () {
   'use strict';
-
-  var AUTO_PLAY_DURATION = 5000;
 
   function start() {
     var root = document.querySelector('[data-ptabs]');
@@ -31,28 +36,21 @@
     var tabs = [].slice.call(root.querySelectorAll('.ptab'));
     var panes = [].slice.call(root.querySelectorAll('.ptabs-pane'));
     var panel = root.querySelector('[data-ptabs-panel]');
+    var section = root.closest('section') || root.parentElement;
+    var track = section.querySelector('[data-ptabs-track]');
     if (!tabs.length || tabs.length !== panes.length || !panel) return;
 
     var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var phone = window.matchMedia('(max-width: 920px)');
     var count = tabs.length;
     var active = 0;
-    var paused = false;
-    // Once the visitor has picked a screen, the panel stops running on its
-    // own: they are reading, not watching.
-    var manual = false;
-    var timer = null;
 
-    function restartClock(tab) {
-      var bar = tab.querySelector('.ptab-progress');
-      if (!bar) return;
-      // Back to zero without a transition, then let the CSS transition
-      // (AUTO_PLAY_DURATION, linear) carry it to full.
-      tab.classList.remove('is-running', 'is-paused', 'is-done');
-      // Picked by hand: the line shows full, and the clock does not run.
-      if (manual) { tab.classList.add('is-done'); return; }
-      tab.classList.toggle('is-paused', paused);
-      void bar.offsetHeight;
-      if (!paused && !still) tab.classList.add('is-running');
+    // The rule beside the active tab: how far through its stretch of
+    // track the visitor is. Passed tabs are full by CSS (.is-done), the
+    // ones ahead empty, so only the active one carries an inline value.
+    function setFill(frac) {
+      var bar = tabs[active].querySelector('.ptab-progress');
+      if (bar) bar.style.transform = 'scaleY(' + frac.toFixed(3) + ')';
     }
 
     function show(next, direction) {
@@ -66,11 +64,14 @@
 
       tabs.forEach(function (t, i) {
         t.classList.toggle('is-active', i === next);
+        t.classList.toggle('is-done', i < next);
         if (i === next) t.setAttribute('aria-current', 'step');
         else t.removeAttribute('aria-current');
-        if (i !== next) t.classList.remove('is-running', 'is-paused');
+        if (i !== next) {
+          var bar = t.querySelector('.ptab-progress');
+          if (bar) bar.style.transform = '';
+        }
       });
-      restartClock(tabs[next]);
       rollTo();
 
       panes.forEach(function (p, i) {
@@ -92,46 +93,7 @@
         panes[prev].removeEventListener('transitionend', done);
         panes[prev].classList.remove('is-leaving');
       });
-      schedule();
     }
-
-    function goNext() { show((active + 1) % count, 1); }
-    function goPrev() { show((active - 1 + count) % count, -1); }
-
-    // The React effect: a fresh interval after every change, none while
-    // paused. Under reduced motion the panel never moves on its own.
-    function schedule() {
-      clearInterval(timer);
-      timer = null;
-      if (paused || still) return;
-      timer = setInterval(goNext, AUTO_PLAY_DURATION);
-    }
-
-    function setPaused(state) {
-      if (paused === state) return;
-      paused = state;
-      restartClock(tabs[active]);
-      schedule();
-    }
-
-    tabs.forEach(function (tab, i) {
-      tab.addEventListener('click', function () {
-        if (i === active) return;
-        var direction = i > active ? 1 : -1;
-        manual = true;
-        paused = true;
-        show(i, direction);
-      });
-    });
-    panel.addEventListener('click', function () { manual = true; paused = true; goNext(); });
-    panel.addEventListener('mouseenter', function () { setPaused(true); });
-    panel.addEventListener('mouseleave', function () { if (!manual) setPaused(false); });
-
-    // Not worth advancing in a background tab; pick up where it left off.
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) { clearInterval(timer); timer = null; }
-      else { restartClock(tabs[active]); schedule(); }
-    });
 
     // The roller: bring the active screen to the middle of the box. Once
     // at the change, and again when the descriptions have finished
@@ -150,19 +112,98 @@
       centerList();
       centerTimer = setTimeout(centerList, 340);
     }
-    var rollResize = null;
+
+    // ---- the scroll driver ----
+    // Where the block pins: under the nav with a little air, or lower on
+    // a tall screen so the block sits at the middle rather than hanging
+    // from the top. Set on the element so CSS and this file agree.
+    var pinTop = 0;
+    function placePin() {
+      var nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 65;
+      var air = phone.matches ? 8 : 22;
+      var centred = (window.innerHeight - root.offsetHeight) / 2;
+      pinTop = Math.max(nav + air, phone.matches ? 0 : Math.round(centred));
+      root.style.top = pinTop + 'px';
+    }
+
+    // The track's position under the pinned block, in screens: 0 the
+    // moment the block pins, 1 one spacer later, and so on. Before the
+    // block has pinned this is negative, past the track it is beyond
+    // count; both clamp to the first and last screen.
+    function position() {
+      var r = track.getBoundingClientRect();
+      var stop = r.height / count;
+      if (!stop) return 0;
+      return (pinTop + root.offsetHeight - r.top) / stop;
+    }
+
+    // A tab click scrolls the page to that screen's stretch of track. The
+    // driver shows the target at once and ignores the screens the smooth
+    // scroll crosses, until the page lands on it; if the visitor cuts the
+    // scroll short, the ceiling releases the driver where the page is.
+    var jumping = -1;
+    var jumpTimer = null;
+    function scrollToStep(i) {
+      i = Math.max(0, Math.min(count - 1, i));
+      if (!track) { show(i, i > active ? 1 : -1); return; }
+      var r = track.getBoundingClientRect();
+      var stop = r.height / count;
+      var target = window.scrollY + (r.top - (pinTop + root.offsetHeight)) + (i + 0.12) * stop;
+      show(i, i > active ? 1 : -1);
+      setFill(0.12);
+      jumping = i;
+      clearTimeout(jumpTimer);
+      var instant = still || phone.matches;
+      window.scrollTo({ top: Math.round(target), behavior: instant ? 'auto' : 'smooth' });
+      jumpTimer = setTimeout(function () { jumping = -1; onScroll(); }, instant ? 80 : 1500);
+    }
+
+    function onScroll() {
+      if (!track) return;
+      var v = position();
+      var i = Math.max(0, Math.min(count - 1, Math.floor(v)));
+      var frac = Math.max(0, Math.min(1, v - i));
+      if (jumping >= 0) {
+        if (i !== jumping) return;
+        jumping = -1;
+        clearTimeout(jumpTimer);
+      }
+      if (i !== active) show(i, i > active ? 1 : -1);
+      setFill(frac);
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () { ticking = false; onScroll(); });
+    }, { passive: true });
+
+    var resizeTimer = null;
     window.addEventListener('resize', function () {
-      clearTimeout(rollResize);
-      rollResize = setTimeout(centerList, 150);
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { placePin(); centerList(); onScroll(); }, 150);
+    });
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () {
+        if (i === active) return;
+        scrollToStep(i);
+      });
+    });
+    panel.addEventListener('click', function () {
+      if (active < count - 1) scrollToStep(active + 1);
     });
 
     // Initial state: the first pane is already active in the markup; its
-    // control plays now, and the clock starts.
+    // control plays now. The driver then takes the page's position.
     tabs[0].classList.add('is-active');
     panes[0].classList.add('is-played');
+    placePin();
     rollTo();
-    restartClock(tabs[0]);
-    schedule();
+    onScroll();
+    // Fonts and images settle the block's height a moment after load.
+    window.addEventListener('load', function () { placePin(); centerList(); onScroll(); });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

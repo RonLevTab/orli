@@ -21,9 +21,11 @@ Five pages, all sharing the same header/footer shell and `styles.css`:
   aspirational — see `PRODUCT.md` for why this page exists and what it must not claim.
 - **`panel.html`** — a walkthrough of the clinic admin, answering the objection an
   owner actually holds: opening the calendar to patients does not mean losing control
-  of it. Seven vertical tabs beside a panel that auto-advances every five seconds
-  through a **static mock** of `orli-calendar/admin` (`panel.js` + `panel.css`,
-  scoped under `.orli-panel`; ported from a 21st.dev "VerticalTabs" component). Every label, the sidebar
+  of it. Seven vertical tabs beside a panel showing a **static mock** of
+  `orli-calendar/admin`, the whole block pinned while the page's scroll drives it
+  through the seven screens (`panel.js` + `panel.css`, scoped under `.orli-panel`;
+  ported from a 21st.dev "VerticalTabs" component, its clock replaced by an
+  invisible track of one spacer per screen). Every label, the sidebar
   grouping and the section order are copied from the real admin's `i18n.ts`,
   `AppShell.vue` and `router.ts` — refresh it against those, don't invent screens.
   Note the automations step is marked `בקרוב` because the **real admin marks it that
@@ -81,7 +83,7 @@ browser.
 
 ## Architecture
 
-Four independent, self-contained scripts loaded by `index.html`, each owning one concern
+Five independent, self-contained scripts loaded by `index.html`, each owning one concern
 (`panel.html` loads `script.js` and its own `panel.js` instead).
 They talk to the DOM, not to each other directly (with one exception: `scrolly.js`
 drives `widget.js` through a controller handle):
@@ -117,12 +119,14 @@ drives `widget.js` through a controller handle):
   the ones passed (`setCaption`); tapping a step jumps to it. The list has
   one fixed height (`--cap-h`) so the widget never moves. `widget.js` also exposes
   `window.OrliWidget.mount()` for widgets created after load.
-- **`lock.js`** — desktop section lock-in for `index.html`: styles.css makes every
+- **`lock.js`** — desktop section stepping for `index.html`: styles.css makes every
   top-level section (and each demo step) a full-viewport `scroll-snap` stop on wide,
-  tall screens without reduced motion; this script swallows wheel, touch and
-  keyboard scrolling for two seconds after each stop settles and fills the nav's
-  hairline meanwhile (`html.is-holding`). Off on phones, never while the contact
-  dialog is open.
+  tall screens without reduced motion; this script moves the wheel and the scrolling
+  keys one stop per gesture and waits for each scroll to land before the next
+  counts. No hold: the page rests until the visitor moves it. Off on phones (which
+  get a `proximity` snap from styles.css alone), never while the contact dialog is
+  open; Space on a focused button, keys inside a scrolling section and the widget's
+  own scroll area are left to the browser.
 - **`hero-gradient.js`** — dependency-free vanilla-WebGL animated gradient (simplex
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and
@@ -138,13 +142,14 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260909x` today). Bump them all
+  carries the **same** token on every page (`?v=20260909y` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
-  section per screen: every `main > section` and the footer carry
-  `data-lock-stop="start"`, the demo's steps `data-lock-stop="center"`; a new
-  top-level section needs the attribute or it will not be a stop.
+  section per screen, and each section scrolls inside itself if it outgrows the
+  screen: every `main > section` and the footer carry `data-lock-stop="start"`,
+  the demo's steps `data-lock-stop="center"`; a new top-level section needs the
+  attribute or it will not be a stop (phones snap the same sections, loosely).
 - Page-level layout lives in `styles.css` modifiers (`.page-head`, `.display--page`,
   `.display--sub`, `.section--tail`, `.section-lead--intro`, `.code-inline`, …), not in
   `style=""` attributes. The only inline styles left are the colour swatches on

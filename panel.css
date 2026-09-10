@@ -10,7 +10,8 @@
    component (motion/react, Tailwind) into this site's plain CSS and JS:
    a list of tab buttons whose active one unfolds its description and
    carries a filling progress rule, beside a panel where the active
-   screen slides in vertically, auto-advancing every five seconds.
+   screen slides in vertically. The component ran on a clock; here the
+   block pins and the page's scroll drives it (panel.js).
 
    The admin already shares this site's palette exactly — see
    orli-calendar/DESIGN.md: teal #0f8a86, cream #f7f5ef, ink #1b2523,
@@ -25,9 +26,16 @@
 
 /* ---------- the tabs and the panel ---------- */
 .panel-tabs { padding-block: 24px 56px; }
+/* The block pins (panel.js sets `top`: under the nav, or centred on a tall
+   screen) while the track below scrolls under it. */
 .ptabs {
   display: grid; grid-template-columns: 5fr 7fr; gap: 64px; align-items: start;
+  position: sticky; top: calc(var(--nav-h) + 22px); z-index: 1;
 }
+/* The track: one spacer per screen, nothing to see. Its height is the
+   story's length; panel.js divides it by the number of screens. */
+.ptabs-track { pointer-events: none; }
+.ptabs-stop { height: 65vh; }
 /* The text column: first in the DOM, so it starts at the right (inline
    start) on this RTL page — the mirror of the component's left column. */
 /* The text column is as tall as the panel beside it and centres the roller,
@@ -59,17 +67,13 @@
 .ptab:hover, .ptab.is-active { color: var(--ink); }
 .ptab:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 4px; border-radius: 6px; }
 /* The thin rule beside the list — on the outer edge, to the right of the
-   buttons — and the fill that grows down it as the autoplay clock runs.
-   The scale transition is the clock: panel.js restarts it on every
-   activation and drops it to zero when the panel is paused. */
+   buttons — and the fill that grows down it. On the active tab panel.js
+   sets the fill (an inline scaleY) to the visitor's progress through that
+   screen's stretch of track; screens already passed stay full, the ones
+   ahead are empty. */
 .ptab-rule { position: absolute; inset-block: 0; inset-inline-start: -16px; width: 2px; background: color-mix(in srgb, var(--line) 80%, transparent); }
 .ptab-progress { position: absolute; top: 0; inset-inline: 0; height: 100%; background: var(--ink); transform-origin: top; transform: scaleY(0); }
-.ptab.is-active .ptab-progress { transition: transform var(--ptabs-clock, 5s) linear; }
-.ptab.is-active.is-running .ptab-progress { transform: scaleY(1); }
-/* Picked by hand: the line is full, not running. */
-.ptab.is-done .ptab-progress { transform: scaleY(1); transition: none; }
-
-.ptab.is-paused .ptab-progress { transform: scaleY(0); transition: none; }
+.ptab.is-done .ptab-progress { transform: scaleY(1); }
 .ptab-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
 .ptab-title {
   font-family: var(--serif); font-weight: 500; letter-spacing: -.01em; line-height: 1.15;
@@ -99,10 +103,9 @@
    only the active one is visible, and a change slides the new one in
    from one edge while the old leaves by the other (panel.js sets the
    direction). Clicking the panel advances it. */
-/* The component aligns its picture to the column's end; with seven tabs the
-   column is taller than a screen, which put the panel below the fold. It is
-   pinned under the nav instead, so it stays beside whichever tab is active. */
-.ptabs-panel-col { display: flex; flex-direction: column; min-width: 0; position: sticky; top: calc(var(--nav-h) + 22px); align-self: start; }
+/* The component aligns its picture to the column's end; here the whole
+   block is pinned (.ptabs), so the column just holds the panel. */
+.ptabs-panel-col { display: flex; flex-direction: column; min-width: 0; align-self: start; }
 .ptabs-panel {
   position: relative; aspect-ratio: 16 / 11; overflow: hidden; cursor: pointer;
   border-radius: 40px; border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
@@ -295,15 +298,23 @@
 /* ---------- narrow ---------- */
 @media (max-width: 920px) {
   .panel-tabs { padding-block: 8px 40px; }
-  /* One column: the panel first, the tabs under it. */
-  .ptabs { grid-template-columns: 1fr; gap: 40px; }
-  .ptabs-panel-col { order: -1; position: static; }
+  /* One column: the panel first, the tabs under it, the whole block pinned
+     under the nav. The panel takes what the roller leaves of the screen and
+     the tallest mock scrolls inside it on a short phone. */
+  .ptabs { grid-template-columns: 1fr; gap: 14px; top: calc(var(--nav-h) + 8px); }
+  .ptabs-panel-col { order: -1; }
   .ptabs-text { padding-block-start: 0; }
-  .ptabs-roller { height: 250px; padding-inline-start: 14px; }
+  .ptabs-roller { height: 200px; padding-inline-start: 14px; }
   /* One line per bullet on a phone too. */
   .ptab-list li { font-size: .88rem; }
-  .ptabs-panel { aspect-ratio: 4 / 3; border-radius: 24px; }
-  .ptab { padding: 22px 0; gap: 12px; }
+  .ptabs-panel {
+    aspect-ratio: auto; border-radius: 24px;
+    height: calc(100vh - var(--nav-h) - 8px - 14px - 200px - 24px);
+    height: calc(100dvh - var(--nav-h) - 8px - 14px - 200px - 24px);
+    min-height: 300px; max-height: 560px;
+  }
+  .ptabs-pane { align-items: safe center; overflow-y: auto; padding: 18px; }
+  .ptab { padding: 18px 0; gap: 12px; }
   .ptab-rule { inset-inline-start: -12px; }
   .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
   .opn-rail { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -313,9 +324,7 @@
   .opn-crumb { display: none; }
 }
 @media (max-width: 640px) {
-  /* 4/5 like the component; the floor keeps the tallest mock clear of the
-     arrows on a narrow phone. */
-  .ptabs-panel { aspect-ratio: 4 / 5; min-height: 420px; }
+  .ptab-title { font-size: 1.35rem; }
 }
 @media (min-width: 921px) and (max-width: 1100px) {
   .ptabs { gap: 40px; }
@@ -323,15 +332,15 @@
 }
 
 /* ---------- reduced motion ----------
-   No slide, no clock and no control animation: panes swap at once, the
-   visitor drives the panel with the tabs and arrows, and every mock shows
-   its settled state. */
+   No slide and no control animation: panes swap at once as the page
+   scrolls or a tab is clicked, and every mock shows its settled state.
+   The rule beside the active tab still follows the scroll; it does not
+   move on its own. */
 @media (prefers-reduced-motion: reduce) {
   .ptabs-pane, .ptab, .ptab-title, .ptab-desc { transition: none; }
   .ptabs-list { transition: none; }
   .ptabs-pane { transform: none; }
   .ptabs-pane.is-leaving { visibility: hidden; }
-  .ptab-rule { display: none; }
   .opn-tab, .opn-seg i, .opn-choice { transition: none; }
   .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }
   .opn-fx-saved svg path { stroke-dashoffset: 0; }
