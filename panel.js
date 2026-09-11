@@ -118,12 +118,39 @@
     // a tall screen so the block sits at the middle rather than hanging
     // from the top. Set on the element so CSS and this file agree.
     var pinTop = 0;
+    var navH = 65;
     function placePin() {
-      var nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 65;
+      navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 65;
       var air = phone.matches ? 8 : 22;
       var centred = (window.innerHeight - root.offsetHeight) / 2;
-      pinTop = Math.max(nav + air, phone.matches ? 0 : Math.round(centred));
+      pinTop = Math.max(navH + air, phone.matches ? 0 : Math.round(centred));
       root.style.top = pinTop + 'px';
+    }
+
+    // On a phone the frame is shorter than the tallest mock can be, and
+    // nothing scrolls inside it (panel.css), so the mocks are zoomed down
+    // together until the tallest fits; one zoom for all, so the frame
+    // does not resize between screens.
+    var mocks = panes.map(function (p) { return p.querySelector('.orli-panel'); });
+    function fitMocks() {
+      mocks.forEach(function (m) { if (m) m.style.zoom = ''; });
+      if (!phone.matches) return;
+      var pad = parseFloat(getComputedStyle(panes[0]).paddingTop) || 0;
+      var room = panel.clientHeight - pad * 2;
+      var tallest = 0;
+      mocks.forEach(function (m) { if (m) tallest = Math.max(tallest, m.offsetHeight); });
+      if (tallest > room && room > 0) {
+        var zoom = String(room / tallest);
+        mocks.forEach(function (m) { if (m) m.style.zoom = zoom; });
+      }
+    }
+
+    // Where the track begins relative to the pinned block: on wide screens
+    // the track follows the block in flow, so a screen starts as the
+    // block's bottom passes it; on a phone the track shares the block's
+    // cell (panel.css) and starts at the block's own top.
+    function origin() {
+      return phone.matches ? pinTop : pinTop + root.offsetHeight;
     }
 
     // The track's position under the pinned block, in screens: 0 the
@@ -134,7 +161,7 @@
       var r = track.getBoundingClientRect();
       var stop = r.height / count;
       if (!stop) return 0;
-      return (pinTop + root.offsetHeight - r.top) / stop;
+      return (origin() - r.top) / stop;
     }
 
     // A tab click scrolls the page to that screen's stretch of track. The
@@ -148,13 +175,19 @@
       if (!track) { show(i, i > active ? 1 : -1); return; }
       var r = track.getBoundingClientRect();
       var stop = r.height / count;
-      var target = window.scrollY + (r.top - (pinTop + root.offsetHeight)) + (i + 0.12) * stop;
+      // A little way into the screen's stretch on wide screens; on a phone
+      // exactly the spacer's snap position (its top under the nav).
+      var lead = phone.matches ? pinTop - navH : 0.12 * stop;
+      var target = window.scrollY + (r.top - origin()) + i * stop + lead;
       show(i, i > active ? 1 : -1);
       setFill(0.12);
       jumping = i;
       clearTimeout(jumpTimer);
       var instant = still || phone.matches;
-      window.scrollTo({ top: Math.round(target), behavior: instant ? 'auto' : 'smooth' });
+      // 'instant', not 'auto': auto takes the page's own smooth scrolling
+      // (styles.css), and the short settle timer below then released the
+      // driver while the page was still moving.
+      window.scrollTo({ top: Math.round(target), behavior: instant ? 'instant' : 'smooth' });
       jumpTimer = setTimeout(function () { jumping = -1; onScroll(); }, instant ? 80 : 1500);
     }
 
@@ -182,7 +215,15 @@
     var resizeTimer = null;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () { placePin(); centerList(); onScroll(); }, 150);
+      resizeTimer = setTimeout(function () {
+        placePin();
+        // A phone's toolbar sliding away fires resize too; refitting the
+        // mocks then would make them jump mid-scroll, so a phone refits
+        // only when its width changes (a rotation).
+        if (phone.matches ? window.innerWidth !== fittedWidth : true) { fittedWidth = window.innerWidth; fitMocks(); }
+        centerList();
+        onScroll();
+      }, 150);
     });
 
     tabs.forEach(function (tab, i) {
@@ -199,11 +240,13 @@
     // control plays now. The driver then takes the page's position.
     tabs[0].classList.add('is-active');
     panes[0].classList.add('is-played');
+    var fittedWidth = window.innerWidth;
     placePin();
+    fitMocks();
     rollTo();
     onScroll();
     // Fonts and images settle the block's height a moment after load.
-    window.addEventListener('load', function () { placePin(); centerList(); onScroll(); });
+    window.addEventListener('load', function () { placePin(); fitMocks(); centerList(); onScroll(); });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

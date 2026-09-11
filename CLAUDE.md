@@ -25,7 +25,9 @@ Five pages, all sharing the same header/footer shell and `styles.css`:
   `orli-calendar/admin`, the whole block pinned while the page's scroll drives it
   through the seven screens (`panel.js` + `panel.css`, scoped under `.orli-panel`;
   ported from a 21st.dev "VerticalTabs" component, its clock replaced by an
-  invisible track of one spacer per screen). Every label, the sidebar
+  invisible track of one spacer per screen; on phones the block and the
+  track share one grid cell, every screen is a mandatory snap stop, and
+  `fitMocks` zooms the mocks down so nothing scrolls inside the frame). Every label, the sidebar
   grouping and the section order are copied from the real admin's `i18n.ts`,
   `AppShell.vue` and `router.ts` — refresh it against those, don't invent screens.
   Note the automations step is marked `בקרוב` because the **real admin marks it that

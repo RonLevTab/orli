@@ -311,9 +311,20 @@
     aspect-ratio: auto; border-radius: 24px;
     height: calc(100vh - var(--nav-h) - 8px - 14px - 200px - 24px);
     height: calc(100dvh - var(--nav-h) - 8px - 14px - 200px - 24px);
-    min-height: 300px; max-height: 560px;
+    /* Capped at the tallest mock plus its padding: a taller frame is only
+       empty cream around a phone-width mock. */
+    min-height: 300px; max-height: 420px;
   }
-  .ptabs-pane { align-items: safe center; overflow-y: auto; padding: 18px; }
+  /* Nothing scrolls inside the frame: on a short phone panel.js zooms the
+     mocks down to the room there is (fitMocks), so a swipe over the frame
+     always moves the page. */
+  .ptabs-pane { align-items: safe center; overflow: hidden; padding: 14px; }
+  /* The pinned block and the track share one cell, so the first screen
+     begins where the block begins: one flick from the page's heading
+     lands on the pinned block, not a block's height of scrolling later. */
+  .panel-tabs { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .ptabs, .ptabs-track { grid-area: 1 / 1; }
+  .ptabs { align-self: start; }
   .ptab { padding: 18px 0; gap: 12px; }
   .ptab-rule { inset-inline-start: -12px; }
   .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
@@ -325,6 +336,16 @@
 }
 @media (max-width: 640px) {
   .ptab-title { font-size: 1.35rem; }
+}
+/* ===== Section snap (phones) =====
+   As on the home page: the heading, each of the seven screens and the two
+   closing sections are stops, one flick apart, and the footer's end. The
+   track's spacers are one screen under the nav each. */
+@media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
+  html:has(.panel-tabs) { scroll-snap-type: y mandatory; scroll-padding-top: var(--nav-h); }
+  .page-head, .panel-tabs ~ .section { scroll-snap-align: start; scroll-snap-stop: always; }
+  .ptabs-stop { scroll-snap-align: start; scroll-snap-stop: always; height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); }
+  .footer { scroll-snap-align: end; }
 }
 @media (min-width: 921px) and (max-width: 1100px) {
   .ptabs { gap: 40px; }
