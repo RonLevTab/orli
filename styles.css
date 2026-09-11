@@ -982,8 +982,15 @@ html[dir="rtl"] .hero-veil {
     mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
   }
+  /* The chapter-break hairline is for a page that flows; here every section
+     is its own screen, so the line only pushed a short section's centred
+     text down by its own margin (the embed read as sitting too low). */
+  .section-divider { display: none; }
   /* Tighter frame so the comparison's six rows land on one 844px screen. */
-  .section[data-lock-stop] { padding-top: 28px; padding-bottom: 28px; }
+  .section[data-lock-stop] { padding-top: 28px; padding-bottom: 28px; justify-content: flex-start; }
+  /* Every regular section starts with its title under the nav, as the full
+     ones do by necessity; a short one centred on its screen read as too
+     low. The hero and the contact band keep their centred stage. */
   #compare[data-lock-stop] .section-head { margin-bottom: 20px; }
   .footer[data-lock-stop] { scroll-snap-align: end; }
   #demo[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; justify-content: flex-start; padding-bottom: 0; }
