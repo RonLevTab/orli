@@ -117,7 +117,10 @@ drives `widget.js` through a controller handle):
   are pinned under the nav, the step list becomes invisible scroll distance,
   and every step change opens the current step's text in that list and ticks
   the ones passed (`setCaption`); tapping a step jumps to it. The list has
-  one fixed height (`--cap-h`) so the widget never moves. `widget.js` also exposes
+  one fixed height (`--cap-h`) so the widget never moves. The widget card is
+  drawn for 580×400px, which a phone lacks room for, so `fitFrame` zooms the
+  whole card (CSS `zoom`) until its tallest step fits the frame with nothing
+  scrolling inside it; a swipe over the widget then always moves the page. `widget.js` also exposes
   `window.OrliWidget.mount()` for widgets created after load.
 - **`lock.js`** — desktop section stepping for `index.html`: styles.css makes every
   top-level section (and each demo step) a full-viewport `scroll-snap` stop on wide,
@@ -142,14 +145,18 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260909y` today). Bump them all
+  carries the **same** token on every page (`?v=20260911a` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
   section per screen, and each section scrolls inside itself if it outgrows the
   screen: every `main > section` and the footer carry `data-lock-stop="start"`,
   the demo's steps `data-lock-stop="center"`; a new top-level section needs the
-  attribute or it will not be a stop (phones snap the same sections, loosely).
+  attribute or it will not be a stop. Phones (≤920px) snap the same stops,
+  mandatory too: every section fills the screen, the hero is fixed to one screen
+  (its mockup fades out at the fold), taller sections scroll through with no
+  nested scroller, and the hero's buttons are hidden — the nav CTA and the demo
+  below cover them.
 - Page-level layout lives in `styles.css` modifiers (`.page-head`, `.display--page`,
   `.display--sub`, `.section--tail`, `.section-lead--intro`, `.code-inline`, …), not in
   `style=""` attributes. The only inline styles left are the colour swatches on

@@ -580,7 +580,9 @@ html[dir="rtl"] .hero-veil {
   .hero-copy .eyebrow { animation-delay: 0s; }
   .hero-copy h1 { animation-delay: .12s; }
   .hero-copy .lead { animation-delay: .24s; }
-  .hero-copy .hero-actions { animation-delay: .36s; }
+  /* No buttons on a phone: the nav's own demo CTA is one thumb away, and
+     the demo itself is the next screen down. The copy is the whole hero. */
+  .hero-actions { display: none; }
   @keyframes hero-fade-in {
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: none; }
@@ -603,7 +605,13 @@ html[dir="rtl"] .hero-veil {
      The current step is open with its text, passed steps are ticked, and a
      tap on any step jumps to it (scrolly.js). The list is one fixed height
      so the widget never moves between steps. */
-  .scrolly-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  /* The pinned block and the step spacers share one grid cell, so the
+     first step begins where the block begins: one flick from the section's
+     heading lands on the pinned widget already at step one, instead of a
+     screen and a half of scrolling past the block in flow. (The spacers are
+     invisible, so nothing shows through the overlap.) */
+  .scrolly-grid { grid-template-columns: minmax(0, 1fr); gap: 0; align-items: start; }
+  .scrolly-sticky, .scrolly-steps { grid-area: 1 / 1; }
   .scrolly-sticky {
     position: sticky; top: calc(var(--nav-h) + 8px); z-index: 2; order: -1;
     height: auto; margin: 0; padding: 10px 0 8px; background: var(--cream); align-items: stretch; justify-content: flex-start;
@@ -643,14 +651,20 @@ html[dir="rtl"] .hero-veil {
   }
   .scrolly-cap.is-active .scrolly-cap-d { grid-template-rows: 1fr; }
   .scrolly-cap.is-active .scrolly-cap-p { opacity: 1; transform: none; transition: opacity .3s ease .12s, transform .35s cubic-bezier(.2, .7, .2, 1) .12s; }
-  /* The widget takes what is left of the screen under the list, and the
-     step area scrolls inside on the taller steps, as the real widget does. */
+  /* The widget takes what is left of the screen under the list. It is
+     drawn for a 580px-tall, 400px-wide card, which a phone does not have
+     room for, so scrolly.js zooms the whole card down to the room there is
+     (fitFrame): every step then shows in full, with nothing scrolling
+     inside the widget — a swipe over it always moves the page, and no
+     step is ever cut off at the fold. */
   .scrolly-sticky { --cap-h: 210px; }
   .scrolly-sticky .demo-browser {
     width: min(100%, 340px); margin-inline: auto;
-    height: calc(100vh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
-    height: calc(100dvh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
+    max-height: calc(100vh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
+    max-height: calc(100dvh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
   }
+  .scrolly-sticky .orli-live { max-width: none; }
+  #demo .orli-live .obw-step, #demo .orli-live .obw-slots { overflow-y: hidden; }
   /* The spacers: the step copy is already in the caption, so the list is
      only scroll distance — one viewport's worth per step, invisible. */
   .scrolly-steps { padding-block: 0 12vh; margin-top: 0; }
@@ -940,13 +954,41 @@ html[dir="rtl"] .hero-veil {
 }
 
 /* ===== Section snap (phones) =====
-   The same idea, lighter: a scroll that ends near the top of a section
-   settles on it, so each section starts with its heading in view. Proximity,
-   not mandatory, because several sections are taller than a phone screen
-   and a mandatory snap could never rest on their lower half. */
+   The same idea on a phone: every top-level section is one screen under
+   the nav and a stop of its own, so a flick lands on a section, never
+   between two. A section that outgrows the screen (the roadmap, an
+   opened FAQ answer) scrolls through as usual and the snap picks up
+   again at the next section. The demo keeps its own shape: its head is
+   one stop, then the pinned widget with one screen per step, exactly the
+   desktop story. */
 @media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
-  html { scroll-snap-type: y proximity; }
-  main > section[data-lock-stop] { scroll-snap-align: start; }
+  html { scroll-snap-type: y mandatory; scroll-padding-top: var(--nav-h); }
+  main > section[data-lock-stop] {
+    scroll-snap-align: start; scroll-snap-stop: always;
+    min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: safe center;
+  }
+  /* A section taller than the screen is not capped: a snap area larger
+     than the viewport is free to rest anywhere inside itself, so the
+     visitor scrolls through it and the snap picks up again at the next
+     section. No nested scroller under a thumb. */
+  /* The hero is the one exception: it is always exactly one screen. The
+     copy leads and the mockup takes what is left, fading out at the fold
+     on a short phone rather than pushing the hero past it. */
+  .hero[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); overflow: hidden; }
+  .hero-grid { flex: 1 1 auto; min-height: 0; grid-template-rows: auto minmax(0, 1fr); align-items: start; }
+  .hero-visual {
+    min-height: 0; overflow: hidden;
+    mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  }
+  /* Tighter frame so the comparison's six rows land on one 844px screen. */
+  .section[data-lock-stop] { padding-top: 28px; padding-bottom: 28px; }
+  #compare[data-lock-stop] .section-head { margin-bottom: 20px; }
+  .footer[data-lock-stop] { scroll-snap-align: end; }
+  #demo[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; justify-content: flex-start; padding-bottom: 0; }
+  .scrolly-steps { padding-block: 0; }
+  .scrolly-step[data-lock-stop] { scroll-snap-align: start; scroll-snap-stop: always; min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
 }
 
 /* ===== Contact dialog =====

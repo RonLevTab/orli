@@ -261,8 +261,11 @@
   // film in one frame — the launcher on the clinic's site is tapped, the
   // panel opens, a slot is chosen, the widget shows its confirmation, the
   // Optima day view rises over the page and the booking settles into its
-  // row — held for three seconds, then it plays again. Scrolling away
-  // pauses the loop; scrolling back resumes.
+  // row — held for three seconds, then it plays again. The film starts
+  // only once the block is mostly on screen, so the viewer sees the site
+  // at rest before the first tap; scrolling away stops it and clears the
+  // frame, so coming back always starts from the beginning, never
+  // mid-scene.
   const bridge = document.querySelector('[data-bridge]');
   if (bridge) {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -272,21 +275,27 @@
     const row = movie.querySelector('[data-bridge-to="movie"]');
     let visible = false;
     let playing = false;
-    let replayTimer = null;
+    let timers = [];
 
+    const after = (ms, fn) => { timers.push(setTimeout(fn, ms)); };
     const reset = () => {
       movie.classList.remove('is-cal');
       site.classList.remove('is-tapping', 'is-open', 'is-picked', 'is-confirmed');
       slot.classList.remove('is-picking');
       row.classList.remove('is-landed');
     };
+    const stop = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+      playing = false;
+      reset();
+    };
     const scheduleReplay = () => {
-      clearTimeout(replayTimer);
-      replayTimer = setTimeout(() => {
+      after(3000, () => {
         reset();
         // Let the popup and panel clear before the film lights up again.
-        replayTimer = setTimeout(play, 700);
-      }, 3000);
+        after(700, play);
+      });
     };
     const land = () => {
       row.classList.add('is-landed');
@@ -299,12 +308,12 @@
       // A beat on each screen the viewer reads (the site, the open panel,
       // the confirmation) — but the widget itself answers a tap at once:
       // a slow open here would read as a slow product.
-      setTimeout(() => site.classList.add('is-tapping'), 1500);
-      setTimeout(() => site.classList.add('is-open'), 2000);
-      setTimeout(() => { slot.classList.add('is-picking'); site.classList.add('is-picked'); }, 4400);
-      setTimeout(() => site.classList.add('is-confirmed'), 5600);
-      setTimeout(() => movie.classList.add('is-cal'), 8200);
-      setTimeout(land, 9000);
+      after(1500, () => site.classList.add('is-tapping'));
+      after(2000, () => site.classList.add('is-open'));
+      after(4400, () => { slot.classList.add('is-picking'); site.classList.add('is-picked'); });
+      after(5600, () => site.classList.add('is-confirmed'));
+      after(8200, () => movie.classList.add('is-cal'));
+      after(9000, land);
     }
 
     if (still) {
@@ -313,15 +322,16 @@
       movie.classList.add('is-cal');
       row.classList.add('is-landed');
     } else if ('IntersectionObserver' in window) {
-      // A low threshold on purpose: stacked on a phone the block is taller
-      // than the viewport, so a 50% ratio would never be reached there.
+      // Most of the block has to be on screen before the first tap, so the
+      // film is never already running when the section lands. Capped by the
+      // viewport: on a short screen the block may be taller than 60% of it
+      // and a fixed ratio would never be reached there.
+      const need = Math.min(0.6, Math.max(0.2, (window.innerHeight * 0.7) / Math.max(1, bridge.offsetHeight)));
       const io = new IntersectionObserver((entries) => {
         visible = entries.some((e) => e.isIntersecting);
-        if (!visible) { clearTimeout(replayTimer); return; }
-        if (playing) return;
-        if (row.classList.contains('is-landed')) scheduleReplay();
-        else play();
-      }, { threshold: 0.2 });
+        if (!visible) { stop(); return; }
+        if (!playing) play();
+      }, { threshold: need });
       io.observe(bridge);
     } else {
       play();

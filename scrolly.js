@@ -116,20 +116,38 @@
     // onStep is wired, so the measuring renders don't drive the page.
     var frame = mountEl.closest('.demo-browser');
     var measuring = false;
-    function fitFrame() {
-      if (!frame) return;
-      // On a phone the frame takes the screen under the caption (styles.css)
-      // and the step area scrolls inside, so there is no tallest scene to
-      // size for.
-      if (!isPinned.matches) { frame.style.height = ''; return; }
-      measuring = true;
-      frame.style.height = '';
+    function tallestOverflow() {
       var overflow = 0;
       for (var i = 0; i < steps.length; i++) {
         widget.setScene(i);
         var area = mountEl.querySelector('.obw-step');
         overflow = Math.max(overflow, area.scrollHeight - area.clientHeight);
       }
+      return overflow;
+    }
+    function fitFrame() {
+      if (!frame) return;
+      measuring = true;
+      if (!isPinned.matches) {
+        // A phone has less room than the card is drawn for (styles.css caps
+        // the frame under the caption). The card fills that room, and the
+        // whole card is zoomed down until its tallest step fits inside it
+        // rather than scrolling: at zoom z the card is laid out room / z
+        // tall (and wider, which only helps), so the overflow measured at
+        // zoom 1 is exactly what the zoom has to absorb.
+        frame.style.height = '';
+        mountEl.style.zoom = '';
+        var room = parseFloat(getComputedStyle(frame).maxHeight);
+        if (!(room > 0)) room = frame.clientHeight;
+        frame.style.height = room + 'px';
+        var over = tallestOverflow();
+        mountEl.style.zoom = over > 0 ? String(room / (room + over)) : '';
+        measuring = false;
+        return;
+      }
+      mountEl.style.zoom = '';
+      frame.style.height = '';
+      var overflow = tallestOverflow();
       if (overflow > 0) {
         frame.style.height = Math.ceil(frame.getBoundingClientRect().height + overflow) + 'px';
       }
@@ -139,13 +157,17 @@
 
 
     var resizeTimer = null;
+    var fittedWidth = window.innerWidth;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        if (isPinned.matches) {
-          fitFrame();
-          widget.setScene(current);
-        }
+        // A phone's toolbar sliding away fires resize too; refitting the
+        // card then would make it jump mid-scroll, so a phone refits only
+        // when its width changes (a rotation).
+        if (!isPinned.matches && window.innerWidth === fittedWidth) return;
+        fittedWidth = window.innerWidth;
+        fitFrame();
+        widget.setScene(current);
       }, 150);
     });
 
