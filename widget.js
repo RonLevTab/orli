@@ -147,7 +147,7 @@
   // six, which reads like a real diary without listing every weekday.
   var CLINIC_DAYS = [0, 1, 2, 3, 4]; // Sun–Thu. Fri/Sat closed.
   var SLOT_SETS = [
-    [{ start: '09:00', end: '09:30' }, { start: '11:00', end: '11:30' }, { start: '14:00', end: '14:30' }],
+    [{ start: '09:00', end: '09:30' }, { start: '10:30', end: '11:00' }, { start: '14:00', end: '14:30' }],
     [{ start: '10:30', end: '11:00' }, { start: '15:00', end: '15:30' }],
     [{ start: '09:30', end: '10:00' }, { start: '13:00', end: '13:30' }, { start: '16:00', end: '16:30' }],
   ];

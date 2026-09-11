@@ -112,6 +112,9 @@
         el.removeAttribute('data-cal-config');
       });
       if (calWrap) calWrap.hidden = true;
+      // The band's lead promised a slot picker; without Cal there is none.
+      const lead = document.querySelector('.cta-lead');
+      if (lead) lead.textContent = 'ראו את אורלי קובעת פגישה אמיתית ליומן פעיל בפחות מדקה. השאירו פרטים ונחזור אליכם עם שעה להדגמה.';
       console.warn('[orli] Cal.com embed unavailable — demo CTAs fall back to the form at #contact.');
     };
 
@@ -337,6 +340,22 @@
       play();
     }
   }
+
+  // One demo date on every mock: the hero card, the bridge film, the admin
+  // page's email. widget.js books its walked-through appointment on the
+  // first clinic day after today (Sunday to Thursday), so these say the
+  // same day, in the same words the widget uses, instead of a date typed
+  // into the markup months ago. [data-mock-date]: weekday, day and month;
+  // [data-mock-day]: the weekday alone.
+  (function () {
+    const dated = document.querySelectorAll('[data-mock-date], [data-mock-day]');
+    if (!dated.length) return;
+    const d = new Date();
+    do { d.setDate(d.getDate() + 1); } while (d.getDay() > 4);
+    const full = d.toLocaleDateString('he', { weekday: 'long', day: 'numeric', month: 'long' });
+    const day = d.toLocaleDateString('he', { weekday: 'long' });
+    dated.forEach((el) => { el.textContent = el.hasAttribute('data-mock-day') ? day : full; });
+  })();
 
   // Reveal-on-scroll: headlines, eyebrows, leads and list items are split
   // into words, then the words are grouped by which visual line they land

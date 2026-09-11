@@ -127,14 +127,13 @@
       root.style.top = pinTop + 'px';
     }
 
-    // On a phone the frame is shorter than the tallest mock can be, and
-    // nothing scrolls inside it (panel.css), so the mocks are zoomed down
-    // together until the tallest fits; one zoom for all, so the frame
-    // does not resize between screens.
+    // The frame can be shorter than the tallest mock (a phone, or the
+    // desktop frame at its aspect ratio), and nothing scrolls inside it
+    // (panel.css), so the mocks are zoomed down together until the tallest
+    // fits; one zoom for all, so the frame does not resize between screens.
     var mocks = panes.map(function (p) { return p.querySelector('.orli-panel'); });
     function fitMocks() {
       mocks.forEach(function (m) { if (m) m.style.zoom = ''; });
-      if (!phone.matches) return;
       var pad = parseFloat(getComputedStyle(panes[0]).paddingTop) || 0;
       var room = panel.clientHeight - pad * 2;
       var tallest = 0;

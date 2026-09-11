@@ -77,7 +77,27 @@
         capItems.push(item);
       });
     }
+    // The last step's door to the conversion (index.html .step-cta): on a
+    // phone the step text is invisible scroll distance, so the link moves
+    // into the pinned block and shows over the card's foot on that step.
+    var stepCta = section.querySelector('.scrolly-step .step-cta');
+    var ctaHome = stepCta ? stepCta.parentNode : null;
+    var sticky = section.querySelector('.scrolly-sticky');
+    function placeCta() {
+      if (!stepCta || !sticky) return;
+      if (isPinned.matches) {
+        stepCta.classList.remove('scrolly-cta', 'is-shown');
+        if (stepCta.parentNode !== ctaHome) ctaHome.appendChild(stepCta);
+      } else {
+        stepCta.classList.add('scrolly-cta');
+        if (stepCta.parentNode !== sticky) sticky.appendChild(stepCta);
+      }
+    }
+    placeCta();
+    if (isPinned.addEventListener) isPinned.addEventListener('change', placeCta);
+
     function setCaption(i) {
+      if (stepCta) stepCta.classList.toggle('is-shown', !isPinned.matches && i === steps.length - 1);
       capItems.forEach(function (item, k) {
         item.classList.toggle('is-done', k < i);
         item.classList.toggle('is-active', k === i);

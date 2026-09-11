@@ -148,18 +148,65 @@
     step(dir);
   }
 
+  // The rail: one dot per top-level section, the current one filled, so
+  // the visitor can see how long the walk is and jump ahead. Only while
+  // stepping is on; the page scrolls freely otherwise and needs no map.
+  var sections = stops.filter(function (el) { return el.tagName === 'SECTION' && el.parentElement && el.parentElement.tagName === 'MAIN'; });
+  var rail = null;
+  var dots = [];
+  function buildRail() {
+    if (rail || !sections.length) return;
+    rail = document.createElement('nav');
+    rail.className = 'stop-rail';
+    rail.setAttribute('aria-label', 'מקטעי העמוד');
+    sections.forEach(function (sec, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      var h = sec.querySelector('h1, h2');
+      var label = sec.getAttribute('data-stop-label') || (h ? h.textContent.replace(/\s+/g, ' ').trim() : String(i + 1));
+      b.setAttribute('aria-label', label);
+      b.title = label;
+      b.addEventListener('click', function () { goTo(stops.indexOf(sec), false); });
+      rail.appendChild(b);
+      dots.push(b);
+    });
+    document.body.appendChild(rail);
+  }
+  function markRail() {
+    if (!rail) return;
+    var el = stops[nearestStop().index];
+    var sec = el.closest('main > section') || sections[sections.length - 1];
+    dots.forEach(function (d, i) {
+      var on = sections[i] === sec;
+      d.classList.toggle('is-active', on);
+      if (on) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+    });
+  }
+  var railTick = false;
+  function onRailScroll() {
+    if (railTick) return;
+    railTick = true;
+    requestAnimationFrame(function () { railTick = false; markRail(); });
+  }
+
   var wired = false;
   function wire() {
     if (wired || !active.matches) return;
     wired = true;
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('keydown', onKey);
+    buildRail();
+    root.classList.add('has-lock');
+    window.addEventListener('scroll', onRailScroll, { passive: true });
+    markRail();
   }
   function unwire() {
     if (!wired) return;
     wired = false;
     window.removeEventListener('wheel', onWheel);
     window.removeEventListener('keydown', onKey);
+    window.removeEventListener('scroll', onRailScroll);
+    root.classList.remove('has-lock');
     landed();
   }
   if (active.addEventListener) active.addEventListener('change', function () { if (active.matches) wire(); else unwire(); });

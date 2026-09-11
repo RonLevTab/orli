@@ -118,7 +118,9 @@ drives `widget.js` through a controller handle):
   runs in one screen: the widget and a short list of all six steps above it
   are pinned under the nav, the step list becomes invisible scroll distance,
   and every step change opens the current step's text in that list and ticks
-  the ones passed (`setCaption`); tapping a step jumps to it. The list has
+  the ones passed (`setCaption`); tapping a step jumps to it. The last step's
+  demo CTA (`.step-cta`) moves into the pinned block on phones and rises over
+  the card's foot on that step only. The list has
   one fixed height (`--cap-h`) so the widget never moves. The widget card is
   drawn for 580×400px, which a phone lacks room for, so `fitFrame` zooms the
   whole card (CSS `zoom`) until its tallest step fits the frame with nothing
@@ -131,7 +133,9 @@ drives `widget.js` through a controller handle):
   counts. No hold: the page rests until the visitor moves it. Off on phones (which
   get a `proximity` snap from styles.css alone), never while the contact dialog is
   open; Space on a focused button, keys inside a scrolling section and the widget's
-  own scroll area are left to the browser.
+  own scroll area are left to the browser. While stepping is on it also builds
+  the section rail (`.stop-rail`, one dot per top-level section, the current one
+  filled) so a visitor can see how long the walk is and jump.
 - **`hero-gradient.js`** — dependency-free vanilla-WebGL animated gradient (simplex
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and
