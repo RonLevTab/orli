@@ -140,8 +140,11 @@
         var room = parseFloat(getComputedStyle(frame).maxHeight);
         if (!(room > 0)) room = frame.clientHeight;
         frame.style.height = room + 'px';
-        var over = tallestOverflow();
-        mountEl.style.zoom = over > 0 ? String(room / (room + over)) : '';
+        // Nothing scrolls inside the card on a phone (styles.css hides the
+        // overflow), so a few px of slack keep a rounding or a slightly
+        // different font from clipping the confirm button.
+        var over = tallestOverflow() + 6;
+        mountEl.style.zoom = String(room / (room + over));
         measuring = false;
         return;
       }
@@ -154,7 +157,14 @@
       measuring = false;
     }
     fitFrame();
-
+    // The card was measured in the fallback font; Heebo lands a moment
+    // later with its own metrics, so measure once more when it is in.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        fitFrame();
+        widget.setScene(current < 0 ? 0 : current);
+      });
+    }
 
     var resizeTimer = null;
     var fittedWidth = window.innerWidth;

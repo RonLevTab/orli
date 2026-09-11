@@ -664,6 +664,17 @@ html[dir="rtl"] .hero-veil {
     max-height: calc(100dvh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
   }
   .scrolly-sticky .orli-live { max-width: none; }
+  /* Denser card on a phone: the zoom shrinks the type by whatever the
+     tallest step (the code confirmation) overflows, so every px of frame,
+     header and card padding trimmed here buys back type size. These are
+     the demo's own overrides; widget.css stays a mirror of the product. */
+  .scrolly-sticky .orli-live { padding: 14px 12px 12px; }
+  .scrolly-sticky .orli-live .obw-controls { margin-block-end: 10px; }
+  .scrolly-sticky .orli-live .obw-step-header { margin-block: 2px 8px; }
+  .scrolly-sticky .orli-live .obw-summary { padding: 8px 12px; margin-block-end: 8px; gap: 3px 10px; }
+  .scrolly-sticky .orli-live .obw-otp { padding: 8px 12px; margin-block-end: 6px; }
+  .scrolly-sticky .orli-live .obw-otp-hint { margin-block-end: 6px; }
+  .scrolly-sticky .orli-live .obw-confirm-footer { padding-block-start: 6px; }
   #demo .orli-live .obw-step, #demo .orli-live .obw-slots { overflow-y: hidden; }
   /* The spacers: the step copy is already in the caption, so the list is
      only scroll distance — one viewport's worth per step, invisible. */
