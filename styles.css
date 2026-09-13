@@ -953,8 +953,6 @@ html[dir="rtl"] .hero-veil {
        the snap; lock.js hands the wheel to it while it has room. */
     max-height: calc(100vh - var(--nav-h)); max-height: calc(100dvh - var(--nav-h)); overflow-y: auto;
   }
-  #faq[data-lock-stop] .section-head, #roadmap[data-lock-stop] .section-head { margin-bottom: 32px; }
-  #roadmap[data-lock-stop] .ladder-note { margin-top: 24px; }
   .footer[data-lock-stop] { scroll-snap-align: end; }
   /* The demo: its head is one stop, then the pinned widget with one step
      per screen. The section is a long narrative, so it is neither centred
@@ -964,12 +962,48 @@ html[dir="rtl"] .hero-veil {
   .scrolly-step[data-lock-stop] { scroll-snap-align: center; scroll-snap-stop: always; min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
 }
 
+/* ===== Desktop: a section fits the screen it stops on =====
+   The headings and the roadmap and FAQ rows were sized for a tall screen, so
+   on a 768px laptop or a squarer 5:4 screen the roadmap outgrew its stop and
+   the FAQ only just fitted. Everything that sets a section's height is sized
+   from the screen's own height here, between a floor and the size it has
+   today, so the same page fits a short screen and stays as it was on a tall
+   one. No new breakpoints, and the hero is untouched: it already sits well. */
+@media (min-width: 921px) {
+  .section .display, .cta-band .display { font-size: clamp(1.9rem, min(4vw, 5.2vh), 2.85rem); }
+  /* The demo: its step copy sat at heading scale and its card was a fixed
+     600px on every screen, so most steps showed a big half-empty frame.
+     Both follow the screen now; scrolly.js scales the widget to the frame. */
+  .scrolly-step h3 { font-size: clamp(1.3rem, min(2.3vw, 3.2vh), 1.8rem); }
+  .scrolly-step p { font-size: 1rem; }
+  .scrolly-sticky .demo-browser { height: clamp(440px, 60vh, 560px); max-width: 360px; }
+  .section-head { margin-bottom: clamp(18px, 3vh, 40px); }
+  .rung { padding: clamp(14px, 2.2vh, 26px) clamp(16px, 1.6vw, 24px); }
+  .rung h3 { font-size: clamp(1rem, 1.9vh, 1.15rem); }
+  .rung p { font-size: clamp(.86rem, 1.5vh, .93rem); }
+  .ladder-note { margin-top: clamp(14px, 2.4vh, 36px); }
+  .faq { gap: clamp(8px, 1.2vh, 12px); }
+  .faq-btn { padding: clamp(12px, 1.9vh, 20px) 22px; }
+  .faq-panel-inner p { padding-block-end: clamp(12px, 1.9vh, 20px); }
+  /* The bridge's lead reads as one sentence, so it sits on one line: its
+     column is the 780px narrow measure elsewhere, which broke the line in
+     two. 900px holds it at the size it already has, and the 1.9vw cap
+     shaves it slightly on the narrowest desktop so it never overflows. */
+  .section--bridge .wrap.narrow { max-width: 900px; }
+  .section--bridge .section-head { max-width: none; }
+  /* Every section title reads at one size and on one line; the closing
+     band needed a wider column than the 780px measure to hold its own. */
+  .cta-band .wrap.narrow { max-width: 940px; }
+  .section--bridge .section-lead { white-space: nowrap; font-size: min(1.12rem, 1.9vw); }
+}
+
 /* ===== Section snap (phones) =====
    The same idea on a phone: every top-level section is one screen under
    the nav and a stop of its own, so a flick lands on a section, never
-   between two. A section that outgrows the screen (the roadmap, an
-   opened FAQ answer) scrolls through as usual and the snap picks up
-   again at the next section. The demo keeps its own shape: its head is
+   between two. Every section is sized to fit one screen (see the fit
+   block after this one); only an opened FAQ answer can outgrow it, and
+   then the section scrolls through as usual and the snap picks up again
+   at the next section. The demo keeps its own shape: its head is
    one stop, then the pinned widget with one screen per step, exactly the
    desktop story. */
 @media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
@@ -983,16 +1017,15 @@ html[dir="rtl"] .hero-veil {
      than the viewport is free to rest anywhere inside itself, so the
      visitor scrolls through it and the snap picks up again at the next
      section. No nested scroller under a thumb. */
-  /* The hero is the one exception: it is always exactly one screen. The
-     copy leads and the mockup takes what is left, fading out at the fold
-     on a short phone rather than pushing the hero past it. */
+  /* The hero is exactly one screen: the copy leads and the widget picture
+     takes what is left, shown whole, with no fade and no cut. script.js
+     scales the card down to that room (fitHeroCard), to 60% at the least;
+     on a phone too short even for that the picture, which is decoration
+     only (PRODUCT.md), steps aside and the copy stands centred alone. */
   .hero[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); overflow: hidden; }
-  .hero-grid { flex: 1 1 auto; min-height: 0; grid-template-rows: auto minmax(0, 1fr); align-items: start; }
-  .hero-visual {
-    min-height: 0; overflow: hidden;
-    mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
-  }
+  .hero-grid { flex: 1 1 auto; min-height: 0; align-items: start; }
+  .hero--bare .hero-grid { flex: 0 0 auto; }
+  .hero--bare .hero-visual { display: none; }
   /* The chapter-break hairline opens each screen, with a tighter gap under
      it than on the flowing desktop page so it does not push the title down. */
   .section-divider { margin: 0 auto 28px; }
@@ -1006,6 +1039,60 @@ html[dir="rtl"] .hero-veil {
   #demo[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; justify-content: flex-start; padding-bottom: 0; }
   .scrolly-steps { padding-block: 0; }
   .scrolly-step[data-lock-stop] { scroll-snap-align: start; scroll-snap-stop: always; min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
+}
+
+/* ===== One screen per section (phones) =====
+   The snap lands on a section's top, so a section taller than the screen
+   is never seen whole. These keep every section inside one phone screen:
+   the roadmap's four cards become a sideways row with the next card
+   peeking in, and the FAQ rows lose their topic tags and extra padding.
+   Not gated on motion: fitting the screen matters with or without snap. */
+@media (max-width: 920px) {
+  #roadmap .section-head, #faq .section-head { margin-bottom: 20px; }
+  .ladder {
+    display: flex; gap: 12px; align-items: stretch;
+    overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
+    margin-inline: -24px; padding: 4px 24px 8px; scroll-padding-inline: 24px;
+    scrollbar-width: none;
+  }
+  .ladder::-webkit-scrollbar { display: none; }
+  .rung { flex: 0 0 78%; scroll-snap-align: start; padding: 18px 16px; }
+  .ladder { padding-block: 2px 6px; }
+  #roadmap .ladder-note { margin-top: 12px; font-size: 1rem; }
+  .section .eyebrow { margin-bottom: 10px; }
+
+  .cmp-cell { padding: 10px 16px; }
+  .cmp-cell::before { margin-block-end: 3px; }
+
+  /* The footer's four link groups in two columns instead of four rows. */
+  .footer { padding-top: 32px; }
+  .footer-inner { gap: 20px; }
+  .footer-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; width: 100%; }
+  .footer-bottom { margin-top: 20px; padding-top: 16px; }
+
+  .faq { gap: 8px; }
+  .faq-btn { align-items: center; gap: 12px; padding: 12px 14px; }
+  .faq-plus { width: 32px; height: 32px; font-size: 1.15rem; }
+  .faq-q { padding-top: 0; }
+  .faq-q > span:first-child { font-size: .98rem; }
+  .faq-q .faq-tag { display: none; }
+  .faq-panel-inner p { padding: 0 14px 14px; }
+}
+/* Short phones (about 700px tall and under): the same sections, tighter
+   type and a smaller film, so they still fit one screen. */
+@media (max-width: 920px) and (max-height: 740px) {
+  .section-divider { display: none; }
+  .section .display { font-size: 1.85rem; }
+  .section-lead { font-size: 1rem; }
+  .section-head--tight { margin-bottom: 14px; }
+  .bridge-movie { zoom: .8; }
+  /* The ✕ and ✓ already say which side a row is; the label line above
+     each cell is the one thing a short screen can spare. */
+  .cmp-cell { padding: 9px 14px; font-size: .92rem; }
+  .cmp-cell::before { display: none; }
+  .rung h3 { font-size: 1.05rem; }
+  .rung p { font-size: .88rem; }
+  #roadmap .ladder-note { display: none; }
 }
 
 /* ===== Contact dialog =====

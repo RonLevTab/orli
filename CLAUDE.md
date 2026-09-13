@@ -93,8 +93,9 @@ drives `widget.js` through a controller handle):
 - **`script.js`** — misc page glue: footer year, the contact form — name, email,
   message, in a `<dialog>` opened from the CTA band and the footer link (validated
   client-side, then posted to `worker.js`'s `/api/demo`), the Cal.com popup button
-  (gated on `CAL_LINK`), scroll-reveal via `IntersectionObserver`, and the FAQ
-  accordion.
+  (gated on `CAL_LINK`), scroll-reveal via `IntersectionObserver`, the FAQ
+  accordion, and on phones the hero's widget picture scaled to fit whole under
+  the copy (down to 60%; on a phone shorter than that the picture steps aside).
 - **`worker.js`** — the one piece of backend: a Cloudflare Worker behind the static
   assets (`wrangler.jsonc`) with two routes, the contact form and Cal.com's booking
   webhook, both posting into Slack's `#website-contact`. Secrets and setup are in
@@ -147,7 +148,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260912a` today). Bump them all
+  carries the **same** token on every page (`?v=20260913a` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
@@ -155,10 +156,13 @@ drives `widget.js` through a controller handle):
   screen: every `main > section` and the footer carry `data-lock-stop="start"`,
   the demo's steps `data-lock-stop="center"`; a new top-level section needs the
   attribute or it will not be a stop. Phones (≤920px) snap the same stops,
-  mandatory too: every section fills the screen, the hero is fixed to one screen
-  (its mockup fades out at the fold), taller sections scroll through with no
-  nested scroller, and the hero's buttons are hidden — the nav CTA and the demo
-  below cover them.
+  mandatory too, and every home section is sized to fit one phone screen (the
+  "One screen per section" block in `styles.css`): the hero's widget picture
+  scales to the room under the copy (script.js; below 60% it steps aside), the
+  roadmap's cards become a sideways row, the FAQ rows drop their topic tags,
+  the footer's links sit in two columns, and a short-phone tier (≤740px tall)
+  tightens type, shrinks the bridge film and drops the comparison's cell labels.
+  The hero's buttons are hidden on phones; the nav CTA covers them.
 - Page-level layout lives in `styles.css` modifiers (`.page-head`, `.display--page`,
   `.display--sub`, `.section--tail`, `.section-lead--intro`, `.code-inline`, …), not in
   `style=""` attributes. The only inline styles left are the colour swatches on

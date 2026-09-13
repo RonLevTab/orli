@@ -116,6 +116,8 @@
     // onStep is wired, so the measuring renders don't drive the page.
     var frame = mountEl.closest('.demo-browser');
     var measuring = false;
+    // The frame's height follows the screen's height, so a resize refits it
+    // on desktop as well; the phone guard below keeps a toolbar slide out.
     function tallestOverflow() {
       var overflow = 0;
       for (var i = 0; i < steps.length; i++) {
@@ -148,12 +150,15 @@
         measuring = false;
         return;
       }
-      mountEl.style.zoom = '';
+      // Desktop: the frame's height comes from the screen (styles.css), so
+      // the card is scaled into it exactly as on a phone. It used to grow the
+      // frame to the tallest scene instead, which is how a fixed 600px card
+      // ended up on every screen, most steps filling two thirds of it.
       frame.style.height = '';
-      var overflow = tallestOverflow();
-      if (overflow > 0) {
-        frame.style.height = Math.ceil(frame.getBoundingClientRect().height + overflow) + 'px';
-      }
+      mountEl.style.zoom = '';
+      var room = frame.clientHeight;
+      var over = tallestOverflow() + 6;
+      mountEl.style.zoom = over > 6 ? String(room / (room + over)) : '';
       measuring = false;
     }
     fitFrame();

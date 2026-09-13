@@ -338,6 +338,42 @@
     }
   }
 
+  // The hero's widget picture on a phone (index.html .hero-visual): the
+  // copy fills the top of the first screen and the card takes the room left
+  // under it, scaled to fit whole rather than faded or cut at the fold. Below
+  // 60% the card stops reading as a card at all, so on a phone that short
+  // the picture (decoration only) steps aside and the copy stands alone.
+  (function () {
+    const hero = document.querySelector('.hero');
+    const visual = hero && hero.querySelector('.hero-visual');
+    const card = visual && visual.querySelector('.browser');
+    if (!card) return;
+    const phone = window.matchMedia('(max-width: 920px)');
+    let fittedWidth = 0;
+    function fitHeroCard() {
+      card.style.zoom = '';
+      hero.classList.remove('hero--bare');
+      if (!phone.matches) return;
+      const padBottom = parseFloat(getComputedStyle(hero).paddingBottom) || 0;
+      const room = hero.getBoundingClientRect().bottom - padBottom - visual.getBoundingClientRect().top;
+      const natural = card.offsetHeight;
+      if (!natural || room >= natural) return;
+      const scale = room / natural;
+      if (scale < 0.6) hero.classList.add('hero--bare');
+      else card.style.zoom = String(scale);
+    }
+    function refit() {
+      // A phone's toolbar sliding away resizes the window too; refitting
+      // then would jump the card mid-scroll, so only a width change counts.
+      if (window.innerWidth === fittedWidth) return;
+      fittedWidth = window.innerWidth;
+      fitHeroCard();
+    }
+    refit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeroCard);
+    window.addEventListener('resize', refit);
+  })();
+
   // Reveal-on-scroll: headlines, eyebrows, leads and list items are split
   // into words, then the words are grouped by which visual line they land
   // on so a whole line fades + rises in together — a slower, calmer
