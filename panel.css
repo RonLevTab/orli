@@ -344,7 +344,10 @@
 @media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
   html:has(.panel-tabs) { scroll-snap-type: y mandatory; scroll-padding-top: var(--nav-h); }
   .page-head, .panel-tabs ~ .section { scroll-snap-align: start; scroll-snap-stop: always; }
-  .ptabs-stop { scroll-snap-align: start; scroll-snap-stop: always; height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); }
+  /* Snap to a screen, but do not stop the page at every one: with
+     scroll-snap-stop: always each swipe moved exactly one screen, so
+     scrolling back up through seven screens took seven swipes. */
+  .ptabs-stop { scroll-snap-align: start; height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); }
   .footer { scroll-snap-align: end; }
 }
 @media (min-width: 921px) and (max-width: 1100px) {

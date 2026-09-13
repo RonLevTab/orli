@@ -206,11 +206,18 @@
     }
 
     var ticking = false;
+    var settleTimer = null;
     window.addEventListener('scroll', function () {
+      // The snap can place the page a screen further after the last scroll
+      // event of a swipe, and a reading taken then is one screen stale — so
+      // read again once the page has been still for a moment.
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(onScroll, 120);
       if (ticking) return;
       ticking = true;
       window.requestAnimationFrame(function () { ticking = false; onScroll(); });
     }, { passive: true });
+    if ('onscrollend' in window) window.addEventListener('scrollend', onScroll);
 
     var resizeTimer = null;
     window.addEventListener('resize', function () {

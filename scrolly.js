@@ -186,62 +186,71 @@
       }, 150);
     });
 
-    var io = null;
-    var pausedTimer = null;
+    // ---- which step the page is on ----
+    // Read straight from the page's position on every scroll, instead of
+    // watching each step with an IntersectionObserver: with one full screen
+    // per step and a mandatory snap, a flick crosses a whole step in one
+    // frame and the observer sometimes never reported it, leaving the widget
+    // a step behind (the step that "would not scroll"). Geometry cannot miss.
+    var jumpTo = -1;
+    var jumpTimer = null;
+    var ticking = false;
 
-    function observeSteps() {
-      if (!('IntersectionObserver' in window)) return;
-      if (!io) {
-        io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) {
-            if (e.isIntersecting) {
-              var i = steps.indexOf(e.target);
-              if (i >= 0) activate(i);
-            }
-          });
-        // A band across 30-40% of the viewport, not dead centre. Paired with
-        // the 14vh lead-in in styles.css: step 01 has to reach this band only
-        // after the widget has pinned beside it, or the step text advances
-        // while the widget is still scrolling up the page. Moving the band up
-        // is what let the lead-in shrink from 32vh, which is what closed the
-        // gap under the section heading.
-        }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
-      }
-      steps.forEach(function (s) { io.observe(s); });
+    // The reading line sits at 35% down the space under the nav, where the
+    // old observer's 30-40% band was: step 01 counts once the widget has
+    // pinned beside it, not while it is still travelling up the page.
+    function readingLine() {
+      var nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
+      if (isNaN(nav)) nav = 65;
+      return nav + (window.innerHeight - nav) * 0.35;
     }
+    function stepAtLine() {
+      var mid = readingLine();
+      var best = -1;
+      var bestDist = Infinity;
+      for (var i = 0; i < steps.length; i++) {
+        var r = steps[i].getBoundingClientRect();
+        var d = (r.top <= mid && r.bottom >= mid) ? 0 : Math.min(Math.abs(r.top - mid), Math.abs(r.bottom - mid));
+        if (d < bestDist) { bestDist = d; best = i; }
+      }
+      return best;
+    }
+    function syncFromScroll() {
+      if (measuring) return;
+      var i = stepAtLine();
+      if (i < 0) return;
+      // While a jump we started is still travelling, ignore the steps it
+      // crosses; the page landing on the target releases the driver.
+      if (jumpTo >= 0) {
+        if (i !== jumpTo) return;
+        jumpTo = -1;
+        clearTimeout(jumpTimer);
+      }
+      if (i !== current) activate(i);
+    }
+    var settleTimer = null;
+    window.addEventListener('scroll', function () {
+      // A snap can land the page after the last scroll event of a flick, so
+      // read once more when it has been still for a moment.
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(syncFromScroll, 120);
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () { ticking = false; syncFromScroll(); });
+    }, { passive: true });
+    if ('onscrollend' in window) window.addEventListener('scrollend', syncFromScroll);
 
-    // Scrolls the page to a step without the observer reacting to every step
-    // the smooth scroll crosses on the way — that flicked the widget through
-    // the whole flow. The observer is re-armed once the scroll has landed.
+    // A tap in the step list, a click inside the widget, or the restart: the
+    // page goes to that step and the driver waits for it to land there.
     function scrollToStep(i) {
-      if (io) io.disconnect();
-      clearTimeout(pausedTimer);
-      // On a phone the step list is invisible scroll distance under a pinned
-      // block, so nothing on screen moves when the page jumps: jump at once
-      // and re-arm on the next frame. A smooth scroll here could be cut
-      // short by the visitor's own touch, and the observer then re-armed
-      // onto the old spacer and snapped the widget back to the old step.
-      if (!isPinned.matches) {
-        steps[i].scrollIntoView({ block: 'center', behavior: 'instant' });
-        pausedTimer = setTimeout(observeSteps, 50);
-        return;
-      }
-      steps[i].scrollIntoView(scrollTo);
-      // Re-arm once the scroll has actually stopped: a fixed delay re-armed
-      // mid-flight on the long way back from step 06 to 01 (the restart),
-      // and the observer then flicked the widget through every step it
-      // passed. Quiet for 160ms means landed; 1500ms is the ceiling.
-      var settle = null;
-      var ceiling = setTimeout(rearm, 1500);
-      function rearm() {
-        clearTimeout(settle); clearTimeout(ceiling);
-        window.removeEventListener('scroll', onMove);
-        observeSteps();
-      }
-      function onMove() { clearTimeout(settle); settle = setTimeout(rearm, 160); }
-      window.addEventListener('scroll', onMove, { passive: true });
-      settle = setTimeout(rearm, 160);
-      pausedTimer = ceiling;
+      jumpTo = i;
+      clearTimeout(jumpTimer);
+      // If the page cannot reach the target (already there, or a scroll cut
+      // short), release the driver rather than freezing it.
+      jumpTimer = setTimeout(function () { jumpTo = -1; }, 1500);
+      // On a phone the steps are invisible scroll distance under a pinned
+      // block, so nothing on screen moves when the page jumps: jump at once.
+      steps[i].scrollIntoView(isPinned.matches ? scrollTo : { block: 'center', behavior: 'instant' });
     }
 
     // The visitor can also click their own way through the widget. When that
@@ -262,11 +271,11 @@
     };
 
     activate(0);
-    observeSteps();
+    syncFromScroll();
 
     // "Restart the demo" takes the page back to step 01 as well; restarting
-    // while parked at step 06 otherwise leaves the observer on the step still
-    // under the cursor, which snaps straight back to the success scene.
+    // while parked at step 06 otherwise leaves the page on that step, and the
+    // next scroll reading snaps straight back to the success scene.
     mountEl.addEventListener('orli:restart', function () {
       setActiveUI(0);
       scrollToStep(0);

@@ -113,7 +113,9 @@ drives `widget.js` through a controller handle):
 - **`scrolly.js`** — drives the "See it in action" section. On wide screens the
   widget is pinned while numbered `.scrolly-step` elements scroll past, and it
   calls `mountEl.__orli.setScene(i)` to advance the widget to the matching
-  booking state (an `IntersectionObserver` with a rootMargin band; the
+  booking state (read from the page's own geometry on every scroll, at a
+  reading line 35% down the screen, and again once the snap settles: an
+  `IntersectionObserver` missed steps that a snap crossed in one frame; the
   visitor's own clicks inside the widget bring the page to the matching step,
   and scrolling keeps driving afterwards). Below 921px the same mechanism
   runs in one screen: the widget and a short list of all six steps above it
@@ -159,7 +161,8 @@ drives `widget.js` through a controller handle):
   mandatory too, and every home section is sized to fit one phone screen (the
   "One screen per section" block in `styles.css`): the hero's widget picture
   scales to the room under the copy (script.js; below 60% it steps aside), the
-  roadmap's cards become a sideways row, the FAQ rows drop their topic tags,
+  roadmap's cards stack compactly (its lead and closing note step aside),
+  the FAQ rows drop their topic tags,
   the footer's links sit in two columns, and a short-phone tier (≤740px tall)
   tightens type, shrinks the bridge film and drops the comparison's cell labels.
   The hero's buttons are hidden on phones; the nav CTA covers them.

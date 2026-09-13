@@ -1049,15 +1049,16 @@ html[dir="rtl"] .hero-veil {
    Not gated on motion: fitting the screen matters with or without snap. */
 @media (max-width: 920px) {
   #roadmap .section-head, #faq .section-head { margin-bottom: 20px; }
-  .ladder {
-    display: flex; gap: 12px; align-items: stretch;
-    overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
-    margin-inline: -24px; padding: 4px 24px 8px; scroll-padding-inline: 24px;
-    scrollbar-width: none;
-  }
-  .ladder::-webkit-scrollbar { display: none; }
-  .rung { flex: 0 0 78%; scroll-snap-align: start; padding: 18px 16px; }
-  .ladder { padding-block: 2px 6px; }
+  /* The four cards stay stacked, one under the other, and are compact
+     enough that the section still holds one phone screen. */
+  .ladder { grid-template-columns: 1fr; gap: 8px; }
+  .rung { padding: 9px 12px; border-top-width: 3px; }
+  .rung-tag { margin-bottom: 5px; padding: 2px 8px; font-size: .64rem; }
+  .rung h3 { font-size: .95rem; margin-bottom: 3px; }
+  .rung p { font-size: .8rem; line-height: 1.4; }
+  /* Four stacked cards need the screen: the lead repeats what they say and
+     the closing note repeats the CTA band, so both step aside on a phone. */
+  #roadmap .section-lead, #roadmap .ladder-note, #roadmap .section-divider { display: none; }
   #roadmap .ladder-note { margin-top: 12px; font-size: 1rem; }
   .section .eyebrow { margin-bottom: 10px; }
 
