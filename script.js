@@ -358,7 +358,9 @@
       const room = hero.getBoundingClientRect().bottom - padBottom - visual.getBoundingClientRect().top;
       const natural = card.offsetHeight;
       if (!natural || room >= natural) return;
-      const scale = room / natural;
+      // Never full size on a phone: the picture is the supporting act to
+      // the copy, and a little air under it keeps it clear of the fold.
+      const scale = Math.min(room / natural, 0.85);
       if (scale < 0.6) hero.classList.add('hero--bare');
       else card.style.zoom = String(scale);
     }

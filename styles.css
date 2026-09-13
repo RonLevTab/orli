@@ -693,9 +693,21 @@ html[dir="rtl"] .hero-veil {
     width: 44px; height: 44px; padding: 0 11px; margin-inline-start: auto;
     background: transparent; border: 0; cursor: pointer;
   }
-  .nav-toggle-bar { display: block; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s ease, opacity .2s ease; }
+  /* The three bars become an X in two beats rather than all at once: the
+     outer bars slide together first and only then cross, and the middle one
+     is gone before they arrive. Sliding and turning at the same time made
+     the middle bar look like it jumped as the others swept over it.
+     translate and rotate as their own properties, so each can carry its own
+     timing; closing runs the beats in reverse. */
+  .nav-toggle-bar {
+    display: block; height: 2px; background: var(--ink); border-radius: 2px;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1), opacity .12s ease;
+  }
   .nav-pill.is-open .nav-toggle-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .nav-pill.is-open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+  /* The middle bar pulls in and is gone in 120ms, before the outer two sweep
+     across the place it occupied — the two crossing it mid-fade is what made
+     the icon look like it jumped. */
+  .nav-pill.is-open .nav-toggle-bar:nth-child(2) { opacity: 0; transform: scaleX(.15); }
   .nav-pill.is-open .nav-toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   .nav-pill.is-open .nav-links {
     display: flex; flex-direction: column; gap: 0; position: absolute;
@@ -750,7 +762,7 @@ html[dir="rtl"] .hero-veil {
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
   .faq-item.open .faq-ring { animation: none; }
   .faq-panel, .faq-panel-inner { transition: none; }
-  .nav-toggle-bar { transition: none; }
+  .nav-toggle-bar, .nav-pill.is-open .nav-toggle-bar { transition: none; }
 }
 
 /* ===== Scroll reveal (see script.js) =====
@@ -1022,7 +1034,11 @@ html[dir="rtl"] .hero-veil {
      scales the card down to that room (fitHeroCard), to 60% at the least;
      on a phone too short even for that the picture, which is decoration
      only (PRODUCT.md), steps aside and the copy stands centred alone. */
-  .hero[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); overflow: hidden; }
+  /* svh, not dvh: dvh grows and shrinks as the phone's address bar hides
+     and returns, and the card fitted to the tall state was then clipped by
+     the short one. svh is the toolbar-visible height and never moves, so
+     the card always fits and the bar hiding only adds air below it. */
+  .hero[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); height: calc(100svh - var(--nav-h)); overflow: hidden; }
   .hero-grid { flex: 1 1 auto; min-height: 0; align-items: start; }
   .hero--bare .hero-grid { flex: 0 0 auto; }
   .hero--bare .hero-visual { display: none; }
