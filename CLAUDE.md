@@ -150,7 +150,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260913b` today). Bump them all
+  carries the **same** token on every page (`?v=20260913c` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
@@ -158,7 +158,12 @@ drives `widget.js` through a controller handle):
   screen: every `main > section` and the footer carry `data-lock-stop="start"`,
   the demo's steps `data-lock-stop="center"`; a new top-level section needs the
   attribute or it will not be a stop. Phones (≤920px) snap the same stops,
-  mandatory too, and every home section is sized to fit one phone screen (the
+  but by proximity: a scroll that ends near a section's top settles on it and
+  nothing else is forced. Mandatory snapping had to land on a stop, so a small
+  drag was answered with a screen of teleport, worst at the demo's last step,
+  where the pinned widget vanished in a single frame. The demo's own steps are
+  scroll distance on a phone, not stops. Every home section is sized to fit one
+  phone screen (the
   "One screen per section" block in `styles.css`): the hero's widget picture
   scales to the room under the copy (script.js; below 60% it steps aside), the
   roadmap's cards stack compactly (its lead and closing note step aside),

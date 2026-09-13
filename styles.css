@@ -1019,9 +1019,14 @@ html[dir="rtl"] .hero-veil {
    one stop, then the pinned widget with one screen per step, exactly the
    desktop story. */
 @media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
-  html { scroll-snap-type: y mandatory; scroll-padding-top: var(--nav-h); }
+  /* Proximity, not mandatory: a mandatory snap has to land on a stop, so a
+     small drag anywhere was answered with a whole screen of teleport — worst
+     at the demo's last step, where the pinned widget vanished in one frame.
+     The page settles on a section when a scroll ends near its top, and moves
+     freely otherwise. */
+  html { scroll-snap-type: y proximity; scroll-padding-top: var(--nav-h); }
   main > section[data-lock-stop] {
-    scroll-snap-align: start; scroll-snap-stop: always;
+    scroll-snap-align: start;
     min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box;
     display: flex; flex-direction: column; justify-content: safe center;
   }
@@ -1053,8 +1058,15 @@ html[dir="rtl"] .hero-veil {
   #compare[data-lock-stop] .section-head { margin-bottom: 20px; }
   .footer[data-lock-stop] { scroll-snap-align: end; }
   #demo[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; justify-content: flex-start; padding-bottom: 0; }
+  /* No tail: the pinned block leaves with the demo, and with the steps no
+     longer snapping there is nothing to jump over. */
   .scrolly-steps { padding-block: 0; }
-  .scrolly-step[data-lock-stop] { scroll-snap-align: start; scroll-snap-stop: always; min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
+  /* The demo's steps are scroll distance, not stops: with a snap stop on
+     each one, a nudge at any step teleported a whole screen in a single
+     frame and the pinned widget vanished with it. Free inside the demo,
+     the widget advances as the page moves and the section boundaries
+     (#demo's own start, then the next section) still snap. */
+  .scrolly-step[data-lock-stop] { min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
 }
 
 /* ===== One screen per section (phones) =====
