@@ -7,3 +7,6 @@
 
 # Playwright MCP scratch output (browser console logs, snapshots, screenshots)
 .playwright-mcp/
+
+# Video/HyperFrames scratch output, not part of the site
+brag-output/
