@@ -56,6 +56,7 @@
 /* The colour modes are one choice out of three, so they sit in a row and
    only one can be pressed at a time. */
 .a11y-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.a11y-modes .a11y-mode:nth-child(n+4) { grid-column: span 1; }
 .a11y-mode {
   padding: 9px 6px; cursor: pointer; font: inherit; font-size: .82rem; font-weight: 600;
   background: var(--cream-2); border: 1px solid var(--line); border-radius: 12px; color: var(--ink);
@@ -136,9 +137,27 @@ html.a11y-dark img, html.a11y-dark svg { filter: brightness(1.1); }
 /* Colour mode 3: grey, for anyone who reads better without colour at all. */
 html.a11y-gray { filter: grayscale(1); }
 
+/* Colour mode 4: black on yellow, the pairing low-vision readers often ask
+   for by name. Painted through the tokens like the others. */
+html.a11y-yellow {
+  --cream: #ffed8a; --cream-2: #ffed8a; --surface: #fff6c2;
+  --ink: #000; --ink-soft: #141414; --line: #000;
+  --teal: #000; --teal-deep: #000; --teal-bright: #000; --dark: #000;
+  --shadow-sm: none; --shadow: none; --shadow-lg: none;
+}
+html.a11y-yellow body { background: #ffed8a; color: #000; }
+html.a11y-yellow :where(.cta-band, .btn-dark) { background: #000 !important; color: #ffed8a !important; }
+html.a11y-yellow :where(.hero-canvas, .hero-veil, .hero::before) { display: none; }
+
+/* Colour mode 5: inverted, the whole page turned through itself. Images and
+   the widget's own picture are turned back, or photographs come out as
+   negatives. */
+html.a11y-invert { filter: invert(1) hue-rotate(180deg); background: #000; }
+html.a11y-invert :where(img, video, canvas, .browser, .orli-panel) { filter: invert(1) hue-rotate(180deg); }
+
 /* Shared by both contrast modes: the decorative washes go, the frames stay. */
-html:is(.a11y-light, .a11y-dark) :where(.hero-canvas, .hero-veil, .hero::before) { display: none; }
-html:is(.a11y-light, .a11y-dark) :where(.cmp-cell, .faq-item, .rung, .browser, .orli-panel, .contact-dialog, .code-card) {
+html:is(.a11y-light, .a11y-dark, .a11y-yellow) :where(.hero-canvas, .hero-veil, .hero::before) { display: none; }
+html:is(.a11y-light, .a11y-dark, .a11y-yellow) :where(.cmp-cell, .faq-item, .rung, .browser, .orli-panel, .contact-dialog, .code-card) {
   border: 1px solid currentColor;
 }
 

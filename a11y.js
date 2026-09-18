@@ -34,6 +34,8 @@
     light: 'ניגודיות בהירה',
     dark: 'ניגודיות כהה',
     gray: 'גווני אפור',
+    yellow: 'שחור־צהוב',
+    invert: 'היפוך צבעים',
     reading: 'קריאה',
     space: 'ריווח שורות',
     links: 'הדגשת קישורים',
@@ -50,7 +52,7 @@
   };
 
   var FLAGS = ['space', 'links', 'headings', 'readable', 'cursor', 'focus', 'still', 'speak'];
-  var MODES = ['light', 'dark', 'gray'];
+  var MODES = ['light', 'dark', 'gray', 'yellow', 'invert'];
 
   var state = { text: 0, mode: '' };
   FLAGS.forEach(function (k) { state[k] = false; });
@@ -134,6 +136,8 @@
           + '<button type="button" class="a11y-mode" data-a11y-mode="light" aria-pressed="false">' + S.light + '</button>'
           + '<button type="button" class="a11y-mode" data-a11y-mode="dark" aria-pressed="false">' + S.dark + '</button>'
           + '<button type="button" class="a11y-mode" data-a11y-mode="gray" aria-pressed="false">' + S.gray + '</button>'
+          + '<button type="button" class="a11y-mode" data-a11y-mode="yellow" aria-pressed="false">' + S.yellow + '</button>'
+          + '<button type="button" class="a11y-mode" data-a11y-mode="invert" aria-pressed="false">' + S.invert + '</button>'
         + '</div>'
       + '</div>'
       + '<div class="a11y-group">'

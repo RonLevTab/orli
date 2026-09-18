@@ -1019,14 +1019,14 @@ html[dir="rtl"] .hero-veil {
    one stop, then the pinned widget with one screen per step, exactly the
    desktop story. */
 @media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
-  /* Proximity, not mandatory: a mandatory snap has to land on a stop, so a
-     small drag anywhere was answered with a whole screen of teleport — worst
-     at the demo's last step, where the pinned widget vanished in one frame.
-     The page settles on a section when a scroll ends near its top, and moves
-     freely otherwise. */
-  html { scroll-snap-type: y proximity; scroll-padding-top: var(--nav-h); }
+  /* No snap at all on a phone. Mandatory teleported a whole screen for a
+     small drag; proximity still pulled the page out of the reader's hands
+     near a section edge. The sections are each one screen tall, so scrolling
+     lands on them anyway — the layout does the work and the finger keeps
+     control. scroll-padding-top stays for anchor links, which must clear
+     the sticky nav. */
+  html { scroll-padding-top: var(--nav-h); }
   main > section[data-lock-stop] {
-    scroll-snap-align: start;
     min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box;
     display: flex; flex-direction: column; justify-content: safe center;
   }

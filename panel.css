@@ -342,12 +342,14 @@
    closing sections are stops, one flick apart, and the footer's end. The
    track's spacers are one screen under the nav each. */
 @media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
-  html:has(.panel-tabs) { scroll-snap-type: y proximity; scroll-padding-top: var(--nav-h); }
+  /* No snap on a phone here either: the screens are a screen tall each, so
+     scrolling settles on them without the page pulling against the finger. */
+  html:has(.panel-tabs) { scroll-padding-top: var(--nav-h); }
   .page-head, .panel-tabs ~ .section { scroll-snap-align: start; }
   /* Snap to a screen, but do not stop the page at every one: with
      scroll-snap-stop: always each swipe moved exactly one screen, so
      scrolling back up through seven screens took seven swipes. */
-  .ptabs-stop { scroll-snap-align: start; height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); }
+  .ptabs-stop { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); }
   .footer { scroll-snap-align: end; }
 }
 @media (min-width: 921px) and (max-width: 1100px) {
