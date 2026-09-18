@@ -316,7 +316,22 @@
       after(9000, land);
     }
 
-    if (still) {
+    // The accessibility menu's "stop animations" (a11y.js) settles the film
+    // on its finished frame, and switching it back off starts it again.
+    function settle() {
+      stop();
+      site.classList.add('is-open', 'is-picked', 'is-confirmed');
+      movie.classList.add('is-cal');
+      row.classList.add('is-landed');
+    }
+    window.addEventListener('orli:motion-still', settle);
+    window.addEventListener('orli:motion-go', function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      stop();
+      if (visible) play();
+    });
+
+    if (still || document.documentElement.classList.contains('a11y-still')) {
       // No motion, no loop: the finished picture, once.
       site.classList.add('is-open', 'is-picked', 'is-confirmed');
       movie.classList.add('is-cal');

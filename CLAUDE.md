@@ -139,6 +139,16 @@ drives `widget.js` through a controller handle):
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and
   freezes on `prefers-reduced-motion`.
+- **`a11y.js` / `a11y.css`** — the accessibility menu every page carries: a
+  floating button opening a panel with text size and spacing, three colour
+  modes (light, dark, greyscale), highlighted links and headings, a plain
+  typeface, a large cursor, loud keyboard focus, motion off and read-aloud
+  (Web Speech). Choices are classes on `<html>` kept in `localStorage`, and
+  `a11y.js` is loaded in `<head>` so they apply before the first paint.
+  Deliberately ours rather than a hosted overlay (patient contact details on
+  these pages, and an overlay cannot be audited). Motion off is broadcast as
+  `orli:motion-still` / `orli:motion-go`, which `hero-gradient.js` and the
+  bridge film in `script.js` listen for.
 - **`styles.css`** — all styling: theme tokens (light/dark) and responsive layout.
 - **`widget.css`** — styling for the live widget only, scoped under `.orli-live`.
 
@@ -150,7 +160,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260913c` today). Bump them all
+  carries the **same** token on every page (`?v=20260918a` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one

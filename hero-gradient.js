@@ -179,9 +179,16 @@
   // is three sections down reading the FAQ. Draw one frame so the hero is
   // painted, then animate only while it is actually on screen.
   requestAnimationFrame(frame);
+  // The accessibility menu's "stop animations" reaches here (a11y.js): the
+  // gradient is the one thing on the page that moves on its own forever.
+  var stilled = document.documentElement.classList.contains('a11y-still');
+  if (stilled) pause();
+  window.addEventListener('orli:motion-still', function () { stilled = true; pause(); });
+  window.addEventListener('orli:motion-go', function () { stilled = false; play(); });
+
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
-      if (entries.some(function (e) { return e.isIntersecting; })) play();
+      if (entries.some(function (e) { return e.isIntersecting; }) && !stilled) play();
       else pause();
     }, { threshold: 0 }).observe(canvas);
   } else {
