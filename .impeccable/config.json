@@ -53,6 +53,12 @@
         "value": "cubic-bezier(.34, 1.56, .64, 1)",
         "createdAt": "2026-09-08T20:54:16.702Z",
         "reason": "coordinator: the same overshoot pop the user asked for on the home film's calendar row today (2026-09-08); one small badge, 0.5s, off under reduced motion"
+      },
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "createdAt": "2026-09-18T11:40:45.375Z",
+        "reason": "a11y.css readable-font setting: the accessibility panel's גופן קריא deliberately swaps the display face for a plain, universally installed one; distinctiveness is not the goal there"
       }
     ]
   }
