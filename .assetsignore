@@ -25,3 +25,7 @@ assets/brand/orli-logo.png
 assets/brand/orli-logo-256.png
 assets/brand/orli-wordmark.png
 assets/brand/orli-wordmark-he-v2.png
+brag-output
+brag-output/**
+film-output
+film-output/**
