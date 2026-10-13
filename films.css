@@ -10,7 +10,9 @@
      chat    is-b1 … is-b6 (each message), is-typing, is-picked
      remind  is-b1 (visit done) is-b2 (months pass) is-b3 (email)
              is-b4 (tap) is-b5 (widget) is-b6 (slot) is-b7 (booked)
-     stats   is-b1 (tiles) is-b2 (bars) is-b3 (deltas)
+     stats   is-s1 / is-s2 / is-s3 pick the screen; is-b1 (tiles count)
+             is-b2 (day bars) is-b3 (deltas, average) is-b4 (donut)
+             is-b5 (treatment bars) is-b6 (hour bars) is-b7 (attendance)
      outage  is-b1 (down) is-b2 (booking queued) is-b3 (patient told)
              is-b4 (back up) is-b5 (written)
    =========================================================== */
@@ -145,12 +147,55 @@ html[dir="rtl"] .fr-rail-pin { transform: translateX(-50%); }
 .fs-chart h5 { margin: 0 0 6px; font-size: .8rem; font-weight: 700; }
 .fs-bars { flex: 1; display: grid; grid-template-columns: repeat(14, 1fr); align-items: end; gap: 5px; min-height: 100px; padding-bottom: 4px; border-bottom: 1px solid var(--line); position: relative; }
 .fs-bars i { display: block; height: var(--h); border-radius: 3px 3px 0 0; background: var(--teal); transform: scaleY(0); transform-origin: bottom; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
-.film-stats.is-b2 .fs-bars i { transform: none; }
+.film-stats.is-b2 .fs-scene[data-s="1"] .fs-bars i { transform: none; }
 .fs-avg { position: absolute; inset-inline: 0; bottom: 48%; border-top: 2px dashed var(--ink); opacity: 0; transition: opacity .4s ease; }
 .film-stats.is-b3 .fs-avg { opacity: .7; }
 .fs-legend { display: flex; gap: 14px; font-size: .7rem; color: var(--ink-soft); margin-top: 6px; }
 .fs-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--teal); margin-inline-end: 4px; vertical-align: -1px; }
 .fs-legend i.avg { height: 0; width: 12px; border-top: 2px dashed var(--ink); vertical-align: 2px; background: none; }
+/* Three screens of the dashboard in one frame; films.js fades between them. */
+.fs-stage { position: relative; flex: 1; min-height: 330px; }
+.fs-scene { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; opacity: 0; transition: opacity .5s ease; pointer-events: none; }
+.film-stats.is-s1 .fs-scene[data-s="1"], .film-stats.is-s2 .fs-scene[data-s="2"], .film-stats.is-s3 .fs-scene[data-s="3"] { opacity: 1; }
+.fs-scene--two { flex-direction: row; }
+.fs-scene--two .fs-chart { flex: 1; }
+.fs-chart--thin { flex: 0 0 auto; min-height: 0; }
+/* Where the bookings came from: a donut whose slices draw clockwise. */
+.fs-donut-wrap { display: flex; align-items: center; gap: 14px; flex: 1; }
+.fs-donut { width: 118px; height: 118px; flex: none; transform: rotate(-90deg); }
+.fs-ring { fill: none; stroke: var(--cream-2); stroke-width: 18; }
+.fs-slice { fill: none; stroke: var(--c); stroke-width: 18; stroke-dasharray: 0 276.5; stroke-dashoffset: var(--off); transition: stroke-dasharray .9s cubic-bezier(.2, .7, .2, 1); }
+.film-stats.is-b4 .fs-slice { stroke-dasharray: var(--len) 276.5; }
+.film-stats.is-b4 .fs-slice:nth-of-type(3) { transition-delay: .5s; }
+.film-stats.is-b4 .fs-slice:nth-of-type(4) { transition-delay: .8s; }
+.fs-donut text { transform: rotate(90deg); transform-origin: 60px 60px; text-anchor: middle; fill: var(--ink); font-family: var(--sans); }
+.fs-donut-n { font-size: 20px; font-weight: 700; }
+.fs-donut-l { font-size: 9px; fill: var(--ink-soft); }
+.fs-keys { display: grid; gap: 6px; font-size: .78rem; min-width: 0; }
+.fs-keys div { display: flex; align-items: center; gap: 6px; }
+.fs-keys i { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.fs-keys b { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+.fs-keys--row { display: flex; gap: 14px; margin-top: 8px; }
+.fs-keys--row b { margin-inline-start: 4px; }
+/* What was booked: horizontal bars that grow from the label. */
+.fs-hbars { display: grid; gap: 8px; font-size: .78rem; margin-top: 4px; }
+.fs-hbars div { display: grid; grid-template-columns: 6.5em 1fr 2em; align-items: center; gap: 8px; }
+.fs-hbars i { display: block; height: 10px; width: 0; border-radius: 0 4px 4px 0; background: var(--teal); transition: width .7s cubic-bezier(.2, .7, .2, 1); }
+.film-stats.is-b5 .fs-hbars i { width: var(--w); }
+.fs-hbars b { text-align: end; font-variant-numeric: tabular-nums; color: var(--ink-soft); font-weight: 500; }
+/* When patients book: two-hour buckets, the evening peak called out. */
+.fs-bars--hours { grid-template-columns: repeat(12, 1fr); min-height: 120px; }
+.fs-bars--hours i.peak { background: var(--teal-deep); }
+.film-stats.is-b6 .fs-bars--hours i { transform: none; }
+.fs-call { position: absolute; top: 0; inset-inline-start: 0; font-size: .72rem; font-weight: 600; color: var(--teal-deep); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; opacity: 0; transition: opacity .4s ease .9s; }
+.film-stats.is-b6 .fs-call { opacity: 1; }
+.fs-axis { display: flex; justify-content: space-between; font-size: .66rem; color: var(--ink-soft); margin-top: 4px; font-variant-numeric: tabular-nums; direction: ltr; }
+/* Who showed up: one bar, three parts. */
+.fs-stack { display: flex; height: 16px; border-radius: 999px; overflow: hidden; background: var(--cream-2); gap: 2px; }
+.fs-stack span { flex: 0 0 0%; transition: flex-basis .8s cubic-bezier(.2, .7, .2, 1); }
+.film-stats.is-b7 .fs-stack span { flex-basis: var(--p); }
+.film-stats.is-b7 .fs-stack span:nth-child(2) { transition-delay: .5s; }
+.film-stats.is-b7 .fs-stack span:nth-child(3) { transition-delay: .7s; }
 
 /* ---------- outage ---------- */
 .film-outage .film-frame { padding: 16px 18px; gap: 10px; }
@@ -192,7 +237,7 @@ html[dir="rtl"] .fr-rail-pin { transform: translateX(-50%); }
    with the final classes). Bars and rails have no travel to make. */
 @media (prefers-reduced-motion: reduce) {
   .film .f-in, .fc-slots span, .fr-done, .fr-rail-fill, .fr-rail-pin, .fr-widget, .fr-widget .fr-pick, .fr-widget .fr-booked, .fr-shade,
-  .fs-tile .d, .fs-bars i, .fs-avg, .fo-status, .fo-note, .fo-ev.new, .fo-toast { transition: none; }
+  .fs-tile .d, .fs-bars i, .fs-avg, .fs-scene, .fs-slice, .fs-hbars i, .fs-call, .fs-stack span, .fo-status, .fo-note, .fo-ev.new, .fo-toast { transition: none; }
   .fc-typing span, .fo-status::before, .is-tapping > .f-tap, .is-in > .f-check::after, .film-remind.is-b4 .fr-btn, .film-remind.is-b4 .fr-btn .f-tap,
   .film-remind.is-b7 .fr-widget .fr-booked .f-check::after, .film-outage.is-b5 .fo-ev.new { animation: none; }
 }
@@ -200,7 +245,7 @@ html[dir="rtl"] .fr-rail-pin { transform: translateX(-50%); }
    conversation and the finished tiles rather than an empty frame. */
 html:not(.js) .fc-msg { display: block; }
 html:not(.js) .fs-bars i { transform: none; }
-html:not(.js) .fs-tile .d, html:not(.js) .fs-avg { opacity: 1; }
+html:not(.js) .fs-tile .d, html:not(.js) .fs-avg, html:not(.js) .fs-scene[data-s="1"] { opacity: 1; }
 html:not(.js) .fr-done, html:not(.js) .fr-rail-pin { opacity: 1; }
 html:not(.js) .fr-rail-fill { width: 100%; }
 
@@ -208,7 +253,10 @@ html:not(.js) .fr-rail-fill { width: 100%; }
   .film, .film-frame { min-height: 380px; }
   .fs-tiles { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
   .fs-tile .v { font-size: 1.3rem; }
-  .fs-bars { grid-template-columns: repeat(10, 1fr); }
-  .fs-bars i:nth-child(n+11) { display: none; }
+  .fs-scene[data-s="1"] .fs-bars { grid-template-columns: repeat(10, 1fr); }
+  .fs-scene[data-s="1"] .fs-bars i:nth-child(n+11) { display: none; }
+  .fs-scene--two { flex-direction: column; }
+  .fs-chart--donut .fs-donut { width: 96px; height: 96px; }
+  .fs-stage { min-height: 360px; }
   .fr-mail-body { font-size: .86rem; }
 }

@@ -280,22 +280,75 @@
             <li>מאיפה הגיעו התורים: האתר, הצ׳אט או הצוות</li>
           </ul>
         </div>
-        <div class="film film-stats" data-film="stats" role="img" aria-label="דשבורד: פגישות שנקבעו, שעות יומן שמולאו וביטולים לחודש, לעומת החודש שלפני, ופגישות לפי יום">
+        <div class="film film-stats" data-film="stats" role="img" aria-label="דשבורד בשלושה מסכים: פגישות שנקבעו, שעות יומן שמולאו וביטולים לעומת החודש שלפני עם פגישות לפי יום; מאיפה הגיעו ההזמנות וסוגי הטיפולים; באיזו שעה מטופלים קובעים והגעה לפגישות">
           <div class="film-frame">
             <div class="fs-head"><b>נתונים וביצועים</b><div class="fs-pills" aria-hidden="true"><span>7 ימים</span><span class="on">30 יום</span><span>90 יום</span></div></div>
-            <div class="fs-tiles">
-              <div class="fs-tile"><div class="l">פגישות שנקבעו</div><div class="v" data-count="184">0</div><div class="d">▲ 23% לעומת 30 הימים שלפני</div></div>
-              <div class="fs-tile"><div class="l">שעות יומן שמולאו</div><div class="v" data-count="112">0</div><div class="d">▲ 18% לעומת 30 הימים שלפני</div></div>
-              <div class="fs-tile"><div class="l">ביטולים</div><div class="v" data-count="7">0</div><div class="d">▼ 36% לעומת 30 הימים שלפני</div></div>
-            </div>
-            <div class="fs-chart">
-              <h5>פגישות לפי יום</h5>
-              <div class="fs-bars" aria-hidden="true">
-                <i style="--h:38%"></i><i style="--h:55%"></i><i style="--h:44%"></i><i style="--h:68%"></i><i style="--h:58%"></i><i style="--h:12%"></i><i style="--h:6%"></i>
-                <i style="--h:50%"></i><i style="--h:76%"></i><i style="--h:62%"></i><i style="--h:88%"></i><i style="--h:72%"></i><i style="--h:16%"></i><i style="--h:8%"></i>
-                <div class="fs-avg"></div>
+            <div class="fs-stage">
+              <!-- Screen 1: the month in numbers, and the days. -->
+              <div class="fs-scene" data-s="1">
+                <div class="fs-tiles">
+                  <div class="fs-tile"><div class="l">פגישות שנקבעו</div><div class="v" data-count="184">0</div><div class="d">▲ 23% לעומת 30 הימים שלפני</div></div>
+                  <div class="fs-tile"><div class="l">שעות יומן שמולאו</div><div class="v" data-count="112">0</div><div class="d">▲ 18% לעומת 30 הימים שלפני</div></div>
+                  <div class="fs-tile"><div class="l">ביטולים</div><div class="v" data-count="7">0</div><div class="d">▼ 36% לעומת 30 הימים שלפני</div></div>
+                </div>
+                <div class="fs-chart">
+                  <h5>פגישות לפי יום</h5>
+                  <div class="fs-bars" aria-hidden="true">
+                    <i style="--h:38%"></i><i style="--h:55%"></i><i style="--h:44%"></i><i style="--h:68%"></i><i style="--h:58%"></i><i style="--h:12%"></i><i style="--h:6%"></i>
+                    <i style="--h:50%"></i><i style="--h:76%"></i><i style="--h:62%"></i><i style="--h:88%"></i><i style="--h:72%"></i><i style="--h:16%"></i><i style="--h:8%"></i>
+                    <div class="fs-avg"></div>
+                  </div>
+                  <div class="fs-legend"><span><i></i>פגישות</span><span><i class="avg"></i>ממוצע 7 ימים</span></div>
+                </div>
               </div>
-              <div class="fs-legend"><span><i></i>פגישות</span><span><i class="avg"></i>ממוצע 7 ימים</span></div>
+              <!-- Screen 2: where the bookings came from, and what was booked. -->
+              <div class="fs-scene fs-scene--two" data-s="2">
+                <div class="fs-chart fs-chart--donut">
+                  <h5>מאיפה הגיעו ההזמנות</h5>
+                  <div class="fs-donut-wrap">
+                    <svg class="fs-donut" viewBox="0 0 120 120" aria-hidden="true">
+                      <circle class="fs-ring" cx="60" cy="60" r="44"/>
+                      <circle class="fs-slice" cx="60" cy="60" r="44" style="--len:182.4;--off:0;--c:#119a95"/>
+                      <circle class="fs-slice" cx="60" cy="60" r="44" style="--len:71.9;--off:-182.4;--c:#c9712b"/>
+                      <circle class="fs-slice" cx="60" cy="60" r="44" style="--len:22.2;--off:-254.3;--c:#5a6fb5"/>
+                      <text class="fs-donut-n" x="60" y="57">184</text>
+                      <text class="fs-donut-l" x="60" y="72">הזמנות</text>
+                    </svg>
+                    <div class="fs-keys">
+                      <div><i style="background:#119a95"></i>טופס הזמנה באתר<b>121</b></div>
+                      <div><i style="background:#c9712b"></i>צ׳אטבוט<b>47</b></div>
+                      <div><i style="background:#5a6fb5"></i>הצוות ביומן<b>16</b></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fs-chart">
+                  <h5>סוגי טיפולים</h5>
+                  <div class="fs-hbars" aria-hidden="true">
+                    <div><span>ניקוי אבנית</span><i style="--w:100%"></i><b>61</b></div>
+                    <div><span>ייעוץ ראשוני</span><i style="--w:72%"></i><b>44</b></div>
+                    <div><span>ביקורת</span><i style="--w:54%"></i><b>33</b></div>
+                    <div><span>הלבנת שיניים</span><i style="--w:38%"></i><b>23</b></div>
+                    <div><span>אחר</span><i style="--w:38%;background:#9fb3ae"></i><b>23</b></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Screen 3: when patients book (not when they come), and who showed up. -->
+              <div class="fs-scene" data-s="3">
+                <div class="fs-chart">
+                  <h5>באיזו שעה מטופלים קובעים</h5>
+                  <div class="fs-bars fs-bars--hours" aria-hidden="true">
+                    <i style="--h:6%"></i><i style="--h:3%"></i><i style="--h:4%"></i><i style="--h:14%"></i><i style="--h:40%"></i><i style="--h:36%"></i>
+                    <i style="--h:34%"></i><i style="--h:30%"></i><i style="--h:44%"></i><i style="--h:70%"></i><i class="peak" style="--h:92%"></i><i style="--h:48%"></i>
+                    <span class="fs-call">השיא בערב, אחרי שהמרפאה סגורה</span>
+                  </div>
+                  <div class="fs-axis"><span>00</span><span>06</span><span>12</span><span>18</span><span>22</span></div>
+                </div>
+                <div class="fs-chart fs-chart--thin">
+                  <h5>הגעה לפגישות</h5>
+                  <div class="fs-stack" aria-hidden="true"><span style="--p:83%;background:#119a95"></span><span style="--p:4%;background:#a8503f"></span><span style="--p:13%;background:#cfcabd"></span></div>
+                  <div class="fs-keys fs-keys--row"><div><i style="background:#119a95"></i>הגיעו<b>128</b></div><div><i style="background:#a8503f"></i>לא הגיעו<b>6</b></div><div><i style="background:#cfcabd"></i>לא סומן<b>21</b></div></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

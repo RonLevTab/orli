@@ -92,28 +92,39 @@
       };
     },
 
-    // The month's tiles count up, the days' bars rise one after another,
-    // then the comparison with the month before and the average line.
+    // Three screens of the dashboard: the month's tiles count up and the
+    // days' bars rise with the average line; then where the bookings came
+    // from (a donut) and what was booked; then when patients book, with
+    // the evening peak called out, and who showed up.
     stats: function (root) {
       var vals = Array.prototype.slice.call(root.querySelectorAll('[data-count]'));
       var bars = Array.prototype.slice.call(root.querySelectorAll('.fs-bars i'));
-      bars.forEach(function (b, i) { b.style.transitionDelay = (i * 60) + 'ms'; });
+      bars.forEach(function (b, i) { b.style.transitionDelay = ((i % 14) * 60) + 'ms'; });
+      var ALL = ['is-s1', 'is-s2', 'is-s3', 'is-b1', 'is-b2', 'is-b3', 'is-b4', 'is-b5', 'is-b6', 'is-b7'];
+      function screen(n) { root.classList.remove('is-s1', 'is-s2', 'is-s3'); root.classList.add('is-s' + n); }
       return {
         beats: [
+          [0, function () { screen(1); }],
           [700, function () { root.classList.add('is-b1'); vals.forEach(function (v) { countUp(v, +v.getAttribute('data-count'), 1300); }); }],
           [1500, function () { root.classList.add('is-b2'); }],
-          [3200, function () { root.classList.add('is-b3'); }]
+          [3200, function () { root.classList.add('is-b3'); }],
+          [6800, function () { screen(2); }],
+          [7400, function () { root.classList.add('is-b4'); }],
+          [8300, function () { root.classList.add('is-b5'); }],
+          [12800, function () { screen(3); }],
+          [13400, function () { root.classList.add('is-b6'); }],
+          [15000, function () { root.classList.add('is-b7'); }]
         ],
-        hold: 3200,
+        hold: 4500,
         reset: function () {
-          root.classList.remove('is-b1', 'is-b2', 'is-b3');
+          root.classList.remove.apply(root.classList, ALL);
           vals.forEach(function (v) { cancelAnimationFrame(v._raf); v.textContent = '0'; });
           bars.forEach(function (b) { b.style.transition = 'none'; });
           void root.offsetWidth;
           bars.forEach(function (b) { b.style.transition = ''; });
         },
         settle: function () {
-          root.classList.add('is-b1', 'is-b2', 'is-b3');
+          root.classList.add('is-s1', 'is-b1', 'is-b2', 'is-b3');
           vals.forEach(function (v) { v.textContent = String(+v.getAttribute('data-count')).replace(/\B(?=(\d{3})+(?!\d))/g, ','); });
         }
       };
