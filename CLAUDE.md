@@ -9,10 +9,23 @@ A marketing site for **Orli**, an online-booking add-on for clinics running the 
 manager, no dependencies, no tests — plus one small Cloudflare Worker (`worker.js`)
 for the demo form and Cal.com webhook.
 
-Five pages, all sharing the same header/footer shell and `styles.css`:
+Seven pages, all sharing the same header/footer shell and `styles.css`:
 
 - **`index.html`** — the story: hero through CTA, written for the clinic owner/office
-  manager deciding whether to adopt Orli.
+  manager deciding whether to adopt Orli. Kept short on purpose: the `#features`
+  section is eight cards, each a link (the whole card, no "more" link) to the page
+  that explains the capability, and the depth lives there.
+- **`features.html`** — one chapter per capability (booking, AI agent, automations,
+  analytics, reliability, a pointer to the admin), each a short copy block beside a
+  self-playing film in the style of the home page's journey film: the booking chapter
+  reuses that film's markup (`[data-bridge]`, driven by `script.js`), the others are
+  `films.js` + `films.css` (`[data-film="chat|remind|stats|outage"]`). Labels in the
+  analytics and outage films are the admin's own (`orli-calendar/admin/src/i18n.ts`);
+  the numbers are samples. A sticky row of chapter links sits under the title.
+- **`pricing.html`** — three monthly tiers (Booking / Growth / AI receptionist, the
+  prices Ron set on 2026-10-13), what every tier includes, how onboarding goes, and
+  three price questions. Wording follows Israeli SaaS pricing pages: `₪X לחודש + מע״מ`
+  with the VAT footnote, `כל מה שב-X, וגם:` for the tier delta.
 - **`integration.html`** — customization (branding presets, email content, all done
   through the clinic's own admin panel, no code) plus the embed snippet and
   scope/security/Optima-sync facts. Linked from primary nav (`התאמה אישית`) since the
@@ -49,9 +62,9 @@ Five pages, all sharing the same header/footer shell and `styles.css`:
   URL in it is root-absolute; a relative `styles.css` would resolve against a
   directory that doesn't exist. Linked from nowhere, `noindex`.
 
-All five pages are footer-linked to each other. Primary nav is deliberately
-minimal: `ראשי` (index.html), `מסך הניהול` (panel.html) and `אודות` (about.html)
-plus the demo CTA, which opens the Cal.com popup. The integration reference, the
+All seven pages are footer-linked to each other. Primary nav: `ראשי` (index.html),
+`היכולות` (features.html), `מסך הניהול` (panel.html), `מחירים` (pricing.html) and
+`אודות` (about.html) plus the demo CTA, which opens the Cal.com popup. The integration reference, the
 comparison and the FAQ are reached from the page flow and the footer, not the nav.
 
 ## Related project
@@ -139,6 +152,13 @@ drives `widget.js` through a controller handle):
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and
   freezes on `prefers-reduced-motion`.
+- **`films.js` / `films.css`** — the four self-playing films on `features.html`
+  (agent chat, reminder, analytics, outage). Each is one 640×420 frame that plays
+  while mostly on screen, holds, replays, and clears when scrolled away; under
+  reduced motion or the accessibility menu's motion off it shows its finished
+  frame once (`orli:motion-still` / `orli:motion-go`, like the journey film in
+  `script.js`). A film is a list of timed beats that only add classes; the look is
+  all in `films.css`. Without JS the frames show the full conversation / tiles.
 - **`a11y.js` / `a11y.css`** — the accessibility menu every page carries: a
   floating button opening a panel with text size and spacing, three colour
   modes (light, dark, greyscale), highlighted links and headings, a plain
@@ -160,7 +180,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20260918b` today). Bump them all
+  carries the **same** token on every page (`?v=20261013a` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
@@ -176,7 +196,7 @@ drives `widget.js` through a controller handle):
   phone screen (the
   "One screen per section" block in `styles.css`): the hero's widget picture
   scales to the room under the copy (script.js; below 60% it steps aside), the
-  roadmap's cards stack compactly (its lead and closing note step aside),
+  capability cards sit in two compact columns (their lead steps aside),
   the FAQ rows drop their topic tags,
   the footer's links sit in two columns, and a short-phone tier (≤740px tall)
   tightens type, shrinks the bridge film and drops the comparison's cell labels.

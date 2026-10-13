@@ -103,10 +103,12 @@ the clinic's existing workflow has to change.
 - The hero's widget picture (`.orli-live` in `index.html`, `aria-hidden`) is
   **decoration only**. It is not held to the real widget's appearance and may
   diverge freely; only the `#demo` replica carries the fidelity constraint.
-- Roadmap section distinguishes shipped capabilities ("זמין עכשיו":
-  patient self-booking, reschedule/cancel) from planned ones ("בקרוב": chatbot
-  booking assistant, smart reminders) — this distinction is load-bearing and
-  must stay accurate as the real product ships more of the roadmap.
+- The roadmap section is gone (2026-10-13): the AI agent, the automations and the
+  analytics page shipped in `orli-calendar` v1.7.0 (`orli-outreach/product/features.md`
+  is the inventory), so the home page now shows eight capability cards instead, each a
+  link to `features.html` or the admin / customisation pages. Still load-bearing: say
+  only what is shipped. Not built, so never promised: SMS or WhatsApp, a day-before
+  reminder, payments, intake forms, patient accounts, multi-location clinics.
 
 ## Tone toward Optima
 

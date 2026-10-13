@@ -22,9 +22,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20260918b" />
-  <link rel="stylesheet" href="a11y.css?v=20260918b" />
-  <link rel="stylesheet" href="widget.css?v=20260918b" />
+  <link rel="stylesheet" href="styles.css?v=20261013a" />
+  <link rel="stylesheet" href="a11y.css?v=20261013a" />
+  <link rel="stylesheet" href="widget.css?v=20261013a" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 
@@ -50,7 +50,7 @@
   <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
   <!-- Accessibility menu. In the head so the visitor's saved settings are
        applied before the first paint, and before the scripts that animate. -->
-  <script src="a11y.js?v=20260918b"></script>
+  <script src="a11y.js?v=20261013a"></script>
 </head>
 <body>
   <span id="top" aria-hidden="true"></span>
@@ -60,11 +60,13 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20260918b" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261013a" width="480" height="151" alt="אורלי" />
         </a>
         <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html" aria-current="page">ראשי</a>
+          <a href="features.html">היכולות</a>
           <a href="panel.html">מסך הניהול</a>
+          <a href="pricing.html">מחירים</a>
           <a href="about.html">אודות</a>
         </nav>
         <button class="nav-toggle" type="button" id="navToggle"
@@ -89,7 +91,7 @@
         <div class="hero-copy">
           <p class="eyebrow">תוסף למרפאות שעובדות עם אופטימה</p>
           <h1 class="display">קביעת פגישה באתר, <span class="ital">בלחיצת כפתור.</span></h1>
-          <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את הפגישה ישר באופטימה. אותו יומן, עכשיו זמין למטופלים גם מהאתר.</p>
+          <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את הפגישה ישר באופטימה. ואם הוא שואל קודם, או שוכח לחזור, אורלי עונה ומזכירה.</p>
           <div class="hero-actions">
             <a data-demo-cta href="#contact" class="btn-dark lg">לקביעת דמו</a>
             <a href="#demo" class="hero-link">צפו איך זה עובד</a>
@@ -291,6 +293,63 @@
       </div>
     </section>
 
+    <!-- WHAT'S INSIDE: one card per capability, each a link to the page
+         that explains it (features.html, or the admin / customisation
+         pages). The home page stays the short version; the depth is a
+         click away. Order and copy: product/features.md in orli-outreach. -->
+    <section class="section alt" id="features" data-lock-stop="start">
+      <div class="wrap">
+        <div class="section-divider" aria-hidden="true"></div>
+        <div class="section-head">
+          <p class="eyebrow">מה בפנים</p>
+          <h2 class="display">יומן אחד. <span class="ital">הרבה פחות טלפונים.</span></h2>
+          <p class="section-lead">אורלי יושבת על היומן שכבר עובד אצלכם, ומוסיפה לו מה שחסר למרפאה שרוצה שהמטופלים יסתדרו לבד.</p>
+        </div>
+        <div class="feat-grid">
+          <a class="feat-card feat-card--main" href="features.html#booking">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+            <h3>זימון תורים מהאתר</h3>
+            <p>המטופלים קובעים תור בעצמם, בכל שעה. ישר לאופטימה.</p>
+          </a>
+          <a class="feat-card feat-card--main" href="features.html#agent">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg></span>
+            <h3>סוכן AI שעונה וקובע</h3>
+            <p>עונה למטופלים רק ממה שאישרתם, מציע מועד פנוי, וקובע.</p>
+          </a>
+          <a class="feat-card feat-card--main" href="features.html#automations">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg></span>
+            <h3>תזכורות לביקור הבא</h3>
+            <p>מייל אוטומטי בזמן הנכון, עם קישור לקביעת תור בלחיצה.</p>
+          </a>
+          <a class="feat-card feat-card--main" href="features.html#analytics">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+            <h3>נתונים ותובנות</h3>
+            <p>כמה תורים נקבעו, מתי, ובאילו טיפולים. מול החודש הקודם.</p>
+          </a>
+          <a class="feat-card" href="panel.html">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+            <h3>מסך ניהול למרפאה</h3>
+            <p>יומן, מטפלים, שעות וטיפולים. בלי מתכנת.</p>
+          </a>
+          <a class="feat-card" href="integration.html">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M8 12h8"/></svg></span>
+            <h3>בעיצוב שלכם</h3>
+            <p>צבעים, לוגו ונוסח המיילים, עם תצוגה מקדימה.</p>
+          </a>
+          <a class="feat-card" href="features.html#admin">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+            <h3>עדכונים לצוות</h3>
+            <p>פעמון ומייל על כל תור חדש, ביטול ופנייה.</p>
+          </a>
+          <a class="feat-card" href="features.html#reliability">
+            <span class="feat-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+            <h3>עובד גם בתקלה</h3>
+            <p>אופטימה לא זמינה? התור נשמר ונרשם כשהיא חוזרת.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- COMPARISON (Without / With, Petaron pattern) -->
     <section class="section alt" id="compare" data-lock-stop="start">
       <div class="wrap">
@@ -316,6 +375,9 @@
 
             <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>כל שינוי מועד = עוד שיחה ועוד עריכה ידנית</span></div>
             <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>מטופלים משנים ומבטלים בעצמם, עם אימות בקוד</span></div>
+
+            <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>״כמה זה עולה?״ בעשר בלילה נשאר בלי מענה</span></div>
+            <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>סוכן ה-AI עונה במילים שלכם ומציע מועד, באותה שיחה</span></div>
           </div>
         </div>
       </div>
@@ -333,41 +395,6 @@
           <li>לא משנה את המראה של שאר האתר</li>
           <li>נעול למרפאה שלכם, מוגן משימוש לרעה</li>
         </ul>
-      </div>
-    </section>
-
-    <!-- ROADMAP -->
-    <section class="section alt" id="roadmap" data-lock-stop="start">
-      <div class="wrap">
-        <div class="section-divider" aria-hidden="true"></div>
-        <div class="section-head">
-          <p class="eyebrow">בינה מלאכותית, בקרוב</p>
-          <h2 class="display">אורלי <span class="ital">רק מתחילה.</span></h2>
-          <p class="section-lead">השלב הבא של אורלי הוא בינה מלאכותית: צ׳אטבוט שעונה למטופלים וקובע פגישה בשיחה חופשית, ותזכורות חכמות שמחזירות מטופלים בדיוק בזמן. עוד עבודה שיורדת מהצוות, בלי ללמוד מערכת חדשה.</p>
-        </div>
-        <ol class="ladder">
-          <li class="rung done">
-            <span class="rung-tag">זמין עכשיו</span>
-            <h3>המטופלים קובעים בעצמם</h3>
-            <p>המטופלים קובעים שעות פנויות אמיתיות אונליין וזה נוחת באופטימה. הבסיס המוכח שכל השאר נבנה עליו.</p>
-          </li>
-          <li class="rung done">
-            <span class="rung-tag">זמין עכשיו</span>
-            <h3>שינוי מועד וביטול</h3>
-            <p>המטופלים משנים או מבטלים את הפגישות שלהם בעצמם, עם אישור בקוד לאימייל. בלי עבודה למזכירה.</p>
-          </li>
-          <li class="rung next">
-            <span class="rung-tag">בקרוב</span>
-            <h3>צ׳אטבוט שעונה למטופלים וקובע פגישה</h3>
-            <p>המטופלים שואלים בשפה חופשית, על טיפולים או זמינות, והצ׳אטבוט עונה מתוך המידע של המרפאה וקובע את הפגישה, הכול בשיחה אחת.</p>
-          </li>
-          <li class="rung next">
-            <span class="rung-tag">בקרוב</span>
-            <h3>תזכורות חכמות שמחזירות מטופלים</h3>
-            <p>לכל טיפול יש קצב משלו. אורלי יודעת מתי הגיע הזמן לביקור הבא ושולחת למטופל תזכורת בדיוק בזמן, עם הצעה לקבוע פגישה. יותר מטופלים חוזרים, יותר הכנסה קבועה.</p>
-          </li>
-        </ol>
-        <p class="ladder-note">רוצים גישה מוקדמת ליכולות הצמיחה של אורלי כשהן יוצאות? <a href="#contact">דברו איתנו.</a></p>
       </div>
     </section>
 
@@ -398,6 +425,13 @@
               <span class="faq-q"><span>המזכירה מאבדת שליטה על היומן?</span><span class="faq-tag">שליטה</span></span>
             </button>
             <div class="faq-panel" id="faqPanel3"><div class="faq-panel-inner"><p>לא. מטופלים קובעים רק לתוך שעות פנויות שאתם פתחתם לקביעה, אצל הרופאים ובשירותים שבחרתם. כל פגישה כזו נכנסת לאופטימה כמו פגישה שנקבעה בטלפון, והצוות ממשיך לעבוד שם כרגיל. <a href="panel.html">ככה זה נראה בפאנל הניהול.</a></p></div></div>
+          </li>
+          <li class="faq-item">
+            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="faqPanel7">
+              <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
+              <span class="faq-q"><span>מה סוכן ה-AI יודע, ומה הוא לא יגיד?</span><span class="faq-tag">סוכן AI</span></span>
+            </button>
+            <div class="faq-panel" id="faqPanel7"><div class="faq-panel-inner"><p>הסוכן עונה רק מתוך מידע שאישרתם במסך הניהול: מה שאורלי קראה מהאתר שלכם ואישרתם, ומה שהוספתם בעצמכם. הוא לא ממציא מחיר, שעה או כתובת, לא מאבחן לפי תסמינים, ובנושאים שסימנתם הוא לוקח שם וטלפון ומעביר לצוות. <a href="features.html#agent">איך זה עובד.</a></p></div></div>
           </li>
           <li class="faq-item">
             <button class="faq-btn" type="button" aria-expanded="false" aria-controls="faqPanel6">
@@ -481,14 +515,14 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20260918b" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261013a" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
       <nav class="footer-cols" aria-label="ניווט תחתון">
         <div class="footer-col">
           <h3 class="footer-col-h">מוצר</h3>
-          <a href="#roadmap">מפת דרכים</a>
+          <a href="features.html">היכולות</a>
           <a href="panel.html">מסך הניהול</a>
           <a href="integration.html">מדריך טכני להטמעה</a>
         </div>
@@ -505,6 +539,7 @@
         <div class="footer-col">
           <h3 class="footer-col-h">בואו נתחיל</h3>
           <a data-demo-cta href="#contact">לקביעת דמו</a>
+          <a href="pricing.html">מחירים</a>
           <a href="#compare">למה אורלי</a>
         </div>
       </nav>
@@ -515,13 +550,13 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20260918b"></script>
-  <script src="hero-gradient.js?v=20260918b"></script>
+  <script src="script.js?v=20261013a"></script>
+  <script src="hero-gradient.js?v=20261013a"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->
-  <script src="widget.js?v=20260918b"></script>
-  <script src="scrolly.js?v=20260918b"></script>
+  <script src="widget.js?v=20261013a"></script>
+  <script src="scrolly.js?v=20261013a"></script>
   <!-- Desktop section lock-in: two-second hold on each snap stop. -->
-  <script src="lock.js?v=20260918b"></script>
+  <script src="lock.js?v=20261013a"></script>
 </body>
 </html>
