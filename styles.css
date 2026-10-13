@@ -1190,16 +1190,15 @@ html:has(dialog[open]) { overflow: hidden; }
 
 /* ===== What's inside (index.html #features) =====
    Eight cards, each a link to the page that explains the capability. The
-   four on the first row are the product's chapters on features.html; the
-   second row points at the admin and customisation pages. */
+   first four lead to features.html's chapters, the rest to the admin and
+   customisation pages; all eight share one frame and one hover. */
 .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .feat-card {
   display: flex; flex-direction: column; min-width: 0;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 22px 20px;
-  border-top: 4px solid var(--line); box-shadow: var(--shadow-sm); color: var(--ink);
+  border-top: 4px solid var(--teal); box-shadow: var(--shadow-sm); color: var(--ink);
   transition: transform .2s ease, box-shadow .25s ease, border-color .2s ease;
 }
-.feat-card--main { border-top-color: var(--teal); }
 .feat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); }
 .feat-card:hover h3 { color: var(--teal-deep); }
 .feat-ico { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; margin-bottom: 14px; background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal-deep); }
