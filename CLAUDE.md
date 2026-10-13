@@ -34,18 +34,20 @@ Seven pages, all sharing the same header/footer shell and `styles.css`:
   aspirational — see `PRODUCT.md` for why this page exists and what it must not claim.
 - **`panel.html`** — a walkthrough of the clinic admin, answering the objection an
   owner actually holds: opening the calendar to patients does not mean losing control
-  of it. Seven vertical tabs beside a panel showing a **static mock** of
+  of it. Nine vertical tabs beside a panel showing a **static mock** of
   `orli-calendar/admin`, the whole block pinned while the page's scroll drives it
-  through the seven screens (`panel.js` + `panel.css`, scoped under `.orli-panel`;
+  through the nine screens (`panel.js` + `panel.css`, scoped under `.orli-panel`;
   ported from a 21st.dev "VerticalTabs" component, its clock replaced by an
   invisible track of one spacer per screen; on phones the block and the
   track share one grid cell, every screen is a mandatory snap stop, and
   `fitMocks` zooms the mocks down so nothing scrolls inside the frame). Every label, the sidebar
   grouping and the section order are copied from the real admin's `i18n.ts`,
-  `AppShell.vue` and `router.ts` — refresh it against those, don't invent screens.
-  Note the automations step is marked `בקרוב` because the **real admin marks it that
-  way too** (`nav-coming-soon` in `AppShell.vue`); it is not shipped, and neither this
-  page nor the roadmap may imply otherwise.
+  `AppShell.vue` and `router.ts` (v1.7.0: יומן, סוכן AI, נתונים וביצועים, מטפלים
+  ושירותים, אוטומציות ומעקב, עיצוב קביעת פגישה, תבניות אימייל, then הגדרות and
+  עזרה ותמיכה from the account menu) — refresh it against those, don't invent
+  screens. Nothing is marked `בקרוב` any more: the agent, the automations and the
+  analytics page all shipped in that release. The three screens new since the
+  first version carry a `ptab-new` "חדש" tag; drop the tag once they are old news.
 - **`about.html`** — mission/principles only. Orli has exactly one real customer
   (`PRODUCT.md`), so there is no team, funding, or customer-count content here to write
   yet — don't invent any.

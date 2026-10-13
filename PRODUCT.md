@@ -68,11 +68,13 @@ the clinic's existing workflow has to change.
   referring page on every view. `privacy.html` discloses both; no surface may
   claim the site has "no tracking" without accounting for them.
 - `panel.html` shows the other half of the product: a static mock of the clinic
-  admin, walked through in five steps. It exists because the site otherwise only ever
+  admin, walked through in nine screens in the admin's own order (calendar, AI
+  agent, analytics, practitioners and services, automations, widget design, email
+  templates, settings, support). It exists because the site otherwise only ever
   shows the patient's side, and the owner's real question is whether opening the
   calendar costs her control of it. The mock mirrors `orli-calendar/admin`'s own
-  labels and navigation; the automations screen is marked "בקרוב" there and must stay
-  marked that way here.
+  labels and navigation (v1.7.0); nothing on it is marked "בקרוב" any more, because
+  nothing it shows is unshipped.
 - The "See it in action" section (`#demo`, driven by `scrolly.js`) shows a
   static, backend-less replica of the real product's booking widget so a
   visitor can follow the flow without a real clinic or calendar behind it.
