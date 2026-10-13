@@ -201,19 +201,37 @@
 
   Array.prototype.forEach.call(document.querySelectorAll('[data-film]'), mount);
 
-  // The chapter links under the title: the one whose chapter is on screen
-  // is marked, so the row doubles as a progress line down the page.
+  // The chapter links under the title: the word of the chapter on screen
+  // is marked, and one teal line slides under it from word to word, so the
+  // row doubles as a progress line down the page.
   var links = Array.prototype.slice.call(document.querySelectorAll('.chapter-nav a[href^="#"]'));
   if (links.length && 'IntersectionObserver' in window) {
+    var wrap = links[0].parentNode;
+    var ind = document.createElement('span');
+    ind.className = 'chapter-ind'; ind.setAttribute('aria-hidden', 'true');
+    wrap.appendChild(ind);
+    var here = null;
+    function place() {
+      if (!here) return;
+      ind.style.left = here.offsetLeft + 'px';
+      ind.style.width = here.offsetWidth + 'px';
+      ind.classList.add('is-on');
+      // Keep the current word in view on a phone, where the row scrolls.
+      var l = here.offsetLeft, r = l + here.offsetWidth;
+      if (l < wrap.scrollLeft || r > wrap.scrollLeft + wrap.clientWidth) wrap.scrollTo({ left: l - 24, behavior: 'smooth' });
+    }
     var byId = {};
     links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
     var seen = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
-        links.forEach(function (a) { a.classList.remove('is-here'); });
-        var a = byId[e.target.id]; if (a) a.classList.add('is-here');
+        var a = byId[e.target.id]; if (!a) return;
+        links.forEach(function (x) { x.classList.remove('is-here'); });
+        a.classList.add('is-here'); here = a; place();
       });
     }, { rootMargin: '-40% 0px -50% 0px' });
     Object.keys(byId).forEach(function (id) { var el = document.getElementById(id); if (el) seen.observe(el); });
+    window.addEventListener('resize', place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
   }
 })();

@@ -1232,10 +1232,18 @@ html:has(dialog[open]) { overflow: hidden; }
    Copy beside a film (films.css), chapters alternating cream and cream-2,
    and a row of chapter links under the title that stays as the page scrolls. */
 .chapter-nav { position: sticky; top: var(--nav-h); z-index: 20; background: color-mix(in srgb, var(--cream) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-.chapter-nav .wrap { display: flex; gap: 6px; padding-block: 10px; overflow-x: auto; scrollbar-width: none; }
+.chapter-nav .wrap { position: relative; display: flex; justify-content: center; gap: 4px; overflow-x: auto; scrollbar-width: none; }
 .chapter-nav .wrap::-webkit-scrollbar { display: none; }
-.chapter-nav a { flex: none; font-size: .86rem; font-weight: 600; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; background: var(--surface); transition: color .15s ease, border-color .15s ease; }
-.chapter-nav a:hover, .chapter-nav a.is-here { color: var(--teal-deep); border-color: var(--teal-deep); }
+/* Words, not pills, as the admin's own tabs are: the current chapter's word
+   is dark and a teal line sits under it; films.js slides that line from
+   word to word as the page moves through the chapters. */
+.chapter-nav a { flex: none; padding: 14px 12px 12px; font-size: .92rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; transition: color .2s ease; }
+.chapter-nav a:hover { color: var(--teal-deep); }
+.chapter-nav a.is-here { color: var(--teal-deep); }
+.chapter-ind { position: absolute; bottom: 0; left: 0; width: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--teal); opacity: 0; transition: left .35s cubic-bezier(.2, .7, .2, 1), width .35s cubic-bezier(.2, .7, .2, 1), opacity .2s ease; }
+.chapter-ind.is-on { opacity: 1; }
+/* Without the script the line still marks the current word, just without the slide. */
+html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::after { content: ""; position: absolute; inset-inline: 12px; bottom: 0; height: 3px; background: var(--teal); }
 .chapter { scroll-margin-top: calc(var(--nav-h) + 56px); }
 .chapter-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 48px; align-items: center; }
 .chapter-grid > * { min-width: 0; }
@@ -1256,6 +1264,8 @@ html:has(dialog[open]) { overflow: hidden; }
   .chapter-grid { grid-template-columns: 1fr; gap: 26px; }
   .chapter--flip .chapter-grid > :first-child { order: 0; }
   .chapter { scroll-margin-top: calc(var(--nav-h) + 52px); }
+  .chapter-nav .wrap { justify-content: flex-start; }
+  .chapter-nav a { padding: 12px 10px 10px; font-size: .88rem; }
   .flow { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) { .flow { grid-template-columns: 1fr; } }
