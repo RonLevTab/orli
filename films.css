@@ -157,12 +157,11 @@ html[dir="rtl"] .fr-rail-pin { transform: translateX(-50%); }
 .fs-stage { position: relative; flex: 1; min-height: 330px; }
 .fs-scene { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; opacity: 0; transition: opacity .5s ease; pointer-events: none; }
 .film-stats.is-s1 .fs-scene[data-s="1"], .film-stats.is-s2 .fs-scene[data-s="2"], .film-stats.is-s3 .fs-scene[data-s="3"] { opacity: 1; }
-.fs-scene--two { flex-direction: row; }
 .fs-scene--two .fs-chart { flex: 1; }
-.fs-chart--thin { flex: 0 0 auto; min-height: 0; }
+.fs-chart--thin, .fs-chart--donut { flex: 0 0 auto; min-height: 0; }
 /* Where the bookings came from: a donut whose slices draw clockwise. */
-.fs-donut-wrap { display: flex; align-items: center; gap: 14px; flex: 1; }
-.fs-donut { width: 118px; height: 118px; flex: none; transform: rotate(-90deg); }
+.fs-donut-wrap { display: flex; align-items: center; gap: 18px; }
+.fs-donut { width: 104px; height: 104px; flex: none; transform: rotate(-90deg); }
 .fs-ring { fill: none; stroke: var(--cream-2); stroke-width: 18; }
 .fs-slice { fill: none; stroke: var(--c); stroke-width: 18; stroke-dasharray: 0 276.5; stroke-dashoffset: var(--off); transition: stroke-dasharray .9s cubic-bezier(.2, .7, .2, 1); }
 .film-stats.is-b4 .fs-slice { stroke-dasharray: var(--len) 276.5; }
@@ -171,8 +170,8 @@ html[dir="rtl"] .fr-rail-pin { transform: translateX(-50%); }
 .fs-donut text { transform: rotate(90deg); transform-origin: 60px 60px; text-anchor: middle; fill: var(--ink); font-family: var(--sans); }
 .fs-donut-n { font-size: 20px; font-weight: 700; }
 .fs-donut-l { font-size: 9px; fill: var(--ink-soft); }
-.fs-keys { display: grid; gap: 6px; font-size: .78rem; min-width: 0; }
-.fs-keys div { display: flex; align-items: center; gap: 6px; }
+.fs-keys { display: grid; gap: 6px; font-size: .78rem; min-width: 0; flex: 1; max-width: 220px; }
+.fs-keys div { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .fs-keys i { width: 10px; height: 10px; border-radius: 2px; flex: none; }
 .fs-keys b { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
 .fs-keys--row { display: flex; gap: 14px; margin-top: 8px; }
@@ -255,8 +254,7 @@ html:not(.js) .fr-rail-fill { width: 100%; }
   .fs-tile .v { font-size: 1.3rem; }
   .fs-scene[data-s="1"] .fs-bars { grid-template-columns: repeat(10, 1fr); }
   .fs-scene[data-s="1"] .fs-bars i:nth-child(n+11) { display: none; }
-  .fs-scene--two { flex-direction: column; }
-  .fs-chart--donut .fs-donut { width: 96px; height: 96px; }
+  .fs-chart--donut .fs-donut { width: 90px; height: 90px; }
   .fs-stage { min-height: 360px; }
   .fr-mail-body { font-size: .86rem; }
 }
