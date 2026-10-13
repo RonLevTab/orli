@@ -35,27 +35,30 @@
     chat: function (root) {
       var msgs = Array.prototype.slice.call(root.querySelectorAll('.fc-msg'));
       var beats = [];
-      var t = 900;
+      // Paced for reading, not for typing speed: Orli's dots run about as
+      // long as her line takes to write, then the line stays up long enough
+      // to be read before the patient answers.
+      var t = 1200;
       msgs.forEach(function (m, i) {
         var bot = m.classList.contains('bot');
         var words = m.textContent.trim().split(/\s+/).length;
         if (bot) {
           beats.push([t, function () { root.classList.add('is-typing'); }]);
-          t += Math.min(2200, 500 + words * 55);
+          t += Math.min(3600, 900 + words * 100);
           beats.push([t, function () { root.classList.remove('is-typing'); m.classList.add('is-in'); }]);
         } else {
-          t += 600;
+          t += 1400;
           beats.push([t, function () { m.classList.add('is-in'); }]);
         }
         if (m.hasAttribute('data-pick-after')) {
-          t += 1400;
+          t += 2200;
           beats.push([t, function () { root.classList.add('is-picked'); }]);
         }
-        t += bot ? 900 : 300;
+        t += bot ? Math.min(3200, 800 + words * 110) : 600;
       });
       return {
         beats: beats,
-        hold: 3200,
+        hold: 5000,
         reset: function () { root.classList.remove('is-typing', 'is-picked'); msgs.forEach(function (m) { m.classList.remove('is-in'); }); },
         settle: function () { root.classList.remove('is-typing'); root.classList.add('is-picked'); msgs.forEach(function (m) { m.classList.add('is-in'); }); }
       };
