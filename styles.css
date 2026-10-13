@@ -1270,28 +1270,49 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
 }
 @media (max-width: 560px) { .flow { grid-template-columns: 1fr; } }
 
-/* ===== pricing.html ===== */
-.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+/* ===== pricing.html =====
+   Three tiers; the one in the middle is the one to choose: raised, dark,
+   with a badge on its top edge, the way Israeli SaaS pricing pages mark
+   their "המומלץ ביותר". The two beside it are light cards at rest. */
+.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; padding-top: 18px; }
 .plan {
-  display: flex; flex-direction: column; min-width: 0;
+  position: relative; display: flex; flex-direction: column; min-width: 0;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px 26px 26px;
-  border-top: 4px solid var(--line); box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm);
 }
-.plan--hi { border-top-color: var(--teal); box-shadow: var(--shadow); }
+.plan--hi {
+  background: var(--dark); color: #f6f3ec; border-color: transparent;
+  box-shadow: var(--shadow-lg); transform: translateY(-18px);
+  padding-top: 34px;
+}
+.plan-tag {
+  position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+  white-space: nowrap; font-size: .72rem; font-weight: 800; letter-spacing: .02em; padding: 5px 14px; border-radius: 999px;
+  background: var(--teal-bright); color: var(--dark); box-shadow: var(--shadow-sm);
+}
 .plan-name { font-size: .78rem; font-weight: 800; letter-spacing: .04em; color: var(--teal-deep); direction: ltr; text-align: start; }
+.plan--hi .plan-name { color: #7fd8c9; }
 .plan h3 { font-family: var(--serif); font-weight: 500; font-size: 1.35rem; margin: 6px 0 4px; }
 .plan-for { color: var(--ink-soft); font-size: .94rem; margin: 0 0 18px; min-height: 2.8em; }
+.plan--hi .plan-for { color: rgba(246, 243, 236, .72); }
 .plan-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
-.plan-price b { font-size: 2.4rem; font-weight: 700; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.plan-price b { font-size: 2.6rem; font-weight: 700; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .plan-price small { color: var(--ink-soft); font-size: .92rem; }
+.plan--hi .plan-price small { color: rgba(246, 243, 236, .72); }
 .plan-note { color: var(--ink-soft); font-size: .8rem; margin: 0 0 20px; }
+.plan--hi .plan-note { color: rgba(246, 243, 236, .72); }
 .plan .check-list { margin: 0 0 24px; gap: 9px; font-size: .95rem; }
 .plan .check-list li { color: var(--ink); }
+.plan--hi .check-list li { color: #f6f3ec; }
+.plan--hi .check-list li::before { color: var(--teal-bright); }
 .plan .check-list li.plan-plus { font-weight: 600; }
 .plan .check-list li.plan-plus::before { content: "+"; }
 .plan .btn-dark, .plan .btn-cream { margin-top: auto; width: 100%; }
 .plan .btn-cream { border-color: var(--line); }
-.plan-tag { display: inline-block; align-self: flex-start; font-size: .68rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; margin-bottom: 12px; background: color-mix(in srgb, var(--teal) 15%, transparent); color: var(--teal-deep); }
+.plan--hi .btn-cream { background: var(--teal-bright); color: var(--dark); border-color: transparent; }
+.plan--hi .btn-cream:hover { background: #5ee0cd; }
+/* The dark card's keyboard ring must show on dark. */
+.plan--hi :where(a, button):focus-visible { outline-color: var(--teal-bright); }
 .plans-foot { text-align: center; color: var(--ink-soft); margin: 26px auto 0; max-width: 64ch; font-size: .94rem; }
 .plans-every { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .plans-every div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; min-width: 0; }
@@ -1303,7 +1324,8 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
 .steps li h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
 .steps li p { color: var(--ink-soft); font-size: .94rem; margin: 0; }
 @media (max-width: 920px) {
-  .plans { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto; }
+  .plans { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto; gap: 26px; }
+  .plan--hi { transform: none; }
   .plan-for { min-height: 0; }
   .plans-every { grid-template-columns: 1fr 1fr; }
   .steps { grid-template-columns: 1fr; }
