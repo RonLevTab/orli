@@ -121,21 +121,19 @@ html[lang="he"] .ladder-note { font-style: normal; }
 .btn-dark { background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); --hb-fill: var(--teal-bright); --hb-ink: var(--dark); }
 .btn-cream { background: var(--cream); color: var(--dark); --hb-fill: var(--teal-deep); --hb-ink: var(--cream); }
 /* The hover is petaron.ai's booking button (.relay-hb there): a small dot
-   beside the label spreads until it fills the pill in the other colour,
-   while the label slides out and a copy in the new ink slides in. Nothing
-   lifts. script.js gives every button the .hb class and the three spans
+   beside the label spreads until it fills the pill in the other colour
+   and the label turns to the new ink. Nothing moves or lifts. script.js gives every button the .hb class and the three spans
    (.hb-dot, .hb-label, .hb-over); the contact form's own buttons, whose
    text the form rewrites, keep a plain colour change instead. */
 .hb { position: relative; overflow: hidden; isolation: isolate; }
 .hb-dot { flex: none; width: 8px; height: 8px; border-radius: 999px; background: var(--hb-fill); transition: transform .55s cubic-bezier(.22, 1, .36, 1); }
-.hb-label { position: relative; z-index: 1; display: inline-block; transition: transform .3s ease, opacity .3s ease; }
-.hb-over {
-  position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center;
-  color: var(--hb-ink); opacity: 0; transform: translateX(-3rem); transition: transform .3s ease, opacity .3s ease;
-}
+.hb-label { position: relative; z-index: 1; display: inline-block; transition: color .35s ease .08s; }
+/* The label stays where it is: only the dot grows behind it and the text
+   turns to the new ink. (petaron.ai also slides a copy of the label in;
+   that read as the text shaking.) */
+.hb-over { display: none; }
 .hb:hover .hb-dot, .hb:focus-visible .hb-dot { transform: scale(110); }
-.hb:hover .hb-label, .hb:focus-visible .hb-label { transform: translateX(-3rem); opacity: 0; }
-.hb:hover .hb-over, .hb:focus-visible .hb-over { transform: none; opacity: 1; }
+.hb:hover .hb-label, .hb:focus-visible .hb-label { color: var(--hb-ink); }
 .btn-dark:not(.hb):hover { background: var(--teal-deep); }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
@@ -896,8 +894,7 @@ html[dir="rtl"] .hero-veil {
 @media (hover: none) {
   .btn-dark:not(.hb):hover { background: var(--dark); }
   .hb:hover .hb-dot { transform: none; }
-  .hb:hover .hb-label { transform: none; opacity: 1; }
-  .hb:hover .hb-over { opacity: 0; transform: translateX(-3rem); }
+  .hb:hover .hb-label { color: inherit; }
   .faq-item:hover { transform: none; }
   .btn-dark:active, .btn-cream:active { transform: scale(.985); }
 }
