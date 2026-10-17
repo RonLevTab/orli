@@ -353,110 +353,44 @@
     }
   }
 
-  // Page atmosphere (styles.css "Page atmosphere"): the grain, the progress
-  // line and the pointer light, built here so every page carries them
-  // without a line of markup. The light eases toward the cursor each frame;
-  // it is not drawn at all for touch, reduced motion or motion off.
-  (function () {
-    const noise = document.createElement('div'); noise.className = 'page-noise'; noise.setAttribute('aria-hidden', 'true');
-    const bar = document.createElement('div'); bar.className = 'page-progress'; bar.setAttribute('aria-hidden', 'true');
-    const light = document.createElement('div'); light.className = 'page-light'; light.setAttribute('aria-hidden', 'true'); light.innerHTML = '<i></i>';
-    document.body.append(noise, bar, light);
-    const root = document.documentElement;
-    let frame = 0;
-    const read = () => {
-      frame = 0;
-      const max = root.scrollHeight - window.innerHeight;
-      root.style.setProperty('--page-read', max > 0 ? String(Math.min(1, window.scrollY / max)) : '0');
-    };
-    window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(read); }, { passive: true });
-    window.addEventListener('resize', read);
-    read();
+  // Buttons (styles.css "buttons"): every .btn-dark gets the dot, the label
+  // and the label's copy that petaron.ai's booking button is made of, so the
+  // pages keep plain <a>/<button> text.
+  document.querySelectorAll('.btn-dark').forEach((btn) => {
+    if (btn.querySelector('.hb-label')) return;
+    const text = btn.textContent.trim();
+    btn.textContent = '';
+    const dot = document.createElement('span'); dot.className = 'hb-dot'; dot.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span'); label.className = 'hb-label'; label.textContent = text;
+    const over = document.createElement('span'); over.className = 'hb-over'; over.setAttribute('aria-hidden', 'true'); over.textContent = text;
+    btn.append(dot, label, over);
+  });
 
-    const disc = light.firstElementChild;
-    const fine = window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)');
-    if (!fine.matches) return;
-    let tx = window.innerWidth / 2, ty = window.innerHeight / 3, x = tx, y = ty, moving = 0;
-    const step = () => {
-      x += (tx - x) * 0.12; y += (ty - y) * 0.12;
-      disc.style.transform = `translate(${x - 260}px, ${y - 260}px)`;
-      if (Math.abs(tx - x) + Math.abs(ty - y) > 0.5) moving = requestAnimationFrame(step); else moving = 0;
-    };
-    window.addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; if (!moving) moving = requestAnimationFrame(step); }, { passive: true });
-    step();
+  // The hero's widget window rests tilted; the pointer over the hero nudges
+  // it (styles.css .hero-visual .browser). Mouse only.
+  (function () {
+    const hero = document.querySelector('.hero');
+    const win = hero && hero.querySelector('.hero-visual .browser');
+    if (!win || !window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) return;
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
+      const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+      win.style.setProperty('--tilt-y', `${9 - nx * 5}deg`);
+      win.style.setProperty('--tilt-x', `${4 - ny * 3}deg`);
+    });
+    hero.addEventListener('pointerleave', () => { win.style.removeProperty('--tilt-y'); win.style.removeProperty('--tilt-x'); });
   })();
 
-  // The hero's headline arrives word by word on load (styles.css,
-  // .hero-word). The teal turn of phrase keeps its own span; only the text
-  // inside is split, so the colour survives.
+  // The closing panel opens as it comes into view (styles.css .cta-panel).
   (function () {
-    const h1 = document.querySelector('.hero-copy h1');
-    if (!h1) return;
-    let i = 0;
-    const walk = (node) => {
-      Array.from(node.childNodes).forEach((child) => {
-        if (child.nodeType === Node.TEXT_NODE) {
-          const frag = document.createDocumentFragment();
-          child.textContent.split(/(\s+)/).forEach((part) => {
-            if (part === '') return;
-            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
-            const span = document.createElement('span');
-            span.className = 'hero-word';
-            span.style.animationDelay = `${i++ * 70}ms`;
-            span.textContent = part;
-            frag.appendChild(span);
-          });
-          child.replaceWith(frag);
-        } else if (child.nodeType === Node.ELEMENT_NODE) {
-          walk(child);
-        }
-      });
-    };
-    walk(h1);
-    h1.classList.add('is-split');
-  })();
-
-  // The curtain (index.html .hero-stage, wide screens): while the stage is
-  // pinned, the copy holds for the first nudge of the wheel and then drifts
-  // up and fades, the gradient drifts down and grows, and the glow dims. The
-  // next section rides over the pane. Everything is a custom property on the
-  // stage; styles.css turns them into transforms. Off on phones, under
-  // reduced motion and while the accessibility menu's motion is off, where
-  // the hero is the plain one-screen section it always was.
-  (function () {
-    const stage = document.querySelector('.hero-stage');
-    if (!stage) return;
-    const wide = window.matchMedia('(min-width: 921px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)');
-    const HOLD = 0.08;
-    const clamp = (v) => Math.min(1, Math.max(0, v));
-    let window_ = 1;
-    let frame = 0;
-    let on = false;
-    const clear = () => ['--hero-o', '--hero-y', '--hero-go', '--hero-py', '--hero-s'].forEach((k) => stage.style.removeProperty(k));
-    const measure = () => { window_ = Math.max(1, stage.offsetHeight - window.innerHeight); };
-    const update = () => {
-      frame = 0;
-      if (!on) return;
-      const p = clamp(window.scrollY / window_);
-      const f = clamp((p - HOLD) / (1 - HOLD));
-      const eased = f * f;
-      stage.style.setProperty('--hero-o', String(1 - eased));
-      stage.style.setProperty('--hero-y', `${-90 * f}px`);
-      stage.style.setProperty('--hero-go', String(1 - 0.8 * eased));
-      stage.style.setProperty('--hero-py', `${8 * p}%`);
-      stage.style.setProperty('--hero-s', String(1.1 + 0.08 * p));
-    };
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-    const start = () => {
-      if (on || !wide.matches || document.documentElement.classList.contains('a11y-still')) return;
-      on = true; measure(); update();
-    };
-    const stop = () => { on = false; clear(); };
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', () => { measure(); if (wide.matches) start(); else stop(); schedule(); });
-    window.addEventListener('orli:motion-still', stop);
-    window.addEventListener('orli:motion-go', start);
-    start();
+    const panel = document.querySelector('[data-cta-panel]');
+    if (!panel) return;
+    if (!('IntersectionObserver' in window)) { panel.classList.add('is-open'); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { panel.classList.add('is-open'); io.disconnect(); }
+    }, { threshold: 0.25 });
+    io.observe(panel);
   })();
 
   // The hero's widget picture on a phone (index.html .hero-visual): the

@@ -70,7 +70,7 @@ h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
   text-transform: uppercase; color: var(--teal-deep);
   margin-bottom: 18px;
 }
-.eyebrow.light { color: #fff; }
+.eyebrow.light { color: var(--teal-deep); }
 /* Hebrew has no case, so wide Latin-style tracking just adds drag; ease it off. */
 html[lang="he"] .eyebrow,
 html[lang="he"] .scrolly-idx,
@@ -94,7 +94,6 @@ html[lang="he"] .ladder-note { font-style: normal; }
   outline-offset: 2px;
 }
 /* On the teal band and the dark footer, teal-on-teal would be invisible. */
-.cta-band :where(a, button):focus-visible,
 .footer :where(a, button):focus-visible { outline-color: #fff; }
 
 /* Draft markers on privacy.html. They used to carry direction:ltr, copied
@@ -112,40 +111,27 @@ html[lang="he"] .ladder-note { font-style: normal; }
 }
 
 /* ---------- buttons ----------
-   After the PetaRon site's primary button: a dark pill with a thin light
-   border and a soft shadow. On hover a cream drop grows from inside the pill
-   until it fills it, the text turns dark, and a light sweeps across once.
-   Nothing lifts. The secondary button is a bordered pill that only darkens. */
-.btn-dark, .btn-cream {
-  position: relative; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
-  font: inherit; font-weight: 700; font-size: .95rem; cursor: pointer; white-space: nowrap;
-  border-radius: 999px; padding: 12px 26px; border: 1px solid transparent;
-  transition: border-color .25s ease, box-shadow .25s ease, background .2s ease, color .2s ease;
+   petaron.ai's booking button (.relay-hb there): a teal pill with a dark
+   dot beside the label. On hover the dot spreads until it fills the pill in
+   the opposite colour while the label slides out and a copy in the new
+   colour slides in. script.js wraps every .btn-dark's text in the three
+   spans this needs, so the markup stays a plain button. The ghost pill is
+   bordered glass that only brightens. */
+.btn-dark, .btn-ghost, .btn-cream {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font: inherit; font-weight: 600; font-size: .95rem; cursor: pointer; white-space: nowrap;
+  border-radius: 999px; padding: 12px 24px; border: 1px solid transparent;
+  transition: background .2s ease, border-color .2s ease, color .2s ease;
 }
-.btn-dark { background: var(--dark); color: #fff; border-color: rgba(255, 255, 255, .1); box-shadow: 0 4px 18px rgba(0, 0, 0, .18); }
-.btn-dark > * { position: relative; z-index: 2; }
-.btn-dark::before {
-  content: ""; position: absolute; left: 20%; top: 40%; width: 8px; height: 8px; border-radius: 50%; z-index: -1;
-  background: linear-gradient(135deg, #f7f5ef, #e4ddcf); transform: scale(0);
-  transition: left .5s ease, top .5s ease, width .5s ease, height .5s ease, transform .5s ease;
-}
-.btn-dark::after {
-  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
-  transform: translateX(-120%);
-}
-html[dir="rtl"] .btn-dark::after { transform: translateX(120%); }
-.btn-dark:hover { color: var(--dark); border-color: rgba(228, 221, 207, .7); box-shadow: 0 6px 22px rgba(10, 93, 90, .25); }
-.btn-dark:hover::before { left: 0; top: 0; width: 100%; height: 100%; transform: scale(1.8); }
-.btn-dark:hover::after { transform: translateX(120%); transition: transform .7s ease; }
-html[dir="rtl"] .btn-dark:hover::after { transform: translateX(-120%); }
-/* The label sits above the drop: wrap it so it has a layer of its own. */
-.btn-dark { isolation: isolate; }
-.btn-cream { background: color-mix(in srgb, var(--cream-2) 50%, transparent); color: var(--dark); border-color: var(--line); }
-.btn-cream:hover { background: color-mix(in srgb, var(--line) 50%, transparent); }
-/* On the teal band the cream pill is solid, so it reads on teal. */
-.cta-band .btn-cream { background: var(--cream); border-color: transparent; }
-.cta-band .btn-cream:hover { background: #fff; }
+.btn-dark { position: relative; overflow: hidden; isolation: isolate; background: var(--teal); color: #fff; --hb-fill: var(--dark); --hb-ink: var(--teal-bright); }
+.hb-dot { flex: none; width: 8px; height: 8px; border-radius: 999px; background: var(--hb-fill); transition: transform .55s cubic-bezier(.22, 1, .36, 1); }
+.hb-label { position: relative; z-index: 1; display: inline-block; transition: transform .3s ease, opacity .3s ease; }
+.hb-over { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; color: var(--hb-ink); opacity: 0; transform: translateX(-3rem); transition: transform .3s ease, opacity .3s ease; }
+.btn-dark:hover .hb-dot, .btn-dark:focus-visible .hb-dot { transform: scale(110); }
+.btn-dark:hover .hb-label, .btn-dark:focus-visible .hb-label { transform: translateX(-3rem); opacity: 0; }
+.btn-dark:hover .hb-over, .btn-dark:focus-visible .hb-over { transform: none; opacity: 1; }
+.btn-ghost, .btn-cream { border-color: var(--line); background: color-mix(in srgb, var(--surface) 55%, transparent); color: var(--ink); }
+.btn-ghost:hover, .btn-cream:hover { background: var(--surface); }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
 /* ---------- floating pill nav ---------- */
@@ -175,7 +161,6 @@ html[dir="rtl"] .btn-dark:hover::after { transform: translateX(-120%); }
 .nav-cta { display: flex; align-items: center; gap: 8px; }
 
 /* ---------- hero ---------- */
-.hero-stage { position: relative; }
 .hero {
   padding: 64px 0 48px; position: relative; overflow: hidden; display: flex; align-items: center;
   /* 100vh on mobile Safari is the viewport with its toolbar hidden (the
@@ -203,14 +188,6 @@ html[dir="rtl"] .btn-dark:hover::after { transform: translateX(-120%); }
    hero glow by hand so it stays behind the headline in RTL. */
 html[dir="rtl"] .hero::before { inset: -30% -12% auto 45%; }
 
-/* The photograph behind the hero (index.html .hero-photo) and the
-   readability veil over it. The picture sits at half strength under a wash
-   that goes from almost nothing at the top to the page colour at the bottom,
-   so the hero ends on cream and the next section meets it cleanly. */
-.hero-photo { position: absolute; inset: 0; z-index: 0; overflow: hidden; transform-origin: center; }
-.hero-photo img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: .5; }
-.hero-photo-wash { position: absolute; inset: 0; background: linear-gradient(to bottom, color-mix(in srgb, var(--cream) 30%, transparent), color-mix(in srgb, var(--cream) 50%, transparent) 50%, var(--cream)); }
-.hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
 .hero-veil {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
@@ -238,7 +215,10 @@ html[dir="rtl"] .hero-veil {
 .lead { font-size: 1.16rem; color: var(--ink-soft); max-width: 34em; margin-top: 22px; }
 
 /* browser-chrome widget mockup */
-.hero-visual { position: relative; pointer-events: none; }
+/* The widget window rests tilted away like a pane of glass; script.js nudges
+   the tilt with the pointer over the hero (--tilt-x / --tilt-y). */
+.hero-visual { position: relative; pointer-events: none; perspective: 1400px; }
+.hero-visual .browser { transform: rotateY(var(--tilt-y, 9deg)) rotateX(var(--tilt-x, 4deg)); transform-style: preserve-3d; transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
 .browser {
   background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
   box-shadow: var(--shadow-lg); overflow: hidden; max-width: 380px; margin: 0 auto;
@@ -564,10 +544,6 @@ html[dir="rtl"] .hero-veil {
    of the way toward deep teal (≈#0e817d, 4.7:1 with white) and the copy on
    it is solid white rather than the .78–.86 alphas it wore before, which
    fell to 4.0:1 and under. Hierarchy comes from size and weight instead. */
-.cta-band { background: linear-gradient(155deg, var(--teal-deep), color-mix(in srgb, var(--teal) 80%, var(--teal-deep))); color: #fff; padding: 74px 0; }
-.cta-band .display { color: #fff; }
-.cta-band .display .ital { color: #bff3ec; }
-.cta-lead { font-size: 1.14rem; color: #fff; max-width: 46ch; margin-inline: auto; }
 /* Two ways in: book a slot straight into the calendar, or leave details.
    The band is a flex column of centred blocks, so [hidden] has to beat the
    button's own display to actually hide the Cal.com block. */
@@ -601,10 +577,6 @@ html[dir="rtl"] .hero-veil {
   /* Fade the hero copy in on load, staggered per line — desktop doesn't need
      it (the widget mockup sits beside the text so nothing feels static on
      first paint), but on mobile the text is the whole first screen. */
-  .hero-copy > * { animation: hero-fade-in .7s ease both; }
-  .hero-copy .eyebrow { animation-delay: 0s; }
-  .hero-copy h1 { animation-delay: .12s; }
-  .hero-copy .lead { animation-delay: .24s; }
   /* No buttons on a phone: the nav's own demo CTA is one thumb away, and
      the demo itself is the next screen down. The copy is the whole hero. */
   .hero-actions { display: none; }
@@ -780,9 +752,7 @@ html[dir="rtl"] .hero-veil {
   .scrolly-cap-n, .scrolly-cap-n svg, .scrolly-cap-num, .scrolly-cap-t, .scrolly-cap-d, .scrolly-cap-p { transition: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
-  .btn-dark::before, .btn-dark::after, .btn-dark:hover::after { transition: none; }
-  .btn-dark:hover::before { transform: scale(0); }
-  .btn-dark:hover { color: #fff; }
+  .hb-dot, .hb-label, .hb-over { transition: none; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
   .faq-item.open .faq-ring { animation: none; }
   .faq-panel, .faq-panel-inner { transition: none; }
@@ -908,10 +878,10 @@ html[dir="rtl"] .hero-veil {
    after a tap reads as "you touched this", which is fine. The lifts are not.
    A press state gives touch its own feedback, released with the finger. */
 @media (hover: none) {
-  .btn-dark:hover { color: #fff; border-color: rgba(255, 255, 255, .1); box-shadow: 0 4px 18px rgba(0, 0, 0, .18); }
-  .btn-dark:hover::before { transform: scale(0); }
-  .btn-dark:hover::after { transition: none; }
-  .btn-cream:hover { background: color-mix(in srgb, var(--cream-2) 50%, transparent); }
+  .btn-dark:hover .hb-dot { transform: none; }
+  .btn-dark:hover .hb-label { transform: none; opacity: 1; }
+  .btn-dark:hover .hb-over { opacity: 0; }
+  .btn-ghost:hover, .btn-cream:hover { background: color-mix(in srgb, var(--surface) 55%, transparent); }
   .faq-item:hover { transform: none; }
   .btn-dark:active, .btn-cream:active { transform: scale(.985); }
 }
@@ -1070,8 +1040,8 @@ html[dir="rtl"] .hero-veil {
      and returns, and the card fitted to the tall state was then clipped by
      the short one. svh is the toolbar-visible height and never moves, so
      the card always fits and the bar hiding only adds air below it. */
-  .hero-stage[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); height: calc(100svh - var(--nav-h)); overflow: hidden; }
-  .hero-stage .hero { flex: 1 1 auto; min-height: 0; height: 100%; display: flex; flex-direction: column; justify-content: safe center; }
+  .hero[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); height: calc(100svh - var(--nav-h)); overflow: hidden; }
+  .hero-visual .browser { transform: none; }
   .hero-grid { flex: 1 1 auto; min-height: 0; align-items: start; }
   .hero--bare .hero-grid { flex: 0 0 auto; }
   .hero--bare .hero-visual { display: none; }
@@ -1359,85 +1329,65 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
 }
 @media (max-width: 560px) { .plans-every { grid-template-columns: 1fr; } }
 
-/* ===== Hero: on-load reveal, and the curtain on wide screens =====
-   Load: the headline arrives word by word (script.js splits it into
-   .hero-word spans), then the lead, the buttons and the picture. Scroll,
-   wide screens only: the stage is one and a half screens tall and the pane
-   is sticky, so the bridge section scrolls over it; script.js sets the
-   custom properties below from how far the stage has gone, and the copy
-   drifts up and fades while the gradient drifts the other way and grows.
-   Phones keep the one-screen hero (its own fade is in the phone block). */
-@keyframes hero-fade-in {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
+/* ===== The ribbon (flow.js) =====
+   A layer as tall as <main>, behind everything, masked to the page's head
+   and the band that snakes down from it; inside, the canvas is sticky and
+   one screen tall, so the colours keep flowing where the mask lets them
+   show. main is a stacking context so the layer's negative z-index still
+   paints above the body. */
+main { position: relative; isolation: isolate; }
+.page-flow { position: absolute; inset: 0; z-index: -1; pointer-events: none; visibility: hidden; mask-size: 100% 100%; -webkit-mask-size: 100% 100%; mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; }
+.page-flow.is-ready { visibility: visible; }
+.page-flow-screen { position: sticky; top: 0; height: 100vh; height: 100svh; width: 100%; }
+.page-flow canvas { display: block; width: 100%; height: 100%; }
+.page-flow--nogl { background: linear-gradient(120deg, #f7f5ef, #98e2d6 45%, #5a9e96); visibility: visible; }
+/* Sections sit on the ribbon, so the alternate band is a wash, not a wall. */
+.section.alt { background: color-mix(in srgb, var(--cream-2) 50%, transparent); }
+
+/* ===== Glass =====
+   Cards and panels frost whatever passes behind them (petaron.ai's light
+   page): a translucent white fill brighter at the top, a bright rim, and a
+   faint outline so the edge still reads on cream. */
+.feat-card, .faq-item, .cmp-table, .plan:not(.plan--hi), .steps li, .plans-every div, .rung, .cta-panel, .film-frame {
+  background: linear-gradient(170deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
+  -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
+  border-color: rgba(255, 255, 255, .75);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 0 0 1px rgba(27, 37, 35, .05), 0 18px 40px -24px rgba(27, 37, 35, .18);
 }
-@keyframes hero-word { from { opacity: 0; transform: translateY(.35em); filter: blur(4px); } to { opacity: 1; transform: none; filter: blur(0); } }
-@keyframes hero-breathe { from { transform: scale(1); opacity: .7; } to { transform: scale(1.12); opacity: 1; } }
-.hero-word { display: inline-block; }
-.js .hero-copy h1.is-split .hero-word { animation: hero-word .6s cubic-bezier(.22, 1, .36, 1) both; }
-@media (min-width: 921px) {
-  .js .hero-copy h1:not(.is-split) { opacity: 0; }
-  .js .hero-copy .eyebrow { animation: hero-fade-in .6s ease both; }
-  .js .hero-copy .lead { animation: hero-fade-in .8s ease .7s both; }
-  .js .hero-copy .hero-actions { animation: hero-fade-in .8s ease .9s both; }
-  .js .hero-visual { animation: hero-fade-in 1s ease .5s both; }
-  .hero::before { animation: hero-breathe 8s ease-in-out infinite alternate; transform-origin: center; }
-}
-@media (min-width: 921px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
-  .hero-stage { z-index: 0; height: 150vh; height: 150svh; }
-  .hero-stage .hero { position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); height: calc(100svh - var(--nav-h)); min-height: 0; }
-  /* Everything after the stage is the curtain: above it, and opaque. */
-  .hero-stage ~ :not(dialog) { position: relative; z-index: 1; }
-  .hero-stage ~ .section:not(.alt) { background: var(--cream); }
-  .hero-copy { opacity: var(--hero-o, 1); transform: translateY(var(--hero-y, 0px)); will-change: transform, opacity; }
-  .hero-visual { opacity: var(--hero-o, 1); transform: translateY(calc(var(--hero-y, 0px) * .6)); }
-  .hero-photo { transform: translateY(var(--hero-py, 0%)) scale(var(--hero-s, 1)); will-change: transform; }
-  .hero::before { opacity: var(--hero-go, 1); }
-  /* The stage is a snap area taller than the screen, so the page may rest
-     inside it; its own top stays the first stop. */
-  main > .hero-stage[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; display: block; padding: 0; }
-}
+
+/* ===== Hero: the copy rises out of a blur on load, line after line ===== */
+@keyframes hero-rise { from { opacity: 0; transform: translateY(18px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+.js .hero-copy > * { animation: hero-rise .9s cubic-bezier(.22, 1, .36, 1) both; }
+.js .hero-copy .eyebrow { animation-delay: .1s; }
+.js .hero-copy h1 { animation-delay: .2s; }
+.js .hero-copy .lead { animation-delay: .5s; }
+.js .hero-copy .hero-actions { animation-delay: .65s; }
+.js .hero-copy .check-list { animation-delay: .8s; }
+.js .hero-visual { animation: hero-rise 1.4s cubic-bezier(.22, 1, .36, 1) .5s both; }
 @media (prefers-reduced-motion: reduce) {
-  .js .hero-copy h1:not(.is-split) { opacity: 1; }
-  .js .hero-copy h1.is-split .hero-word, .js .hero-copy .eyebrow, .js .hero-copy .lead, .js .hero-copy .hero-actions, .js .hero-visual, .hero::before { animation: none; }
+  .js .hero-copy > *, .js .hero-visual { animation: none; }
+  .hero-visual .browser { transition: none; }
 }
 
-/* ===== Page atmosphere, after the PetaRon site's shell =====
-   Three things script.js adds to every page: a film-grain overlay over
-   everything, a thin progress line along the top that fills as the page is
-   read, and, with a mouse, a soft teal light that follows the pointer. The
-   light is a blurred disc on a fixed layer, eased toward the cursor each
-   frame; it stays off on touch screens, under reduced motion and when the
-   accessibility menu's motion is off. */
-.page-noise {
-  position: fixed; inset: 0; z-index: 40; pointer-events: none; opacity: .025; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* ===== The closing panel (index.html #contact) =====
+   Glass in the shell's width that opens from a small rounded tile as it
+   comes into view, the text following; petaron.ai's RelayCTA. */
+.cta-band { padding: 40px 0 56px; color: var(--ink); }
+.cta-panel {
+  position: relative; text-align: center; padding: 64px 32px; border: 1px solid transparent; border-radius: 28px;
+  transform: scale(.35); transition: transform 1s cubic-bezier(.22, 1, .36, 1), border-radius 1s cubic-bezier(.22, 1, .36, 1);
 }
-.page-progress {
-  position: fixed; top: 0; left: 0; z-index: 100; height: 2px; width: 100%; pointer-events: none;
-  background: linear-gradient(90deg, var(--teal-deep), var(--teal), var(--teal-bright));
-  transform-origin: left; transform: scaleX(var(--page-read, 0));
+.cta-panel > * { opacity: 0; transform: translateY(16px); transition: opacity .6s ease .35s, transform .6s cubic-bezier(.22, 1, .36, 1) .35s; }
+.cta-panel.is-open { transform: none; }
+.cta-panel.is-open > * { opacity: 1; transform: none; }
+.cta-band .display { color: var(--ink); max-width: 20ch; margin-inline: auto; }
+.cta-band .display .ital { color: var(--teal-deep); }
+.cta-lead { font-size: 1.08rem; color: var(--ink-soft); max-width: 52ch; margin-inline: auto; }
+.cta-watch { display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; font-size: .9rem; color: var(--ink-soft); transition: color .2s ease; }
+.cta-watch:hover { color: var(--ink); }
+.cta-watch svg { width: 12px; height: 12px; fill: currentColor; transform: scaleX(-1); }
+@media (prefers-reduced-motion: reduce) {
+  .cta-panel, .cta-panel > * { transition: none; transform: none; opacity: 1; }
 }
-html[dir="rtl"] .page-progress { transform-origin: right; }
-.page-light { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
-.page-light i {
-  position: absolute; left: 0; top: 0; width: 520px; height: 520px; border-radius: 50%; opacity: .55;
-  background: radial-gradient(circle, rgba(15, 138, 134, .16) 0%, rgba(20, 184, 166, .06) 42%, transparent 72%);
-  filter: blur(110px); transform: translate(-260px, -260px); will-change: transform;
-}
-@media (pointer: coarse), (prefers-reduced-motion: reduce) { .page-light { display: none; } }
-html.a11y-still .page-light { display: none; }
-
-/* The closing band's headline: a pale light sweeps across the words every
-   few seconds (PetaRon's CTA shimmer). The teal turn of phrase keeps its own
-   colour and sits outside the sweep. */
-.cta-band .display {
-  background-image: linear-gradient(100deg, #fff 0%, #fff 44%, #bff3ec 50%, #fff 56%, #fff 100%);
-  background-size: 300% 100%; background-position: 100% 0; background-repeat: no-repeat;
-  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  animation: cta-shimmer 5s ease-in-out infinite;
-}
-.cta-band .display .ital { -webkit-text-fill-color: #bff3ec; }
-@keyframes cta-shimmer { 0%, 72% { background-position: 100% 0; } 100% { background-position: 0% 0; } }
-@media (prefers-reduced-motion: reduce) { .cta-band .display { animation: none; } }
-html.a11y-still .cta-band .display { animation: none; }
+html:not(.js) .cta-panel, html:not(.js) .cta-panel > * { transform: none; opacity: 1; }
+@media (max-width: 920px) { .cta-panel { padding: 40px 20px; border-radius: 22px; } .cta-band { padding: 16px 0 32px; } }
