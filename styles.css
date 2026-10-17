@@ -1240,13 +1240,15 @@ html:has(dialog[open]) { overflow: hidden; }
 /* ===== features.html: one chapter per capability =====
    Copy beside a film (films.css), chapters alternating cream and cream-2,
    and a row of chapter links under the title that stays as the page scrolls. */
-.chapter-nav { position: sticky; top: var(--nav-h); z-index: 20; background: color-mix(in srgb, var(--cream) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+/* Flush under the main nav (a pixel of overlap, so no strip of page shows
+   between the two bars) and opaque, so the two read as one header. */
+.chapter-nav { position: sticky; top: calc(var(--nav-h) - 1px); z-index: 20; background: var(--cream); border-bottom: 1px solid var(--line); }
 .chapter-nav .wrap { position: relative; display: flex; justify-content: center; gap: 4px; overflow-x: auto; scrollbar-width: none; }
 .chapter-nav .wrap::-webkit-scrollbar { display: none; }
 /* Words, not pills, as the admin's own tabs are: the current chapter's word
    is dark and a teal line sits under it; films.js slides that line from
    word to word as the page moves through the chapters. */
-.chapter-nav a { flex: none; padding: 14px 12px 12px; font-size: .92rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; transition: color .2s ease; }
+.chapter-nav a { flex: none; padding: 10px 12px 9px; font-size: .92rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; transition: color .2s ease; }
 .chapter-nav a:hover { color: var(--teal-deep); }
 .chapter-nav a.is-here { color: var(--teal-deep); }
 .chapter-ind { position: absolute; bottom: 0; left: 0; width: 0; height: 3px; border-radius: 3px 3px 0 0; background: var(--teal); opacity: 0; transition: left .35s cubic-bezier(.2, .7, .2, 1), width .35s cubic-bezier(.2, .7, .2, 1), opacity .2s ease; }
@@ -1274,7 +1276,7 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
   .chapter--flip .chapter-grid > :first-child { order: 0; }
   .chapter { scroll-margin-top: calc(var(--nav-h) + 52px); }
   .chapter-nav .wrap { justify-content: flex-start; }
-  .chapter-nav a { padding: 12px 10px 10px; font-size: .88rem; }
+  .chapter-nav a { padding: 9px 10px 8px; font-size: .88rem; }
   .flow { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) { .flow { grid-template-columns: 1fr; } }
@@ -1481,9 +1483,9 @@ main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; ju
 :root { --shadow-sm: none; --shadow: none; --shadow-lg: none; }
 .glass-light { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--cream); }
 .glass-light i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; will-change: transform; }
-.glass-light i:nth-child(1) { left: -12vmax; top: -18vmax; background: radial-gradient(closest-side, rgba(20, 184, 166, .42), transparent); animation: gl-a 34s ease-in-out infinite alternate; }
-.glass-light i:nth-child(2) { right: -18vmax; top: 15vh; background: radial-gradient(closest-side, rgba(168, 232, 208, .65), transparent); animation: gl-b 42s ease-in-out infinite alternate; }
-.glass-light i:nth-child(3) { left: 20vw; bottom: -30vmax; background: radial-gradient(closest-side, rgba(15, 138, 134, .32), transparent); animation: gl-c 38s ease-in-out infinite alternate; }
+.glass-light i:nth-child(1) { left: -12vmax; top: -18vmax; background: radial-gradient(closest-side, rgba(20, 184, 166, .16), transparent); animation: gl-a 34s ease-in-out infinite alternate; }
+.glass-light i:nth-child(2) { right: -18vmax; top: 15vh; background: radial-gradient(closest-side, rgba(196, 232, 214, .45), transparent); animation: gl-b 42s ease-in-out infinite alternate; }
+.glass-light i:nth-child(3) { left: 20vw; bottom: -30vmax; background: radial-gradient(closest-side, rgba(226, 214, 190, .45), transparent); animation: gl-c 38s ease-in-out infinite alternate; }
 @keyframes gl-a { to { transform: translate(48vw, 38vh) scale(1.15); } }
 @keyframes gl-b { to { transform: translate(-52vw, 32vh) scale(.9); } }
 @keyframes gl-c { to { transform: translate(-18vw, -62vh) scale(1.1); } }
@@ -1492,7 +1494,7 @@ html.a11y-still .glass-light i { animation-play-state: paused; }
 /* Plain parts are solid, so the light only shows through the glass. */
 main > section:not(.alt):not(.hero) { background-color: var(--cream); }
 .section.alt, .footer {
-  background: linear-gradient(170deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .26));
+  background: linear-gradient(170deg, rgba(255, 255, 255, .6), rgba(255, 255, 255, .4));
   -webkit-backdrop-filter: blur(28px) saturate(150%); backdrop-filter: blur(28px) saturate(150%);
   border-block: 1px solid rgba(255, 255, 255, .7);
 }

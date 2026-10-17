@@ -380,6 +380,21 @@
     document.body.prepend(light);
   })();
 
+  // Buttons (styles.css "buttons"): every pill gets the dot, the label and
+  // the label's copy that petaron.ai's hover is made of. The contact form's
+  // buttons are left plain: the form rewrites their text while sending.
+  document.querySelectorAll('.btn-dark, .btn-cream').forEach((btn) => {
+    if (btn.closest('form') || btn.classList.contains('hb')) return;
+    const text = btn.textContent.trim();
+    if (!text) return;
+    btn.textContent = '';
+    const dot = document.createElement('span'); dot.className = 'hb-dot'; dot.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span'); label.className = 'hb-label'; label.textContent = text;
+    const over = document.createElement('span'); over.className = 'hb-over'; over.setAttribute('aria-hidden', 'true'); over.textContent = text;
+    btn.append(dot, label, over);
+    btn.classList.add('hb');
+  });
+
   // The hero's widget picture on a phone (index.html .hero-visual): the
   // copy fills the top of the first screen and the card takes the room left
   // under it, scaled to fit whole rather than faded or cut at the fold. Below
