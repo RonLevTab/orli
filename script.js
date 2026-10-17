@@ -353,6 +353,39 @@
     }
   }
 
+  // Page atmosphere (styles.css "Page atmosphere"): the grain, the progress
+  // line and the pointer light, built here so every page carries them
+  // without a line of markup. The light eases toward the cursor each frame;
+  // it is not drawn at all for touch, reduced motion or motion off.
+  (function () {
+    const noise = document.createElement('div'); noise.className = 'page-noise'; noise.setAttribute('aria-hidden', 'true');
+    const bar = document.createElement('div'); bar.className = 'page-progress'; bar.setAttribute('aria-hidden', 'true');
+    const light = document.createElement('div'); light.className = 'page-light'; light.setAttribute('aria-hidden', 'true'); light.innerHTML = '<i></i>';
+    document.body.append(noise, bar, light);
+    const root = document.documentElement;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const max = root.scrollHeight - window.innerHeight;
+      root.style.setProperty('--page-read', max > 0 ? String(Math.min(1, window.scrollY / max)) : '0');
+    };
+    window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(read); }, { passive: true });
+    window.addEventListener('resize', read);
+    read();
+
+    const disc = light.firstElementChild;
+    const fine = window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)');
+    if (!fine.matches) return;
+    let tx = window.innerWidth / 2, ty = window.innerHeight / 3, x = tx, y = ty, moving = 0;
+    const step = () => {
+      x += (tx - x) * 0.12; y += (ty - y) * 0.12;
+      disc.style.transform = `translate(${x - 260}px, ${y - 260}px)`;
+      if (Math.abs(tx - x) + Math.abs(ty - y) > 0.5) moving = requestAnimationFrame(step); else moving = 0;
+    };
+    window.addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; if (!moving) moving = requestAnimationFrame(step); }, { passive: true });
+    step();
+  })();
+
   // The hero's headline arrives word by word on load (styles.css,
   // .hero-word). The teal turn of phrase keeps its own span; only the text
   // inside is split, so the colour survives.
