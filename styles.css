@@ -1417,3 +1417,63 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
   .connect-name, .connect-chips span { transition: none; }
 }
 html.a11y-still .connect-wire span { animation: none; opacity: .8; }
+
+/* ===== Card visuals (index.html #features) =====
+   Each capability card opens with one quiet loop instead of an icon, as
+   petaron.ai's feature cards do: a slot being picked, the agent typing, a
+   reminder going out, bars moving, a screen lighting up, the button
+   changing colour, the bell, the link to Optima dropping and coming back.
+   Same frame and size on every card; still under reduced motion. */
+.fv { position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; height: 46px; margin-bottom: 14px; border-radius: 10px; background: color-mix(in srgb, var(--teal) 8%, transparent); overflow: hidden; }
+.fv i { font-style: normal; display: block; }
+.fv svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* booking: one of three times picked in turn */
+.fv-slots i { font-size: .72rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-variant-numeric: tabular-nums; animation: fv-pick 4.5s infinite; }
+.fv-slots i:nth-child(2) { animation-delay: 1.5s; } .fv-slots i:nth-child(3) { animation-delay: 3s; }
+@keyframes fv-pick { 0%, 33% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 34%, 100% { background: var(--surface); border-color: var(--line); color: var(--ink); } }
+/* agent: typing dots, then the answer */
+.fv-chat i { position: absolute; padding: 7px 10px; border-radius: 10px 10px 10px 3px; background: var(--surface); border: 1px solid var(--line); }
+.fv-dots { display: flex !important; gap: 3px; animation: fv-a 4s infinite; }
+.fv-dots b { width: 5px; height: 5px; border-radius: 50%; background: var(--ink-soft); animation: fv-dot 1s ease-in-out infinite; }
+.fv-dots b:nth-child(2) { animation-delay: .15s; } .fv-dots b:nth-child(3) { animation-delay: .3s; }
+.fv-bubble { display: grid !important; gap: 4px; width: 70px; animation: fv-b 4s infinite; }
+.fv-bubble b { height: 4px; border-radius: 2px; background: var(--teal); } .fv-bubble b:nth-child(2) { width: 60%; background: var(--line); }
+@keyframes fv-dot { 0%, 100% { opacity: .35; transform: none; } 50% { opacity: 1; transform: translateY(-2px); } }
+@keyframes fv-a { 0%, 40% { opacity: 1; } 45%, 100% { opacity: 0; } }
+@keyframes fv-b { 0%, 42% { opacity: 0; transform: translateY(4px); } 50%, 95% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+/* reminders: the months run out, the email goes */
+.fv-remind { gap: 10px; padding: 0 16px; }
+.fv-track { flex: 1; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.fv-track b { display: block; height: 100%; width: 100%; background: var(--teal); transform-origin: right; animation: fv-fill 4.5s infinite; }
+.fv-mail { width: 26px; height: 26px; border-radius: 50%; display: grid !important; place-items: center; background: var(--teal-deep); color: #fff; animation: fv-pop 4.5s infinite; }
+.fv-mail svg { width: 14px; height: 14px; }
+@keyframes fv-fill { 0% { transform: scaleX(0); } 60%, 100% { transform: scaleX(1); } }
+@keyframes fv-pop { 0%, 58% { transform: scale(.4); opacity: .3; } 66% { transform: scale(1.15); opacity: 1; } 72%, 100% { transform: none; opacity: 1; } }
+/* analytics: six bars that keep moving */
+.fv-bars { align-items: flex-end; gap: 5px; padding-bottom: 8px; }
+.fv-bars i { width: 9px; height: 28px; border-radius: 3px 3px 0 0; background: var(--teal); transform-origin: bottom; animation: fv-bar 3.2s ease-in-out infinite alternate; }
+.fv-bars i:nth-child(2) { animation-delay: .4s; } .fv-bars i:nth-child(3) { animation-delay: .8s; } .fv-bars i:nth-child(4) { animation-delay: 1.2s; } .fv-bars i:nth-child(5) { animation-delay: 1.6s; } .fv-bars i:nth-child(6) { animation-delay: 2s; }
+@keyframes fv-bar { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
+/* admin: four screens, one lit at a time */
+.fv-grid i { width: 30px; height: 22px; border-radius: 5px; border: 1px solid var(--line); background: var(--surface); animation: fv-lit 4s infinite; }
+.fv-grid i:nth-child(2) { animation-delay: 1s; } .fv-grid i:nth-child(3) { animation-delay: 2s; } .fv-grid i:nth-child(4) { animation-delay: 3s; }
+@keyframes fv-lit { 0%, 24% { background: color-mix(in srgb, var(--teal) 30%, var(--surface)); border-color: var(--teal); } 25%, 100% { background: var(--surface); border-color: var(--line); } }
+/* design: the booking button in the clinic's colours */
+.fv-swatch i { font-size: .72rem; font-weight: 600; color: #fff; padding: 5px 12px; border-radius: 999px; animation: fv-brand 6s infinite; }
+@keyframes fv-brand { 0%, 22% { background: #0f8a86; } 25%, 47% { background: #c2612f; } 50%, 72% { background: #2f6b45; } 75%, 97% { background: #b23a67; } 100% { background: #0f8a86; } }
+/* team updates: the bell rings and its badge pops */
+.fv-bell i { position: relative; color: var(--teal-deep); animation: fv-ring 3s infinite; transform-origin: 50% 10%; }
+.fv-bell svg { width: 24px; height: 24px; display: block; }
+.fv-bell b { position: absolute; top: -3px; right: -4px; width: 10px; height: 10px; border-radius: 50%; background: #c9412a; border: 2px solid var(--surface); animation: fv-badge 3s infinite; }
+@keyframes fv-ring { 0%, 60%, 100% { transform: none; } 65% { transform: rotate(14deg); } 72% { transform: rotate(-12deg); } 79% { transform: rotate(8deg); } 86% { transform: none; } }
+@keyframes fv-badge { 0%, 62% { transform: scale(0); } 70% { transform: scale(1.3); } 76%, 100% { transform: scale(1); } }
+/* reliability: the link to Optima drops and comes back */
+.fv-link { gap: 0; padding: 0 18px; }
+.fv-node { width: 12px; height: 12px; border-radius: 50%; background: var(--teal-deep); flex: none; }
+.fv-line { flex: 1; height: 2px; background: var(--teal); animation: fv-cut 5s infinite; }
+.fv-state { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--surface); flex: none; animation: fv-state 5s infinite; }
+@keyframes fv-cut { 0%, 30% { opacity: 1; } 35%, 60% { opacity: .25; } 65%, 100% { opacity: 1; } }
+@keyframes fv-state { 0%, 30% { background: var(--teal); } 35%, 60% { background: #c9982f; } 65%, 100% { background: var(--teal); } }
+@media (max-width: 920px) { .fv { height: 34px; margin-bottom: 8px; } .fv-bubble { width: 50px; } }
+@media (prefers-reduced-motion: reduce) { .fv *, .fv i, .fv b { animation: none !important; } }
+html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation: none !important; }
