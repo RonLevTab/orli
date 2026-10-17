@@ -1204,7 +1204,7 @@ html:has(dialog[open]) { overflow: hidden; }
    Eight cards, two to a row, each a link to the page that explains the
    capability: the small loop on one side, the title and a line on the
    other. No frame, only a soft fill; on hover the card brightens and
-   grows a touch, both easing in and out over 0.9 seconds, and its loop starts
+   grows a touch, both easing in and out over 0.5 seconds, and its loop starts
    playing. `translate` and `scale` rather than `transform`,
    because the scroll reveal leaves transform: none inline on each card. */
 .feat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; max-width: 980px; margin-inline: auto; }
@@ -1213,7 +1213,7 @@ html:has(dialog[open]) { overflow: hidden; }
   padding: 16px 20px 16px 44px; border-radius: 18px; color: var(--ink);
   background: color-mix(in srgb, var(--surface) 55%, transparent);
   will-change: scale; backface-visibility: hidden;
-  transition: scale .9s cubic-bezier(.45, 0, .2, 1), background-color .9s cubic-bezier(.45, 0, .2, 1);
+  transition: scale .5s cubic-bezier(.45, 0, .2, 1), background-color .5s cubic-bezier(.45, 0, .2, 1);
 }
 .feat-card .fv { grid-row: span 2; margin: 0; }
 .feat-card h3 { font-family: var(--serif); font-weight: 600; font-size: 1.08rem; margin: 0; align-self: end; transition: color .8s ease; }
@@ -1449,7 +1449,7 @@ html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation:
    own, and the hover grow snapped with no transition at all. */
 .js .feat-card {
   transition: opacity .9s cubic-bezier(.22, 1, .36, 1), transform .9s cubic-bezier(.22, 1, .36, 1), filter .9s ease,
-    scale .9s cubic-bezier(.45, 0, .2, 1), background-color .9s cubic-bezier(.45, 0, .2, 1);
+    scale .5s cubic-bezier(.45, 0, .2, 1), background-color .5s cubic-bezier(.45, 0, .2, 1);
 }
 @media (prefers-reduced-motion: reduce) {
   .js .rung, .js .feat-card, .js .code-card, .js .cmp-table, .js .swatches, .js .notice-banner { filter: none; }
