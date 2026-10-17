@@ -1496,9 +1496,9 @@ main > section:not(.alt):not(.hero) { background-color: var(--cream); }
 .section.alt, .footer {
   background: linear-gradient(170deg, rgba(255, 255, 255, .6), rgba(255, 255, 255, .4));
   -webkit-backdrop-filter: blur(28px) saturate(150%); backdrop-filter: blur(28px) saturate(150%);
-  border-block: 1px solid rgba(255, 255, 255, .7);
 }
-.footer { border-bottom: 0; }
+/* No rim on the bands: where two of them meet, their rims made a bright
+   white line across the page. The footer keeps its own hairline. */
 /* The film's popups and the launcher keep an edge, not a shadow. */
 .bridge-widget, .bridge-movie .bm-cal, .bs-launcher, .fr-widget, .fo-toast { box-shadow: 0 0 0 1px rgba(27, 37, 35, .08); }
 .plan--hi { box-shadow: none; }
