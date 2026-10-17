@@ -1,11 +1,12 @@
 /* ============================================================
-   Animated "stripe-like" gradient shader for the hero background.
+   The hero's animated background: petaron.ai's GradFlow stripe.
 
-   A dependency-free vanilla-WebGL stripe field + grain, driven by
-   simplex noise. The technique came from the GradFlow React component
-   (gradflow.meera.dev); the palette does not — it is built from this
-   product's own tokens in styles.css, so the largest surface on the
-   site reads as Orli rather than as a generic aurora.
+   The fragment shader is GradFlow's own "stripe" type (gradflow 0.2.0,
+   the library petaron.ai's ribbon is drawn with, RelayFlow.tsx there),
+   with its grain, run here in plain WebGL so the site stays free of
+   dependencies. Same speed, scale and grain as petaron.ai; the three
+   colours are Orli's instead of their lime: a near-white mint, the brand
+   teal and a soft mint, the way theirs runs pale lime, lime and mint.
 
    Falls back to a static CSS gradient (class on the section) when
    WebGL is unavailable, and freezes for prefers-reduced-motion.
@@ -13,18 +14,13 @@
 (function () {
   'use strict';
 
-  // --- config ---
-  // Three tones drawn from the brand tokens, ordered light -> mid -> deep so
-  // the field has real tonal range instead of one flat wash. Pastel on
-  // purpose: the hero copy sits on top of this, so contrast stays gentle.
-  // Keep these in sync with :root in styles.css.
   var CONFIG = {
-    color1: [247, 245, 239], // --cream  #f7f5ef
-    color2: [152, 226, 214], // tint of --teal-bright #14b8a6
-    color3: [ 90, 158, 150], // muted --teal #0f8a86, the deep stripe
-    speed: 0.35,
+    color1: [236, 248, 243], // near-white mint, so the field never vanishes into the page
+    color2: [ 20, 184, 166], // --teal-bright #14b8a6
+    color3: [168, 232, 208], // soft mint, petaron.ai's own third colour
+    speed: 0.4,
     scale: 1.0,
-    noise: 0.05,
+    noise: 0.08,
   };
 
   var canvas = document.getElementById('heroGradient');
@@ -37,49 +33,34 @@
     return;
   }
 
-  var VERT = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
+  var VERT = 'attribute vec2 p; varying vec2 vUv; void main(){ vUv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }';
 
+  // GradFlow's stripeGradient and its grain, verbatim but for the names.
   var FRAG = [
     'precision highp float;',
     'uniform float u_time; uniform vec2 u_res;',
     'uniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3;',
     'uniform float u_speed; uniform float u_scale; uniform float u_noise;',
-    // Ashima simplex noise 2D
-    'vec3 mod289(vec3 x){return x - floor(x*(1.0/289.0))*289.0;}',
-    'vec2 mod289(vec2 x){return x - floor(x*(1.0/289.0))*289.0;}',
-    'vec3 permute(vec3 x){return mod289(((x*34.0)+1.0)*x);}',
-    'float snoise(vec2 v){',
-    '  const vec4 C = vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);',
-    '  vec2 i = floor(v + dot(v, C.yy));',
-    '  vec2 x0 = v - i + dot(i, C.xx);',
-    '  vec2 i1 = (x0.x > x0.y) ? vec2(1.0,0.0) : vec2(0.0,1.0);',
-    '  vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;',
-    '  i = mod289(i);',
-    '  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));',
-    '  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);',
-    '  m = m*m; m = m*m;',
-    '  vec3 x = 2.0 * fract(p * C.www) - 1.0;',
-    '  vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5); vec3 a0 = x - ox;',
-    '  m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);',
-    '  vec3 g; g.x = a0.x * x0.x + h.x * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw;',
-    '  return 130.0 * dot(m, g);',
+    'varying vec2 vUv;',
+    'float grainAt(vec2 st){ return fract(sin(dot(st, vec2(12.9898, 78.233))) * 43758.5453); }',
+    'vec3 stripe(vec2 uv, float time){',
+    '  vec2 p = ((uv * u_res * 2.0 - u_res.xy) / (u_res.x + u_res.y) * 2.0) * u_scale;',
+    '  float t = time * 0.7, a = 4.0 * p.y - sin(-p.x * 3.0 + p.y - t);',
+    '  a = smoothstep(cos(a) * 0.7, sin(a) * 0.7 + 1.0, cos(a - 4.0 * p.y) - sin(a + 3.0 * p.x));',
+    '  vec2 warped = (cos(a) * p + sin(a) * vec2(-p.y, p.x)) * 0.5 + 0.5;',
+    '  vec3 color = mix(u_c1, u_c2, warped.x);',
+    '  color = mix(color, u_c3, warped.y);',
+    '  color *= color + 0.6 * sqrt(color);',
+    '  return clamp(color, 0.0, 1.0);',
     '}',
-    'float rand(vec2 co){ return fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453); }',
     'void main(){',
-    '  vec2 uv = gl_FragCoord.xy / u_res.xy;',
-    '  float aspect = u_res.x / u_res.y;',
-    '  vec2 p = vec2(uv.x*aspect, uv.y) * u_scale;',
-    '  float t = u_time * u_speed;',
-    '  float n1 = snoise(p*1.2 + vec2(t*0.35, t*0.18));',
-    '  float n2 = snoise(p*2.3 + vec2(-t*0.22, t*0.27));',
-    '  float flow = 0.6*n1 + 0.4*n2;',
-    // stripe banding driven by position + flowing noise
-    '  float band = sin((uv.x*2.2 + uv.y*0.6 + flow*1.4 + t*0.6) * 3.14159265);',
-    '  float v = clamp(0.5 + 0.5*band + 0.15*flow, 0.0, 1.0);',
-    '  vec3 col = mix(u_c1, u_c2, smoothstep(0.0, 0.55, v));',
-    '  col = mix(col, u_c3, smoothstep(0.5, 1.0, v));',
-    '  col += (rand(gl_FragCoord.xy + t) - 0.5) * u_noise;', // grain
-    '  gl_FragColor = vec4(col, 1.0);',
+    '  float time = u_time * u_speed;',
+    '  vec3 color = stripe(vUv, time);',
+    '  if (u_noise > 0.001) {',
+    '    float g = grainAt(vUv * 200.0 + time * 0.1);',
+    '    color *= (1.0 - u_noise * 0.4 + u_noise * g * 0.4);',
+    '  }',
+    '  gl_FragColor = vec4(color, 1.0);',
     '}',
   ].join('\n');
 

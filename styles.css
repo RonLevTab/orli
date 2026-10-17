@@ -184,27 +184,14 @@ html[lang="he"] .ladder-note { font-style: normal; }
    hero glow by hand so it stays behind the headline in RTL. */
 html[dir="rtl"] .hero::before { inset: -30% -12% auto 45%; }
 
-/* Animated WebGL gradient background (hero-gradient.js) + readability veil. */
+/* Animated WebGL gradient background (hero-gradient.js, petaron.ai's GradFlow stripe) + the fade into the page. */
 .hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+/* petaron.ai's hero lets the gradient run behind the copy and only fades
+   it into the page at the bottom (its ribbon mask: solid to 55%, then
+   gone), so the veil is that fade and nothing else. */
 .hero-veil {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background:
-    linear-gradient(to bottom, transparent 54%, var(--cream) 100%),
-    linear-gradient(to right,
-      var(--cream) 30%,
-      color-mix(in srgb, var(--cream) 78%, transparent) 48%,
-      color-mix(in srgb, var(--cream) 30%, transparent) 62%,
-      transparent 74%);
-}
-/* Text column flips to the right in RTL — flip the readability wash with it. */
-html[dir="rtl"] .hero-veil {
-  background:
-    linear-gradient(to bottom, transparent 54%, var(--cream) 100%),
-    linear-gradient(to left,
-      var(--cream) 30%,
-      color-mix(in srgb, var(--cream) 78%, transparent) 48%,
-      color-mix(in srgb, var(--cream) 30%, transparent) 62%,
-      transparent 74%);
+  background: linear-gradient(to bottom, transparent 55%, var(--cream) 100%);
 }
 /* Static fallback when WebGL is unavailable. */
 .hero--nogl { background: linear-gradient(120deg, #f7f5ef, #98e2d6 45%, #5a9e96); }
