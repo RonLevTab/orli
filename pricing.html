@@ -22,8 +22,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261018o" />
-  <link rel="stylesheet" href="a11y.css?v=20261018o" />
+  <link rel="stylesheet" href="styles.css?v=20261018p" />
+  <link rel="stylesheet" href="a11y.css?v=20261018p" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 
@@ -49,7 +49,7 @@
   <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
   <!-- Accessibility menu. In the head so the visitor's saved settings are
        applied before the first paint, and before the scripts that animate. -->
-  <script src="a11y.js?v=20261018o"></script>
+  <script src="a11y.js?v=20261018p"></script>
 </head>
 <body>
   <span id="top" aria-hidden="true"></span>
@@ -58,7 +58,7 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261018o" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261018p" width="480" height="151" alt="אורלי" />
         </a>
         <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html">ראשי</a>
@@ -170,41 +170,19 @@
       </div>
     </section>
 
-    <section class="section alt" id="faq">
-      <div class="wrap narrow">
-        <div class="section-head">
-          <h2 class="display display--sub">שאלות <span class="ital">על המחיר.</span></h2>
+    <!-- The closing band, as on the home page: teal, opens once as it
+         comes into view (script.js "closing band", styles.css .cta-box). -->
+    <section class="cta-band cta-band--tail">
+      <div class="wrap">
+        <div class="cta-box" data-cta-box>
+          <div class="cta-bg" aria-hidden="true"></div>
+          <div class="cta-inner narrow center">
+            <p class="cta-lead cta-lead--tail">לא בטוחים איזו חבילה? נראה לכם את אורלי על היומן שלכם.</p>
+            <div class="cta-actions">
+              <a data-demo-cta href="index.html#contact" class="btn-cream lg">לקביעת דמו</a>
+            </div>
+          </div>
         </div>
-        <ul class="faq">
-          <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="priceFaq1">
-              <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span>אפשר לעבור בין חבילות?</span></span>
-            </button>
-            <div class="faq-panel" id="priceFaq1"><div class="faq-panel-inner"><p>כן. החבילה משתנה אצלנו, בלי התקנה מחדש ובלי לגעת באתר. כשמפעילים את סוכן ה-AI, הכפתור באתר פשוט מקבל גם ״שאלו את אורלי״.</p></div></div>
-          </li>
-          <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="priceFaq2">
-              <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span>מה נחשב שיחה בחבילת ה-AI?</span></span>
-            </button>
-            <div class="faq-panel" id="priceFaq2"><div class="faq-panel-inner"><p>שיחה אחת של מטופל עם הסוכן, מהשאלה הראשונה ועד שהיא נגמרת, גם אם יש בה כמה הודעות. כ-250 כאלה בחודש כלולות.</p></div></div>
-          </li>
-          <li class="faq-item">
-            <button class="faq-btn" type="button" aria-expanded="false" aria-controls="priceFaq3">
-              <span class="faq-plus" aria-hidden="true"><span class="faq-ring"></span>+</span>
-              <span class="faq-q"><span>מה צריך להכין?</span></span>
-            </button>
-            <div class="faq-panel" id="priceFaq3"><div class="faq-panel-inner"><p>פרטי הכניסה של המרפאה לאופטימה, מי אחראי על האתר, לוגו וצבע, וכתובות מייל להתראות. בחבילת ה-AI גם את כתובת האתר, כדי שאורלי תלמד ממנו.</p></div></div>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section section--tail">
-      <div class="wrap narrow center">
-        <p class="section-lead section-lead--cta">לא בטוחים איזו חבילה? נראה לכם את אורלי על היומן שלכם.</p>
-        <a data-demo-cta href="index.html#contact" class="btn-dark lg">לקביעת דמו</a>
       </div>
     </section>
   </main>
@@ -214,7 +192,7 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261018o" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261018p" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
@@ -249,6 +227,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20261018o"></script>
+  <script src="script.js?v=20261018p"></script>
 </body>
 </html>

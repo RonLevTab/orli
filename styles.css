@@ -1429,6 +1429,12 @@ html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation:
 main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; justify-content: flex-start; }
 @media (max-width: 920px) { .cta-box { padding: 44px 18px; } .cta-band { padding: 12px 0 24px; } }
 @media (prefers-reduced-motion: reduce) { .cta-bg, .cta-inner { transition: none; } }
+/* The same band closing the other pages: one line and one button. */
+.cta-band--tail { padding: 8px 0 56px; }
+.cta-band--tail .cta-box { padding: 52px 24px; }
+.cta-lead--tail { font-size: 1.3rem; font-weight: 500; margin-bottom: 0; }
+.cta-band--tail .cta-actions { margin-top: 22px; }
+@media (max-width: 920px) { .cta-band--tail { padding: 0 0 32px; } .cta-band--tail .cta-box { padding: 36px 18px; } .cta-lead--tail { font-size: 1.12rem; } }
 
 /* ===== The plate (index.html, before the FAQ) ===== */
 .plate {
