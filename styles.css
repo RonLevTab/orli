@@ -70,7 +70,7 @@ h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
   text-transform: uppercase; color: var(--teal-deep);
   margin-bottom: 18px;
 }
-.eyebrow.light { color: var(--teal-deep); }
+.eyebrow.light { color: #fff; }
 /* Hebrew has no case, so wide Latin-style tracking just adds drag; ease it off. */
 html[lang="he"] .eyebrow,
 html[lang="he"] .scrolly-idx,
@@ -94,6 +94,7 @@ html[lang="he"] .ladder-note { font-style: normal; }
   outline-offset: 2px;
 }
 /* On the teal band and the dark footer, teal-on-teal would be invisible. */
+.cta-band :where(a, button):focus-visible,
 .footer :where(a, button):focus-visible { outline-color: #fff; }
 
 /* Draft markers on privacy.html. They used to carry direction:ltr, copied
@@ -110,28 +111,23 @@ html[lang="he"] .ladder-note { font-style: normal; }
   padding: 1px 8px; white-space: nowrap;
 }
 
-/* ---------- buttons ----------
-   petaron.ai's booking button (.relay-hb there): a teal pill with a dark
-   dot beside the label. On hover the dot spreads until it fills the pill in
-   the opposite colour while the label slides out and a copy in the new
-   colour slides in. script.js wraps every .btn-dark's text in the three
-   spans this needs, so the markup stays a plain button. The ghost pill is
-   bordered glass that only brightens. */
-.btn-dark, .btn-ghost, .btn-cream {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font: inherit; font-weight: 600; font-size: .95rem; cursor: pointer; white-space: nowrap;
-  border-radius: 999px; padding: 12px 24px; border: 1px solid transparent;
-  transition: background .2s ease, border-color .2s ease, color .2s ease;
+/* ---------- buttons ---------- */
+.btn-dark, .btn-cream {
+  display: inline-flex; align-items: center; justify-content: center;
+  font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap;
+  border-radius: 999px; padding: 11px 22px; border: 1.5px solid transparent;
+  transition: transform .16s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
 }
-.btn-dark { position: relative; overflow: hidden; isolation: isolate; background: var(--teal); color: #fff; --hb-fill: var(--dark); --hb-ink: var(--teal-bright); }
-.hb-dot { flex: none; width: 8px; height: 8px; border-radius: 999px; background: var(--hb-fill); transition: transform .55s cubic-bezier(.22, 1, .36, 1); }
-.hb-label { position: relative; z-index: 1; display: inline-block; transition: transform .3s ease, opacity .3s ease; }
-.hb-over { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; color: var(--hb-ink); opacity: 0; transform: translateX(-3rem); transition: transform .3s ease, opacity .3s ease; }
-.btn-dark:hover .hb-dot, .btn-dark:focus-visible .hb-dot { transform: scale(110); }
-.btn-dark:hover .hb-label, .btn-dark:focus-visible .hb-label { transform: translateX(-3rem); opacity: 0; }
-.btn-dark:hover .hb-over, .btn-dark:focus-visible .hb-over { transform: none; opacity: 1; }
-.btn-ghost, .btn-cream { border-color: var(--line); background: color-mix(in srgb, var(--surface) 55%, transparent); color: var(--ink); }
-.btn-ghost:hover, .btn-cream:hover { background: var(--surface); }
+/* "Book a demo": a plain lift, a deeper shadow, and the dark pill warms to
+   teal. Replaced the earlier blob-and-shine sweep, which was more motion
+   than the button earned. */
+.btn-dark { background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); }
+.btn-dark:hover {
+  background: var(--teal-deep); border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(10, 93, 90, 0.6);
+}
+.btn-cream { background: var(--cream); color: var(--dark); }
+.btn-cream:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
 /* ---------- floating pill nav ---------- */
@@ -188,6 +184,7 @@ html[lang="he"] .ladder-note { font-style: normal; }
    hero glow by hand so it stays behind the headline in RTL. */
 html[dir="rtl"] .hero::before { inset: -30% -12% auto 45%; }
 
+/* The readability veil over the ribbon behind the hero (flow.js). */
 .hero-veil {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
@@ -215,10 +212,7 @@ html[dir="rtl"] .hero-veil {
 .lead { font-size: 1.16rem; color: var(--ink-soft); max-width: 34em; margin-top: 22px; }
 
 /* browser-chrome widget mockup */
-/* The widget window rests tilted away like a pane of glass; script.js nudges
-   the tilt with the pointer over the hero (--tilt-x / --tilt-y). */
-.hero-visual { position: relative; pointer-events: none; perspective: 1400px; }
-.hero-visual .browser { transform: rotateY(var(--tilt-y, 9deg)) rotateX(var(--tilt-x, 4deg)); transform-style: preserve-3d; transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+.hero-visual { position: relative; pointer-events: none; }
 .browser {
   background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
   box-shadow: var(--shadow-lg); overflow: hidden; max-width: 380px; margin: 0 auto;
@@ -544,6 +538,10 @@ html[dir="rtl"] .hero-veil {
    of the way toward deep teal (≈#0e817d, 4.7:1 with white) and the copy on
    it is solid white rather than the .78–.86 alphas it wore before, which
    fell to 4.0:1 and under. Hierarchy comes from size and weight instead. */
+.cta-band { background: linear-gradient(155deg, var(--teal-deep), color-mix(in srgb, var(--teal) 80%, var(--teal-deep))); color: #fff; padding: 74px 0; }
+.cta-band .display { color: #fff; }
+.cta-band .display .ital { color: #bff3ec; }
+.cta-lead { font-size: 1.14rem; color: #fff; max-width: 46ch; margin-inline: auto; }
 /* Two ways in: book a slot straight into the calendar, or leave details.
    The band is a flex column of centred blocks, so [hidden] has to beat the
    button's own display to actually hide the Cal.com block. */
@@ -577,9 +575,17 @@ html[dir="rtl"] .hero-veil {
   /* Fade the hero copy in on load, staggered per line — desktop doesn't need
      it (the widget mockup sits beside the text so nothing feels static on
      first paint), but on mobile the text is the whole first screen. */
+  .hero-copy > * { animation: hero-fade-in .7s ease both; }
+  .hero-copy .eyebrow { animation-delay: 0s; }
+  .hero-copy h1 { animation-delay: .12s; }
+  .hero-copy .lead { animation-delay: .24s; }
   /* No buttons on a phone: the nav's own demo CTA is one thumb away, and
      the demo itself is the next screen down. The copy is the whole hero. */
   .hero-actions { display: none; }
+  @keyframes hero-fade-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
    .ladder{ grid-template-columns: 1fr 1fr; }
   /* Mobile scrollytelling: the desktop sticky-pin-while-scrolling technique
      needs a second column for the steps to scroll past without crossing the
@@ -752,7 +758,6 @@ html[dir="rtl"] .hero-veil {
   .scrolly-cap-n, .scrolly-cap-n svg, .scrolly-cap-num, .scrolly-cap-t, .scrolly-cap-d, .scrolly-cap-p { transition: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
-  .hb-dot, .hb-label, .hb-over { transition: none; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
   .faq-item.open .faq-ring { animation: none; }
   .faq-panel, .faq-panel-inner { transition: none; }
@@ -878,10 +883,8 @@ html[dir="rtl"] .hero-veil {
    after a tap reads as "you touched this", which is fine. The lifts are not.
    A press state gives touch its own feedback, released with the finger. */
 @media (hover: none) {
-  .btn-dark:hover .hb-dot { transform: none; }
-  .btn-dark:hover .hb-label { transform: none; opacity: 1; }
-  .btn-dark:hover .hb-over { opacity: 0; }
-  .btn-ghost:hover, .btn-cream:hover { background: color-mix(in srgb, var(--surface) 55%, transparent); }
+  .btn-dark:hover { background: var(--dark); border-color: rgba(255, 255, 255, 0.08); transform: none; box-shadow: none; }
+  .btn-cream:hover { transform: none; box-shadow: none; }
   .faq-item:hover { transform: none; }
   .btn-dark:active, .btn-cream:active { transform: scale(.985); }
 }
@@ -1041,7 +1044,6 @@ html[dir="rtl"] .hero-veil {
      the short one. svh is the toolbar-visible height and never moves, so
      the card always fits and the bar hiding only adds air below it. */
   .hero[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); height: calc(100svh - var(--nav-h)); overflow: hidden; }
-  .hero-visual .browser { transform: none; }
   .hero-grid { flex: 1 1 auto; min-height: 0; align-items: start; }
   .hero--bare .hero-grid { flex: 0 0 auto; }
   .hero--bare .hero-visual { display: none; }
@@ -1330,63 +1332,16 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
 @media (max-width: 560px) { .plans-every { grid-template-columns: 1fr; } }
 
 /* ===== The ribbon (flow.js) =====
-   A layer as tall as <main>, behind everything, masked to the page's head
-   and the band that snakes down from it; inside, the canvas is sticky and
-   one screen tall, so the colours keep flowing where the mask lets them
-   show. main is a stacking context so the layer's negative z-index still
-   paints above the body. */
+   The animated gradient behind every page, after petaron.ai's: a layer as
+   tall as <main>, behind everything, masked to the page's head and the band
+   that snakes down from it; inside, the canvas is sticky and one screen
+   tall, so the colours keep flowing wherever the mask lets them show. main
+   is a stacking context so the layer's negative z-index still paints above
+   the body. The alternate sections are a wash, so the band shows through. */
 main { position: relative; isolation: isolate; }
 .page-flow { position: absolute; inset: 0; z-index: -1; pointer-events: none; visibility: hidden; mask-size: 100% 100%; -webkit-mask-size: 100% 100%; mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat; }
 .page-flow.is-ready { visibility: visible; }
 .page-flow-screen { position: sticky; top: 0; height: 100vh; height: 100svh; width: 100%; }
 .page-flow canvas { display: block; width: 100%; height: 100%; }
 .page-flow--nogl { background: linear-gradient(120deg, #f7f5ef, #98e2d6 45%, #5a9e96); visibility: visible; }
-/* Sections sit on the ribbon, so the alternate band is a wash, not a wall. */
 .section.alt { background: color-mix(in srgb, var(--cream-2) 50%, transparent); }
-
-/* The closing panel is glass over the ribbon (petaron.ai's light page):
-   a translucent white fill brighter at the top, a bright rim, and a faint
-   outline so the edge still reads on cream. The cards keep their own faces. */
-.cta-panel {
-  background: linear-gradient(170deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
-  -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
-  border-color: rgba(255, 255, 255, .75);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 0 0 1px rgba(27, 37, 35, .05), 0 18px 40px -24px rgba(27, 37, 35, .18);
-}
-
-/* ===== Hero: the copy rises out of a blur on load, line after line ===== */
-@keyframes hero-rise { from { opacity: 0; transform: translateY(18px); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
-.js .hero-copy > * { animation: hero-rise .9s cubic-bezier(.22, 1, .36, 1) both; }
-.js .hero-copy .eyebrow { animation-delay: .1s; }
-.js .hero-copy h1 { animation-delay: .2s; }
-.js .hero-copy .lead { animation-delay: .5s; }
-.js .hero-copy .hero-actions { animation-delay: .65s; }
-.js .hero-copy .check-list { animation-delay: .8s; }
-.js .hero-visual { animation: hero-rise 1.4s cubic-bezier(.22, 1, .36, 1) .5s both; }
-@media (prefers-reduced-motion: reduce) {
-  .js .hero-copy > *, .js .hero-visual { animation: none; }
-  .hero-visual .browser { transition: none; }
-}
-
-/* ===== The closing panel (index.html #contact) =====
-   Glass in the shell's width that opens from a small rounded tile as it
-   comes into view, the text following; petaron.ai's RelayCTA. */
-.cta-band { padding: 40px 0 56px; color: var(--ink); }
-.cta-panel {
-  position: relative; text-align: center; padding: 64px 32px; border: 1px solid transparent; border-radius: 28px;
-  transform: scale(.35); transition: transform 1s cubic-bezier(.22, 1, .36, 1), border-radius 1s cubic-bezier(.22, 1, .36, 1);
-}
-.cta-panel > * { opacity: 0; transform: translateY(16px); transition: opacity .6s ease .35s, transform .6s cubic-bezier(.22, 1, .36, 1) .35s; }
-.cta-panel.is-open { transform: none; }
-.cta-panel.is-open > * { opacity: 1; transform: none; }
-.cta-band .display { color: var(--ink); max-width: 20ch; margin-inline: auto; }
-.cta-band .display .ital { color: var(--teal-deep); }
-.cta-lead { font-size: 1.08rem; color: var(--ink-soft); max-width: 52ch; margin-inline: auto; }
-.cta-watch { display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; font-size: .9rem; color: var(--ink-soft); transition: color .2s ease; }
-.cta-watch:hover { color: var(--ink); }
-.cta-watch svg { width: 12px; height: 12px; fill: currentColor; transform: scaleX(-1); }
-@media (prefers-reduced-motion: reduce) {
-  .cta-panel, .cta-panel > * { transition: none; transform: none; opacity: 1; }
-}
-html:not(.js) .cta-panel, html:not(.js) .cta-panel > * { transform: none; opacity: 1; }
-@media (max-width: 920px) { .cta-panel { padding: 40px 20px; border-radius: 22px; } .cta-band { padding: 16px 0 32px; } }

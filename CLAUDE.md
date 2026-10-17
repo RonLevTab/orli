@@ -150,16 +150,16 @@ drives `widget.js` through a controller handle):
   get a `proximity` snap from styles.css alone), never while the contact dialog is
   open; Space on a focused button, keys inside a scrolling section and the widget's
   own scroll area are left to the browser.
-- **`flow.js`** — the ribbon behind every page, after petaron.ai's GradFlow
-  ribbon: one vanilla-WebGL stripe gradient (simplex noise, GLSL inline) on a
-  canvas that is sticky in the viewport inside a layer as tall as `<main>`, masked
-  by an SVG the script draws in page coordinates: the page's head (the element
-  carrying `data-flow-head`, the hero on index.html, the page-head section
-  elsewhere) and, where `<main>` carries `data-flow-snake` (index.html), a band
-  that snakes down the rest of the page. Sections and cards sit on it: `.section.alt`
-  is a translucent wash and the cards are glass (`styles.css` "Glass"). Freezes on
-  `prefers-reduced-motion`, pauses on a hidden tab, and on a page without the snake
-  once the head has scrolled away.
+- **`flow.js`** — the animated ribbon behind every page, after petaron.ai's
+  GradFlow ribbon: one vanilla-WebGL stripe gradient (simplex noise, GLSL
+  inline) on a canvas that is sticky in the viewport inside a layer as tall as
+  `<main>`, masked by an SVG the script draws in page coordinates: the page's
+  head (the element carrying `data-flow-head`: the hero on index.html, the
+  page-head section elsewhere) and, where `<main>` carries `data-flow-snake`
+  (index.html), a band that snakes down the rest of the page. `.section.alt` is
+  a translucent wash so the band shows through. Freezes on
+  `prefers-reduced-motion` and the accessibility menu's motion off, pauses on a
+  hidden tab, and on a page without the snake once the head has scrolled away.
 - **`films.js` / `films.css`** — the four self-playing films on `features.html`
   (agent chat, reminder, analytics, outage). Each is one 640×420 frame that plays
   while mostly on screen, holds, replays, and clears when scrolled away; under
@@ -188,7 +188,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20261017d` today). Bump them all
+  carries the **same** token on every page (`?v=20261018a` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one

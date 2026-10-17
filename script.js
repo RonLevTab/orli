@@ -353,46 +353,6 @@
     }
   }
 
-  // Buttons (styles.css "buttons"): every .btn-dark gets the dot, the label
-  // and the label's copy that petaron.ai's booking button is made of, so the
-  // pages keep plain <a>/<button> text.
-  document.querySelectorAll('.btn-dark').forEach((btn) => {
-    if (btn.querySelector('.hb-label')) return;
-    const text = btn.textContent.trim();
-    btn.textContent = '';
-    const dot = document.createElement('span'); dot.className = 'hb-dot'; dot.setAttribute('aria-hidden', 'true');
-    const label = document.createElement('span'); label.className = 'hb-label'; label.textContent = text;
-    const over = document.createElement('span'); over.className = 'hb-over'; over.setAttribute('aria-hidden', 'true'); over.textContent = text;
-    btn.append(dot, label, over);
-  });
-
-  // The hero's widget window rests tilted; the pointer over the hero nudges
-  // it (styles.css .hero-visual .browser). Mouse only.
-  (function () {
-    const hero = document.querySelector('.hero');
-    const win = hero && hero.querySelector('.hero-visual .browser');
-    if (!win || !window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) return;
-    hero.addEventListener('pointermove', (e) => {
-      const r = hero.getBoundingClientRect();
-      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-      win.style.setProperty('--tilt-y', `${9 - nx * 5}deg`);
-      win.style.setProperty('--tilt-x', `${4 - ny * 3}deg`);
-    });
-    hero.addEventListener('pointerleave', () => { win.style.removeProperty('--tilt-y'); win.style.removeProperty('--tilt-x'); });
-  })();
-
-  // The closing panel opens as it comes into view (styles.css .cta-panel).
-  (function () {
-    const panel = document.querySelector('[data-cta-panel]');
-    if (!panel) return;
-    if (!('IntersectionObserver' in window)) { panel.classList.add('is-open'); return; }
-    const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) { panel.classList.add('is-open'); io.disconnect(); }
-    }, { threshold: 0.25 });
-    io.observe(panel);
-  })();
-
   // The hero's widget picture on a phone (index.html .hero-visual): the
   // copy fills the top of the first screen and the card takes the room left
   // under it, scaled to fit whole rather than faded or cut at the fold. Below
