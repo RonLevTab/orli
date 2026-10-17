@@ -121,13 +121,18 @@ html[lang="he"] .ladder-note { font-style: normal; }
 /* "Book a demo": a plain lift, a deeper shadow, and the dark pill warms to
    teal. Replaced the earlier blob-and-shine sweep, which was more motion
    than the button earned. */
-.btn-dark { background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); }
-.btn-dark:hover {
-  background: var(--teal-deep); border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(10, 93, 90, 0.6);
+.btn-dark { position: relative; overflow: hidden; background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); }
+.btn-dark::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .22) 50%, transparent 70%);
+  transform: translateX(-120%); transition: none;
 }
+.btn-dark:hover { background: var(--teal-deep); border-color: rgba(255, 255, 255, 0.16); }
+.btn-dark:hover::after { transform: translateX(120%); transition: transform .7s ease; }
+html[dir="rtl"] .btn-dark::after { transform: translateX(120%); }
+html[dir="rtl"] .btn-dark:hover::after { transform: translateX(-120%); }
 .btn-cream { background: var(--cream); color: var(--dark); }
-.btn-cream:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); }
+.btn-cream:hover { background: var(--cream-2); }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
 /* ---------- floating pill nav ---------- */
@@ -157,6 +162,7 @@ html[lang="he"] .ladder-note { font-style: normal; }
 .nav-cta { display: flex; align-items: center; gap: 8px; }
 
 /* ---------- hero ---------- */
+.hero-stage { position: relative; }
 .hero {
   padding: 64px 0 48px; position: relative; overflow: hidden; display: flex; align-items: center;
   /* 100vh on mobile Safari is the viewport with its toolbar hidden (the
@@ -583,10 +589,6 @@ html[dir="rtl"] .hero-veil {
   /* No buttons on a phone: the nav's own demo CTA is one thumb away, and
      the demo itself is the next screen down. The copy is the whole hero. */
   .hero-actions { display: none; }
-  @keyframes hero-fade-in {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: none; }
-  }
    .ladder{ grid-template-columns: 1fr 1fr; }
   /* Mobile scrollytelling: the desktop sticky-pin-while-scrolling technique
      needs a second column for the steps to scroll past without crossing the
@@ -759,6 +761,7 @@ html[dir="rtl"] .hero-veil {
   .scrolly-cap-n, .scrolly-cap-n svg, .scrolly-cap-num, .scrolly-cap-t, .scrolly-cap-d, .scrolly-cap-p { transition: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+  .btn-dark::after, .btn-dark:hover::after { transition: none; transform: translateX(-120%); }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
   .faq-item.open .faq-ring { animation: none; }
   .faq-panel, .faq-panel-inner { transition: none; }
@@ -884,8 +887,9 @@ html[dir="rtl"] .hero-veil {
    after a tap reads as "you touched this", which is fine. The lifts are not.
    A press state gives touch its own feedback, released with the finger. */
 @media (hover: none) {
-  .btn-dark:hover { background: var(--dark); border-color: rgba(255, 255, 255, 0.08); transform: none; box-shadow: none; }
-  .btn-cream:hover { transform: none; box-shadow: none; }
+  .btn-dark:hover { background: var(--dark); border-color: rgba(255, 255, 255, 0.08); }
+  .btn-dark:hover::after { transition: none; }
+  .btn-cream:hover { background: var(--cream); }
   .faq-item:hover { transform: none; }
   .btn-dark:active, .btn-cream:active { transform: scale(.985); }
 }
@@ -1044,7 +1048,8 @@ html[dir="rtl"] .hero-veil {
      and returns, and the card fitted to the tall state was then clipped by
      the short one. svh is the toolbar-visible height and never moves, so
      the card always fits and the bar hiding only adds air below it. */
-  .hero[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); height: calc(100svh - var(--nav-h)); overflow: hidden; }
+  .hero-stage[data-lock-stop] { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); height: calc(100svh - var(--nav-h)); overflow: hidden; }
+  .hero-stage .hero { flex: 1 1 auto; min-height: 0; height: 100%; display: flex; flex-direction: column; justify-content: safe center; }
   .hero-grid { flex: 1 1 auto; min-height: 0; align-items: start; }
   .hero--bare .hero-grid { flex: 0 0 auto; }
   .hero--bare .hero-visual { display: none; }
@@ -1331,3 +1336,46 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
   .steps { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) { .plans-every { grid-template-columns: 1fr; } }
+
+/* ===== Hero: on-load reveal, and the curtain on wide screens =====
+   Load: the headline arrives word by word (script.js splits it into
+   .hero-word spans), then the lead, the buttons and the picture. Scroll,
+   wide screens only: the stage is one and a half screens tall and the pane
+   is sticky, so the bridge section scrolls over it; script.js sets the
+   custom properties below from how far the stage has gone, and the copy
+   drifts up and fades while the gradient drifts the other way and grows.
+   Phones keep the one-screen hero (its own fade is in the phone block). */
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-word { from { opacity: 0; transform: translateY(.35em); filter: blur(4px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes hero-breathe { from { transform: scale(1); opacity: .7; } to { transform: scale(1.12); opacity: 1; } }
+.hero-word { display: inline-block; }
+.js .hero-copy h1.is-split .hero-word { animation: hero-word .6s cubic-bezier(.22, 1, .36, 1) both; }
+@media (min-width: 921px) {
+  .js .hero-copy h1:not(.is-split) { opacity: 0; }
+  .js .hero-copy .eyebrow { animation: hero-fade-in .6s ease both; }
+  .js .hero-copy .lead { animation: hero-fade-in .8s ease .7s both; }
+  .js .hero-copy .hero-actions { animation: hero-fade-in .8s ease .9s both; }
+  .js .hero-visual { animation: hero-fade-in 1s ease .5s both; }
+  .hero::before { animation: hero-breathe 8s ease-in-out infinite alternate; transform-origin: center; }
+}
+@media (min-width: 921px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .hero-stage { z-index: 0; height: 150vh; height: 150svh; }
+  .hero-stage .hero { position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); height: calc(100svh - var(--nav-h)); min-height: 0; }
+  /* Everything after the stage is the curtain: above it, and opaque. */
+  .hero-stage ~ :not(dialog) { position: relative; z-index: 1; }
+  .hero-stage ~ .section:not(.alt) { background: var(--cream); }
+  .hero-copy { opacity: var(--hero-o, 1); transform: translateY(var(--hero-y, 0px)); will-change: transform, opacity; }
+  .hero-visual { opacity: var(--hero-o, 1); transform: translateY(calc(var(--hero-y, 0px) * .6)); }
+  .hero-canvas { transform: translateY(var(--hero-py, 0%)) scale(var(--hero-s, 1)); transform-origin: center; will-change: transform; }
+  .hero::before { opacity: var(--hero-go, 1); }
+  /* The stage is a snap area taller than the screen, so the page may rest
+     inside it; its own top stays the first stop. */
+  main > .hero-stage[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; display: block; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .hero-copy h1:not(.is-split) { opacity: 1; }
+  .js .hero-copy h1.is-split .hero-word, .js .hero-copy .eyebrow, .js .hero-copy .lead, .js .hero-copy .hero-actions, .js .hero-visual, .hero::before { animation: none; }
+}

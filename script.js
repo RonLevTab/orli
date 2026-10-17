@@ -353,6 +353,79 @@
     }
   }
 
+  // The hero's headline arrives word by word on load (styles.css,
+  // .hero-word). The teal turn of phrase keeps its own span; only the text
+  // inside is split, so the colour survives.
+  (function () {
+    const h1 = document.querySelector('.hero-copy h1');
+    if (!h1) return;
+    let i = 0;
+    const walk = (node) => {
+      Array.from(node.childNodes).forEach((child) => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          const frag = document.createDocumentFragment();
+          child.textContent.split(/(\s+)/).forEach((part) => {
+            if (part === '') return;
+            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+            const span = document.createElement('span');
+            span.className = 'hero-word';
+            span.style.animationDelay = `${i++ * 70}ms`;
+            span.textContent = part;
+            frag.appendChild(span);
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          walk(child);
+        }
+      });
+    };
+    walk(h1);
+    h1.classList.add('is-split');
+  })();
+
+  // The curtain (index.html .hero-stage, wide screens): while the stage is
+  // pinned, the copy holds for the first nudge of the wheel and then drifts
+  // up and fades, the gradient drifts down and grows, and the glow dims. The
+  // next section rides over the pane. Everything is a custom property on the
+  // stage; styles.css turns them into transforms. Off on phones, under
+  // reduced motion and while the accessibility menu's motion is off, where
+  // the hero is the plain one-screen section it always was.
+  (function () {
+    const stage = document.querySelector('.hero-stage');
+    if (!stage) return;
+    const wide = window.matchMedia('(min-width: 921px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)');
+    const HOLD = 0.08;
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    let window_ = 1;
+    let frame = 0;
+    let on = false;
+    const clear = () => ['--hero-o', '--hero-y', '--hero-go', '--hero-py', '--hero-s'].forEach((k) => stage.style.removeProperty(k));
+    const measure = () => { window_ = Math.max(1, stage.offsetHeight - window.innerHeight); };
+    const update = () => {
+      frame = 0;
+      if (!on) return;
+      const p = clamp(window.scrollY / window_);
+      const f = clamp((p - HOLD) / (1 - HOLD));
+      const eased = f * f;
+      stage.style.setProperty('--hero-o', String(1 - eased));
+      stage.style.setProperty('--hero-y', `${-90 * f}px`);
+      stage.style.setProperty('--hero-go', String(1 - 0.8 * eased));
+      stage.style.setProperty('--hero-py', `${8 * p}%`);
+      stage.style.setProperty('--hero-s', String(1.1 + 0.08 * p));
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    const start = () => {
+      if (on || !wide.matches || document.documentElement.classList.contains('a11y-still')) return;
+      on = true; measure(); update();
+    };
+    const stop = () => { on = false; clear(); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', () => { measure(); if (wide.matches) start(); else stop(); schedule(); });
+    window.addEventListener('orli:motion-still', stop);
+    window.addEventListener('orli:motion-go', start);
+    start();
+  })();
+
   // The hero's widget picture on a phone (index.html .hero-visual): the
   // copy fills the top of the first screen and the card takes the room left
   // under it, scaled to fit whole rather than faded or cut at the fold. Below

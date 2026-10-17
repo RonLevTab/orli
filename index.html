@@ -83,8 +83,13 @@
   </header>
 
   <main>
-    <!-- HERO -->
-    <section class="hero" data-lock-stop="start">
+    <!-- HERO. On a wide screen the stage is one and a half screens tall and
+         the hero pane inside it is sticky: the next section scrolls over it
+         like a curtain while the copy drifts up and fades (script.js,
+         "curtain"; the idea is the PetaRon site's hero). Phones and reduced
+         motion keep a plain one-screen hero. -->
+    <section class="hero-stage" data-lock-stop="start">
+    <div class="hero">
       <canvas class="hero-canvas" id="heroGradient" aria-hidden="true"></canvas>
       <div class="hero-veil" aria-hidden="true"></div>
       <div class="wrap hero-grid">
@@ -146,6 +151,7 @@
           </div>
         </div>
       </div>
+    </div>
     </section>
 
     <!-- PROBLEM -->
