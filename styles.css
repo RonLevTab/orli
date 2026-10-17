@@ -1373,3 +1373,47 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
   .calc-mid { margin: 2px 0 12px; }
   #calculator .section-lead { display: none; }
 }
+
+/* ===== Connect strip (index.html #connect) =====
+   After petaron.ai's: the source, Orli and Optima in one row, joined by
+   hairlines with a streak of light running along them toward Optima (right
+   to left here). Stacked top to bottom on a phone. */
+.connect {
+  display: flex; align-items: center; max-width: 980px; margin: 0 auto; padding: 36px 40px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow);
+}
+.connect-sys, .connect-hub { flex: none; border: 1px solid var(--line); border-radius: 16px; background: var(--cream); text-align: center; padding: 16px; }
+.connect-sys { width: 210px; }
+.connect-hub { width: 270px; display: grid; justify-items: center; gap: 10px; }
+.connect-k { font-size: .74rem; color: var(--ink-soft); }
+.connect-name { margin: 6px 0 0; font-size: 1.25rem; font-weight: 700; min-height: 1.5em; transition: opacity .3s ease, transform .3s ease; }
+.connect-name.is-out { opacity: 0; transform: translateY(-8px); }
+.connect-brand { display: flex; align-items: center; gap: 8px; }
+.connect-brand img { width: 26px; height: 26px; border-radius: 7px; }
+.connect-brand b { font-size: 1.05rem; }
+.connect-chips { display: flex; gap: 6px; justify-content: center; min-height: 26px; }
+.connect-chips span { padding: 2px 9px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); font-size: .78rem; color: var(--ink-soft); opacity: 0; transform: translateY(4px); transition: opacity .3s ease, transform .3s ease; }
+.connect-chips.is-in span { opacity: 1; transform: none; }
+.connect-chips.is-in span:nth-child(2) { transition-delay: .18s; }
+.connect-chips.is-in span:nth-child(3) { transition-delay: .36s; }
+.connect-hub small { font-size: .76rem; color: var(--ink-soft); }
+.connect-wire { position: relative; flex: 1; height: 1px; background: var(--line); min-width: 30px; }
+.connect-wire span {
+  position: absolute; top: 0; right: 0; width: 18px; height: 1px;
+  background: linear-gradient(to left, transparent, var(--teal));
+  animation: connect-x 1.6s ease-in-out infinite;
+}
+@keyframes connect-x { 0% { right: 0; opacity: 0; } 20%, 80% { opacity: 1; } 100% { right: calc(100% - 18px); opacity: 0; } }
+@keyframes connect-y { 0% { top: 0; opacity: 0; } 20%, 80% { opacity: 1; } 100% { top: calc(100% - 18px); opacity: 0; } }
+@media (max-width: 920px) {
+  .connect { flex-direction: column; padding: 18px; }
+  .connect-sys, .connect-hub { width: 100%; padding: 12px; }
+  .connect-wire { flex: none; width: 1px; height: 26px; min-width: 0; }
+  .connect-wire span { right: 0; top: 0; width: 1px; height: 18px; background: linear-gradient(to bottom, transparent, var(--teal)); animation-name: connect-y; }
+  #connect .section-lead { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .connect-wire span { animation: none; opacity: .8; }
+  .connect-name, .connect-chips span { transition: none; }
+}
+html.a11y-still .connect-wire span { animation: none; opacity: .8; }
