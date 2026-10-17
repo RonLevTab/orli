@@ -353,54 +353,6 @@
     }
   }
 
-  // The calculator (index.html #calculator): calls a day x minutes a call
-  // x 22 working days gives the hours a month on the phone; x the hourly
-  // cost x 12 the year. The two results count from where they were to the
-  // new value; each slider's track fills to its thumb (--fill).
-  (function () {
-    const calc = document.querySelector('[data-calc]');
-    if (!calc) return;
-    const input = (k) => calc.querySelector(`[data-calc-in="${k}"]`);
-    const show = (k) => calc.querySelector(`[data-calc-show="${k}"]`);
-    const hoursEl = calc.querySelector('[data-calc-hours]');
-    const costEl = calc.querySelector('[data-calc-cost]');
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const fmt = (n) => Math.round(n).toLocaleString('en-US');
-    const shown = { hours: 0, cost: 0 };
-    const count = (el, key, to, write) => {
-      cancelAnimationFrame(el._raf);
-      if (still.matches || document.documentElement.classList.contains('a11y-still')) { shown[key] = to; write(to); return; }
-      const from = shown[key];
-      const start = performance.now();
-      const tick = (t) => {
-        const p = Math.min(1, (t - start) / 700);
-        const e = 1 - Math.pow(1 - p, 3);
-        shown[key] = from + (to - from) * e;
-        write(shown[key]);
-        if (p < 1) el._raf = requestAnimationFrame(tick);
-      };
-      el._raf = requestAnimationFrame(tick);
-    };
-    const update = () => {
-      const calls = +input('calls').value;
-      const minutes = +input('minutes').value;
-      const rate = +input('rate').value;
-      show('calls').textContent = String(calls);
-      show('minutes').textContent = `${minutes} דק׳`;
-      show('rate').textContent = `₪${rate}`;
-      ['calls', 'minutes', 'rate'].forEach((k) => {
-        const el = input(k);
-        el.style.setProperty('--fill', `${((el.value - el.min) / (el.max - el.min)) * 100}%`);
-      });
-      const hours = (calls * minutes * 22) / 60;
-      const cost = hours * rate * 12;
-      count(hoursEl, 'hours', hours, (v) => { hoursEl.textContent = fmt(v); });
-      count(costEl, 'cost', cost, (v) => { costEl.textContent = `₪${fmt(v)}`; });
-    };
-    calc.addEventListener('input', update);
-    update();
-  })();
-
   // The connect strip (index.html #connect): every 3.2s the source and the
   // fields Orli fills change; Optima stays, there is one calendar.
   (function () {
@@ -554,7 +506,7 @@
     '.section-lead', '.cta-lead', '.ladder-note', '.check-list li',
   ].join(', '));
   const blockRevealTargets = document.querySelectorAll([
-    '.rung', '.feat-card', '.calc', '.connect', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
+    '.rung', '.feat-card', '.connect', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
   ].join(', '));
 
   // Tells the watchdog in each page's <head> that this file arrived and the
