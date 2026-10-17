@@ -111,28 +111,41 @@ html[lang="he"] .ladder-note { font-style: normal; }
   padding: 1px 8px; white-space: nowrap;
 }
 
-/* ---------- buttons ---------- */
+/* ---------- buttons ----------
+   After the PetaRon site's primary button: a dark pill with a thin light
+   border and a soft shadow. On hover a cream drop grows from inside the pill
+   until it fills it, the text turns dark, and a light sweeps across once.
+   Nothing lifts. The secondary button is a bordered pill that only darkens. */
 .btn-dark, .btn-cream {
-  display: inline-flex; align-items: center; justify-content: center;
-  font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap;
-  border-radius: 999px; padding: 11px 22px; border: 1.5px solid transparent;
-  transition: transform .16s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+  position: relative; display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+  font: inherit; font-weight: 700; font-size: .95rem; cursor: pointer; white-space: nowrap;
+  border-radius: 999px; padding: 12px 26px; border: 1px solid transparent;
+  transition: border-color .25s ease, box-shadow .25s ease, background .2s ease, color .2s ease;
 }
-/* "Book a demo": a plain lift, a deeper shadow, and the dark pill warms to
-   teal. Replaced the earlier blob-and-shine sweep, which was more motion
-   than the button earned. */
-.btn-dark { position: relative; overflow: hidden; background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); }
+.btn-dark { background: var(--dark); color: #fff; border-color: rgba(255, 255, 255, .1); box-shadow: 0 4px 18px rgba(0, 0, 0, .18); }
+.btn-dark > * { position: relative; z-index: 2; }
+.btn-dark::before {
+  content: ""; position: absolute; left: 20%; top: 40%; width: 8px; height: 8px; border-radius: 50%; z-index: -1;
+  background: linear-gradient(135deg, #f7f5ef, #e4ddcf); transform: scale(0);
+  transition: left .5s ease, top .5s ease, width .5s ease, height .5s ease, transform .5s ease;
+}
 .btn-dark::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .22) 50%, transparent 70%);
-  transform: translateX(-120%); transition: none;
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+  transform: translateX(-120%);
 }
-.btn-dark:hover { background: var(--teal-deep); border-color: rgba(255, 255, 255, 0.16); }
-.btn-dark:hover::after { transform: translateX(120%); transition: transform .7s ease; }
 html[dir="rtl"] .btn-dark::after { transform: translateX(120%); }
+.btn-dark:hover { color: var(--dark); border-color: rgba(228, 221, 207, .7); box-shadow: 0 6px 22px rgba(10, 93, 90, .25); }
+.btn-dark:hover::before { left: 0; top: 0; width: 100%; height: 100%; transform: scale(1.8); }
+.btn-dark:hover::after { transform: translateX(120%); transition: transform .7s ease; }
 html[dir="rtl"] .btn-dark:hover::after { transform: translateX(-120%); }
-.btn-cream { background: var(--cream); color: var(--dark); }
-.btn-cream:hover { background: var(--cream-2); }
+/* The label sits above the drop: wrap it so it has a layer of its own. */
+.btn-dark { isolation: isolate; }
+.btn-cream { background: color-mix(in srgb, var(--cream-2) 50%, transparent); color: var(--dark); border-color: var(--line); }
+.btn-cream:hover { background: color-mix(in srgb, var(--line) 50%, transparent); }
+/* On the teal band the cream pill is solid, so it reads on teal. */
+.cta-band .btn-cream { background: var(--cream); border-color: transparent; }
+.cta-band .btn-cream:hover { background: #fff; }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
 /* ---------- floating pill nav ---------- */
@@ -761,7 +774,9 @@ html[dir="rtl"] .hero-veil {
   .scrolly-cap-n, .scrolly-cap-n svg, .scrolly-cap-num, .scrolly-cap-t, .scrolly-cap-d, .scrolly-cap-p { transition: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
-  .btn-dark::after, .btn-dark:hover::after { transition: none; transform: translateX(-120%); }
+  .btn-dark::before, .btn-dark::after, .btn-dark:hover::after { transition: none; }
+  .btn-dark:hover::before { transform: scale(0); }
+  .btn-dark:hover { color: #fff; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
   .faq-item.open .faq-ring { animation: none; }
   .faq-panel, .faq-panel-inner { transition: none; }
@@ -887,9 +902,10 @@ html[dir="rtl"] .hero-veil {
    after a tap reads as "you touched this", which is fine. The lifts are not.
    A press state gives touch its own feedback, released with the finger. */
 @media (hover: none) {
-  .btn-dark:hover { background: var(--dark); border-color: rgba(255, 255, 255, 0.08); }
+  .btn-dark:hover { color: #fff; border-color: rgba(255, 255, 255, .1); box-shadow: 0 4px 18px rgba(0, 0, 0, .18); }
+  .btn-dark:hover::before { transform: scale(0); }
   .btn-dark:hover::after { transition: none; }
-  .btn-cream:hover { background: var(--cream); }
+  .btn-cream:hover { background: color-mix(in srgb, var(--cream-2) 50%, transparent); }
   .faq-item:hover { transform: none; }
   .btn-dark:active, .btn-cream:active { transform: scale(.985); }
 }
