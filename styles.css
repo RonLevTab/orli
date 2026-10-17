@@ -127,7 +127,7 @@ html[lang="he"] .ladder-note { font-style: normal; }
    text the form rewrites, keep a plain colour change instead. */
 .hb { position: relative; overflow: hidden; isolation: isolate; }
 .hb-dot { flex: none; width: 8px; height: 8px; border-radius: 999px; background: var(--hb-fill); transition: transform .55s cubic-bezier(.22, 1, .36, 1); }
-.hb-label { position: relative; z-index: 1; display: inline-block; transition: color .35s ease .08s; }
+.hb-label { position: relative; z-index: 1; display: inline-block; transition: color .15s ease; }
 /* The label stays where it is: only the dot grows behind it and the text
    turns to the new ink. (petaron.ai also slides a copy of the label in;
    that read as the text shaking.) */
@@ -249,7 +249,7 @@ html[dir="rtl"] .hero-veil {
 /* index.html's "from the clinic's site straight into the calendar" block
    runs straight into the demo below it, so it has no bottom padding and a
    tighter heading. */
-.section--bridge { padding: 52px 0 0; }
+.section--bridge { padding: 52px 0 56px; }
 .section-head--tight { margin-bottom: 22px; }
 .section-lead--close { margin-top: 10px; }
 .section-lead--intro { margin-top: 16px; max-width: 56ch; }
@@ -489,7 +489,7 @@ html[dir="rtl"] .hero-veil {
    has nothing left to scroll. */
 #demo .orli-live .obw-step { overscroll-behavior: auto; }
 /* The heading above already carries the section's top padding. */
-.section.scrolly { padding-top: 24px; padding-bottom: 140px; }
+.section.scrolly { padding-top: 56px; padding-bottom: 140px; }
 /* Mobile-only step tabs (see @media (max-width: 920px) below): a tap-through
    substitute for the desktop scroll-jack, since a pinned widget and scrolling
    step text can't share one narrow column without overlapping. */
@@ -1429,11 +1429,11 @@ main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; ju
 @media (max-width: 920px) { .cta-box { padding: 44px 18px; } .cta-band { padding: 12px 0 24px; } }
 @media (prefers-reduced-motion: reduce) { .cta-bg, .cta-inner { transition: none; } }
 /* The same band closing the other pages: one line and one button. */
-.cta-band--tail { padding: 8px 0 56px; }
+.cta-band--tail { padding: 48px 0 56px; }
 .cta-band--tail .cta-box { padding: 52px 24px; }
 .cta-lead--tail { font-size: 1.3rem; font-weight: 500; margin-bottom: 0; }
 .cta-band--tail .cta-actions { margin-top: 22px; }
-@media (max-width: 920px) { .cta-band--tail { padding: 0 0 32px; } .cta-band--tail .cta-box { padding: 36px 18px; } .cta-lead--tail { font-size: 1.12rem; } }
+@media (max-width: 920px) { .cta-band--tail { padding: 28px 0 32px; } .cta-band--tail .cta-box { padding: 36px 18px; } .cta-lead--tail { font-size: 1.12rem; } }
 
 /* ===== The plate (index.html, before the FAQ) ===== */
 .plate {
@@ -1520,3 +1520,25 @@ main > section:not(.alt):not(.hero):not(.cta-band):not(.plate-sec):not(.page-hea
   .faq-panel-inner p { padding-inline: 0 28px; padding-block-end: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { .faq-plus { transition: none; } }
+
+/* The line between two same-shade sections needs air on both sides: the
+   short film ended right on it, and the demo's title started right under
+   it. On a snapping desktop the sections' own padding rule wins, so it is
+   set again there. */
+@media (min-width: 921px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  main > .section--bridge[data-lock-stop] { padding-bottom: 56px; }
+  main > #demo[data-lock-stop] { padding-top: 56px; }
+}
+/* A film whose top bar is the beige of an .alt section would melt into it:
+   on beige, the bar takes the window's white with a hairline under it. */
+.section.alt .bs-bar, .section.alt .film-bar { background: var(--surface); }
+/* The teal bands' buttons: the ask in the site's dark pill, the second way
+   in as a light outline. */
+.btn-outline-light {
+  display: inline-flex; align-items: center; justify-content: center; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap;
+  border-radius: 999px; padding: 11px 22px; background: transparent; color: #fff; border: 1.5px solid rgba(255, 255, 255, .55);
+  transition: background .25s ease, border-color .25s ease;
+}
+.btn-outline-light:hover { background: rgba(255, 255, 255, .12); border-color: #fff; }
+.btn-outline-light.lg { padding: 15px 30px; font-size: 1.02rem; }
+.cta-band .btn-dark { border-color: rgba(255, 255, 255, .12); }

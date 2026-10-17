@@ -123,7 +123,8 @@
 .ptabs-pane.is-leaving { opacity: 0; visibility: visible; transform: translateY(var(--pane-to, 100%)); z-index: 0; transition-delay: 0s; }
 .ptabs-pane .orli-panel { width: 100%; max-width: 520px; }
 /* The bottom shade the component lays over its picture, kept faint. */
-.ptabs-panel::after { content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 33%; background: linear-gradient(to top, rgba(0, 0, 0, .06), transparent); pointer-events: none; z-index: 2; }
+/* The bottom shade the component laid over its picture is gone: the site
+   draws no shadows. */
 
 /* ---------- the mock ---------- */
 .orli-panel {
