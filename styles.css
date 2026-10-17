@@ -1476,16 +1476,16 @@ main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; ju
    No drop shadows anywhere (cleaner, after petaron.ai). The page stays
    plain cream and every card keeps its own plain face; only the light
    beige bands (.section.alt and the footer) are frosted glass. Behind the
-   page three soft teal and mint lights drift slowly (script.js "glass
+   page three soft sand, sage and peach lights drift slowly (script.js "glass
    light" adds the layer), and the plain sections are solid cream, so the
    lights show only through the glass bands: colour moving behind frost,
    which is what makes them read as glass. */
 :root { --shadow-sm: none; --shadow: none; --shadow-lg: none; }
 .glass-light { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--cream); }
 .glass-light i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; will-change: transform; }
-.glass-light i:nth-child(1) { left: -12vmax; top: -18vmax; background: radial-gradient(closest-side, rgba(20, 184, 166, .16), transparent); animation: gl-a 34s ease-in-out infinite alternate; }
-.glass-light i:nth-child(2) { right: -18vmax; top: 15vh; background: radial-gradient(closest-side, rgba(196, 232, 214, .45), transparent); animation: gl-b 42s ease-in-out infinite alternate; }
-.glass-light i:nth-child(3) { left: 20vw; bottom: -30vmax; background: radial-gradient(closest-side, rgba(226, 214, 190, .45), transparent); animation: gl-c 38s ease-in-out infinite alternate; }
+.glass-light i:nth-child(1) { left: -12vmax; top: -18vmax; background: radial-gradient(closest-side, rgba(232, 220, 196, .5), transparent); animation: gl-a 34s ease-in-out infinite alternate; }
+.glass-light i:nth-child(2) { right: -18vmax; top: 15vh; background: radial-gradient(closest-side, rgba(214, 228, 212, .3), transparent); animation: gl-b 42s ease-in-out infinite alternate; }
+.glass-light i:nth-child(3) { left: 20vw; bottom: -30vmax; background: radial-gradient(closest-side, rgba(240, 224, 200, .45), transparent); animation: gl-c 38s ease-in-out infinite alternate; }
 @keyframes gl-a { to { transform: translate(48vw, 38vh) scale(1.15); } }
 @keyframes gl-b { to { transform: translate(-52vw, 32vh) scale(.9); } }
 @keyframes gl-c { to { transform: translate(-18vw, -62vh) scale(1.1); } }
