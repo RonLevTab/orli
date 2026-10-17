@@ -353,42 +353,6 @@
     }
   }
 
-  // The connect strip (index.html #connect): every 3.2s the source and the
-  // fields Orli fills change; Optima stays, there is one calendar.
-  (function () {
-    const strip = document.querySelector('[data-connect]');
-    if (!strip) return;
-    const from = strip.querySelector('[data-connect-from]');
-    const chips = strip.querySelector('[data-connect-chips]');
-    const PAIRS = [
-      ['הכפתור באתר', ['מטפל', 'טיפול', 'שעה']],
-      ['הצ׳אט עם אורלי', ['שאלה', 'מועד', 'שם']],
-      ['מייל התזכורת', ['הטיפול הבא', 'שעה', 'אישור']],
-      ['הקישור לשינוי מועד', ['מועד חדש', 'קוד', 'עדכון']],
-    ];
-    let i = 0;
-    let timer = 0;
-    chips.classList.add('is-in');
-    const next = () => {
-      i = (i + 1) % PAIRS.length;
-      from.classList.add('is-out');
-      chips.classList.remove('is-in');
-      setTimeout(() => {
-        from.textContent = PAIRS[i][0];
-        chips.innerHTML = PAIRS[i][1].map((f) => `<span>${f}</span>`).join('');
-        from.classList.remove('is-out');
-        requestAnimationFrame(() => chips.classList.add('is-in'));
-      }, 300);
-    };
-    const go = () => { if (!timer && !document.documentElement.classList.contains('a11y-still')) timer = setInterval(next, 3200); };
-    const halt = () => { clearInterval(timer); timer = 0; };
-    window.addEventListener('orli:motion-still', halt);
-    window.addEventListener('orli:motion-go', go);
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) go(); else halt(); }).observe(strip);
-    } else go();
-  })();
-
   // The closing band (index.html #contact): from the moment its top enters
   // the screen until it is a quarter of the way up, the teal layer grows
   // from a tenth to full size and its corners from 96px to 28px; over the
@@ -506,7 +470,7 @@
     '.section-lead', '.cta-lead', '.ladder-note', '.check-list li',
   ].join(', '));
   const blockRevealTargets = document.querySelectorAll([
-    '.rung', '.feat-card', '.connect', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
+    '.rung', '.feat-card', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
   ].join(', '));
 
   // Tells the watchdog in each page's <head> that this file arrived and the

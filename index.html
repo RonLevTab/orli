@@ -22,9 +22,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261018h" />
-  <link rel="stylesheet" href="a11y.css?v=20261018h" />
-  <link rel="stylesheet" href="widget.css?v=20261018h" />
+  <link rel="stylesheet" href="styles.css?v=20261018i" />
+  <link rel="stylesheet" href="a11y.css?v=20261018i" />
+  <link rel="stylesheet" href="widget.css?v=20261018i" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 
@@ -50,7 +50,7 @@
   <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
   <!-- Accessibility menu. In the head so the visitor's saved settings are
        applied before the first paint, and before the scripts that animate. -->
-  <script src="a11y.js?v=20261018h"></script>
+  <script src="a11y.js?v=20261018i"></script>
 </head>
 <body>
   <span id="top" aria-hidden="true"></span>
@@ -60,7 +60,7 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261018h" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261018i" width="480" height="151" alt="אורלי" />
         </a>
         <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html" aria-current="page">ראשי</a>
@@ -379,30 +379,6 @@
       </div>
     </section>
 
-    <!-- CONNECT, after petaron.ai's (RelayConnect.tsx there): every way a
-         patient books runs through Orli into the one Optima calendar. The
-         "from" side and the fields change every few seconds (script.js
-         "connect"); a streak of light runs along each wire. -->
-    <section class="section alt" id="connect" data-lock-stop="start">
-      <div class="wrap">
-        <div class="section-head">
-          <h2 class="display">כל דרך שבה מטופל קובע. <span class="ital">יומן אחד.</span></h2>
-          <p class="section-lead">מהכפתור באתר, מהצ׳אט, מהתזכורת או מהקישור לשינוי מועד: אורלי בודקת את השעה מול היומן, מאמתת את המטופל ורושמת ישר באופטימה.</p>
-        </div>
-        <div class="connect" data-connect>
-          <div class="connect-sys"><span class="connect-k">מ־</span><p class="connect-name" data-connect-from>הכפתור באתר</p></div>
-          <div class="connect-wire" aria-hidden="true"><span></span></div>
-          <div class="connect-hub">
-            <div class="connect-brand"><img src="assets/brand/favicon-64.png" alt="" width="64" height="64" /><b>אורלי</b></div>
-            <div class="connect-chips" data-connect-chips><span>מטפל</span><span>טיפול</span><span>שעה</span></div>
-            <small>בודקת, מאמתת ורושמת</small>
-          </div>
-          <div class="connect-wire" aria-hidden="true"><span style="animation-delay:.6s"></span></div>
-          <div class="connect-sys"><span class="connect-k">אל</span><p class="connect-name">אופטימה</p></div>
-        </div>
-      </div>
-    </section>
-
     <!-- EMBED SNIPPET -->
     <section class="section alt embed" data-lock-stop="start">
       <div class="wrap narrow center">
@@ -553,7 +529,7 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261018h" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261018i" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
@@ -588,13 +564,13 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20261018h"></script>
-  <script src="hero-gradient.js?v=20261018h"></script>
+  <script src="script.js?v=20261018i"></script>
+  <script src="hero-gradient.js?v=20261018i"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->
-  <script src="widget.js?v=20261018h"></script>
-  <script src="scrolly.js?v=20261018h"></script>
+  <script src="widget.js?v=20261018i"></script>
+  <script src="scrolly.js?v=20261018i"></script>
   <!-- Desktop section lock-in: two-second hold on each snap stop. -->
-  <script src="lock.js?v=20261018h"></script>
+  <script src="lock.js?v=20261018i"></script>
 </body>
 </html>
