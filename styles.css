@@ -1203,44 +1203,40 @@ html:has(dialog[open]) { overflow: hidden; }
 }
 
 /* ===== What's inside (index.html #features) =====
-   Eight cards, each a link to the page that explains the capability. The
-   first four lead to features.html's chapters, the rest to the admin and
-   customisation pages; all eight share one frame and one hover. */
-.feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+   Eight cards, two to a row, each a link to the page that explains the
+   capability: the small loop on one side, the title and a line on the
+   other. No frame at rest, only a soft fill; on hover the card pops out a
+   little (rises, grows a touch, takes a white face and a shadow) and its
+   loop starts playing. `translate` and `scale` rather than `transform`,
+   because the scroll reveal leaves transform: none inline on each card. */
+.feat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; max-width: 980px; margin-inline: auto; }
 .feat-card {
-  display: flex; flex-direction: column; min-width: 0;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 22px 20px;
-  border-top: 4px solid var(--teal); box-shadow: var(--shadow-sm); color: var(--ink);
-  transition: transform .2s ease, box-shadow .25s ease, border-color .2s ease;
+  position: relative; display: grid; grid-template-columns: 124px minmax(0, 1fr); align-items: center; gap: 4px 20px;
+  padding: 16px 20px 16px 44px; border-radius: 18px; color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  transition: translate .25s cubic-bezier(.22, 1, .36, 1), scale .25s cubic-bezier(.22, 1, .36, 1), background .25s ease, box-shadow .25s ease;
 }
-.feat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: color-mix(in srgb, var(--teal) 40%, var(--line)); }
-.feat-card:hover h3 { color: var(--teal-deep); }
-.feat-ico { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; margin-bottom: 14px; background: color-mix(in srgb, var(--teal) 12%, transparent); color: var(--teal-deep); }
-.feat-ico svg { width: 20px; height: 20px; }
-.feat-card h3 { font-family: var(--serif); font-weight: 600; font-size: 1.08rem; margin-bottom: 6px; transition: color .2s ease; }
-.feat-card p { color: var(--ink-soft); font-size: .92rem; margin: 0; }
-/* The card's whole face is the link; the arrow says so without a second link. */
-.feat-card::after { content: "›"; margin-top: auto; padding-top: 10px; color: var(--teal-deep); font-weight: 700; font-size: 1.1rem; line-height: 1; opacity: .7; transition: opacity .2s ease, transform .2s ease; }
-.feat-card:hover::after { opacity: 1; transform: translateX(-3px); }
-@media (min-width: 921px) {
-  .feat-card { padding: clamp(14px, 2.2vh, 22px) clamp(16px, 1.6vw, 22px) clamp(12px, 2vh, 20px); }
-  .feat-card h3 { font-size: clamp(.98rem, 1.9vh, 1.08rem); }
-  .feat-card p { font-size: clamp(.84rem, 1.5vh, .92rem); }
-  .feat-ico { margin-bottom: clamp(8px, 1.4vh, 14px); }
+.feat-card .fv { grid-row: span 2; margin: 0; }
+.feat-card h3 { font-family: var(--serif); font-weight: 600; font-size: 1.08rem; margin: 0; align-self: end; transition: color .2s ease; }
+.feat-card p { color: var(--ink-soft); font-size: .92rem; margin: 0; align-self: start; }
+.feat-card::after {
+  content: "›"; position: absolute; inset-inline-end: 18px; top: 50%; translate: 0 -50%;
+  color: var(--teal-deep); font-weight: 700; font-size: 1.2rem; line-height: 1; opacity: 0; transition: opacity .2s ease, inset-inline-end .2s ease;
 }
+.feat-card:hover, .feat-card:focus-visible { translate: 0 -4px; scale: 1.02; background: var(--surface); box-shadow: var(--shadow); z-index: 1; }
+.feat-card:hover h3, .feat-card:focus-visible h3 { color: var(--teal-deep); }
+.feat-card:hover::after, .feat-card:focus-visible::after { opacity: 1; inset-inline-end: 14px; }
 @media (max-width: 920px) {
-  /* Two columns of compact cards, so the eight fit one phone screen. */
-  .feat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .feat-card { padding: 12px 12px 10px; border-top-width: 3px; }
-  .feat-ico { width: 30px; height: 30px; margin-bottom: 8px; } .feat-ico svg { width: 16px; height: 16px; }
-  .feat-card h3 { font-size: .92rem; margin-bottom: 2px; }
-  .feat-card p { font-size: .78rem; line-height: 1.35; }
+  .feat-grid { grid-template-columns: 1fr; gap: 6px; }
+  .feat-card { grid-template-columns: 64px minmax(0, 1fr); gap: 0 12px; padding: 8px 12px; }
+  .feat-card h3 { font-size: .95rem; }
+  .feat-card p { font-size: .8rem; line-height: 1.35; }
   .feat-card::after { display: none; }
-  #features .section-head { margin-bottom: 16px; }
+  #features .section-head { margin-bottom: 14px; }
 }
-@media (max-width: 920px) and (max-height: 740px) { .feat-card p { display: none; } }
-@media (hover: none) { .feat-card:hover { transform: none; box-shadow: var(--shadow-sm); } .feat-card:active { transform: scale(.985); } }
-@media (prefers-reduced-motion: reduce) { .feat-card, .feat-card:hover, .feat-card::after { transform: none; transition: none; } }
+@media (max-width: 920px) and (max-height: 740px) { .feat-card p { display: none; } .feat-card h3 { align-self: center; } }
+@media (hover: none) { .feat-card:hover { translate: none; scale: none; background: color-mix(in srgb, var(--surface) 55%, transparent); box-shadow: none; } .feat-card:active { scale: .985; } }
+@media (prefers-reduced-motion: reduce) { .feat-card, .feat-card:hover { translate: none; scale: none; transition: background .2s ease, box-shadow .2s ease; } }
 
 /* ===== features.html: one chapter per capability =====
    Copy beside a film (films.css), chapters alternating cream and cream-2,
@@ -1437,13 +1433,18 @@ html.a11y-still .connect-wire span { animation: none; opacity: .8; }
    reminder going out, bars moving, a screen lighting up, the button
    changing colour, the bell, the link to Optima dropping and coming back.
    Same frame and size on every card; still under reduced motion. */
-.fv { position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; height: 46px; margin-bottom: 14px; border-radius: 10px; background: color-mix(in srgb, var(--teal) 8%, transparent); overflow: hidden; }
+.fv { position: relative; display: flex; align-items: center; justify-content: center; gap: 6px; height: 56px; overflow: hidden; }
+/* The loops hold still until the card is hovered or focused: eight moving
+   at once was too much for one screen. */
+.fv, .fv * { animation-play-state: paused !important; }
+.feat-card:hover .fv, .feat-card:hover .fv *, .feat-card:focus-visible .fv, .feat-card:focus-visible .fv * { animation-play-state: running !important; }
 .fv i { font-style: normal; display: block; }
 .fv svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-/* booking: one of three times picked in turn */
+/* booking: one of the day's times picked in turn (two fit the card) */
+.fv-slots i:nth-child(3) { display: none; }
 .fv-slots i { font-size: .72rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-variant-numeric: tabular-nums; animation: fv-pick 4.5s infinite; }
-.fv-slots i:nth-child(2) { animation-delay: 1.5s; } .fv-slots i:nth-child(3) { animation-delay: 3s; }
-@keyframes fv-pick { 0%, 33% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 34%, 100% { background: var(--surface); border-color: var(--line); color: var(--ink); } }
+.fv-slots i:nth-child(2) { animation-delay: 2.25s; }
+@keyframes fv-pick { 0%, 49% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 50%, 100% { background: var(--surface); border-color: var(--line); color: var(--ink); } }
 /* agent: typing dots, then the answer */
 .fv-chat i { position: absolute; padding: 7px 10px; border-radius: 10px 10px 10px 3px; background: var(--surface); border: 1px solid var(--line); }
 .fv-dots { display: flex !important; gap: 3px; animation: fv-a 4s infinite; }
@@ -1487,7 +1488,7 @@ html.a11y-still .connect-wire span { animation: none; opacity: .8; }
 .fv-state { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--surface); flex: none; animation: fv-state 5s infinite; }
 @keyframes fv-cut { 0%, 30% { opacity: 1; } 35%, 60% { opacity: .25; } 65%, 100% { opacity: 1; } }
 @keyframes fv-state { 0%, 30% { background: var(--teal); } 35%, 60% { background: #c9982f; } 65%, 100% { background: var(--teal); } }
-@media (max-width: 920px) { .fv { height: 34px; margin-bottom: 8px; } .fv-bubble { width: 50px; } }
+@media (max-width: 920px) { .fv { height: 40px; } .fv-bubble { width: 50px; } .fv-grid i { width: 12px; height: 18px; } .fv-slots i { padding: 2px 4px; font-size: .62rem; } .fv-slots i:nth-child(2) { display: none; } }
 @media (prefers-reduced-motion: reduce) { .fv *, .fv i, .fv b { animation: none !important; } }
 html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation: none !important; }
 
