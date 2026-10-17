@@ -1469,33 +1469,23 @@ main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; ju
   .js .rung, .js .feat-card, .js .code-card, .js .cmp-table, .js .swatches, .js .notice-banner { filter: none; }
 }
 
-/* ===== Glass bands over a moving light =====
-   No drop shadows anywhere (cleaner, after petaron.ai). The page stays
-   plain cream and every card keeps its own plain face; only the light
-   beige bands (.section.alt and the footer) are frosted glass. Behind the
-   page three soft sand, sage and peach lights drift slowly (script.js "glass
-   light" adds the layer), and the plain sections are solid cream, so the
-   lights show only through the glass bands: colour moving behind frost,
-   which is what makes them read as glass. */
+/* ===== Clean: no shadows, two shades, a line only where the shade holds =====
+   No drop shadows anywhere. Sections are plain cream or the slightly darker
+   cream-2 (.alt). Where two sections of the same shade meet, a thin teal
+   line marks the change; where the shade changes, the change of shade is
+   the border and no line is drawn. The hero, the closing band and the
+   statement plate stand on their own and take no line, and a page's title
+   block runs straight into its first section. The old in-section
+   dividers give way to this rule. */
 :root { --shadow-sm: none; --shadow: none; --shadow-lg: none; }
-.glass-light { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--cream); }
-.glass-light i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; will-change: transform; }
-.glass-light i:nth-child(1) { left: -12vmax; top: -18vmax; background: radial-gradient(closest-side, rgba(232, 220, 196, .5), transparent); animation: gl-a 34s ease-in-out infinite alternate; }
-.glass-light i:nth-child(2) { right: -18vmax; top: 15vh; background: radial-gradient(closest-side, rgba(214, 228, 212, .3), transparent); animation: gl-b 42s ease-in-out infinite alternate; }
-.glass-light i:nth-child(3) { left: 20vw; bottom: -30vmax; background: radial-gradient(closest-side, rgba(240, 224, 200, .45), transparent); animation: gl-c 38s ease-in-out infinite alternate; }
-@keyframes gl-a { to { transform: translate(48vw, 38vh) scale(1.15); } }
-@keyframes gl-b { to { transform: translate(-52vw, 32vh) scale(.9); } }
-@keyframes gl-c { to { transform: translate(-18vw, -62vh) scale(1.1); } }
-@media (prefers-reduced-motion: reduce) { .glass-light i { animation: none; } }
-html.a11y-still .glass-light i { animation-play-state: paused; }
-/* Plain parts are solid, so the light only shows through the glass. */
-main > section:not(.alt):not(.hero) { background-color: var(--cream); }
-.section.alt, .footer {
-  background: linear-gradient(170deg, rgba(255, 255, 255, .6), rgba(255, 255, 255, .4));
-  -webkit-backdrop-filter: blur(28px) saturate(150%); backdrop-filter: blur(28px) saturate(150%);
+.section-divider { display: none; }
+main > section:not(.hero):not(.cta-band):not(.plate-sec) { position: relative; }
+main > section.alt:not(.hero):not(.cta-band):not(.plate-sec) + section.alt:not(.cta-band):not(.plate-sec)::before,
+main > section:not(.alt):not(.hero):not(.cta-band):not(.plate-sec):not(.page-head) + section:not(.alt):not(.hero):not(.cta-band):not(.plate-sec)::before {
+  content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 640px; max-width: 92%; height: 2px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--teal) 85%, transparent) 50%, transparent);
 }
-/* No rim on the bands: where two of them meet, their rims made a bright
-   white line across the page. The footer keeps its own hairline. */
 /* The film's popups and the launcher keep an edge, not a shadow. */
 .bridge-widget, .bridge-movie .bm-cal, .bs-launcher, .fr-widget, .fo-toast { box-shadow: 0 0 0 1px rgba(27, 37, 35, .08); }
 .plan--hi { box-shadow: none; }

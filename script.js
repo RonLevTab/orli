@@ -369,17 +369,6 @@
     window.addEventListener('orli:motion-still', open);
   })();
 
-  // Glass light (styles.css "Glass bands over a moving light"): the layer of
-  // slow teal and mint lights behind the page, seen only through the
-  // frosted bands.
-  (function () {
-    const light = document.createElement('div');
-    light.className = 'glass-light';
-    light.setAttribute('aria-hidden', 'true');
-    light.innerHTML = '<i></i><i></i><i></i>';
-    document.body.prepend(light);
-  })();
-
   // Buttons (styles.css "buttons"): every pill gets the dot, the label and
   // the label's copy that petaron.ai's hover is made of. The contact form's
   // buttons are left plain: the form rewrites their text while sending.
