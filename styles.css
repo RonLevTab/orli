@@ -801,6 +801,8 @@ html[dir="rtl"] .hero-veil {
    must stay in sync with the `blockRevealTargets` query in script.js. */
 .js .rung,
 .js .feat-card,
+.js .calc,
+.js .connect,
 .js .code-card,
 .js .cmp-table,
 .js .swatches,
@@ -1503,3 +1505,27 @@ html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation:
 .plate-mark { display: grid; place-items: center; width: 64px; height: 64px; margin-top: 36px; border-radius: 16px; background: var(--cream); }
 .plate-mark img { width: 40px; height: 40px; }
 @media (max-width: 920px) { .plate { min-height: 0; padding: 48px 20px; border-radius: 28px; } .plate-mark { width: 52px; height: 52px; margin-top: 24px; } .plate-mark img { width: 32px; height: 32px; } }
+
+/* ===== Small touches after petaron.ai =====
+   A thin reading line along the top of every page that fills as the page
+   is read (script.js builds it); eyebrows as a pill with a teal dot; and
+   blocks that settle out of a blur as they come in, not only rise. */
+.read-line {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 2px; pointer-events: none;
+  background: linear-gradient(to left, var(--teal-deep), var(--teal), var(--teal-bright));
+  transform-origin: right; transform: scaleX(var(--read, 0));
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 55%, transparent);
+  font-size: .8rem; font-weight: 600; color: var(--ink-soft);
+}
+.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex: none; }
+.eyebrow.light { color: #fff; border-color: rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .1); }
+.eyebrow.light::before { background: #fff; }
+.js .rung, .js .feat-card, .js .calc, .js .connect, .js .code-card, .js .cmp-table, .js .swatches, .js .notice-banner {
+  filter: blur(10px); transition: opacity .9s cubic-bezier(.22, 1, .36, 1), transform .9s cubic-bezier(.22, 1, .36, 1), filter .9s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .rung, .js .feat-card, .js .calc, .js .connect, .js .code-card, .js .cmp-table, .js .swatches, .js .notice-banner { filter: none; }
+}

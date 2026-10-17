@@ -465,6 +465,23 @@
     measure();
   })();
 
+  // The reading line along the top of every page (styles.css .read-line).
+  (function () {
+    const line = document.createElement('div');
+    line.className = 'read-line';
+    line.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(line);
+    let frame = 0;
+    const set = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      line.style.setProperty('--read', max > 0 ? String(Math.min(1, window.scrollY / max)) : '0');
+    };
+    window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(set); }, { passive: true });
+    window.addEventListener('resize', set);
+    set();
+  })();
+
   // The hero's widget picture on a phone (index.html .hero-visual): the
   // copy fills the top of the first screen and the card takes the room left
   // under it, scaled to fit whole rather than faded or cut at the fold. Below
@@ -522,7 +539,7 @@
     '.section-lead', '.cta-lead', '.ladder-note', '.check-list li',
   ].join(', '));
   const blockRevealTargets = document.querySelectorAll([
-    '.rung', '.feat-card', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
+    '.rung', '.feat-card', '.calc', '.connect', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
   ].join(', '));
 
   // Tells the watchdog in each page's <head> that this file arrived and the
@@ -611,6 +628,7 @@
           setTimeout(() => {
             el.style.opacity = '1';
             el.style.transform = 'none';
+            el.style.filter = 'none';
           }, (i % 4) * 110);
           io.unobserve(el);
         }
