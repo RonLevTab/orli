@@ -153,11 +153,13 @@ html[dir="rtl"] .fr-rail-pin { transform: translateX(-50%); }
 .fs-legend { display: flex; gap: 14px; font-size: .7rem; color: var(--ink-soft); margin-top: 6px; }
 .fs-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: var(--teal); margin-inline-end: 4px; vertical-align: -1px; }
 .fs-legend i.avg { height: 0; width: 12px; border-top: 2px dashed var(--ink); vertical-align: 2px; background: none; }
-/* Three screens of the dashboard in one frame; films.js fades between them. */
-.fs-stage { position: relative; flex: 1; min-height: 330px; }
-.fs-scene { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; opacity: 0; transition: opacity .5s ease; pointer-events: none; }
+/* Three screens of the dashboard in one frame; films.js fades between them.
+   The screens share one grid cell, so the stage is as tall as the tallest
+   screen and no card is squeezed until its last row spills out. */
+.fs-stage { position: relative; flex: 1; min-height: 330px; display: grid; }
+.fs-scene { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 12px; opacity: 0; transition: opacity .5s ease; pointer-events: none; }
 .film-stats.is-s1 .fs-scene[data-s="1"], .film-stats.is-s2 .fs-scene[data-s="2"], .film-stats.is-s3 .fs-scene[data-s="3"] { opacity: 1; }
-.fs-scene--two .fs-chart { flex: 1; }
+.fs-scene--two .fs-chart { flex: 1 0 auto; }
 .fs-chart--thin, .fs-chart--donut { flex: 0 0 auto; min-height: 0; }
 /* Where the bookings came from: a donut whose slices draw clockwise. */
 .fs-donut-wrap { display: flex; align-items: center; gap: 18px; }
