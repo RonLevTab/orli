@@ -113,21 +113,30 @@ html[lang="he"] .ladder-note { font-style: normal; }
 
 /* ---------- buttons ---------- */
 .btn-dark, .btn-cream {
-  display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap;
   border-radius: 999px; padding: 11px 22px; border: 1.5px solid transparent;
-  transition: transform .16s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
 }
-/* "Book a demo": a plain lift, a deeper shadow, and the dark pill warms to
-   teal. Replaced the earlier blob-and-shine sweep, which was more motion
-   than the button earned. */
-.btn-dark { background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); }
-.btn-dark:hover {
-  background: var(--teal-deep); border-color: rgba(255, 255, 255, 0.16);
-  transform: translateY(-2px); box-shadow: 0 10px 24px -10px rgba(10, 93, 90, 0.6);
+.btn-dark { background: var(--dark); color: #f6f3ec; border: 1px solid rgba(255, 255, 255, 0.08); --hb-fill: var(--teal-bright); --hb-ink: var(--dark); }
+.btn-cream { background: var(--cream); color: var(--dark); --hb-fill: var(--teal-deep); --hb-ink: var(--cream); }
+/* The hover is petaron.ai's booking button (.relay-hb there): a small dot
+   beside the label spreads until it fills the pill in the other colour,
+   while the label slides out and a copy in the new ink slides in. Nothing
+   lifts. script.js gives every button the .hb class and the three spans
+   (.hb-dot, .hb-label, .hb-over); the contact form's own buttons, whose
+   text the form rewrites, keep a plain colour change instead. */
+.hb { position: relative; overflow: hidden; isolation: isolate; }
+.hb-dot { flex: none; width: 8px; height: 8px; border-radius: 999px; background: var(--hb-fill); transition: transform .55s cubic-bezier(.22, 1, .36, 1); }
+.hb-label { position: relative; z-index: 1; display: inline-block; transition: transform .3s ease, opacity .3s ease; }
+.hb-over {
+  position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center;
+  color: var(--hb-ink); opacity: 0; transform: translateX(-3rem); transition: transform .3s ease, opacity .3s ease;
 }
-.btn-cream { background: var(--cream); color: var(--dark); }
-.btn-cream:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); }
+.hb:hover .hb-dot, .hb:focus-visible .hb-dot { transform: scale(110); }
+.hb:hover .hb-label, .hb:focus-visible .hb-label { transform: translateX(-3rem); opacity: 0; }
+.hb:hover .hb-over, .hb:focus-visible .hb-over { transform: none; opacity: 1; }
+.btn-dark:not(.hb):hover { background: var(--teal-deep); }
 .lg { padding: 15px 30px; font-size: 1.02rem; }
 
 /* ---------- floating pill nav ---------- */
@@ -759,6 +768,7 @@ html[dir="rtl"] .hero-veil {
   .scrolly-cap-n, .scrolly-cap-n svg, .scrolly-cap-num, .scrolly-cap-t, .scrolly-cap-d, .scrolly-cap-p { transition: none; }
   /* Controls: no lift on hover, no rotating plus, no ping. */
   .btn-dark, .btn-cream, .btn-dark:hover, .btn-cream:hover, .faq-item, .faq-item:hover { transform: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+  .hb-dot, .hb-label, .hb-over { transition: none; }
   .faq-plus, .faq-item.open .faq-plus { transition: none; }
   .faq-item.open .faq-ring { animation: none; }
   .faq-panel, .faq-panel-inner { transition: none; }
@@ -886,8 +896,10 @@ html[dir="rtl"] .hero-veil {
    after a tap reads as "you touched this", which is fine. The lifts are not.
    A press state gives touch its own feedback, released with the finger. */
 @media (hover: none) {
-  .btn-dark:hover { background: var(--dark); border-color: rgba(255, 255, 255, 0.08); transform: none; box-shadow: none; }
-  .btn-cream:hover { transform: none; box-shadow: none; }
+  .btn-dark:not(.hb):hover { background: var(--dark); }
+  .hb:hover .hb-dot { transform: none; }
+  .hb:hover .hb-label { transform: none; opacity: 1; }
+  .hb:hover .hb-over { opacity: 0; transform: translateX(-3rem); }
   .faq-item:hover { transform: none; }
   .btn-dark:active, .btn-cream:active { transform: scale(.985); }
 }
@@ -1311,8 +1323,7 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
 .plan .check-list li.plan-plus::before { content: "+"; }
 .plan .btn-dark, .plan .btn-cream { margin-top: auto; width: 100%; }
 .plan .btn-cream { border-color: var(--line); }
-.plan--hi .btn-cream { background: var(--teal-bright); color: var(--dark); border-color: transparent; }
-.plan--hi .btn-cream:hover { background: #5ee0cd; }
+.plan--hi .btn-cream { background: var(--teal-bright); color: var(--dark); border-color: transparent; --hb-fill: var(--dark); --hb-ink: var(--teal-bright); }
 /* The dark card's keyboard ring must show on dark. */
 .plan--hi :where(a, button):focus-visible { outline-color: var(--teal-bright); }
 .plans-foot { text-align: center; color: var(--ink-soft); margin: 26px auto 0; max-width: 64ch; font-size: .94rem; }
