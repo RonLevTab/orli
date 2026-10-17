@@ -525,18 +525,27 @@
     </section>
 
     <!-- CTA, teal full-bleed band (nod to Iris on the Move) -->
+    <!-- The closing band opens out from a small rounded tile as it scrolls
+         into view, then its text arrives (petaron.ai's RelayCTA; script.js
+         "closing band" sets --cta-s, --cta-r and --cta-t). Without script,
+         under reduced motion or with motion off it is simply there. -->
     <section class="cta-band" id="contact" data-lock-stop="start">
-      <div class="wrap narrow center">
-        <p class="eyebrow light">כשתהיו מוכנים</p>
-        <h2 class="display">הפכו את יומן האופטימה <span class="ital">למנוע קביעת פגישות.</span></h2>
-        <p class="cta-lead">ראו את אורלי קובעת פגישה אמיתית ליומן פעיל בפחות מדקה. בחרו שעה שנוחה לכם, או השאירו פרטים ונחזור אליכם.</p>
-        <!-- Two ways in. The Cal.com button is filled in from CAL_LINK by
-             script.js and stays hidden until Cal's script has actually loaded
-             (a button onto nothing would be a lie). The other opens the
-             contact dialog below. -->
-        <div class="cta-actions">
-          <button type="button" class="btn-cream lg" id="calDemoBtn" hidden>בחרו שעה להדגמה</button>
-          <button type="button" class="btn-cream lg" data-contact-open>צרו קשר</button>
+      <div class="wrap">
+        <div class="cta-box" data-cta-box>
+          <div class="cta-bg" aria-hidden="true"></div>
+          <div class="cta-inner narrow center">
+            <p class="eyebrow light">כשתהיו מוכנים</p>
+            <h2 class="display">הפכו את יומן האופטימה <span class="ital">למנוע קביעת פגישות.</span></h2>
+            <p class="cta-lead">ראו את אורלי קובעת פגישה אמיתית ליומן פעיל בפחות מדקה. בחרו שעה שנוחה לכם, או השאירו פרטים ונחזור אליכם.</p>
+            <!-- Two ways in. The Cal.com button is filled in from CAL_LINK by
+                 script.js and stays hidden until Cal's script has actually loaded
+                 (a button onto nothing would be a lie). The other opens the
+                 contact dialog below. -->
+            <div class="cta-actions">
+              <button type="button" class="btn-cream lg" id="calDemoBtn" hidden>בחרו שעה להדגמה</button>
+              <button type="button" class="btn-cream lg" data-contact-open>צרו קשר</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

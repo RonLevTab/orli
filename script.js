@@ -437,6 +437,34 @@
     } else go();
   })();
 
+  // The closing band (index.html #contact): from the moment its top enters
+  // the screen until it is a quarter of the way up, the teal layer grows
+  // from a tenth to full size and its corners from 96px to 28px; over the
+  // last stretch the text fades in. Read from where the box is on screen.
+  (function () {
+    const box = document.querySelector('[data-cta-box]');
+    if (!box) return;
+    const still = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-still');
+    let frame = 0;
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    const measure = () => {
+      frame = 0;
+      if (still()) { ['--cta-s', '--cta-r', '--cta-t'].forEach((k) => box.style.removeProperty(k)); return; }
+      const vh = window.innerHeight;
+      const p = clamp((vh - box.getBoundingClientRect().top) / (vh * 0.75));
+      const open = clamp(p / 0.8);
+      box.style.setProperty('--cta-s', String(0.1 + 0.9 * open));
+      box.style.setProperty('--cta-r', `${96 - 68 * open}px`);
+      box.style.setProperty('--cta-t', String(clamp((p - 0.6) / 0.35)));
+    };
+    const queue = () => { if (!frame) frame = requestAnimationFrame(measure); };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    window.addEventListener('orli:motion-still', queue);
+    window.addEventListener('orli:motion-go', queue);
+    measure();
+  })();
+
   // The hero's widget picture on a phone (index.html .hero-visual): the
   // copy fills the top of the first screen and the card takes the room left
   // under it, scaled to fit whole rather than faded or cut at the fold. Below

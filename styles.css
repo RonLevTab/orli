@@ -1477,3 +1477,17 @@ html.a11y-still .connect-wire span { animation: none; opacity: .8; }
 @media (max-width: 920px) { .fv { height: 34px; margin-bottom: 8px; } .fv-bubble { width: 50px; } }
 @media (prefers-reduced-motion: reduce) { .fv *, .fv i, .fv b { animation: none !important; } }
 html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation: none !important; }
+
+/* ===== The closing band grows into view (index.html #contact) =====
+   The teal moves off the section onto a layer behind the text; script.js
+   scales that layer from a tenth of its size to full and rounds its
+   corners less as it grows, then fades the text in. */
+.cta-band { background: none; padding: 40px 0; }
+.cta-box { position: relative; padding: 74px 24px; }
+.cta-bg {
+  position: absolute; inset: 0; border-radius: var(--cta-r, 28px);
+  background: linear-gradient(155deg, var(--teal-deep), color-mix(in srgb, var(--teal) 80%, var(--teal-deep)));
+  transform: scale(var(--cta-s, 1)); transform-origin: 50% 50%;
+}
+.cta-inner { position: relative; z-index: 1; opacity: var(--cta-t, 1); transform: translateY(calc((1 - var(--cta-t, 1)) * 16px)); }
+@media (max-width: 920px) { .cta-box { padding: 44px 18px; } .cta-band { padding: 16px 0; } }
