@@ -1500,7 +1500,7 @@ html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation:
   min-height: 56vh; padding: 64px 24px; border-radius: 40px;
   background: linear-gradient(155deg, var(--teal-deep), color-mix(in srgb, var(--teal) 80%, var(--teal-deep)));
 }
-.plate .display { color: #fff; max-width: 16ch; margin: 0; }
+.plate .display { color: #fff; max-width: 24ch; margin: 0; }
 .plate .display .ital { color: #bff3ec; display: block; }
 .plate-mark { display: grid; place-items: center; width: 64px; height: 64px; margin-top: 36px; border-radius: 16px; background: var(--cream); }
 .plate-mark img { width: 40px; height: 40px; }

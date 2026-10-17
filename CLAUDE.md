@@ -15,6 +15,14 @@ Seven pages, all sharing the same header/footer shell and `styles.css`:
   manager deciding whether to adopt Orli. Kept short on purpose: the `#features`
   section is eight cards, each a link (the whole card, no "more" link) to the page
   that explains the capability, and the depth lives there.
+  Taken from petaron.ai (2026-10-18, an experiment, each piece its own commit):
+  the cards open with a small CSS loop instead of an icon (`.fv-*`), a calculator
+  (`#calculator`, phone-booking hours and cost from three sliders), a connect strip
+  (`#connect`, every way a patient books, through Orli, into Optima), a teal
+  statement plate before the FAQ, the closing band growing out of a small tile as
+  it scrolls in (`.cta-box`), a reading line along the top of every page, pill
+  eyebrows and blocks that settle out of a blur. All of it lives in `styles.css`
+  and `script.js`.
 - **`features.html`** — one chapter per capability (booking, AI agent, automations,
   analytics, reliability, a pointer to the admin), each a short copy block beside a
   self-playing film in the style of the home page's journey film: the booking chapter
@@ -182,7 +190,7 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20261018b` today). Bump them all
+  carries the **same** token on every page (`?v=20261018d` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
   drifted across pages and left stale copies in caches.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
