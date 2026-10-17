@@ -369,6 +369,17 @@
     window.addEventListener('orli:motion-still', open);
   })();
 
+  // Glass light (styles.css "Glass bands over a moving light"): the layer of
+  // slow teal and mint lights behind the page, seen only through the
+  // frosted bands.
+  (function () {
+    const light = document.createElement('div');
+    light.className = 'glass-light';
+    light.setAttribute('aria-hidden', 'true');
+    light.innerHTML = '<i></i><i></i><i></i>';
+    document.body.prepend(light);
+  })();
+
   // The hero's widget picture on a phone (index.html .hero-visual): the
   // copy fills the top of the first screen and the card takes the room left
   // under it, scaled to fit whole rather than faded or cut at the fold. Below

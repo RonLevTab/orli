@@ -1470,43 +1470,36 @@ main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; ju
   .js .rung, .js .feat-card, .js .code-card, .js .cmp-table, .js .swatches, .js .notice-banner { filter: none; }
 }
 
-/* ===== Glass, without shadows (experiment, branch site/glass-style) =====
-   After petaron.ai's light page: no drop shadows anywhere, surfaces as
-   frosted glass (a translucent white fill brighter at the top, a bright
-   rim and a hairline outline), and a faint teal and mint light fixed
-   behind the page so the glass has something to frost. One block, so it
-   comes out in one cut. */
+/* ===== Glass bands over a moving light =====
+   No drop shadows anywhere (cleaner, after petaron.ai). The page stays
+   plain cream and every card keeps its own plain face; only the light
+   beige bands (.section.alt and the footer) are frosted glass. Behind the
+   page three soft teal and mint lights drift slowly (script.js "glass
+   light" adds the layer), and the plain sections are solid cream, so the
+   lights show only through the glass bands: colour moving behind frost,
+   which is what makes them read as glass. */
 :root { --shadow-sm: none; --shadow: none; --shadow-lg: none; }
-body {
-  background:
-    radial-gradient(60vw 55vh at 88% 8%, rgba(20, 184, 166, .11), transparent 70%),
-    radial-gradient(55vw 55vh at 8% 92%, rgba(15, 138, 134, .09), transparent 70%),
-    radial-gradient(45vw 40vh at 30% 40%, rgba(168, 232, 208, .10), transparent 70%),
-    var(--cream);
-  background-attachment: fixed;
+.glass-light { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--cream); }
+.glass-light i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; will-change: transform; }
+.glass-light i:nth-child(1) { left: -12vmax; top: -18vmax; background: radial-gradient(closest-side, rgba(20, 184, 166, .42), transparent); animation: gl-a 34s ease-in-out infinite alternate; }
+.glass-light i:nth-child(2) { right: -18vmax; top: 15vh; background: radial-gradient(closest-side, rgba(168, 232, 208, .65), transparent); animation: gl-b 42s ease-in-out infinite alternate; }
+.glass-light i:nth-child(3) { left: 20vw; bottom: -30vmax; background: radial-gradient(closest-side, rgba(15, 138, 134, .32), transparent); animation: gl-c 38s ease-in-out infinite alternate; }
+@keyframes gl-a { to { transform: translate(48vw, 38vh) scale(1.15); } }
+@keyframes gl-b { to { transform: translate(-52vw, 32vh) scale(.9); } }
+@keyframes gl-c { to { transform: translate(-18vw, -62vh) scale(1.1); } }
+@media (prefers-reduced-motion: reduce) { .glass-light i { animation: none; } }
+html.a11y-still .glass-light i { animation-play-state: paused; }
+/* Plain parts are solid, so the light only shows through the glass. */
+main > section:not(.alt):not(.hero) { background-color: var(--cream); }
+.section.alt, .footer {
+  background: linear-gradient(170deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .26));
+  -webkit-backdrop-filter: blur(28px) saturate(150%); backdrop-filter: blur(28px) saturate(150%);
+  border-block: 1px solid rgba(255, 255, 255, .7);
 }
-.section.alt { background: color-mix(in srgb, var(--cream-2) 40%, transparent); }
-.footer { background: color-mix(in srgb, var(--cream-2) 55%, transparent); }
-.nav {
-  background: rgba(255, 255, 255, .5);
-  -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
-  border-bottom-color: rgba(27, 37, 35, .06);
-}
-.faq-item, .cmp-table, .plan:not(.plan--hi), .steps li, .plans-every div, .rung, .film-frame,
-.browser, .bridge-site, .bridge-cal, .contact-dialog, .notice-banner {
-  background: linear-gradient(170deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
-  -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, .75);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 0 0 1px rgba(27, 37, 35, .06);
-}
-.cmp-cell.with, .cmp-th--with { background: rgba(15, 138, 134, .05); }
-.feat-card { background: linear-gradient(170deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .28)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8); }
-.feat-card:hover, .feat-card:focus-visible { background-color: transparent; background-image: linear-gradient(170deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, .6)); }
+.footer { border-bottom: 0; }
 /* The film's popups and the launcher keep an edge, not a shadow. */
 .bridge-widget, .bridge-movie .bm-cal, .bs-launcher, .fr-widget, .fo-toast { box-shadow: 0 0 0 1px rgba(27, 37, 35, .08); }
 .plan--hi { box-shadow: none; }
-/* The teal panels stay teal, with the glass's bright top edge. */
-.cta-bg, .plate { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22); }
 
 /* ===== FAQ, after petaron.ai's =====
    A plain list between two hairlines, a hairline between the rows, no
