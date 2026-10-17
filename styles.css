@@ -1331,3 +1331,45 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
   .steps { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) { .plans-every { grid-template-columns: 1fr; } }
+
+/* ===== Calculator (index.html #calculator) =====
+   After petaron.ai's: three sliders on one side, the result on the other,
+   the numbers counting to their new value (script.js "calculator"). */
+.calc {
+  display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; max-width: 980px; margin: 0 auto;
+  padding: 32px; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow);
+}
+.calc-in { display: grid; gap: 30px; align-content: center; }
+.calc-label { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.calc-label label { font-size: 1rem; color: var(--ink); }
+.calc-label output { font-weight: 700; color: var(--teal-deep); font-variant-numeric: tabular-nums; }
+.calc-ends { display: flex; justify-content: space-between; margin-top: 6px; font-size: .74rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.calc input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px; margin: 0; cursor: pointer;
+  background: linear-gradient(to left, var(--teal-deep), var(--teal-bright) var(--fill, 50%), var(--line) var(--fill, 50%));
+}
+.calc input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--surface); border: 2px solid var(--teal-deep); box-shadow: var(--shadow-sm); }
+.calc input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--surface); border: 2px solid var(--teal-deep); box-shadow: var(--shadow-sm); }
+.calc input[type="range"]:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 6px; }
+.calc-out {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  padding: 28px 24px; border-radius: 16px; background: var(--cream-2); border: 1px solid var(--line);
+}
+.calc-k { font-size: .82rem; color: var(--ink-soft); }
+.calc-big { margin: 6px 0 0; display: flex; align-items: baseline; gap: 8px; }
+.calc-big b { font-size: 3.2rem; font-weight: 700; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.calc-big small { font-size: .9rem; color: var(--ink-soft); }
+.calc-rule { width: 70%; height: 1px; background: var(--line); margin: 20px 0; }
+.calc-mid { margin: 6px 0 22px; }
+.calc-mid b { font-size: 1.9rem; font-weight: 700; color: var(--teal-deep); font-variant-numeric: tabular-nums; }
+.calc-out .btn-dark { width: 100%; }
+.calc-note { margin: 10px 0 0; font-size: .74rem; color: var(--ink-soft); }
+@media (max-width: 920px) {
+  .calc { grid-template-columns: 1fr; padding: 18px; gap: 18px; }
+  .calc-in { gap: 18px; }
+  .calc-out { padding: 16px; }
+  .calc-big b { font-size: 2.4rem; }
+  .calc-rule { margin: 10px 0; }
+  .calc-mid { margin: 2px 0 12px; }
+  #calculator .section-lead { display: none; }
+}

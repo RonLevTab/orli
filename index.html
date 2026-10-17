@@ -383,6 +383,48 @@
       </div>
     </section>
 
+    <!-- CALCULATOR, after petaron.ai's (RelayCalculator.tsx there): the
+         clinic sets its own numbers and sees what booking by phone costs it
+         today. Nothing here claims a saving; it is their estimate of the
+         time, worked out in script.js ("calculator"). -->
+    <section class="section" id="calculator" data-lock-stop="start">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">מחשבון</p>
+          <h2 class="display">כמה עולות לכם <span class="ital">שיחות הטלפון?</span></h2>
+          <p class="section-lead">הכניסו את המספרים של המרפאה וראו כמה זמן הולך היום על קביעת תורים בטלפון. ההערכה שלכם, לא שלנו.</p>
+        </div>
+        <div class="calc" data-calc>
+          <div class="calc-in">
+            <div class="calc-row">
+              <div class="calc-label"><label for="calcCalls">שיחות לקביעת תור ביום</label><output for="calcCalls" data-calc-show="calls">40</output></div>
+              <input type="range" id="calcCalls" min="5" max="150" step="5" value="40" data-calc-in="calls" />
+              <div class="calc-ends"><span>5</span><span>150</span></div>
+            </div>
+            <div class="calc-row">
+              <div class="calc-label"><label for="calcMinutes">דקות לכל שיחה</label><output for="calcMinutes" data-calc-show="minutes">4 דק׳</output></div>
+              <input type="range" id="calcMinutes" min="1" max="10" step="1" value="4" data-calc-in="minutes" />
+              <div class="calc-ends"><span>1 דק׳</span><span>10 דק׳</span></div>
+            </div>
+            <div class="calc-row">
+              <div class="calc-label"><label for="calcRate">עלות שעת עבודה בקבלה</label><output for="calcRate" data-calc-show="rate">₪60</output></div>
+              <input type="range" id="calcRate" min="40" max="150" step="5" value="60" data-calc-in="rate" />
+              <div class="calc-ends"><span>₪40</span><span>₪150</span></div>
+            </div>
+          </div>
+          <div class="calc-out">
+            <span class="calc-k">שעות טלפון בחודש</span>
+            <p class="calc-big"><b data-calc-hours>59</b><small>שעות</small></p>
+            <div class="calc-rule"></div>
+            <span class="calc-k">עלות בשנה</span>
+            <p class="calc-mid"><b data-calc-cost>₪42,240</b></p>
+            <a data-demo-cta href="#contact" class="btn-dark lg">לקביעת דמו</a>
+            <p class="calc-note">לפי 22 ימי עבודה בחודש</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- EMBED SNIPPET -->
     <section class="section alt embed" data-lock-stop="start">
       <div class="wrap narrow center">
