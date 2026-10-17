@@ -1507,3 +1507,34 @@ body {
 .plan--hi { box-shadow: none; }
 /* The teal panels stay teal, with the glass's bright top edge. */
 .cta-bg, .plate { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22); }
+
+/* ===== FAQ, after petaron.ai's =====
+   A plain list between two hairlines, a hairline between the rows, no
+   boxes: the topic in teal in its own column, the question, and a thin
+   plus at the far end that turns into a teal ×. The answer opens under
+   the question, in line with it. Same markup and script as before; the
+   order of the three parts is set here. */
+.faq { gap: 0; border-block: 1px solid color-mix(in srgb, var(--line) 75%, transparent); }
+.faq-item, .faq-item:hover {
+  border: 0; border-radius: 0; background: none; box-shadow: none; transform: none;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.faq-item + .faq-item { border-top: 1px solid color-mix(in srgb, var(--line) 75%, transparent); }
+.faq-btn { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; align-items: center; gap: 24px; padding: 20px 0; }
+.faq-q { display: contents; }
+.faq-q .faq-tag { order: 1; margin: 0; padding: 0; border: 0; border-radius: 0; font-size: .78rem; font-weight: 600; letter-spacing: .02em; color: var(--teal-deep); }
+.faq-q > span:first-child { order: 2; font-weight: 500; font-size: 1.06rem; }
+.faq-plus {
+  order: 3; width: auto; height: auto; border: 0; border-radius: 0; background: none;
+  color: var(--ink-soft); font-size: 1.4rem; font-weight: 300; transition: transform .5s ease, color .3s ease;
+}
+.faq-ring { display: none; }
+.faq-item.open .faq-plus { transform: rotate(45deg); color: var(--teal-deep); }
+.faq-panel-inner p { padding-block: 0 24px; padding-inline: 144px 40px; max-width: none; }
+@media (max-width: 920px) {
+  .faq-btn { grid-template-columns: minmax(0, 1fr) auto; gap: 16px; padding: 14px 0; }
+  .faq-q .faq-tag { display: none; }
+  .faq-q > span:first-child { font-size: .98rem; }
+  .faq-panel-inner p { padding-inline: 0 28px; padding-block-end: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .faq-plus { transition: none; } }
