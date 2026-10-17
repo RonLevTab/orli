@@ -40,8 +40,8 @@
   // has real range and never vanishes into the cream page.
   var CONFIG = {
     color1: [247, 245, 239],
-    color2: [152, 226, 214],
-    color3: [90, 158, 150],
+    color2: [94, 208, 192],
+    color3: [190, 236, 228],
     speed: 0.35,
     scale: 1.0,
     noise: 0.05

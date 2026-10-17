@@ -1344,11 +1344,10 @@ main { position: relative; isolation: isolate; }
 /* Sections sit on the ribbon, so the alternate band is a wash, not a wall. */
 .section.alt { background: color-mix(in srgb, var(--cream-2) 50%, transparent); }
 
-/* ===== Glass =====
-   Cards and panels frost whatever passes behind them (petaron.ai's light
-   page): a translucent white fill brighter at the top, a bright rim, and a
-   faint outline so the edge still reads on cream. */
-.feat-card, .faq-item, .cmp-table, .plan:not(.plan--hi), .steps li, .plans-every div, .rung, .cta-panel, .film-frame {
+/* The closing panel is glass over the ribbon (petaron.ai's light page):
+   a translucent white fill brighter at the top, a bright rim, and a faint
+   outline so the edge still reads on cream. The cards keep their own faces. */
+.cta-panel {
   background: linear-gradient(170deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
   -webkit-backdrop-filter: blur(20px) saturate(150%); backdrop-filter: blur(20px) saturate(150%);
   border-color: rgba(255, 255, 255, .75);
