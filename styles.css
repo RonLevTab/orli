@@ -1408,18 +1408,27 @@ html:not(.js) .chapter-nav a.is-here::after, .chapter-nav.no-ind a.is-here::afte
 html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation: none !important; }
 
 /* ===== The closing band grows into view (index.html #contact) =====
-   The teal moves off the section onto a layer behind the text; script.js
-   scales that layer from a tenth of its size to full and rounds its
-   corners less as it grows, then fades the text in. */
-.cta-band { background: none; padding: 40px 0; }
+   The teal sits on a layer behind the text. Once the band comes into view
+   script.js adds .is-open, and the layer grows from a small rounded tile to
+   full size in about half a second, the text arriving right after. It
+   opens once and stays open. Until script.js arms it (.is-armed), under
+   reduced motion or with motion off, it is simply there. The FAQ and the
+   band size to their content rather than a full screen each, so no empty
+   screen sits between the last question and the band. */
+.cta-band { background: none; padding: 24px 0 40px; }
 .cta-box { position: relative; padding: 74px 24px; }
 .cta-bg {
-  position: absolute; inset: 0; border-radius: var(--cta-r, 28px);
+  position: absolute; inset: 0; border-radius: 28px;
   background: linear-gradient(155deg, var(--teal-deep), color-mix(in srgb, var(--teal) 80%, var(--teal-deep)));
-  transform: scale(var(--cta-s, 1)); transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  transition: transform .55s cubic-bezier(.22, 1, .36, 1), border-radius .55s cubic-bezier(.22, 1, .36, 1);
 }
-.cta-inner { position: relative; z-index: 1; opacity: var(--cta-t, 1); transform: translateY(calc((1 - var(--cta-t, 1)) * 16px)); }
-@media (max-width: 920px) { .cta-box { padding: 44px 18px; } .cta-band { padding: 16px 0; } }
+.cta-inner { position: relative; z-index: 1; transition: opacity .35s ease .2s, transform .45s cubic-bezier(.22, 1, .36, 1) .2s; }
+.cta-box.is-armed:not(.is-open) .cta-bg { transform: scale(.15); border-radius: 96px; }
+.cta-box.is-armed:not(.is-open) .cta-inner { opacity: 0; transform: translateY(16px); }
+main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; justify-content: flex-start; }
+@media (max-width: 920px) { .cta-box { padding: 44px 18px; } .cta-band { padding: 12px 0 24px; } }
+@media (prefers-reduced-motion: reduce) { .cta-bg, .cta-inner { transition: none; } }
 
 /* ===== The plate (index.html, before the FAQ) ===== */
 .plate {

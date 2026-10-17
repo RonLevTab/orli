@@ -353,65 +353,21 @@
     }
   }
 
-  // The closing band (index.html #contact): from the moment its top enters
-  // the screen until it is a quarter of the way up, the teal layer grows
-  // from a tenth to full size and its corners from 96px to 28px; over the
-  // last stretch the text fades in. Read from where the box is on screen.
+  // The closing band (index.html #contact): armed small while it is below
+  // the screen, it opens as soon as a fifth of it is in view and stays open
+  // (styles.css .cta-box). Already on screen at load, or no motion: nothing
+  // to do, it is there.
   (function () {
     const box = document.querySelector('[data-cta-box]');
-    if (!box) return;
-    const still = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-still');
-    let frame = 0;
-    const clamp = (v) => Math.min(1, Math.max(0, v));
-    const measure = () => {
-      frame = 0;
-      if (still()) { ['--cta-s', '--cta-r', '--cta-t'].forEach((k) => box.style.removeProperty(k)); return; }
-      const vh = window.innerHeight;
-      const p = clamp((vh - box.getBoundingClientRect().top) / (vh * 0.75));
-      const open = clamp(p / 0.8);
-      box.style.setProperty('--cta-s', String(0.1 + 0.9 * open));
-      box.style.setProperty('--cta-r', `${96 - 68 * open}px`);
-      box.style.setProperty('--cta-t', String(clamp((p - 0.6) / 0.35)));
-    };
-    const queue = () => { if (!frame) frame = requestAnimationFrame(measure); };
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
-    window.addEventListener('orli:motion-still', queue);
-    window.addEventListener('orli:motion-go', queue);
-    measure();
+    if (!box || !('IntersectionObserver' in window)) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('a11y-still')) return;
+    if (box.getBoundingClientRect().top < window.innerHeight) return;
+    box.classList.add('is-armed');
+    const open = () => { box.classList.add('is-open'); io.disconnect(); };
+    const io = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) open(); }, { threshold: 0.2 });
+    io.observe(box);
+    window.addEventListener('orli:motion-still', open);
   })();
-
-  // The reading line along the top of every page (styles.css .read-line).
-  (function () {
-    const line = document.createElement('div');
-    line.className = 'read-line';
-    line.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(line);
-    let frame = 0;
-    const set = () => {
-      frame = 0;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      line.style.setProperty('--read', max > 0 ? String(Math.min(1, window.scrollY / max)) : '0');
-    };
-    window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(set); }, { passive: true });
-    window.addEventListener('resize', set);
-    set();
-  })();
-
-  // Buttons (styles.css "buttons"): every pill gets the dot, the label and
-  // the label's copy that petaron.ai's hover is made of. The contact form's
-  // buttons are left plain: the form rewrites their text while sending.
-  document.querySelectorAll('.btn-dark, .btn-cream').forEach((btn) => {
-    if (btn.closest('form') || btn.classList.contains('hb')) return;
-    const text = btn.textContent.trim();
-    if (!text) return;
-    btn.textContent = '';
-    const dot = document.createElement('span'); dot.className = 'hb-dot'; dot.setAttribute('aria-hidden', 'true');
-    const label = document.createElement('span'); label.className = 'hb-label'; label.textContent = text;
-    const over = document.createElement('span'); over.className = 'hb-over'; over.setAttribute('aria-hidden', 'true'); over.textContent = text;
-    btn.append(dot, label, over);
-    btn.classList.add('hb');
-  });
 
   // The hero's widget picture on a phone (index.html .hero-visual): the
   // copy fills the top of the first screen and the card takes the room left
