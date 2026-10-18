@@ -28,8 +28,10 @@ export default {
     // admin/src/upgrade.ts) links here. The agent's own page has not been
     // published yet, so send it to the agent's chapter. A chatbot.html
     // file, once deployed, is served before this script and wins.
+    // Straight to the extensionless address: /features.html would answer
+    // with a second redirect (Cloudflare's 307 to /features).
     if (url.pathname === '/chatbot.html' || url.pathname === '/chatbot') {
-      return Response.redirect(new URL('/features.html#agent', url).href, 302);
+      return Response.redirect(new URL('/features#agent', url).href, 302);
     }
     return notFound(request, env);
   },

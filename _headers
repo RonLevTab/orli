@@ -10,3 +10,31 @@
   Content-Type: text/plain; charset=utf-8
 /sitemap.xml
   Content-Type: application/xml; charset=utf-8
+
+# Caching. Cloudflare's default for every static asset is
+# "public, max-age=0, must-revalidate" (revalidated with an ETag on each
+# view), which is what the HTML pages keep: no rule below matches a page.
+# Two rules that match one path have their values comma-joined, so no
+# path may match more than one Cache-Control rule here: hence no /* and
+# no /assets/* catch-all.
+#
+# CSS and JS: every page references every one of them with the shared
+# ?v= token (CLAUDE.md), and a new token is a new URL, so a cached copy
+# never needs rechecking. Never link one of these without the token.
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+# Fonts: a new copy goes in under a new file name (heebo-v28-*), never
+# over an old one.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+# Named outright rather than left to the default type map.
+/assets/fonts/*.woff2
+  Content-Type: font/woff2
+# Images are often linked without the token (icons, og:image), so a
+# week, not a year.
+/assets/brand/*
+  Cache-Control: public, max-age=604800
+/favicon.ico
+  Cache-Control: public, max-age=604800
