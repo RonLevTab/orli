@@ -37,16 +37,14 @@ black, never a hand-tuned new value, never two layers.
 Focus rings and selection outlines (`box-shadow: 0 0 0 2px …` with no blur
 and no offset) are borders, not shadows. They are fine.
 
-### Known exceptions still in the code
+### Where things stand
 
-These predate this rule. Remove them when you next touch the file; don't
-copy them:
-
-- `styles.css`: the hero's browser mock (`.browser`, `--shadow-lg`), the
-  demo browser (`.demo-browser`, `.scrolly-sticky .demo-browser`), the
-  code card (`.code-card`), the `.swatches span` dots, the FAQ items, the
-  plan cards, and the other cards using `--shadow` / `--shadow-sm`
-- `panel.css` and `panel-rows.css` are already flat; keep them that way.
+The whole site is flat. `styles.css`'s "Clean" block sets the shadow
+tokens to `none`, and the hand-written film shadows (`films.css`) and the
+demo cursor's drop shadow are gone; a scan of every page's computed styles
+finds no drop or text shadow. Keep it that way. One known exception:
+`widget.css` keeps the real widget's calendar shadow (`.obw-calendar`),
+because it is generated from `orli-calendar` and mirrors the product.
 
 ## Product mocks and demos
 

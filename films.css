@@ -107,7 +107,7 @@ html[dir="rtl"] .fr-rail-pin { transform: translateX(-50%); }
 /* The booking panel rises over the email, the treatment already chosen. */
 .fr-widget {
   position: absolute; inset-inline: 18px; bottom: 18px; z-index: 3;
-  background: #fff; border: 1px solid #e0e0e0; border-radius: 18px; padding: 14px 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
+  background: #fff; border: 1px solid #e0e0e0; border-radius: 18px; padding: 14px 16px;
   opacity: 0; transform: translateY(14px) scale(.98); transition: opacity .3s ease, transform .4s cubic-bezier(.2, .8, .2, 1);
 }
 .film-remind.is-b5 .fr-widget { opacity: 1; transform: none; }

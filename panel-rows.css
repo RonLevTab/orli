@@ -106,7 +106,7 @@
    lands in its control is --x (data, not layout; 50% unless set). */
 .prow-tap { position: absolute; left: var(--x, 50%); top: 55%; z-index: 3; width: 17px; height: 17px; opacity: 0; pointer-events: none; }
 .prow-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
-.prow-tap svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .25)); }
+.prow-tap svg { display: block; width: 100%; height: 100%; }
 .prow-tap::after { content: ""; position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--teal); opacity: 0; }
 
 /* Calendar (CalendarView.vue): the week, Orli's bookings beside the ones
