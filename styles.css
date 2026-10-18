@@ -225,6 +225,9 @@ html[dir="rtl"] .hero-veil {
 .section.alt { background: var(--cream-2); }
 .section-head { max-width: 760px; margin: 0 auto 56px; text-align: center; }
 .section-lead { font-size: 1.12rem; color: var(--ink-soft); }
+/* A closing paragraph's own margin added 18px under the last sections of a
+   page, so the gap there no longer matched the rest. */
+.section:not(.page-head) > .wrap > .section-lead:last-child { margin-bottom: 0; }
 
 /* Page-level modifiers. These used to be inline style="" attributes repeated
    across the five pages; each name says what the block is, so the number
@@ -729,6 +732,10 @@ html[dir="rtl"] .hero-veil {
 @media (max-width: 560px) {
    .ladder{ grid-template-columns: 1fr; }
   .section { padding: 48px 0; }
+  /* The rule above outranks the page modifiers by coming later; without
+     these the gap under a short page head doubled on a phone. */
+  .page-head--short { padding-block-end: 24px; }
+  .section--flush-top { padding-block-start: 0; }
   .field input { min-width: 0; width: 100%; }
 }
 /* Reduced motion: movement goes, fades stay. The old rule killed every
@@ -1413,6 +1420,10 @@ html.a11y-still .fv *, html.a11y-still .fv i, html.a11y-still .fv b { animation:
 .cta-box.is-armed:not(.is-open) .cta-bg { transform: scale(.15); border-radius: 96px; }
 .cta-box.is-armed:not(.is-open) .cta-inner { opacity: 0; transform: translateY(16px); }
 main > #faq[data-lock-stop], main > #contact[data-lock-stop] { min-height: 0; justify-content: flex-start; }
+/* Phones: the plate and the embed hold far less than a screen, and padded
+   out to one they left half a screen of empty cream under them. Phones do
+   not snap, so these two size to their content, as the FAQ and band do. */
+@media (max-width: 920px) { main > .plate-sec[data-lock-stop], main > .embed[data-lock-stop] { min-height: 0; } }
 @media (max-width: 920px) { .cta-box { padding: 44px 18px; } .cta-band { padding: 12px 0 24px; } }
 @media (prefers-reduced-motion: reduce) { .cta-bg, .cta-inner { transition: none; } }
 /* The same band closing the other pages: one line and one button. */

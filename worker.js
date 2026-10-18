@@ -24,6 +24,13 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/demo') return handleDemo(request, env, url);
     if (url.pathname === '/api/cal') return handleCal(request, env);
+    // The admin's "upgrade to the agent" button (orli-calendar
+    // admin/src/upgrade.ts) links here. The agent's own page has not been
+    // published yet, so send it to the agent's chapter. A chatbot.html
+    // file, once deployed, is served before this script and wins.
+    if (url.pathname === '/chatbot.html' || url.pathname === '/chatbot') {
+      return Response.redirect(new URL('/features.html#agent', url).href, 302);
+    }
     return notFound(request, env);
   },
 };

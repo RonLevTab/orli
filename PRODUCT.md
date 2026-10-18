@@ -145,8 +145,14 @@ something is signed.
   PRODUCT.md); the site names no clinic customers and shows no testimonials,
   logos, or usage metrics.
 - **Absent — do not fabricate:** customer count beyond one, testimonials,
-  logos, usage/performance metrics, or pricing. Reconfirmed 2026-09-07: still
+  logos, or usage/performance metrics. Reconfirmed 2026-09-07: still
   one customer, still not nameable.
+- **Pricing is set by Ron, not invented:** three monthly plans on
+  `pricing.html` — Booking ₪499 (up to five practitioners, one follow-up
+  rule), Growth ₪699 (all follow-ups, full analytics), AI receptionist ₪899
+  (Growth plus the agent, about 250 conversations a month). Change the
+  numbers only on his word. orli-calendar knows only `booking` and `ai`
+  plans; the Growth tier and the caps are not enforced in the product.
 
 ## Product Principles
 
