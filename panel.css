@@ -311,7 +311,7 @@
   .ptabs-panel {
     aspect-ratio: auto; border-radius: 24px;
     height: calc(100vh - var(--nav-h) - 8px - 14px - 200px - 24px);
-    height: calc(100dvh - var(--nav-h) - 8px - 14px - 200px - 24px);
+    height: calc(100svh - var(--nav-h) - 8px - 14px - 200px - 24px);
     /* Capped at the tallest mock plus its padding: a taller frame is only
        empty cream around a phone-width mock. */
     min-height: 300px; max-height: 420px;
@@ -350,7 +350,9 @@
   /* Snap to a screen, but do not stop the page at every one: with
      scroll-snap-stop: always each swipe moved exactly one screen, so
      scrolling back up through seven screens took seven swipes. */
-  .ptabs-stop { height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h)); }
+  /* svh, not dvh: nine spacers that followed the address bar moved the
+     track by nine bar-heights each time a phone reversed its scroll. */
+  .ptabs-stop { height: calc(100vh - var(--nav-h)); height: calc(100svh - var(--nav-h)); }
   .footer { scroll-snap-align: end; }
 }
 @media (min-width: 921px) and (max-width: 1100px) {

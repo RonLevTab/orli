@@ -157,10 +157,12 @@ html[lang="he"] .ladder-note { font-style: normal; }
   /* 100vh on mobile Safari is the viewport with its toolbar hidden (the
      largest it ever gets), not what's actually visible — so with the
      toolbar showing the hero renders taller than the real screen and its
-     last line ends up under the toolbar. dvh tracks the true visible
-     height; vh stays as the fallback for browsers that don't support it. */
+     last line ends up under the toolbar. svh is the height with the
+     toolbar showing and never changes; dvh followed the toolbar, so the
+     hero grew and shrank as it slid, and everything under it jumped when
+     a phone reversed its scroll. vh stays as the fallback. */
   min-height: calc(100vh - var(--nav-h));
-  min-height: calc(100dvh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h));
 }
 .hero-actions, .page-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
 .hero-link {
@@ -659,7 +661,7 @@ html[dir="rtl"] .hero-veil {
   .scrolly-sticky .demo-browser {
     width: min(100%, 340px); margin-inline: auto;
     max-height: calc(100vh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
-    max-height: calc(100dvh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
+    max-height: calc(100svh - var(--nav-h) - 8px - 18px - var(--cap-h) - 10px - 16px);
   }
   .scrolly-sticky .orli-live { max-width: none; }
   /* Denser card on a phone: the zoom shrinks the type by whatever the
@@ -1030,8 +1032,12 @@ html[dir="rtl"] .hero-veil {
      control. scroll-padding-top stays for anchor links, which must clear
      the sticky nav. */
   html { scroll-padding-top: var(--nav-h); }
+  /* svh, never dvh, for every height on a phone: dvh follows the address
+     bar, so each section and demo step grew as the bar slid away and
+     shrank as it came back, and reversing the scroll moved the whole page
+     under the finger by the bar's height times every screen above it. */
   main > section[data-lock-stop] {
-    min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box;
+    min-height: calc(100vh - var(--nav-h)); min-height: calc(100svh - var(--nav-h)); box-sizing: border-box;
     display: flex; flex-direction: column; justify-content: safe center;
   }
   /* A section taller than the screen is not capped: a snap area larger
@@ -1070,7 +1076,7 @@ html[dir="rtl"] .hero-veil {
      frame and the pinned widget vanished with it. Free inside the demo,
      the widget advances as the page moves and the section boundaries
      (#demo's own start, then the next section) still snap. */
-  .scrolly-step[data-lock-stop] { min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
+  .scrolly-step[data-lock-stop] { min-height: calc(100vh - var(--nav-h)); min-height: calc(100svh - var(--nav-h)); box-sizing: border-box; }
 }
 
 /* ===== One screen per section (phones) =====
