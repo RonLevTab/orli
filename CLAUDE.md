@@ -40,20 +40,27 @@ Seven pages, all sharing the same header/footer shell and `styles.css`:
   aspirational — see `PRODUCT.md` for why this page exists and what it must not claim.
 - **`panel.html`** — a walkthrough of the clinic admin, answering the objection an
   owner actually holds: opening the calendar to patients does not mean losing control
-  of it. Nine vertical tabs beside a panel showing a **static mock** of
-  `orli-calendar/admin`, the whole block pinned while the page's scroll drives it
-  through the nine screens (`panel.js` + `panel.css`, scoped under `.orli-panel`;
-  ported from a 21st.dev "VerticalTabs" component, its clock replaced by an
-  invisible track of one spacer per screen; on phones the block and the
-  track share one grid cell, every screen is a mandatory snap stop, and
-  `fitMocks` zooms the mocks down so nothing scrolls inside the frame). Every label, the sidebar
-  grouping and the section order are copied from the real admin's `i18n.ts`,
-  `AppShell.vue` and `router.ts` (v1.7.0: יומן, סוכן AI, נתונים וביצועים, מטפלים
-  ושירותים, אוטומציות ומעקב, עיצוב קביעת פגישה, תבניות אימייל, then הגדרות and
-  עזרה ותמיכה from the account menu) — refresh it against those, don't invent
-  screens. Nothing is marked `בקרוב` any more: the agent, the automations and the
-  analytics page all shipped in that release. The three screens new since the
-  first version carry a `ptab-new` "חדש" tag; drop the tag once they are old news.
+  of it. Eleven rows, one per admin screen, ordered most impressive first (סוכן
+  AI, יומן, אוטומציות, נתונים, התראות, then the rest). Each row is a text column
+  (step number, title, two bullets) beside a **static mock** of `orli-calendar/admin`
+  drawn inside the admin's own shell (topbar with bell and account circle, the
+  sidebar in its two groups with its icons, the open screen marked); text and mock
+  trade sides on every row, each column slides in from its side the first time the
+  row is seen, and the mock then **loops a demo** while on screen: a cursor presses
+  a control and the screen answers (`panel-rows.js` + `panel-rows.css`; the mock
+  pieces are `panel.css`, scoped under `.orli-panel`). The loops are CSS keyframes
+  named by class (`a-show-28` = rises in at 28% of the loop), **generated** by
+  `tools/gen-panel-rows-css.py` into the bottom of `panel-rows.css` — edit the
+  script and rerun it, never the generated part. Every mock rests on its finished
+  screen, so no JS, reduced motion and the a11y menu's motion off all show it done.
+  The mocks are `role="img"` pictures: not selectable, not clickable. Every label,
+  the sidebar grouping and the icons are copied from the real admin's `i18n.ts` and
+  `AppShell.vue` (v1.7.0: יומן, סוכן AI, נתונים וביצועים, מטפלים ושירותים,
+  אוטומציות ומעקב, עיצוב קביעת פגישה, תבניות אימייל, then הגדרות and עזרה ותמיכה
+  from the account menu, which open without the sidebar) — refresh them against
+  those, don't invent screens or labels. Made-up numbers appear only with the
+  admin's own "דוגמה" mark. The screens new in v1.7.0 carry a "חדש" tag
+  (`.prow-new`); drop it once they are old news.
 - **`about.html`** — mission/principles only. Orli has exactly one real customer
   (`PRODUCT.md`), so there is no team, funding, or customer-count content here to write
   yet — don't invent any.
@@ -107,7 +114,7 @@ browser.
 ## Architecture
 
 Five independent, self-contained scripts loaded by `index.html`, each owning one concern
-(`panel.html` loads `script.js` and its own `panel.js` instead).
+(`panel.html` loads `script.js` and its own `panel-rows.js` instead).
 They talk to the DOM, not to each other directly (with one exception: `scrolly.js`
 drives `widget.js` through a controller handle):
 
@@ -182,6 +189,9 @@ drives `widget.js` through a controller handle):
 
 ## Conventions worth knowing
 
+- **Design rules: read `DESIGN.md` before styling anything.** Above all:
+  flat surfaces separated by the hairline, no drop shadows on cards, mocks
+  or demos. Ron keeps having to ask for shadows to be removed.
 - No build tooling: files are loaded as plain `<script>` tags directly by
   `index.html`, in dependency order (scrolly/widget wire together via `__orli`, etc.) —
   keep that order if you add or reorder scripts.

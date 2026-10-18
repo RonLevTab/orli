@@ -1,137 +1,27 @@
 /* ============================================================
-   panel.html — the admin screens as vertical tabs, and the mock inside
-   each.
+   panel.html: the mock of the clinic admin that every row's demo is
+   drawn from (.orli-panel and its .opn-* pieces). The rows themselves,
+   their layout, entrances and loops, are panel-rows.css.
 
-   SOURCE for the mock: orli-calendar/admin/src — AppShell.vue (topbar),
-   style.css (surfaces, radii, .panel/.btn/.input conventions),
-   i18n.ts (every Hebrew label), router.ts (section order).
+   SOURCE for the mock: orli-calendar/admin/src: AppShell.vue (topbar,
+   sidebar), style.css (surfaces, radii, .panel/.btn/.input conventions),
+   i18n.ts (every Hebrew label).
 
-   The tabs and panel are a port of a 21st.dev "VerticalTabs" React
-   component (motion/react, Tailwind) into this site's plain CSS and JS:
-   a list of tab buttons whose active one unfolds its description and
-   carries a filling progress rule, beside a panel where the active
-   screen slides in vertically. The component ran on a clock; here the
-   block pins and the page's scroll drives it (panel.js).
-
-   The admin already shares this site's palette exactly — see
+   The admin already shares this site's palette exactly (see
    orli-calendar/DESIGN.md: teal #0f8a86, cream #f7f5ef, ink #1b2523,
-   Heebo — so everything below is built from styles.css's own tokens
+   Heebo), so everything below is built from styles.css's own tokens
    rather than a second set of values.
 
-   Scoped under .ptabs / .orli-panel so nothing leaks into the marketing
-   site's styles, the same way widget.css is scoped under .orli-live.
-   Logical properties only: the page is RTL and the tab list starts at
-   the right.
+   Scoped under .orli-panel so nothing leaks into the marketing site's
+   styles, the same way widget.css is scoped under .orli-live. Logical
+   properties only: the page is RTL. Flat: no drop shadows (DESIGN.md).
    ============================================================ */
-
-/* ---------- the tabs and the panel ---------- */
-.panel-tabs { padding-block: 24px 56px; }
-/* The block pins (panel.js sets `top`: under the nav, or centred on a tall
-   screen) while the track below scrolls under it. */
-.ptabs {
-  display: grid; grid-template-columns: 5fr 7fr; gap: 64px; align-items: start;
-  position: sticky; top: calc(var(--nav-h) + 22px); z-index: 1;
-}
-/* The track: one spacer per screen, nothing to see. Its height is the
-   story's length; panel.js divides it by the number of screens. */
-.ptabs-track { pointer-events: none; }
-.ptabs-stop { height: 65vh; }
-/* The text column: first in the DOM, so it starts at the right (inline
-   start) on this RTL page — the mirror of the component's left column. */
-/* The text column is as tall as the panel beside it and centres the roller,
-   so the active screen's title sits at the panel's own middle. */
-.ptabs-text { display: flex; flex-direction: column; justify-content: center; align-self: stretch; min-width: 0; }
-
-/* The roller: a box of one fixed height with faded top and bottom edges.
-   The active screen sits fully visible in the middle; a third of the one
-   before shows above it and a third of the next below, both fading out.
-   panel.js rolls the list (a transform) to bring each new screen to the
-   middle. One height, whatever is inside, so the section never moves. */
-.ptabs-roller {
-  position: relative; height: 280px; overflow: hidden;
-  /* Room for the timer line, which sits just outside each tab's edge. */
-  padding-inline-start: 18px;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
-}
-.ptabs-list { display: flex; flex-direction: column; transition: transform .55s cubic-bezier(.2, .7, .2, 1); will-change: transform; }
-.ptab {
-  position: relative; display: flex; align-items: flex-start; gap: 16px;
-  width: 100%; padding: 26px 0; margin: 0;
-  background: none; border: 0; border-top: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
-  font: inherit; text-align: start; cursor: pointer;
-  color: color-mix(in srgb, var(--ink-soft) 62%, transparent);
-  transition: color .5s ease;
-}
-.ptab:first-child { border-top: 0; }
-.ptab:hover, .ptab.is-active { color: var(--ink); }
-.ptab:focus-visible { outline: 2px solid var(--teal-deep); outline-offset: 4px; border-radius: 6px; }
-/* The thin rule beside the list — on the outer edge, to the right of the
-   buttons — and the fill that grows down it. On the active tab panel.js
-   sets the fill (an inline scaleY) to the visitor's progress through that
-   screen's stretch of track; screens already passed stay full, the ones
-   ahead are empty. */
-.ptab-rule { position: absolute; inset-block: 0; inset-inline-start: -16px; width: 2px; background: color-mix(in srgb, var(--line) 80%, transparent); }
-.ptab-progress { position: absolute; top: 0; inset-inline: 0; height: 100%; background: var(--ink); transform-origin: top; transform: scaleY(0); }
-.ptab.is-done .ptab-progress { transform: scaleY(1); }
-.ptab-body { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
-.ptab-title {
-  font-family: var(--serif); font-weight: 500; letter-spacing: -.01em; line-height: 1.15;
-  font-size: clamp(1.5rem, 2.6vw, 2.15rem); transition: color .5s ease;
-}
-/* The description unfolds only on the active tab: a 0fr -> 1fr grid row,
-   the same trick the FAQ uses, so "height: auto" can animate. */
-.ptab-desc { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .3s cubic-bezier(.23, 1, .32, 1), opacity .3s cubic-bezier(.23, 1, .32, 1); }
-.ptab-desc-inner { min-height: 0; overflow: hidden; }
-.ptab.is-active .ptab-desc { grid-template-rows: 1fr; opacity: 1; }
-.ptab-list { list-style: none; margin: 0; padding: 0 0 8px; display: grid; gap: 8px; max-width: 26em; }
-.ptab-list li { position: relative; padding-inline-start: 20px; color: var(--ink-soft); font-size: 1rem; line-height: 1.55; }
-.ptab-list li::before {
-  content: ""; position: absolute; inset-inline-start: 2px; top: .62em;
-  width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
-}
-.ptab-new, .opn-new {
-  display: inline-block; vertical-align: 2px; margin-inline-end: 8px; padding: 1px 8px; border-radius: 999px;
-  background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep);
-  font-size: .66rem; font-weight: 700; letter-spacing: .04em;
-}
-.opn-new { vertical-align: 1px; margin-inline-end: 0; margin-inline-start: 6px; }
-.ptab--soon .ptab-title::after { content: "בקרוב"; display: inline-block; vertical-align: middle; margin-inline-start: 10px; padding: 1px 8px; border-radius: 999px; border: 1px dashed #c4bda8; background: var(--cream-2); color: var(--ink-soft); font: 700 .6rem/1.6 var(--sans, inherit); letter-spacing: .04em; }
-
-/* The panel: a rounded, bordered box with a fixed aspect, the active
-   screen's mock centred in it. Panes are stacked on top of each other;
-   only the active one is visible, and a change slides the new one in
-   from one edge while the old leaves by the other (panel.js sets the
-   direction). Clicking the panel advances it. */
-/* The component aligns its picture to the column's end; here the whole
-   block is pinned (.ptabs), so the column just holds the panel. */
-.ptabs-panel-col { display: flex; flex-direction: column; min-width: 0; align-self: start; }
-.ptabs-panel {
-  position: relative; aspect-ratio: 16 / 11; overflow: hidden; cursor: pointer;
-  border-radius: 40px; border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
-  background: color-mix(in srgb, var(--cream-2) 60%, var(--surface));
-}
-.ptabs-pane {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 26px;
-  opacity: 0; visibility: hidden; transform: translateY(var(--pane-from, -100%));
-}
-/* Only an entering or leaving pane animates. With the transition on every
-   pane, setting a pane's start edge began sliding it across the frame
-   before its real entrance, which then took over from mid-way. */
-.ptabs-pane.is-active, .ptabs-pane.is-leaving { transition: transform .5s cubic-bezier(.2, .8, .2, 1), opacity .4s ease, visibility 0s linear .5s; }
-.ptabs-pane.is-active { opacity: 1; visibility: visible; transform: none; z-index: 1; transition-delay: 0s; }
-.ptabs-pane.is-leaving { opacity: 0; visibility: visible; transform: translateY(var(--pane-to, 100%)); z-index: 0; transition-delay: 0s; }
-.ptabs-pane .orli-panel { width: 100%; max-width: 520px; }
-/* The bottom shade the component lays over its picture, kept faint. */
-/* The bottom shade the component laid over its picture is gone: the site
-   draws no shadows. */
 
 /* ---------- the mock ---------- */
 .orli-panel {
   display: flex; flex-direction: column;
   background: var(--cream); color: var(--ink);
   border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
-  box-shadow: var(--shadow-sm);
   font-size: .82rem; line-height: 1.45;
 }
 .orli-panel * { box-sizing: border-box; }
@@ -184,7 +74,7 @@
 .opn-toast {
   display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 12px; border-radius: 12px;
   background: var(--surface); border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
-  box-shadow: var(--shadow-sm); font-size: .7rem; font-weight: 600;
+  font-size: .7rem; font-weight: 600;
 }
 
 /* Two columns inside a pane (appearance, emails). */
@@ -210,7 +100,7 @@
 .opn-site-line { display: block; height: 6px; width: 60%; border-radius: 999px; background: color-mix(in srgb, var(--ink-soft) 22%, transparent); margin-bottom: 6px; }
 .opn-site-line--short { width: 35%; }
 .opn-site-a11y { position: absolute; right: 8px; bottom: 8px; width: 16px; height: 16px; border-radius: 50%; background: #1f6feb; opacity: .55; }
-.opn-site-btn { position: absolute; left: 8px; bottom: 16px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid #e0e0e0; font-size: .54rem; font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.1); white-space: nowrap; }
+.opn-site-btn { position: absolute; left: 8px; bottom: 16px; padding: 3px 8px; border-radius: 999px; background: #fff; border: 1px solid #e0e0e0; font-size: .54rem; font-weight: 600; white-space: nowrap; }
 
 .opn-mail { margin-top: 10px; padding: 11px 13px; border-radius: 10px; background: var(--cream-2); display: grid; gap: 5px; }
 .opn-mail-subject { font-size: .72rem; font-weight: 700; }
@@ -230,154 +120,50 @@
 .opn-support-foot .opn-note { margin: 0; }
 .opn-preview-btn { padding: 7px 16px; border-radius: 999px; background: var(--teal-deep); color: #fff; font-size: .7rem; font-weight: 600; }
 
-/* SOURCE: AppShell.vue / AutomationsView.vue — the real admin marks this
-   screen "בקרוב" with a dashed badge. Reproduced rather than invented. */
-.opn-soon-badge {
-  display: inline-block; padding: 1px 6px; border-radius: 999px;
-  background: var(--cream-2); color: var(--ink-soft);
-  border: 1px dashed #c4bda8;
-  font-size: .54rem; font-weight: 700; white-space: nowrap;
+/* The agent's knowledge screen (AgentKnowledgePanel.vue): the website and
+   its crawl, then what Orli learned, grouped by kind, each entry with its
+   source link and approve / edit / reject (KnowledgeEntryList.vue). Also
+   drawn, settled, on chatbot.html. */
+.opn-source { display: flex; align-items: center; gap: 8px; }
+.opn-input {
+  flex: 1; min-width: 0; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface);
+  font-size: .68rem; color: var(--ink); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.opn-soon-badge--lg { font-size: .6rem; padding: 2px 9px; }
-.opn-soon-card { display: grid; gap: 9px; justify-items: start; padding: 16px; border-radius: 12px; background: var(--surface); border: 1px dashed #c4bda8; }
-.opn-soon-card .opn-pane-title, .opn-soon-card .opn-note { margin: 0; }
-
-/* ---------- one control per screen plays once ----------
-   Keyed on .is-played, which panel.js adds the first time a pane is
-   shown and never removes; `both` fill keeps the settled state after. Every
-   run is under 600ms after its lead-in. */
-@keyframes opn-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@keyframes opn-draw { to { stroke-dashoffset: 0; } }
-@keyframes opn-pop { 0% { opacity: 0; transform: scale(.6); } 70% { opacity: 1; transform: scale(1.08); } 100% { opacity: 1; transform: none; } }
-@keyframes opn-slide { from { transform: translateX(var(--from, 120px)); } to { transform: none; } }
-@keyframes opn-glow {
-  0% { box-shadow: 0 0 0 0 rgba(15, 138, 134, .55); }
-  100% { box-shadow: 0 0 0 9px rgba(15, 138, 134, 0); }
+.opn-source .opn-preview-btn { flex: none; }
+.opn-meta { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 8px 0 0; font-size: .62rem; color: var(--ink-soft); }
+.opn-meta b { margin-inline-start: 5px; font-weight: 700; color: var(--ink); }
+.opn-kb-group { margin-bottom: 8px; }
+.opn-kb-group-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding-bottom: 5px; margin-bottom: 5px; border-bottom: 1px solid var(--line); font-size: .7rem; font-weight: 700;
 }
-
-/* 01: the blocked day lands, then the save bar's check draws itself. */
-.opn-fx-flag, .opn-fx-saved { opacity: 0; }
-.opn-fx-saved svg path { stroke-dasharray: 24; stroke-dashoffset: 24; }
-.ptabs-pane.is-played .opn-fx-flag { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .15s both; }
-.ptabs-pane.is-played .opn-fx-saved { animation: opn-rise .4s ease .55s both; }
-.ptabs-pane.is-played .opn-fx-saved svg path { animation: opn-draw .35s cubic-bezier(.2, .8, .2, 1) .75s both; }
-
-/* 02: the practitioner-ready toast rises. */
-.opn-fx-toast { opacity: 0; }
-.ptabs-pane.is-played .opn-fx-toast { animation: opn-rise .5s cubic-bezier(.2, .7, .2, 1) .3s both; }
-
-/* 03: the booking button slides from the right corner — where the
-   accessibility button already sits — to the chosen left one, and the
-   segment control switches with it. */
-.opn-fx-corner-from { background: var(--teal-deep); color: #fff; }
-.opn-fx-corner-to { transition-delay: .2s; }
-.opn-fx-corner-from { transition-delay: .2s; }
-.opn-fx-launcher { --from: 130px; transform: translateX(var(--from)); }
-.ptabs-pane.is-played .opn-fx-launcher { animation: opn-slide .55s cubic-bezier(.2, .8, .2, 1) .3s both; }
-.ptabs-pane.is-played .opn-fx-corner-from { background: var(--surface); color: var(--ink-soft); }
-.ptabs-pane.is-played .opn-fx-corner-to { background: var(--teal-deep); color: #fff; }
-
-/* 04: editing flips to preview, and the rendered email fades in. */
-.opn-fx-tab-from { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; transition-delay: .25s; }
-.opn-fx-tab-to { transition-delay: .25s; }
-.opn-fx-mail { opacity: 0; }
-.ptabs-pane.is-played .opn-fx-tab-from { background: var(--surface); border-color: var(--line); color: var(--ink-soft); }
-.ptabs-pane.is-played .opn-fx-tab-to { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
-.ptabs-pane.is-played .opn-fx-mail { animation: opn-rise .45s cubic-bezier(.2, .7, .2, 1) .4s both; }
-
-/* 05: the one embed line gets its moment. */
-.ptabs-pane.is-played .opn-fx-code { animation: opn-glow .6s ease-out .3s both; }
-
-/* 06: the request type gets picked. */
-.opn-fx-choice { transition-delay: .3s; }
-.ptabs-pane.is-played .opn-fx-choice { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
-
-/* 07: the "בקרוב" badge pops in. */
-.opn-fx-badge { opacity: 0; }
-.ptabs-pane.is-played .opn-fx-badge { animation: opn-pop .5s cubic-bezier(.34, 1.56, .64, 1) .25s both; }
+.opn-kb-group-head .opn-ghost-btn { padding: 2px 9px; font-size: .58rem; }
+.opn-kb-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.opn-kb-text { display: grid; gap: 1px; min-width: 0; font-size: .66rem; }
+.opn-kb-text b { font-size: .7rem; }
+/* The entry's kind, a tag on the row; and the service a named topic is
+   linked to, which is what puts its facts on the chat's treatment card. */
+.opn-kb-tag { font-style: normal; margin-inline-start: 5px; padding: 0 6px; border-radius: 999px; background: var(--cream-2); color: var(--ink-soft); font-size: .54rem; font-weight: 700; }
+.opn-kb-link { margin-inline-start: auto; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: .56rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+.opn-kb-text small { font-size: .56rem; color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px; }
+.opn-kb-actions { display: flex; flex: none; gap: 4px; }
+.opn-kb-actions span {
+  padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  font-size: .58rem; font-weight: 600; color: var(--ink-soft);
+}
+.opn-kb-actions .opn-kb-approve { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+/* Two words in one place, the first giving way to the second as the
+   screen plays (the crawl button and its status). Settled, only the
+   second is there. */
+.opn-swap { display: inline-grid; }
+.opn-swap > i { grid-area: 1 / 1; font-style: normal; }
 
 /* ---------- narrow ---------- */
 @media (max-width: 920px) {
-  .panel-tabs { padding-block: 8px 40px; }
-  /* One column: the panel first, the tabs under it, the whole block pinned
-     under the nav. The panel takes what the roller leaves of the screen and
-     the tallest mock scrolls inside it on a short phone. */
-  .ptabs { grid-template-columns: 1fr; gap: 14px; top: calc(var(--nav-h) + 8px); }
-  .ptabs-panel-col { order: -1; }
-  .ptabs-text { padding-block-start: 0; }
-  .ptabs-roller { height: 200px; padding-inline-start: 14px; }
-  /* One line per bullet on a phone too. */
-  .ptab-list li { font-size: .88rem; }
-  .ptabs-panel {
-    aspect-ratio: auto; border-radius: 24px;
-    height: calc(100vh - var(--nav-h) - 8px - 14px - 200px - 24px);
-    height: calc(100svh - var(--nav-h) - 8px - 14px - 200px - 24px);
-    /* Capped at the tallest mock plus its padding: a taller frame is only
-       empty cream around a phone-width mock. */
-    min-height: 300px; max-height: 420px;
-  }
-  /* Nothing scrolls inside the frame: on a short phone panel.js zooms the
-     mocks down to the room there is (fitMocks), so a swipe over the frame
-     always moves the page. */
-  .ptabs-pane { align-items: safe center; overflow: hidden; padding: 14px; }
-  /* The pinned block and the track share one cell, so the first screen
-     begins where the block begins: one flick from the page's heading
-     lands on the pinned block, not a block's height of scrolling later. */
-  .panel-tabs { display: grid; grid-template-columns: minmax(0, 1fr); }
-  .ptabs, .ptabs-track { grid-area: 1 / 1; }
-  .ptabs { align-self: start; }
-  .ptab { padding: 18px 0; gap: 12px; }
-  .ptab-rule { inset-inline-start: -12px; }
   .opn-cols, .opn-cols--rail { grid-template-columns: 1fr; }
   .opn-rail { display: flex; flex-wrap: wrap; gap: 4px; }
   .opn-rail .opn-field-label { width: 100%; margin: 4px 0 2px; }
   .opn-choices { grid-template-columns: 1fr; }
   .opn-choice small { display: none; }
   .opn-crumb { display: none; }
-}
-@media (max-width: 640px) {
-  .ptab-title { font-size: 1.35rem; }
-}
-/* ===== Section snap (phones) =====
-   As on the home page: the heading, each of the seven screens and the two
-   closing sections are stops, one flick apart, and the footer's end. The
-   track's spacers are one screen under the nav each. */
-@media (max-width: 920px) and (prefers-reduced-motion: no-preference) {
-  /* No snap on a phone here either: the screens are a screen tall each, so
-     scrolling settles on them without the page pulling against the finger. */
-  html:has(.panel-tabs) { scroll-padding-top: var(--nav-h); }
-  .page-head, .panel-tabs ~ .section { scroll-snap-align: start; }
-  /* Snap to a screen, but do not stop the page at every one: with
-     scroll-snap-stop: always each swipe moved exactly one screen, so
-     scrolling back up through seven screens took seven swipes. */
-  /* svh, not dvh: nine spacers that followed the address bar moved the
-     track by nine bar-heights each time a phone reversed its scroll. */
-  .ptabs-stop { height: calc(100vh - var(--nav-h)); height: calc(100svh - var(--nav-h)); }
-  .footer { scroll-snap-align: end; }
-}
-@media (min-width: 921px) and (max-width: 1100px) {
-  .ptabs { gap: 40px; }
-  .ptab-rule { inset-inline-start: -14px; }
-}
-
-/* ---------- reduced motion ----------
-   No slide and no control animation: panes swap at once as the page
-   scrolls or a tab is clicked, and every mock shows its settled state.
-   The rule beside the active tab still follows the scroll; it does not
-   move on its own. */
-@media (prefers-reduced-motion: reduce) {
-  .ptabs-pane, .ptab, .ptab-title, .ptab-desc { transition: none; }
-  .ptabs-list { transition: none; }
-  .ptabs-pane { transform: none; }
-  .ptabs-pane.is-leaving { visibility: hidden; }
-  .opn-tab, .opn-seg i, .opn-choice { transition: none; }
-  .opn-fx-flag, .opn-fx-saved, .opn-fx-toast, .opn-fx-mail, .opn-fx-badge { opacity: 1; }
-  .opn-fx-saved svg path { stroke-dashoffset: 0; }
-  .opn-fx-launcher { transform: none; }
-  .opn-fx-corner-from, .opn-fx-tab-from { background: var(--surface); color: var(--ink-soft); border-color: var(--line); }
-  .opn-fx-corner-to, .opn-fx-tab-to { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
-  .opn-fx-choice { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); }
-  .ptabs-pane.is-played .opn-fx-flag, .ptabs-pane.is-played .opn-fx-saved, .ptabs-pane.is-played .opn-fx-saved svg path,
-  .ptabs-pane.is-played .opn-fx-toast, .ptabs-pane.is-played .opn-fx-launcher, .ptabs-pane.is-played .opn-fx-mail,
-  .ptabs-pane.is-played .opn-fx-code, .ptabs-pane.is-played .opn-fx-badge { animation: none; }
 }

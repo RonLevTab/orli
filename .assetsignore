@@ -17,6 +17,7 @@ tools/**
 .playwright-mcp/**
 CLAUDE.md
 PRODUCT.md
+DESIGN.md
 
 # Design masters and superseded exports. Kept in git so the shipped PNGs can be
 # re-exported, but never served: 4.7 MB that no page requests.

@@ -1,0 +1,418 @@
+/* ============================================================
+   panel.html: the admin, one screen per row.
+
+   Eleven rows down the page, the text and the demo trading sides on every
+   row (the first row's text at the right, its demo at the left, the next
+   row the other way round). Each column slides in from its own side the
+   first time the row comes into view (panel-rows.js adds .is-in), and
+   then the demo starts a loop that plays the screen the way someone uses
+   it: a cursor presses a control and the screen answers.
+
+   The demos reuse panel.css's mock pieces (.orli-panel, .opn-*), the same
+   copy of the real admin. Every label in them, including the ones the
+   loops add (נשמר, הקוד הועתק, קיבלנו, תודה!, סורק…, הפריט אושר.), is the
+   admin's own, from orli-calendar/admin/src/i18n.ts.
+
+   How a loop works: every moving piece carries a class that names its
+   keyframes and the moment it acts, e.g. a-show-28 rises in at 28% of
+   the loop, a-tap-8 is a cursor press at 8%. All loops are --loop long.
+   The resting styles are the finished screen, so with no JS, reduced
+   motion, or the accessibility menu's motion off, every row shows its
+   screen done and nothing moves. Animations exist only under
+   .prows-anim, which panel-rows.js sets when motion is allowed; a row's
+   loop runs only while it is on screen (.is-running), and starts over
+   from the beginning each time it comes back (.is-reset).
+
+   Everything above "the loops" is written by hand. Everything below it is
+   generated: edit tools/gen-panel-rows-css.py and run
+   `python tools/gen-panel-rows-css.py`, never the generated part.
+
+   Flat: hairlines, no drop shadows (DESIGN.md).
+   ============================================================ */
+
+.prows { --loop: 8s; padding-block: 8px 64px; overflow-x: clip; }
+/* The text gets a column it can breathe in (one line per bullet at
+   desktop width); the demo takes the rest. */
+.prow {
+  display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 56px; align-items: center;
+  padding-block: 56px;
+}
+.prow--flip { grid-template-columns: minmax(0, 1fr) minmax(0, 400px); }
+.prow-text { max-width: 400px; }
+.prow--flip .prow-text { justify-self: end; }
+.prow--flip .prow-demo { order: -1; }
+
+.prow-step { display: block; margin-bottom: 12px; font-size: .8rem; font-weight: 700; letter-spacing: .06em; color: var(--teal-deep); font-variant-numeric: tabular-nums; }
+.prow-step b { font-weight: 600; color: color-mix(in srgb, var(--ink-soft) 70%, transparent); }
+.prow-title {
+  margin: 0 0 18px; font-family: var(--serif); font-weight: 500; letter-spacing: -.01em; line-height: 1.15;
+  font-size: clamp(1.7rem, 3vw, 2.4rem); color: var(--ink); text-wrap: balance;
+}
+.prow-new { display: inline-block; vertical-align: middle; margin-inline-start: 10px; padding: 1px 9px; border-radius: 999px; background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep); font: 700 .62rem/1.6 var(--sans, inherit); letter-spacing: .04em; }
+.prow-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.prow-list li { position: relative; padding-inline-start: 20px; color: var(--ink-soft); font-size: 1rem; line-height: 1.6; text-wrap: pretty; }
+.prow-list li::before { content: ""; position: absolute; inset-inline-start: 2px; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); }
+
+/* The demo: the admin screen itself, no box around it, drawn a little
+   larger than panel.css draws it (zoom, so every rem inside scales).
+   The demos are pictures (role="img", each with its own aria-label), not
+   text to lift: nothing in them can be selected, dragged, long-pressed
+   or clicked. */
+.prow-frame { position: relative; display: grid; place-items: center; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.prow-frame .orli-panel { position: relative; width: 100%; max-width: 620px; zoom: 1.12; border-radius: 16px; box-shadow: none; pointer-events: none; }
+.prow-frame img { -webkit-user-drag: none; }
+
+/* The real admin's shell (AppShell.vue): the topbar with the bell and the
+   account circle, and the sidebar in its two groups, the open screen
+   marked the way the admin marks it (surface, deep teal, a short bar on
+   its inner edge). Settings and support open without it, as in the
+   admin. */
+.prow .opn-topbar { padding: 10px 14px; }
+.opn-topbar .opn-crumb { margin-inline-start: auto; }
+.opn-avatar { width: 22px; height: 22px; border-radius: 50%; flex: none; background: var(--cream-2); border: 1px solid var(--line); display: grid; place-items: center; font-size: .58rem; font-weight: 700; color: var(--teal-deep); }
+.opn-bell { position: relative; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: var(--ink-soft); }
+.opn-bell svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.opn-body { display: grid; grid-template-columns: 124px minmax(0, 1fr); }
+.opn-side { padding: 10px 8px; background: var(--cream-2); border-inline-end: 1px solid var(--line); }
+.opn-side-label { margin: 6px 6px 4px; font-size: .52rem; font-weight: 600; color: var(--ink-soft); }
+.opn-nav { position: relative; display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 8px; font-size: .6rem; font-weight: 500; color: var(--ink-soft); white-space: nowrap; }
+.opn-nav.is-active { background: var(--surface); color: var(--teal-deep); font-weight: 600; }
+.opn-nav.is-active::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 4px; width: 2.5px; border-radius: 999px; background: var(--teal); }
+.opn-ico { width: 11px; height: 11px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Settled screens (also the screen with motion off). */
+.prow .opn-swap > i:first-child { opacity: 0; }
+.prow .opn-swap > i + i { opacity: 1; }
+.prow .opn-swap > i { transition: none; }
+.prow .opn-tab, .prow .opn-seg i, .prow .opn-choice { transition: none; }
+.orli-panel .opn-toast.prow-toast { margin-top: 10px; }
+.prow-t { position: relative; }
+.prow-hold { position: relative; }
+.prow-type { display: inline-block; white-space: nowrap; }
+.prow-field .prow-type { white-space: normal; }
+.prow-text-typed { color: var(--ink); }
+.opn-textarea { position: relative; }
+.opn-textarea .prow-ph { position: absolute; }
+.opn-attach-thumb { position: relative; }
+.prow-thumb { position: absolute; inset: 0; border-radius: 5px; background: linear-gradient(135deg, #dcecea, #b9dbd6 55%, #8fc4bd); border: 1px solid #a9cfc9; }
+.prow-dot { display: inline-block; width: 6px; height: 6px; margin-inline-end: 4px; border-radius: 2px; background: #c2612f; vertical-align: 1px; }
+.prow-copied { position: absolute; top: -9px; inset-inline-end: 8px; padding: 2px 9px; border-radius: 999px; background: var(--teal-deep); color: #fff; font-size: .58rem; font-weight: 700; }
+.opn-launch { --from: 130px; }
+/* The admin's sample-data mark (analyticsSampleBadge): a plain pill. */
+.opn-sample { display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--cream-2); color: var(--ink-soft); font-size: .56rem; font-weight: 700; }
+
+/* The cursor: a pointer that glides in, presses, and leaves; a ring
+   spreads from its tip on the press. Hidden when nothing plays. Where it
+   lands in its control is --x (data, not layout; 50% unless set). */
+.prow-tap { position: absolute; left: var(--x, 50%); top: 55%; z-index: 3; width: 17px; height: 17px; opacity: 0; pointer-events: none; }
+.prow-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.prow-tap svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .25)); }
+.prow-tap::after { content: ""; position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--teal); opacity: 0; }
+
+/* Calendar (CalendarView.vue): the week, Orli's bookings beside the ones
+   Optima already holds; one is dragged to a new time, one reaches Optima,
+   and a new one arrives from the site. */
+.prow-cal { display: grid; grid-template-columns: 34px repeat(5, minmax(0, 1fr)); grid-auto-rows: 30px; gap: 3px; margin-top: 10px; font-size: .56rem; }
+.prow-cal > b { display: grid; place-items: center; font-weight: 700; color: var(--ink-soft); }
+.prow-cal > em { display: grid; place-items: center; font-style: normal; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.prow-cal > .c { border-radius: 6px; background: var(--surface); border: 1px dashed color-mix(in srgb, var(--line) 80%, transparent); }
+.prow-ev { position: relative; z-index: 1; display: grid; align-content: center; gap: 0; padding: 2px 6px; border-radius: 6px; background: color-mix(in srgb, var(--teal) 13%, var(--surface)); border-inline-start: 3px solid var(--teal); color: var(--ink); font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: hidden; }
+.prow-ev small { font-size: .5rem; font-weight: 500; color: var(--ink-soft); }
+.prow-ev--optima { background: var(--cream-2); border-inline-start-color: #b9b3a3; color: var(--ink-soft); }
+.prow-ev--drag { overflow: visible; --dx: calc(100% + 3px); --dy: calc(100% + 3px); }
+.prow-sync { margin-top: 10px; }
+.prow-sync .opn-swap { font-size: .66rem; font-weight: 600; }
+.prow-sync .opn-swap > i:first-child { color: #9a5a17; }
+.prow-sync .opn-swap > i + i { color: var(--teal-deep); }
+.prow-cal .d1 { grid-column: 2; } .prow-cal .d2 { grid-column: 3; } .prow-cal .d3 { grid-column: 4; } .prow-cal .d4 { grid-column: 5; } .prow-cal .d5 { grid-column: 6; }
+.prow-cal .r1 { grid-row: 2; } .prow-cal .r2 { grid-row: 3; } .prow-cal .r3 { grid-row: 4; } .prow-cal .r4 { grid-row: 5; }
+
+/* Email templates: the editor (subject and body, the fields as chips)
+   and, in the same place, the email as the patient gets it. */
+.prow-pick { font-size: .66rem; }
+.prow-stage { display: grid; margin-bottom: 8px; }
+.prow-editor, .prow-mail { grid-area: 1 / 1; min-width: 0; }
+.prow-field { padding: 7px 10px; margin-bottom: 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: .68rem; line-height: 1.9; }
+.prow-field--body { min-height: 62px; }
+.prow-editor .opn-note { margin: 0; }
+.prow-chip { font-style: normal; padding: 1px 7px; border-radius: 6px; background: color-mix(in srgb, var(--teal) 14%, transparent); color: var(--teal-deep); font-weight: 600; font-size: .62rem; white-space: nowrap; }
+.prow-mail { align-self: start; display: grid; gap: 6px; justify-items: start; padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: .7rem; color: var(--ink-soft); }
+.prow-mail b { font-size: .8rem; color: var(--ink); }
+.prow-mail small { font-size: .56rem; padding-top: 6px; border-top: 1px solid var(--line); width: 100%; }
+.prow-mail-logo { height: 16px; width: auto; }
+
+/* Automations: the rule written as a sentence (AutomationReminderFields
+   .vue), its name, the on switch and the save mark. */
+.opn-choices--2 { grid-template-columns: 1fr 1fr; margin-bottom: 12px; }
+.prow-rule { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; font-size: .74rem; }
+.prow-in { padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; white-space: nowrap; }
+.prow-in > i { font-style: normal; }
+.prow-in--num { min-width: 2.2em; text-align: center; }
+.prow-foot { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
+.prow-foot .opn-note { margin: 0; text-decoration: underline; text-underline-offset: 2px; color: var(--teal-deep); }
+.prow-foot .opn-savebar { margin: 0 auto 0 0; }
+.prow-switch { display: inline-flex; align-items: center; gap: 7px; font-size: .7rem; font-weight: 600; }
+.prow-switch-track { position: relative; width: 30px; height: 17px; border-radius: 999px; background: var(--teal); }
+.prow-switch-track > i { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transform: translateX(13px); }
+
+/* Analytics: three tiles, the days' bars and the treatments
+   (AnalyticsView.vue). Sample numbers, marked "דוגמה" as the admin does. */
+.prow-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.prow-kpi { display: grid; gap: 1px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+.prow-kpi span { font-size: .6rem; font-weight: 600; color: var(--ink-soft); }
+.prow-kpi b { font-size: 1.15rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.prow-kpi small { font-size: .52rem; color: var(--teal-deep); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prow-charts { display: grid; grid-template-columns: 1.3fr 1fr; gap: 8px; }
+.prow-chart { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+.prow-chart .opn-field-label { margin-bottom: 6px; }
+.prow-bars { display: flex; align-items: flex-end; gap: 4px; height: 62px; }
+.prow-bars i { flex: 1; height: var(--h); border-radius: 3px 3px 0 0; background: var(--teal); transform-origin: bottom; }
+.prow-hbars { display: grid; gap: 7px; font-size: .6rem; }
+.prow-hbars div { display: grid; grid-template-columns: 5.5em 1fr; align-items: center; gap: 6px; }
+.prow-hbars i { display: block; height: 8px; width: var(--w); border-radius: 4px; background: var(--teal); transform-origin: right; }
+
+/* Notifications (NotificationBell.vue, NotificationItem.vue): the bell's
+   list, open, as the screen; the badge counts what has come in. */
+.opn-bell--on { color: var(--teal-deep); background: color-mix(in srgb, var(--teal) 12%, transparent); }
+.opn-bell-n { position: absolute; top: -3px; right: -3px; display: grid; min-width: 13px; height: 13px; padding: 0 3px; border-radius: 999px; background: #c9412a; }
+.opn-bell-n i { grid-area: 1 / 1; font: 700 .48rem/13px var(--sans, inherit); font-style: normal; color: #fff; text-align: center; }
+.opn-bellpanel { display: grid; gap: 5px; }
+.opn-notif-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 2px; font-size: .78rem; }
+.opn-notif-group { margin: 6px 0 4px; font-size: .52rem; font-weight: 700; color: var(--ink-soft); }
+.opn-notif-item { display: flex; align-items: center; gap: 7px; padding: 8px 10px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); font-size: .66rem; }
+.opn-notif-item span { display: grid; gap: 1px; min-width: 0; }
+.opn-notif-item small { font-size: .56rem; color: var(--ink-soft); }
+.opn-notif-item .opn-ghost-btn { margin-inline-start: auto; }
+.opn-notif-item--wait { border-color: color-mix(in srgb, #d9823f 45%, var(--line)); }
+.opn-notif-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--teal); }
+.opn-notif-dot--chat { background: #d9823f; }
+.opn-notif-dot--move { background: #c9982f; }
+.opn-notif-dot--x { background: #a8503f; }
+
+/* The whole screen dims for a moment as the loop starts over. */
+.prows-anim .prow-frame .orli-panel { animation: pr-reset var(--loop) linear infinite; }
+@keyframes pr-reset { 0%, 93% { opacity: 1; } 96%, 98% { opacity: .35; } 100% { opacity: 1; } }
+
+/* ---------- entering ---------- */
+.prows-anim .prow-text, .prows-anim .prow-demo {
+  transition: opacity .7s ease, transform .8s cubic-bezier(.2, .8, .2, 1);
+}
+.prows-anim .prow-demo { transition-delay: .12s; }
+/* Text column: first in the DOM, the right-hand side; it comes in from
+   the right. The demo from the left. A flipped row the other way. */
+.prows-anim .prow:not(.is-in) .prow-text { opacity: 0; transform: translateX(64px); }
+.prows-anim .prow:not(.is-in) .prow-demo { opacity: 0; transform: translateX(-64px); }
+.prows-anim .prow--flip:not(.is-in) .prow-text { transform: translateX(-64px); }
+.prows-anim .prow--flip:not(.is-in) .prow-demo { transform: translateX(64px); }
+/* Off screen, or before the first entry, a loop holds still (the cursor's
+   press ring is a pseudo-element, so those are named too); leaving the
+   screen sets .is-reset for a frame, so the loop starts over on return. */
+.prows-anim .prow:not(.is-running) *,
+.prows-anim .prow:not(.is-running) *::before,
+.prows-anim .prow:not(.is-running) *::after { animation-play-state: paused !important; }
+.prows-anim .prow.is-reset *,
+.prows-anim .prow.is-reset *::before,
+.prows-anim .prow.is-reset *::after { animation: none !important; }
+
+/* ---------- narrow ---------- */
+@media (max-width: 920px) {
+  .prow, .prow--flip { grid-template-columns: minmax(0, 1fr); gap: 22px; padding-block: 34px; }
+  .prow-text, .prow--flip .prow-text { max-width: none; justify-self: stretch; }
+  .prow-demo, .prow--flip .prow-demo { order: -1; }
+  .prow-list li { font-size: .98rem; }
+  .prow-frame .orli-panel { zoom: 1; }
+  /* The crumb folds away on a phone (panel.css); the bell keeps its place
+     beside the account circle instead of drifting to the middle. */
+  .prow .opn-bell { margin-inline-start: auto; }
+  /* On a phone the admin folds its sidebar away too; here it just goes. */
+  .opn-body { grid-template-columns: minmax(0, 1fr); }
+  .opn-side { display: none; }
+  .prows-anim .prow:not(.is-in) .prow-text,
+  .prows-anim .prow:not(.is-in) .prow-demo,
+  .prows-anim .prow--flip:not(.is-in) .prow-text,
+  .prows-anim .prow--flip:not(.is-in) .prow-demo { transform: translateY(26px); }
+}
+
+/* ---------- the loops (generated by tools/gen-panel-rows-css.py: edit the script, not below) ---------- */
+@keyframes pr-show-10 { 0%, 10% { opacity: 0; transform: translateY(8px); } 14%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-14 { 0%, 14% { opacity: 0; transform: translateY(8px); } 18%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-20 { 0%, 20% { opacity: 0; transform: translateY(8px); } 24%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-24 { 0%, 24% { opacity: 0; transform: translateY(8px); } 28%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-26 { 0%, 26% { opacity: 0; transform: translateY(8px); } 30%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-28 { 0%, 28% { opacity: 0; transform: translateY(8px); } 32%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-34 { 0%, 34% { opacity: 0; transform: translateY(8px); } 38%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-38 { 0%, 38% { opacity: 0; transform: translateY(8px); } 42%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-40 { 0%, 40% { opacity: 0; transform: translateY(8px); } 44%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-44 { 0%, 44% { opacity: 0; transform: translateY(8px); } 48%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-50 { 0%, 50% { opacity: 0; transform: translateY(8px); } 54%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-52 { 0%, 52% { opacity: 0; transform: translateY(8px); } 56%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-60 { 0%, 60% { opacity: 0; transform: translateY(8px); } 64%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-show-66 { 0%, 66% { opacity: 0; transform: translateY(8px); } 70%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+@keyframes pr-hide-12 { 0%, 12% { opacity: 1; } 15%, 92% { opacity: 0; } 97%, 100% { opacity: 1; } }
+@keyframes pr-hide-16 { 0%, 16% { opacity: 1; } 19%, 92% { opacity: 0; } 97%, 100% { opacity: 1; } }
+@keyframes pr-hide-22 { 0%, 22% { opacity: 1; } 25%, 92% { opacity: 0; } 97%, 100% { opacity: 1; } }
+@keyframes pr-hide-50 { 0%, 50% { opacity: 1; } 53%, 92% { opacity: 0; } 97%, 100% { opacity: 1; } }
+@keyframes pr-fade-10 { 0%, 10% { opacity: 0; } 13%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes pr-fade-12 { 0%, 12% { opacity: 0; } 15%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes pr-fade-22 { 0%, 22% { opacity: 0; } 25%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes pr-fade-28 { 0%, 28% { opacity: 0; } 31%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes pr-fade-40 { 0%, 40% { opacity: 0; } 43%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes pr-fade-50 { 0%, 50% { opacity: 0; } 53%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes pr-fade-66 { 0%, 66% { opacity: 0; } 69%, 92% { opacity: 1; } 97%, 100% { opacity: 0; } }
+@keyframes pr-blink-22-40 { 0%, 22% { opacity: 0; } 23.5%, 40% { opacity: 1; } 41.5%, 100% { opacity: 0; } }
+@keyframes pr-blink-10-24 { 0%, 10% { opacity: 0; } 11.5%, 24% { opacity: 1; } 25.5%, 100% { opacity: 0; } }
+@keyframes pr-blink-24-38 { 0%, 24% { opacity: 0; } 25.5%, 38% { opacity: 1; } 39.5%, 100% { opacity: 0; } }
+@keyframes pr-blink-38-52 { 0%, 38% { opacity: 0; } 39.5%, 52% { opacity: 1; } 53.5%, 100% { opacity: 0; } }
+@keyframes pr-blink-52-66 { 0%, 52% { opacity: 0; } 53.5%, 66% { opacity: 1; } 67.5%, 100% { opacity: 0; } }
+@keyframes pr-gap-22-40 { 0%, 22% { opacity: 1; } 23.5%, 40% { opacity: 0; } 41.5%, 100% { opacity: 1; } }
+@keyframes pr-dim-66 { 0%, 66% { opacity: 1; } 69%, 92% { opacity: .5; } 97%, 100% { opacity: 1; } }
+@keyframes pr-tap-6 { 0%, 1% { opacity: 0; transform: translate(26px, 30px); } 5% { opacity: 1; transform: none; } 6% { transform: scale(.8); } 7.5% { opacity: 1; transform: none; } 12%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-6 { 0%, 6% { opacity: 0; transform: scale(.2); } 6.5% { opacity: .8; transform: scale(.4); } 12%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-tap-8 { 0%, 3% { opacity: 0; transform: translate(26px, 30px); } 7% { opacity: 1; transform: none; } 8% { transform: scale(.8); } 9.5% { opacity: 1; transform: none; } 14%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-8 { 0%, 8% { opacity: 0; transform: scale(.2); } 8.5% { opacity: .8; transform: scale(.4); } 14%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-tap-10 { 0%, 5% { opacity: 0; transform: translate(26px, 30px); } 9% { opacity: 1; transform: none; } 10% { transform: scale(.8); } 11.5% { opacity: 1; transform: none; } 16%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-10 { 0%, 10% { opacity: 0; transform: scale(.2); } 10.5% { opacity: .8; transform: scale(.4); } 16%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-tap-19 { 0%, 14% { opacity: 0; transform: translate(26px, 30px); } 18% { opacity: 1; transform: none; } 19% { transform: scale(.8); } 20.5% { opacity: 1; transform: none; } 25%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-19 { 0%, 19% { opacity: 0; transform: scale(.2); } 19.5% { opacity: .8; transform: scale(.4); } 25%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-tap-34 { 0%, 29% { opacity: 0; transform: translate(26px, 30px); } 33% { opacity: 1; transform: none; } 34% { transform: scale(.8); } 35.5% { opacity: 1; transform: none; } 40%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-34 { 0%, 34% { opacity: 0; transform: scale(.2); } 34.5% { opacity: .8; transform: scale(.4); } 40%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-tap-46 { 0%, 41% { opacity: 0; transform: translate(26px, 30px); } 45% { opacity: 1; transform: none; } 46% { transform: scale(.8); } 47.5% { opacity: 1; transform: none; } 52%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-46 { 0%, 46% { opacity: 0; transform: scale(.2); } 46.5% { opacity: .8; transform: scale(.4); } 52%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-tap-54 { 0%, 49% { opacity: 0; transform: translate(26px, 30px); } 53% { opacity: 1; transform: none; } 54% { transform: scale(.8); } 55.5% { opacity: 1; transform: none; } 60%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-54 { 0%, 54% { opacity: 0; transform: scale(.2); } 54.5% { opacity: .8; transform: scale(.4); } 60%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-tap-62 { 0%, 57% { opacity: 0; transform: translate(26px, 30px); } 61% { opacity: 1; transform: none; } 62% { transform: scale(.8); } 63.5% { opacity: 1; transform: none; } 68%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-ring-62 { 0%, 62% { opacity: 0; transform: scale(.2); } 62.5% { opacity: .8; transform: scale(.4); } 68%, 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes pr-grab-10-26 { 0%, 5% { opacity: 0; transform: translate(26px, 30px); } 9% { opacity: 1; transform: none; } 10% { transform: scale(.8); } 12%, 25% { opacity: 1; transform: none; } 31%, 100% { opacity: 0; transform: translate(-6px, 10px); } }
+@keyframes pr-drag-10-26 { 0%, 10% { transform: translate(var(--dx), var(--dy)); outline: 2px solid transparent; } 12% { transform: translate(var(--dx), var(--dy)) scale(1.05); outline: 2px solid var(--teal); } 24% { transform: scale(1.05); outline: 2px solid var(--teal); } 27%, 92% { transform: none; outline: 2px solid transparent; } 97%, 100% { transform: translate(var(--dx), var(--dy)); outline: 2px solid transparent; } }
+@keyframes pr-on-14 { 0%, 14% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } 16%, 92% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 97%, 100% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } }
+@keyframes pr-off-14 { 0%, 14% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 16%, 92% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } 97%, 100% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } }
+@keyframes pr-on-38 { 0%, 38% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } 40%, 92% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 97%, 100% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } }
+@keyframes pr-off-38 { 0%, 38% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 40%, 92% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } 97%, 100% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } }
+@keyframes pr-on-50 { 0%, 50% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } 52%, 92% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 97%, 100% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } }
+@keyframes pr-off-50 { 0%, 50% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } 52%, 92% { background: var(--surface); border-color: var(--line); color: var(--ink-soft); } 97%, 100% { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; } }
+@keyframes pr-swon-12 { 0%, 12% { border-color: transparent; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); } 14%, 92% { border-color: var(--surface); box-shadow: 0 0 0 2px var(--teal-deep); } 97%, 100% { border-color: transparent; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); } }
+@keyframes pr-swoff-12 { 0%, 12% { border-color: var(--surface); box-shadow: 0 0 0 2px var(--teal-deep); } 14%, 92% { border-color: transparent; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); } 97%, 100% { border-color: var(--surface); box-shadow: 0 0 0 2px var(--teal-deep); } }
+@keyframes pr-dot-12 { 0%, 12% { background: var(--teal); } 14%, 92% { background: #c2612f; } 97%, 100% { background: var(--teal); } }
+@keyframes pr-pick-10 { 0%, 10% { border-color: var(--line); box-shadow: none; } 12%, 92% { border-color: var(--teal-deep); box-shadow: 0 0 0 1px var(--teal-deep); } 97%, 100% { border-color: var(--line); box-shadow: none; } }
+@keyframes pr-draw-48 { 0%, 48% { stroke-dashoffset: 24; } 53%, 92% { stroke-dashoffset: 0; } 97%, 100% { stroke-dashoffset: 24; } }
+@keyframes pr-draw-70 { 0%, 70% { stroke-dashoffset: 24; } 75%, 92% { stroke-dashoffset: 0; } 97%, 100% { stroke-dashoffset: 24; } }
+@keyframes pr-glow-38 { 0%, 38% { box-shadow: 0 0 0 0 rgba(15, 138, 134, .6); } 48%, 100% { box-shadow: 0 0 0 11px rgba(15, 138, 134, 0); } }
+@keyframes pr-slide-40 { 0%, 40% { transform: translateX(var(--from)); } 46%, 92% { transform: none; } 97%, 100% { transform: translateX(var(--from)); } }
+@keyframes pr-swtrack-58 { 0%, 58% { background: #cfcabd; } 61%, 92% { background: var(--teal); } 97%, 100% { background: #cfcabd; } }
+@keyframes pr-swknob-58 { 0%, 58% { transform: none; } 61%, 92% { transform: translateX(13px); } 97%, 100% { transform: none; } }
+@keyframes pr-grow-30 { 0%, 30% { transform: scaleY(0); } 36%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-32 { 0%, 32% { transform: scaleY(0); } 38%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-34 { 0%, 34% { transform: scaleY(0); } 40%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-36 { 0%, 36% { transform: scaleY(0); } 42%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-38 { 0%, 38% { transform: scaleY(0); } 44%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-40 { 0%, 40% { transform: scaleY(0); } 46%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-42 { 0%, 42% { transform: scaleY(0); } 48%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-44 { 0%, 44% { transform: scaleY(0); } 50%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-46 { 0%, 46% { transform: scaleY(0); } 52%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-48 { 0%, 48% { transform: scaleY(0); } 54%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-50 { 0%, 50% { transform: scaleY(0); } 56%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-grow-52 { 0%, 52% { transform: scaleY(0); } 58%, 92% { transform: scaleY(1); } 97%, 100% { transform: scaleY(0); } }
+@keyframes pr-growx-50 { 0%, 50% { transform: scaleX(0); } 58%, 92% { transform: scaleX(1); } 97%, 100% { transform: scaleX(0); } }
+@keyframes pr-growx-54 { 0%, 54% { transform: scaleX(0); } 62%, 92% { transform: scaleX(1); } 97%, 100% { transform: scaleX(0); } }
+@keyframes pr-growx-58 { 0%, 58% { transform: scaleX(0); } 66%, 92% { transform: scaleX(1); } 97%, 100% { transform: scaleX(0); } }
+@keyframes pr-type-16-38 { 0%, 16% { clip-path: inset(0 0 0 100%); opacity: 1; animation-timing-function: steps(26, end); } 38%, 92% { clip-path: inset(0); opacity: 1; } 96% { clip-path: inset(0); opacity: 0; } 97%, 100% { clip-path: inset(0 0 0 100%); opacity: 0; } }
+@keyframes pr-type-8-30 { 0%, 8% { clip-path: inset(0 0 0 100%); opacity: 1; animation-timing-function: steps(26, end); } 30%, 92% { clip-path: inset(0); opacity: 1; } 96% { clip-path: inset(0); opacity: 0; } 97%, 100% { clip-path: inset(0 0 0 100%); opacity: 0; } }
+@keyframes pr-typel-4-16 { 0%, 4% { clip-path: inset(0 100% 0 0); opacity: 1; animation-timing-function: steps(24, end); } 16%, 92% { clip-path: inset(0); opacity: 1; } 96% { clip-path: inset(0); opacity: 0; } 97%, 100% { clip-path: inset(0 100% 0 0); opacity: 0; } }
+
+.prows-anim .a-show-10 { animation: pr-show-10 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-14 { animation: pr-show-14 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-20 { animation: pr-show-20 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-24 { animation: pr-show-24 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-26 { animation: pr-show-26 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-28 { animation: pr-show-28 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-34 { animation: pr-show-34 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-38 { animation: pr-show-38 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-40 { animation: pr-show-40 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-44 { animation: pr-show-44 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-50 { animation: pr-show-50 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-52 { animation: pr-show-52 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-60 { animation: pr-show-60 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-show-66 { animation: pr-show-66 var(--loop) infinite cubic-bezier(.2, .7, .2, 1); }
+.prows-anim .a-hide-12 { animation: pr-hide-12 var(--loop) infinite; }
+.a-hide-12 { opacity: 0; }
+.prows-anim .a-hide-16 { animation: pr-hide-16 var(--loop) infinite; }
+.a-hide-16 { opacity: 0; }
+.prows-anim .a-hide-22 { animation: pr-hide-22 var(--loop) infinite; }
+.a-hide-22 { opacity: 0; }
+.prows-anim .a-hide-50 { animation: pr-hide-50 var(--loop) infinite; }
+.a-hide-50 { opacity: 0; }
+.prows-anim .a-fade-10 { animation: pr-fade-10 var(--loop) infinite; }
+.prows-anim .a-fade-12 { animation: pr-fade-12 var(--loop) infinite; }
+.prows-anim .a-fade-22 { animation: pr-fade-22 var(--loop) infinite; }
+.prows-anim .a-fade-28 { animation: pr-fade-28 var(--loop) infinite; }
+.prows-anim .a-fade-40 { animation: pr-fade-40 var(--loop) infinite; }
+.prows-anim .a-fade-50 { animation: pr-fade-50 var(--loop) infinite; }
+.prows-anim .a-fade-66 { animation: pr-fade-66 var(--loop) infinite; }
+.prows-anim .a-blink-22-40 { animation: pr-blink-22-40 var(--loop) infinite; }
+.a-blink-22-40 { opacity: 0; }
+.prows-anim .a-blink-10-24 { animation: pr-blink-10-24 var(--loop) infinite; }
+.a-blink-10-24 { opacity: 0; }
+.prows-anim .a-blink-24-38 { animation: pr-blink-24-38 var(--loop) infinite; }
+.a-blink-24-38 { opacity: 0; }
+.prows-anim .a-blink-38-52 { animation: pr-blink-38-52 var(--loop) infinite; }
+.a-blink-38-52 { opacity: 0; }
+.prows-anim .a-blink-52-66 { animation: pr-blink-52-66 var(--loop) infinite; }
+.a-blink-52-66 { opacity: 0; }
+.prows-anim .a-gap-22-40 { animation: pr-gap-22-40 var(--loop) infinite; }
+.prows-anim .a-dim-66 { animation: pr-dim-66 var(--loop) infinite; }
+.a-dim-66 { opacity: .5; }
+.prows-anim .a-tap-6 { animation: pr-tap-6 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-6::after { animation: pr-ring-6 var(--loop) ease-out infinite; }
+.prows-anim .a-tap-8 { animation: pr-tap-8 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-8::after { animation: pr-ring-8 var(--loop) ease-out infinite; }
+.prows-anim .a-tap-10 { animation: pr-tap-10 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-10::after { animation: pr-ring-10 var(--loop) ease-out infinite; }
+.prows-anim .a-tap-19 { animation: pr-tap-19 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-19::after { animation: pr-ring-19 var(--loop) ease-out infinite; }
+.prows-anim .a-tap-34 { animation: pr-tap-34 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-34::after { animation: pr-ring-34 var(--loop) ease-out infinite; }
+.prows-anim .a-tap-46 { animation: pr-tap-46 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-46::after { animation: pr-ring-46 var(--loop) ease-out infinite; }
+.prows-anim .a-tap-54 { animation: pr-tap-54 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-54::after { animation: pr-ring-54 var(--loop) ease-out infinite; }
+.prows-anim .a-tap-62 { animation: pr-tap-62 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-tap-62::after { animation: pr-ring-62 var(--loop) ease-out infinite; }
+.prows-anim .a-grab-10-26 { animation: pr-grab-10-26 var(--loop) cubic-bezier(.3, .7, .3, 1) infinite; }
+.prows-anim .a-grab-10-26::after { animation: pr-ring-10 var(--loop) ease-out infinite; }
+.prows-anim .a-drag-10-26 { animation: pr-drag-10-26 var(--loop) infinite cubic-bezier(.4, 0, .2, 1); }
+.prows-anim .a-on-14 { animation: pr-on-14 var(--loop) infinite; }
+.prows-anim .a-off-14 { animation: pr-off-14 var(--loop) infinite; }
+.prows-anim .a-on-38 { animation: pr-on-38 var(--loop) infinite; }
+.prows-anim .a-off-38 { animation: pr-off-38 var(--loop) infinite; }
+.prows-anim .a-on-50 { animation: pr-on-50 var(--loop) infinite; }
+.prows-anim .a-off-50 { animation: pr-off-50 var(--loop) infinite; }
+.prows-anim .a-swon-12 { animation: pr-swon-12 var(--loop) infinite; }
+.prows-anim .a-swoff-12 { animation: pr-swoff-12 var(--loop) infinite; }
+.prows-anim .a-dot-12 { animation: pr-dot-12 var(--loop) infinite; }
+.prows-anim .a-pick-10 { animation: pr-pick-10 var(--loop) infinite; }
+.prows-anim .a-draw-48 { animation: pr-draw-48 var(--loop) infinite; }
+.a-draw-48 { stroke-dasharray: 24; }
+.prows-anim .a-draw-70 { animation: pr-draw-70 var(--loop) infinite; }
+.a-draw-70 { stroke-dasharray: 24; }
+.prows-anim .a-glow-38 { animation: pr-glow-38 var(--loop) infinite; }
+.prows-anim .a-slide-40 { animation: pr-slide-40 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-swtrack-58 { animation: pr-swtrack-58 var(--loop) infinite; }
+.prows-anim .a-swknob-58 { animation: pr-swknob-58 var(--loop) infinite; }
+.prows-anim .a-grow-30 { animation: pr-grow-30 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-32 { animation: pr-grow-32 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-34 { animation: pr-grow-34 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-36 { animation: pr-grow-36 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-38 { animation: pr-grow-38 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-40 { animation: pr-grow-40 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-42 { animation: pr-grow-42 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-44 { animation: pr-grow-44 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-46 { animation: pr-grow-46 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-48 { animation: pr-grow-48 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-50 { animation: pr-grow-50 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-grow-52 { animation: pr-grow-52 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-growx-50 { animation: pr-growx-50 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-growx-54 { animation: pr-growx-54 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-growx-58 { animation: pr-growx-58 var(--loop) infinite cubic-bezier(.2, .8, .2, 1); }
+.prows-anim .a-type-16-38 { animation: pr-type-16-38 var(--loop) infinite; }
+.prows-anim .a-type-8-30 { animation: pr-type-8-30 var(--loop) infinite; }
+.prows-anim .a-typel-4-16 { animation: pr-typel-4-16 var(--loop) infinite; }
