@@ -1,0 +1,12 @@
+# Response headers for static assets (Cloudflare Workers static assets reads
+# this file at deploy and never serves it). Cloudflare sends .txt as a bare
+# "text/plain" with no charset, and llms.txt / llms-full.txt are half Hebrew:
+# without the charset a browser or fetcher may decode them as Latin-1.
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+/llms-full.txt
+  Content-Type: text/plain; charset=utf-8
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8

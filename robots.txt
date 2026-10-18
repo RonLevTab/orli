@@ -1,0 +1,69 @@
+# robots.txt for orliclinic.com
+#
+# This is a public marketing site. We want search engines and AI assistants
+# to read it, cite it and recommend it, so every crawler is allowed. The only
+# path kept out is /api/ (the contact form and the Cal.com webhook, never
+# pages). privacy.html and 404.html are not disallowed on purpose: they carry
+# <meta name="robots" content="noindex">, and a crawler has to fetch a page to
+# see that tag.
+#
+# Cloudflare may put its own managed block above this file (the
+# content-signal preamble). If the dashboard ever turns on blocking AI
+# training bots, that block would add "Disallow: /" for GPTBot, ClaudeBot and
+# others above our "Allow: /" for the same bots, and each crawler would settle
+# the conflict its own way. Keep that setting off; this file is the policy.
+#
+# A crawler follows only the group that names it most specifically and
+# ignores "*", so every named group repeats the /api/ rule. Disallow comes
+# before Allow so that parsers taking the first matching line, not the
+# longest, still keep /api/ out.
+
+# Everyone else: search engines included.
+User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Disallow: /api/
+Allow: /
+
+# Search engines. Bing's index also feeds Microsoft Copilot and part of
+# ChatGPT search; Google's feeds AI Overviews, AI Mode and Gemini. Brave
+# Search, which Claude's web search draws on, has no user agent of its own
+# and obeys whatever Googlebot is allowed.
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: DuckDuckBot
+Disallow: /api/
+Allow: /
+
+# AI search and retrieval: indexes that answer engines cite from.
+User-agent: OAI-SearchBot
+User-agent: Claude-SearchBot
+User-agent: PerplexityBot
+Disallow: /api/
+Allow: /
+
+# Fetches made because a person asked an assistant about a page.
+User-agent: ChatGPT-User
+User-agent: Claude-User
+User-agent: Perplexity-User
+User-agent: Meta-ExternalFetcher
+User-agent: MistralAI-User
+User-agent: DuckAssistBot
+Disallow: /api/
+Allow: /
+
+# Model training and grounding. Allowed: nothing here is private, and a model
+# that already knows Orli can name it when asked about online booking for
+# Optima clinics without searching first. Google-Extended also governs
+# grounding in the Gemini apps, so blocking it would hide the site there.
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: meta-externalagent
+User-agent: Amazonbot
+Disallow: /api/
+Allow: /
+
+Sitemap: https://orliclinic.com/sitemap.xml

@@ -27,7 +27,7 @@
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
 
-  <link rel="canonical" href="https://orliclinic.com/about.html" />
+  <link rel="canonical" href="https://orliclinic.com/about" />
   <meta name="theme-color" content="#0f8a86" />
 
   <!-- Link previews. PRODUCT.md's second audience reaches this site because
@@ -36,7 +36,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="אורלי" />
   <meta property="og:locale" content="he_IL" />
-  <meta property="og:url" content="https://orliclinic.com/about.html" />
+  <meta property="og:url" content="https://orliclinic.com/about" />
   <meta property="og:title" content="אורלי · אודות" />
   <meta property="og:description" content="אורלי נולדה משאלה אחת: איך פותחים גם למטופלים את היומן שכבר מנהל את המרפאה. הכירו את הסיפור והעקרונות שמנחים אותנו." />
   <meta property="og:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
@@ -47,6 +47,51 @@
   <meta name="twitter:title" content="אורלי · אודות" />
   <meta name="twitter:description" content="אורלי נולדה משאלה אחת: איך פותחים גם למטופלים את היומן שכבר מנהל את המרפאה. הכירו את הסיפור והעקרונות שמנחים אותנו." />
   <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
+  <!-- Structured data for search and answer engines. Every fact here is
+       on this page or on the site; keep it in step with the copy (the
+       FAQ text must match the visible FAQ word for word). -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "@id": "https://orliclinic.com/about#webpage",
+        "url": "https://orliclinic.com/about",
+        "name": "אורלי · אודות",
+        "description": "אורלי נולדה משאלה אחת: איך פותחים גם למטופלים את היומן שכבר מנהל את המרפאה. הכירו את הסיפור והעקרונות שמנחים אותנו.",
+        "inLanguage": "he",
+        "isPartOf": {
+          "@id": "https://orliclinic.com/#website"
+        },
+        "about": {
+          "@id": "https://orliclinic.com/#software"
+        },
+        "breadcrumb": {
+          "@id": "https://orliclinic.com/about#breadcrumb"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://orliclinic.com/about#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ראשי",
+            "item": "https://orliclinic.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "אודות",
+            "item": "https://orliclinic.com/about"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   <!-- Accessibility menu. In the head so the visitor's saved settings are
        applied before the first paint, and before the scripts that animate. -->
   <script src="a11y.js?v=20261019d"></script>

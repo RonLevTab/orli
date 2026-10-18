@@ -220,3 +220,16 @@ drives `widget.js` through a controller handle):
 - `assets/brand/` holds logo/wordmark source + exported PNGs (including a Hebrew
   wordmark variant). Deploys go through `wrangler.jsonc`: Cloudflare Workers with
   static assets, `worker.js` as the fallthrough for paths with no file behind them.
+- Cloudflare serves every page without its extension: `/features.html` answers
+  with a 307 to `/features`, and only `/features` returns a 200. Canonicals,
+  `og:url`, `sitemap.xml`, `llms.txt` and the JSON-LD all use the extensionless
+  address (the home page is `/`); internal links may keep `.html`.
+- Search and answer engines read `robots.txt` (allows every crawler, AI ones
+  included; only `/api/` is kept out), `sitemap.xml`, `llms.txt` / `llms-full.txt`
+  (English and Hebrew fact sheets) and one `application/ld+json` block in each
+  public page's head. `_headers` gives the `.txt`/`.xml` files a UTF-8 charset.
+  When a page is added, or copy changes what the product is said to do, update
+  them together: the sitemap entry and its `lastmod`, the llms files, and the
+  JSON-LD. The FAQ in `index.html`'s JSON-LD must match the visible FAQ word for
+  word, and the offers in `pricing.html`'s must match the visible prices. Facts
+  in these files follow the same rule as the copy: shipped only.

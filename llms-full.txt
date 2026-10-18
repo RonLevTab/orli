@@ -1,0 +1,172 @@
+# Orli (אורלי): full fact sheet
+
+> Orli is an online booking add-on for clinics that run the Optima (אופטימה) scheduling system. Patients book, reschedule and cancel appointments on the clinic's own website, every booking is written straight into the clinic's Optima calendar in real time, and an optional AI receptionist answers patients from facts the clinic approved and books in the chat. Website: https://orliclinic.com. The English section comes first; the Hebrew section below it carries the same facts.
+
+Everything described here is live in production. Last reviewed: 2026-10-18.
+
+## English
+
+### What Orli is
+
+- An online appointment booking layer for clinics. It sits on top of the clinic's existing Optima calendar instead of replacing it: Optima keeps running the clinic and its calendar, and Orli opens that same calendar to patients on the clinic's website as one more booking channel.
+- Orli is a separate product that works alongside Optima. Optima is the only scheduling system it connects to; a clinic on any other system cannot use Orli today.
+- Who it is for: clinic owners and office managers at clinics in Israel that use Optima and want patients to book online, at any hour, instead of phoning the secretary and waiting for the booking to be typed in by hand.
+- Nothing changes for the staff: a booking made on the website appears in Optima exactly like one made by phone, and the secretary keeps working in Optima as before.
+
+### Online booking on the clinic's website
+
+- Added to the clinic's site with one line of embed code. A floating button in the corner of the page opens the booking window.
+- The flow: practitioner, then treatment, then date, then time, then the patient's details, then a one-time code sent to the patient's email, then confirm. A returning patient is recognised by email; a new one types name and phone once. Patients need no account and no password.
+- Only real free time is offered: availability is read from the Optima calendar, inside the clinic's booking horizon, taking each practitioner's working hours, breaks and absences and the national holidays into account.
+- The booking is written into Optima the moment it is confirmed. If the time was taken in the meantime, the patient is told at once and picks another time. Both the patient and the clinic get a confirmation email.
+- The confirmation email carries a link to reschedule or cancel without calling the clinic.
+- Follow-up emails can open the widget already filtered to a treatment or a practitioner.
+- Hebrew and English, right to left, built for phones.
+
+### Orli, the AI receptionist (AI package)
+
+- A chat beside the booking button on the clinic's website: a real conversation, not menus.
+- It knows the clinic: Orli reads the clinic's website and extracts facts, and the clinic approves, edits or rejects each one before it is used. Facts can also be typed in by hand and tied to specific treatments.
+- It answers only from approved knowledge and never invents a price, an opening hour, a phone number or an address.
+- The clinic sets its tone, languages and instructions, and a list of topics that always go to a person.
+- It reads the calendar, offers real free times and books the appointment inside the chat, with the same email code check as the booking widget.
+- A patient can ask about an existing appointment: the agent verifies their email and reads back their upcoming bookings.
+- Handoff to a person: it takes a name and a phone number or email, emails the clinic, and queues the callback in the admin with the conversation behind it.
+- A test tab in the admin lets the clinic chat with its own agent, as a patient would, after changing its settings.
+
+### Follow-ups and reminders
+
+- Reminders such as "every 6 months for a cleaning" invite the patient back by email, with a one-click booking link.
+- Treatment sequences: invite to the next step of a course after a set time, step by step.
+- Sent only to patients who agreed, with a one-click opt-out page.
+
+### The clinic's admin panel
+
+- Calendar: week, day and list views, drag to move a booking, bookings typed in by the secretary, search by name or phone, filter by practitioner, attendance marking, and a live indicator of the Optima connection.
+- Practitioners imported from Optima; working hours per weekday with breaks; absences and exceptional days.
+- Services per practitioner with duration, price, description and colour, in the order patients see them.
+- Appearance: ready-made palettes or exact brand colours, font, logo, corner style and button placement, with a live preview. Changes apply to the widget immediately; the embed code never changes.
+- Email templates with a block editor and live preview: confirmation, reschedule, cancellation, the one-time code, the follow-up invitation and its reminder, and notices to the clinic.
+- Notifications: a bell and emails for new bookings, cancellations, moves, callbacks waiting and bookings Optima could not take yet.
+- Analytics: bookings, cancellations, attendance, demand by day and hour, top treatments and practitioners, and where bookings came from (website widget, AI chat, staff), each against the previous period, plus the agent's own figures.
+- Users with roles (clinic admin, clinic member), invited by email.
+- Support from inside the admin, with screenshots.
+
+### Reliability and the Optima connection
+
+- Appointments are created, moved and cancelled in the clinic's real Optima calendar, in real time, not by a nightly sync. Existing patient records in Optima are reused, never duplicated.
+- If Optima is unreachable, booking keeps working: free time comes from Orli's own hourly and nightly copy of the calendar, the booking is kept, and it is written into Optima once Optima is back. If the time was taken meanwhile, the clinic is told.
+- Each clinic's Optima credentials are encrypted at rest; every screen and route is scoped to the clinic.
+
+### Embedding and patient data
+
+- The embed snippet:
+
+      <script src="https://booking.orliclinic.com/embed.js" data-clinic-id="your-clinic"></script>
+
+- Works with any clinic website, with no build step and no framework. Nothing to install or maintain on the site's side.
+- The widget runs in a sandboxed iframe with the minimum permissions it needs, and does not touch the rest of the site's design or scripts.
+- Patient details are never exposed on the clinic's public page; they pass between the patient and Orli inside the iframe.
+- The clinic id in the snippet is a public slug, not a secret key.
+
+### Setup
+
+- Done with the Orli team, not self-service: one short call, Optima connected, practitioners imported, working hours and services set in the admin, the snippet pasted into the website. Usually live within a day.
+- On the AI package: give the website address, let Orli read it, approve the facts, set the tone and handoff topics, try it in the test tab.
+
+### Pricing
+
+Monthly, in Israeli shekels, plus VAT (מע״מ), as listed on https://orliclinic.com/pricing:
+
+- Booking (זימון תורים), ₪499 a month: up to 5 practitioners, online booking into Optima, patient rescheduling and cancelling with code verification, one follow-up reminder rule, the admin panel, branding and emails, staff notifications and in-panel support.
+- Growth (צמיחה), ₪699 a month: everything in Booking, plus all reminders and treatment sequences without limit, and full analytics.
+- AI receptionist (סוכן AI), ₪899 a month: everything in Growth, plus the AI agent on the website (answers, offers times and books), about 250 conversations a month, learning from the clinic's website and answering only from what the clinic approved, handoff requests to the staff, and the agent's figures in analytics.
+- Every plan includes setup by the Orli team, writing straight into Optima, working through Optima outages, and support from inside the admin.
+- Larger clinics: contact Orli to fit the plan.
+
+### Not offered today
+
+SMS or WhatsApp messages, payments, online intake forms, patient accounts, multi-location clinics, and calendars other than Optima.
+
+### Getting in touch
+
+Book a demo or send a message from https://orliclinic.com/#contact.
+
+## עברית
+
+### מה זה אורלי
+
+- אורלי היא תוסף לקביעת תורים אונליין למרפאות שעובדות עם אופטימה. היא לא מחליפה את אופטימה: אופטימה ממשיכה לנהל את המרפאה ואת היומן, ואורלי פותחת את אותו יומן גם למטופלים, באתר של המרפאה, כערוץ נוסף לקביעת פגישות.
+- אורלי מתחברת לאופטימה בלבד. מרפאה שעובדת עם מערכת אחרת לא יכולה להשתמש באורלי כרגע.
+- למי זה מתאים: בעלי מרפאות ומנהלות משרד במרפאות בישראל שעובדות עם אופטימה, ורוצות שהמטופלים יקבעו תור באתר בכל שעה, בלי טלפונים, בלי המתנה למזכירה ובלי הקלדה ידנית של כל פגישה.
+- לצוות לא משתנה כלום: פגישה שנקבעת באתר נכנסת לאופטימה כמו פגישה שנקבעה בטלפון, והמזכירה ממשיכה לעבוד באופטימה כרגיל.
+
+### זימון תורים מהאתר
+
+- מוסיפים שורת קוד אחת לאתר המרפאה. כפתור בפינת המסך פותח את חלון קביעת הפגישה.
+- המטופל בוחר מטפל, טיפול, יום ושעה, ממלא שם, טלפון ואימייל פעם אחת, ומאשר בקוד חד־פעמי שנשלח לאימייל. אין חשבון לפתוח ואין סיסמה לזכור.
+- מוצגות רק שעות שבאמת פנויות ביומן האופטימה, לפי שעות העבודה, ההפסקות וההיעדרויות של כל מטפל והחגים.
+- הפגישה נכתבת לאופטימה ברגע האישור. אם השעה נתפסה בינתיים, המטופל מקבל הודעה מיד ובוחר שעה אחרת. גם המטופל וגם המרפאה מקבלים אישור במייל.
+- שינוי מועד או ביטול: המטופל עושה את זה בעצמו מהקישור במייל, בלי להתקשר.
+- עברית ואנגלית, מימין לשמאל, בנוי לטלפון.
+
+### סוכן AI למרפאה (חבילת סוכן AI)
+
+- צ׳אט באתר המרפאה, לצד כפתור קביעת התור: שיחה אמיתית, לא תפריטים.
+- הסוכן לומד מהאתר של המרפאה, וכל עובדה מחכה לאישור של המרפאה לפני שהוא משתמש בה. אפשר גם להוסיף מידע ידנית.
+- הוא עונה רק ממה שהמרפאה אישרה, ולא ממציא מחיר, שעה, טלפון או כתובת.
+- המרפאה קובעת את הטון, השפות וההנחיות, ואת הנושאים שתמיד עוברים לאדם מהצוות.
+- הוא מציע מועד פנוי מהיומן וקובע את התור בתוך השיחה, עם אותו אימות בקוד לאימייל.
+- מטופל ששואל על פגישה קיימת מאמת את האימייל, והסוכן מקריא לו את הפגישות הקרובות.
+- העברה לצוות: הסוכן לוקח שם וטלפון או אימייל, שולח מייל למרפאה, והפנייה מחכה במסך הניהול עם השיחה מאחוריה.
+
+### תזכורות לביקור הבא
+
+- תזכורת חוזרת, למשל "ניקוי אבנית כל 6 חודשים": מייל אוטומטי בנוסח של המרפאה, עם קישור לקביעת תור בלחיצה.
+- רצף טיפולים: הזמנה לשלב הבא, לפי סדר.
+- רק למי שהסכים, עם הסרה בלחיצה אחת.
+
+### מסך הניהול
+
+- יומן בתצוגת שבוע, יום ורשימה, גרירה להזזת פגישה, פגישה שהמזכירה מקלידה, חיפוש לפי שם או טלפון, וסימון הגעה.
+- מטפלים שמיובאים מאופטימה, שעות עבודה, הפסקות והיעדרויות.
+- טיפולים לכל מטפל: משך, מחיר, תיאור וצבע.
+- עיצוב: צבעים מוכנים או צבעי המותג, גופן, לוגו ומיקום הכפתור, עם תצוגה מקדימה. השינויים חלים מיד, וקטע ההטמעה לא משתנה.
+- תבניות אימייל עם תצוגה מקדימה: אישור, שינוי, ביטול, קוד האימות, תזכורת לביקור הבא והודעות למרפאה.
+- התראות לצוות: פעמון ומייל על כל תור חדש, ביטול, שינוי ופנייה.
+- נתונים ותובנות: תורים, ביטולים, הגעה, ביקוש לפי יום ושעה, טיפולים ומטפלים מבוקשים, ומאיפה הגיעו התורים (האתר, הצ׳אט או הצוות), מול התקופה הקודמת.
+- משתמשים עם הרשאות, ותמיכה מתוך המסך.
+
+### אמינות והחיבור לאופטימה
+
+- פגישות נקבעות, זזות ומתבטלות ביומן האופטימה האמיתי, בזמן אמת ולא בסנכרון לילי, בלי כפילויות של כרטיסי מטופלים.
+- כשאופטימה לא זמינה, הזימון ממשיך לעבוד: השעות מוצגות מעותק של היומן, התור נשמר ונרשם באופטימה ברגע שהיא חוזרת, ואם השעה נתפסה בינתיים המרפאה מקבלת הודעה.
+
+### הקמה
+
+- על ידי צוות אורלי: שיחה קצרה, חיבור לאופטימה, ייבוא המטפלים, הגדרת שעות וטיפולים, והדבקת שורה אחת באתר. בדרך כלל תוך יום הכול באוויר.
+
+### מחירים
+
+לחודש, בש״ח, לפני מע״מ:
+
+- זימון תורים (Booking): ‏₪499. עד 5 מטפלים, זימון תורים מהאתר ישר לאופטימה, שינוי וביטול על ידי המטופל, תזכורת חוזרת אחת, מסך ניהול, עיצוב ומיילים, התראות ותמיכה.
+- צמיחה (Growth): ‏₪699. כל מה שבזימון תורים, וגם כל התזכורות ורצפי הטיפול ללא הגבלה, ונתונים ותובנות מלאים.
+- סוכן AI (AI receptionist): ‏₪899. כל מה שבצמיחה, וגם סוכן AI באתר שעונה, מציע מועדים וקובע, כ־250 שיחות בחודש, ופניות לצוות עם השיחה מאחוריהן.
+
+### מה אין כרגע
+
+הודעות SMS או וואטסאפ, תשלומים, טפסי קליטה אונליין, חשבונות מטופלים, ניהול כמה סניפים, ויומנים שאינם אופטימה.
+
+### יצירת קשר
+
+קביעת דמו או השארת פרטים: https://orliclinic.com/#contact
+
+## Pages
+
+- [Home / ראשי](https://orliclinic.com/): what Orli is, the booking flow with a live widget demo, with/without comparison, FAQ.
+- [Features / היכולות](https://orliclinic.com/features): booking, the AI receptionist, reminders, analytics, outages, admin.
+- [Admin panel / מסך הניהול](https://orliclinic.com/panel): a tour of the clinic's admin, screen by screen.
+- [Pricing / מחירים](https://orliclinic.com/pricing): the three plans and what each includes.
+- [Embedding and customisation / מדריך טכני להטמעה](https://orliclinic.com/integration): branding, the embed snippet, data handling, the Optima connection.
+- [About / אודות](https://orliclinic.com/about): why Orli was built.
