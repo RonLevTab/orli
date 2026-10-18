@@ -72,10 +72,10 @@
 .opn-avatar { width: 22px; height: 22px; border-radius: 50%; flex: none; background: var(--cream-2); border: 1px solid var(--line); display: grid; place-items: center; font-size: .58rem; font-weight: 700; color: var(--teal-deep); }
 .opn-bell { position: relative; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: var(--ink-soft); }
 .opn-bell svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-.opn-body { display: grid; grid-template-columns: 124px minmax(0, 1fr); }
+.opn-body { display: grid; grid-template-columns: 138px minmax(0, 1fr); }
 .opn-side { padding: 10px 8px; background: var(--cream-2); border-inline-end: 1px solid var(--line); }
 .opn-side-label { margin: 6px 6px 4px; font-size: .52rem; font-weight: 600; color: var(--ink-soft); }
-.opn-nav { position: relative; display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 8px; font-size: .6rem; font-weight: 500; color: var(--ink-soft); white-space: nowrap; }
+.opn-nav { position: relative; display: flex; align-items: center; gap: 6px; padding: 6px 8px; padding-inline-end: 14px; border-radius: 8px; font-size: .6rem; font-weight: 500; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .opn-nav.is-active { background: var(--surface); color: var(--teal-deep); font-weight: 600; }
 .opn-nav.is-active::after { content: ""; position: absolute; top: 6px; bottom: 6px; left: 4px; width: 2.5px; border-radius: 999px; background: var(--teal); }
 .opn-ico { width: 11px; height: 11px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
@@ -97,7 +97,12 @@
 .prow-thumb { position: absolute; inset: 0; border-radius: 5px; background: linear-gradient(135deg, #dcecea, #b9dbd6 55%, #8fc4bd); border: 1px solid #a9cfc9; }
 .prow-dot { display: inline-block; width: 6px; height: 6px; margin-inline-end: 4px; border-radius: 2px; background: #c2612f; vertical-align: 1px; }
 .prow-copied { position: absolute; top: -9px; inset-inline-end: 8px; padding: 2px 9px; border-radius: 999px; background: var(--teal-deep); color: #fff; font-size: .58rem; font-weight: 700; }
-.opn-launch { --from: 130px; }
+/* The site sketch's booking button starts in the right-hand corner, over
+   the accessibility button, and slides to the left one. Its start is the
+   sketch's own width less the button's and the two 8px insets (cqw: the
+   sketch is a size container), so it never crosses the sketch's edge. */
+.prow .opn-site { container-type: inline-size; }
+.opn-launch { --from: calc(100cqw - 100% - 16px); }
 /* The admin's sample-data mark (analyticsSampleBadge): a plain pill. */
 .opn-sample { display: inline-block; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--cream-2); color: var(--ink-soft); font-size: .56rem; font-weight: 700; }
 
@@ -161,7 +166,7 @@
 .prow-kpi { display: grid; gap: 1px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
 .prow-kpi span { font-size: .6rem; font-weight: 600; color: var(--ink-soft); }
 .prow-kpi b { font-size: 1.15rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
-.prow-kpi small { font-size: .52rem; color: var(--teal-deep); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prow-kpi small { font-size: .52rem; line-height: 1.35; color: var(--teal-deep); }
 .prow-charts { display: grid; grid-template-columns: 1.3fr 1fr; gap: 8px; }
 .prow-chart { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
 .prow-chart .opn-field-label { margin-bottom: 6px; }
@@ -224,6 +229,9 @@
   /* The crumb folds away on a phone (panel.css); the bell keeps its place
      beside the account circle instead of drifting to the middle. */
   .prow .opn-bell { margin-inline-start: auto; }
+  /* Narrow cells and tiles: the calendar shows the treatment alone, the
+     tiles their change without "vs the 30 days before". */
+  .prow-ev small, .prow-kpi small span { display: none; }
   /* On a phone the admin folds its sidebar away too; here it just goes. */
   .opn-body { grid-template-columns: minmax(0, 1fr); }
   .opn-side { display: none; }
