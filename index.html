@@ -23,9 +23,9 @@
        sets Hebrew and Latin (spaces, digits) in it. -->
   <link rel="preload" href="assets/fonts/heebo-v28-hebrew.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/heebo-v28-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=20261019e" />
-  <link rel="stylesheet" href="a11y.css?v=20261019e" />
-  <link rel="stylesheet" href="widget.css?v=20261019e" />
+  <link rel="stylesheet" href="styles.css?v=20261019f" />
+  <link rel="stylesheet" href="a11y.css?v=20261019f" />
+  <link rel="stylesheet" href="widget.css?v=20261019f" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
@@ -247,7 +247,7 @@
   </script>
   <!-- Accessibility menu. In the head so the visitor's saved settings are
        applied before the first paint, and before the scripts that animate. -->
-  <script src="a11y.js?v=20261019e"></script>
+  <script src="a11y.js?v=20261019f"></script>
 </head>
 <body>
   <span id="top" aria-hidden="true"></span>
@@ -257,7 +257,7 @@
     <div class="wrap">
       <div class="nav-pill">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261019e" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261019f" width="480" height="151" alt="אורלי" />
         </a>
         <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
           <a href="index.html" aria-current="page">ראשי</a>
@@ -484,6 +484,27 @@
             <button type="button" class="scrolly-tab" data-scene="4" aria-label="שלב 5: אימות בקוד">05</button>
             <button type="button" class="scrolly-tab" data-scene="5" aria-label="שלב 6: נכתב לאופטימה">06</button>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIAL: the clinic that runs Orli, right after the visitor has
+         seen it work. Dr. Ines Verner (Verner Clinic, Kiryat Ono), live
+         since day one; her words, name and photo used with her approval.
+         A compact dark band (styles.css "Testimonial"); no stars and no
+         Review markup. -->
+    <section class="testimonial" id="clinic" data-lock-stop="start">
+      <div class="wrap testimonial-grid">
+        <figure class="testimonial-body">
+          <h2 class="display">הם כבר קובעים תורים <span class="ital">עם אורלי.</span></h2>
+          <blockquote class="testimonial-quote">״תוך יום אחד זה עבד אצלנו, ומאז זה פשוט עובד. אף אחד לא היה צריך ללמוד שום דבר חדש, והמטופלים קובעים תורים גם כשהמרפאה סגורה. <em>בבוקר הם כבר מחכים ביומן.</em>״</blockquote>
+          <figcaption class="testimonial-by">
+            <span><b>ד״ר אינס ורנר</b>ורנר קליניק · רפואת עור, אסתטיקה ולייזר · קרית אונו</span>
+            <a href="https://www.vernerclinic.com/" target="_blank" rel="noopener">לאתר המרפאה ↗</a>
+          </figcaption>
+        </figure>
+        <div class="testimonial-photo" aria-hidden="true">
+          <img src="assets/customers/ines-verner.webp?v=20261019f" width="720" height="718" loading="lazy" decoding="async" alt="" />
         </div>
       </div>
     </section>
@@ -768,7 +789,7 @@
     <div class="wrap footer-inner">
       <div class="footer-brand">
         <a href="#top" class="brand" aria-label="אורלי, לדף הבית">
-          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261019e" width="480" height="151" alt="אורלי" />
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261019f" width="480" height="151" alt="אורלי" />
         </a>
         <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
       </div>
@@ -803,13 +824,13 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20261019e"></script>
-  <script src="hero-gradient.js?v=20261019e"></script>
+  <script src="script.js?v=20261019f"></script>
+  <script src="hero-gradient.js?v=20261019f"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->
-  <script src="widget.js?v=20261019e"></script>
-  <script src="scrolly.js?v=20261019e"></script>
+  <script src="widget.js?v=20261019f"></script>
+  <script src="scrolly.js?v=20261019f"></script>
   <!-- Desktop section lock-in: two-second hold on each snap stop. -->
-  <script src="lock.js?v=20261019e"></script>
+  <script src="lock.js?v=20261019f"></script>
 </body>
 </html>

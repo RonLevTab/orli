@@ -1571,3 +1571,36 @@ main > section:not(.alt):not(.hero):not(.cta-band):not(.plate-sec):not(.page-hea
 }
 .btn-outline-light.lg { padding: 15px 30px; font-size: 1.02rem; }
 .cta-band .btn-dark { border-color: rgba(255, 255, 255, .12); }
+
+/* ===== Testimonial: the clinic that uses Orli =====
+   One dark teal band after the demo: a headline, Dr. Ines Verner's words
+   (Verner Clinic, live since day one), her name and clinic with a link to
+   it, and her cut-out portrait standing on a teal circle. Compact on
+   purpose: it sizes to its content and is exempt from the full-screen
+   section rule (as the FAQ and the closing band are), so the band never
+   fills a screen with empty green. No rating stars and no Review markup:
+   one customer, on our own site. */
+.testimonial { background: var(--teal-deep); color: #fff; overflow: hidden; }
+main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-content: flex-start; padding: 0; }
+.testimonial-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 48px; align-items: end; }
+.testimonial-body { align-self: center; margin: 0; padding: 52px 0; display: flex; flex-direction: column; gap: 18px; }
+.testimonial .display { margin: 0; color: #fff; font-size: clamp(2rem, 3.6vw, 2.8rem); }
+.testimonial .display .ital { color: #bff3ec; }
+.testimonial-quote { margin: 0; max-width: 34em; font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.5; font-weight: 300; }
+.testimonial-quote em { font-style: normal; font-weight: 400; color: #bff3ec; }
+.testimonial-by { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 18px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .16); }
+.testimonial-by b { display: block; font-size: 1.05rem; font-weight: 600; }
+.testimonial-by span { font-size: .9rem; color: #bff3ec; }
+.testimonial-by a { margin-inline-start: auto; color: #bff3ec; font-size: .9rem; font-weight: 600; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+.testimonial-by a:hover { color: #fff; }
+.testimonial-photo { position: relative; display: flex; align-items: flex-end; justify-content: center; height: 360px; }
+.testimonial-photo::before { content: ""; position: absolute; bottom: 40px; width: 280px; height: 280px; border-radius: 50%; background: var(--teal); }
+.testimonial-photo img { position: relative; display: block; width: 320px; height: auto; }
+@media (max-width: 920px) {
+  .testimonial-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .testimonial-photo { order: -1; height: 190px; }
+  .testimonial-photo::before { bottom: 12px; width: 170px; height: 170px; }
+  .testimonial-photo img { width: 190px; }
+  .testimonial-body { padding: 18px 0 30px; gap: 14px; }
+  .testimonial-by a { margin-inline-start: 0; }
+}
