@@ -63,10 +63,11 @@ the clinic's existing workflow has to change.
   webhook, both forwarded into Slack's `#website-contact`. See `README.md` for
   the secrets it needs. The Worker also serves `404.html` for any path with
   no file behind it.
-- Every page loads two third parties — Google Fonts (the site's typeface) and
-  Cal.com's embed script — and each receives the visitor's IP, user agent and
-  referring page on every view. `privacy.html` discloses both; no surface may
-  claim the site has "no tracking" without accounting for them.
+- Every page loads one third party, Cal.com's embed script, which receives the
+  visitor's IP, user agent and referring page on every view. The typeface
+  (Heebo) is served from the site itself since 2026-10-18, no longer from
+  Google Fonts. `privacy.html` discloses both facts; no surface may claim the
+  site has "no tracking" without accounting for Cal.com.
 - `panel.html` shows the other half of the product: a static mock of the clinic
   admin, walked through in nine screens in the admin's own order (calendar, AI
   agent, analytics, practitioners and services, automations, widget design, email

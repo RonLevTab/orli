@@ -36,7 +36,8 @@ HEADER = '''/* ===========================================================
    manage-an-existing-booking rules (reached from an emailed link,
    never from this flow).
    =========================================================== */
-@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap");
+/* Heebo comes from styles.css (self-hosted, assets/fonts/), which every
+   page that loads this file loads first. */
 
 '''
 

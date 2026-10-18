@@ -105,8 +105,10 @@ python -m http.server 8899
 # then open http://localhost:8899/
 ```
 
-`file://` also works, except the Google Font (Heebo) needs network access;
-without it the page falls back to Georgia / system sans.
+`file://` also works. Heebo is self-hosted (`assets/fonts/`, two variable woff2
+subsets from Google Fonts v28, OFL licence beside them, `@font-face` at the top
+of `styles.css`, preloaded in every page's head): no page may link Google Fonts,
+because `privacy.html` says the font is served from the site itself.
 
 There is no lint, build, or test command — verify changes by loading the page in a
 browser.
@@ -198,9 +200,14 @@ drives `widget.js` through a controller handle):
 - Scripts wrap themselves in an IIFE (`(function () { 'use strict'; ... })()`) rather
   than using ES modules.
 - Every cache-busting query string (`styles.css?v=…`, `script.js?v=…`, the wordmark)
-  carries the **same** token on every page (`?v=20261019d` today). Bump them all
+  carries the **same** token on every page (`?v=20261019e` today). Bump them all
   together with one search-and-replace when any asset changes; a per-file counter
-  drifted across pages and left stale copies in caches.
+  drifted across pages and left stale copies in caches. The token is load-bearing:
+  `_headers` caches every `.css` and `.js` for a year as `immutable`, so a CSS or
+  JS file linked without it, or changed without a bump, stays stale in browsers.
+  Images under `assets/brand/` and `/favicon.ico` are cached for a week; fonts
+  under `assets/fonts/` for a year (a new copy gets a new file name). HTML keeps
+  Cloudflare's default, revalidated on every view.
 - On desktop (≥921px wide, ≥700px tall, no reduced motion) `index.html` snaps one
   section per screen, and each section scrolls inside itself if it outgrows the
   screen: every `main > section` and the footer carry `data-lock-stop="start"`,

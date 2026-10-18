@@ -24,9 +24,8 @@ python -m http.server 8899
 # then open http://localhost:8899/
 ```
 
-(Opening `index.html` directly via `file://` also works, but the Google Font —
-Heebo — needs a network connection; without one it falls back to Frank Ruhl Libre /
-system sans, which still looks clean.)
+(Opening `index.html` directly via `file://` also works. The font, Heebo, is
+served from `assets/fonts/`, so no network is needed for it.)
 
 ## Design
 Warm editorial palette + serif display type (à la petaron.ai), fused with a teal brand
