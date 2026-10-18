@@ -1,0 +1,2252 @@
+<title>תוכנית האתר של אורלי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: a planner chrome (sidebar sitemap + top bar) around a single-theme
+   replica of orliclinic.com. The replica keeps the site's own cream/teal
+   tokens on purpose (it is a replica); the chrome is deliberately darker so
+   the two never blur. Everything Hebrew, RTL. */
+:root {
+  --cream: #f7f5ef; --cream-2: #efece2; --surface: #fffdf8;
+  --ink: #1b2523; --ink-soft: #5d6763; --line: #e4ddcf;
+  --teal: #0f8a86; --teal-deep: #0a5d5a; --teal-bright: #14b8a6; --dark: #16211f;
+  --shadow-sm: 0 6px 20px -10px rgba(20,50,45,.22);
+  --shadow: 0 18px 45px -22px rgba(20,50,45,.32);
+  --shadow-lg: 0 40px 80px -32px rgba(15,60,55,.4);
+  --radius: 18px; --wrap: 1160px;
+  --sans: "Heebo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* planner chrome */
+  --chrome: #16211f; --chrome-2: #1f2d2a; --chrome-line: #2d3d39; --chrome-fg: #e9efed; --chrome-soft: #9fb3ae;
+  --new: #b4531f; --new-bg: #fbe9dd; --chg: #8a6a0f; --chg-bg: #fbf1cf; --ok: #0a5d5a; --ok-bg: #d8efec;
+  --warn: #a8503f;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; font-family: var(--sans); background: var(--chrome); color: var(--chrome-fg); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow: hidden; }
+button { font: inherit; cursor: pointer; }
+h1,h2,h3,h4 { margin: 0 0 .5em; letter-spacing: -.01em; text-wrap: balance; }
+p { margin: 0 0 1em; }
+a { color: inherit; text-decoration: none; }
+:where(a, button, select, input, textarea, [tabindex]):focus-visible { outline: 2px solid var(--teal-bright); outline-offset: 2px; }
+
+/* ================= planner chrome ================= */
+.app { display: grid; grid-template-rows: auto 1fr; height: 100%; }
+.topbar { display: flex; align-items: center; gap: 14px; padding: 10px 18px; padding-top: calc(10px + env(safe-area-inset-top, 0px)); border-bottom: 1px solid var(--chrome-line); background: var(--chrome); flex-wrap: wrap; }
+.topbar .mark { height: 26px; width: auto; filter: invert(1) brightness(1.6) sepia(.2); opacity: .95; }
+.topbar h1 { font-size: 1rem; font-weight: 600; margin: 0; }
+.topbar .sub { color: var(--chrome-soft); font-size: .82rem; }
+.topbar .grow { flex: 1; }
+.tb-btn { border: 1px solid var(--chrome-line); background: var(--chrome-2); color: var(--chrome-fg); border-radius: 999px; padding: 7px 14px; font-size: .86rem; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: background .15s; }
+.tb-btn:hover { background: #283834; }
+.tb-btn.is-on { background: var(--teal-deep); border-color: var(--teal); }
+.seg { display: inline-flex; border: 1px solid var(--chrome-line); border-radius: 999px; overflow: hidden; }
+.seg button { border: 0; background: transparent; color: var(--chrome-soft); padding: 7px 14px; font-size: .86rem; font-weight: 500; }
+.seg button.is-on { background: var(--teal-deep); color: #fff; }
+.save { font-size: .78rem; color: var(--chrome-soft); display: inline-flex; align-items: center; gap: 6px; min-width: 7em; }
+.save i { width: 8px; height: 8px; border-radius: 50%; background: var(--chrome-soft); }
+.save.is-saving i { background: #e8ca8f; } .save.is-saved i { background: var(--teal-bright); } .save.is-local i { background: #e6a19a; }
+
+.body { display: grid; grid-template-columns: 330px 1fr; min-height: 0; }
+.side { border-inline-end: 1px solid var(--chrome-line); overflow: auto; padding: 14px 12px 40px; background: var(--chrome); }
+.side h2 { font-size: .74rem; letter-spacing: .04em; color: var(--chrome-soft); font-weight: 700; margin: 10px 6px 8px; }
+.side .hint { font-size: .76rem; color: var(--chrome-soft); margin: 0 6px 12px; line-height: 1.5; }
+.pg { border: 1px solid var(--chrome-line); border-radius: 12px; margin-bottom: 10px; background: var(--chrome-2); }
+.pg.is-current { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal) inset; }
+.pg.is-over { outline: 2px dashed var(--teal-bright); outline-offset: -2px; }
+.pg-head { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 10px; cursor: pointer; }
+.pg-head .grip { cursor: grab; color: var(--chrome-soft); font-size: 1rem; line-height: 1; padding: 2px 4px; }
+.pg-head .t { flex: 1; min-width: 0; }
+.pg-head .t b { display: block; font-weight: 600; font-size: .92rem; }
+.pg-head .t small { color: var(--chrome-soft); font-size: .72rem; direction: ltr; display: inline-block; }
+.pg-head .n { font-size: .72rem; color: var(--chrome-soft); background: var(--chrome); border-radius: 999px; padding: 1px 8px; }
+.pg-head .nav-ck { display: inline-flex; align-items: center; gap: 4px; font-size: .7rem; color: var(--chrome-soft); }
+.pg-head .nav-ck input { accent-color: var(--teal-bright); margin: 0; }
+.pg-list { list-style: none; margin: 0; padding: 0 6px 6px; min-height: 14px; }
+.row { display: flex; align-items: center; gap: 6px; padding: 5px 6px; border-radius: 8px; font-size: .84rem; cursor: pointer; border: 1px solid transparent; }
+.row:hover { background: #283834; }
+.row.is-current { border-color: var(--teal); }
+.row.is-hidden { opacity: .45; text-decoration: line-through; }
+.row.is-dragging { opacity: .35; }
+.row.drop-before { box-shadow: 0 -2px 0 0 var(--teal-bright); }
+.row.drop-after { box-shadow: 0 2px 0 0 var(--teal-bright); }
+.row .grip { cursor: grab; color: var(--chrome-soft); padding: 0 2px; }
+.row .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip { display: inline-block; font-size: .64rem; font-weight: 700; letter-spacing: .02em; padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
+.chip.exists { background: var(--ok-bg); color: var(--ok); }
+.chip.new { background: var(--new-bg); color: var(--new); }
+.chip.changed { background: var(--chg-bg); color: var(--chg); }
+.chip.video { background: #e8e3f5; color: #4c3a8a; }
+.row .ar { display: none; gap: 2px; }
+.row:hover .ar, .row.is-current .ar { display: inline-flex; }
+.row .ar button { border: 0; background: transparent; color: var(--chrome-soft); padding: 0 3px; font-size: .8rem; line-height: 1; }
+.row .ar button:hover { color: #fff; }
+
+.main { overflow: auto; background: #0f1816; padding: 18px; scroll-behavior: smooth; }
+.frame { max-width: 1240px; margin: 0 auto; background: var(--cream); color: var(--ink); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px -30px rgba(0,0,0,.6); }
+.frame-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #e9e5da; border-bottom: 1px solid #d8d2c3; font-size: .78rem; color: #6a7370; }
+.frame-bar .dots span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-inline-end: 5px; background: #cdbfa8; }
+.frame-bar .dots span:nth-child(1){background:#e6a19a}.frame-bar .dots span:nth-child(2){background:#e8ca8f}.frame-bar .dots span:nth-child(3){background:#a7c7a0}
+.frame-bar .url { flex: 1; background: #fffdf8; border-radius: 999px; padding: 3px 12px; direction: ltr; text-align: left; font-family: ui-monospace, Consolas, monospace; }
+
+/* section wrapper + its toolbar */
+.sec { position: relative; }
+.sec.is-current { outline: 2px solid var(--teal-bright); outline-offset: -2px; }
+.sec-tools { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #16211f; color: #fff; padding: 6px 14px; font-size: .74rem; box-shadow: 0 6px 16px -10px rgba(0,0,0,.6); }
+.sec-tools .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 24ch; }
+.sec-tools button, .sec-tools select { border: 0; background: rgba(255,255,255,.1); color: #fff; border-radius: 999px; padding: 3px 8px; font-size: .74rem; line-height: 1.3; }
+.sec-tools button:hover { background: rgba(255,255,255,.22); }
+.sec-tools select { max-width: 10em; }
+.sec-tools select option { color: #000; }
+.sec-tools .grip { cursor: grab; background: transparent; padding: 0 4px; font-size: .9rem; }
+.view-mode .sec-tools, .view-mode .sec-why, .view-mode .sec-note { display: none; }
+.view-mode .sec.is-current { outline: none; }
+.view-mode .sec.is-hidden { display: none; }
+.sec.is-hidden > .site-sec { max-height: 120px; overflow: hidden; opacity: .35; filter: grayscale(1); }
+.sec.is-hidden::after { content: "מוסתר, לא ייבנה"; position: absolute; inset: 0; display: grid; place-items: center; font-weight: 700; color: var(--warn); background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(168,80,63,.07) 14px 28px); pointer-events: none; }
+.sec-why { margin: 0; padding: 8px 18px; font-size: .8rem; background: #fdf1d8; color: #6d4a10; border-block: 1px dashed #d8b36a; }
+.sec-why b { color: #4a3208; }
+.sec-note { display: flex; gap: 8px; align-items: center; padding: 6px 18px; background: #e9f3f1; border-bottom: 1px solid #cfe3df; font-size: .8rem; }
+.sec-note input { flex: 1; border: 1px solid #cfe3df; border-radius: 8px; padding: 5px 10px; font: inherit; font-size: .8rem; background: #fff; min-width: 0; }
+.sec-note input::placeholder { color: #8aa09b; }
+
+/* export dialog */
+dialog.export { border: 0; border-radius: 16px; padding: 0; width: min(760px, 92vw); max-height: 86vh; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-lg); }
+dialog.export::backdrop { background: rgba(10,20,18,.6); }
+.exp-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.exp-head h2 { font-size: 1.1rem; margin: 0; }
+.exp-body { padding: 16px 20px; }
+.exp-body textarea { width: 100%; height: 50vh; font: 13px/1.5 ui-monospace, Consolas, monospace; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--cream); direction: rtl; resize: vertical; }
+.exp-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 20px; border-top: 1px solid var(--line); }
+.btn-plain { border: 1px solid var(--line); background: var(--cream); color: var(--ink); border-radius: 999px; padding: 8px 16px; font-weight: 500; }
+.btn-teal { border: 1px solid var(--teal-deep); background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 8px 16px; font-weight: 600; }
+.toast { position: fixed; bottom: 18px; inset-inline-start: 50%; transform: translateX(50%); background: var(--teal-deep); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: .88rem; box-shadow: var(--shadow); opacity: 0; transition: opacity .25s; pointer-events: none; z-index: 50; }
+.toast.is-on { opacity: 1; }
+.side-toggle { display: none; }
+
+@media (max-width: 980px) {
+  .body { grid-template-columns: 1fr; }
+  .side { position: fixed; inset: 0; top: auto; max-height: 70vh; z-index: 40; border-top: 1px solid var(--chrome-line); transform: translateY(100%); transition: transform .25s; border-radius: 16px 16px 0 0; }
+  .side.is-open { transform: none; }
+  .side-toggle { display: inline-flex; }
+  .main { padding: 10px; }
+  .sec-tools .nm { max-width: 12ch; }
+  .sec-tools select { display: none; }
+}
+
+/* ================= site replica (orliclinic.com) ================= */
+.site { background: var(--cream); color: var(--ink); font-family: var(--sans); }
+.site .wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+.site .narrow { max-width: 780px; }
+.site .center { text-align: center; margin-inline: auto; }
+.site .display { font-weight: 400; line-height: 1.08; letter-spacing: -.02em; font-size: clamp(2.1rem, 4.6vw, 3.5rem); }
+.site .display .ital { color: var(--teal); }
+.site h1.display { font-size: clamp(2.4rem, 5.4vw, 4rem); }
+.site .display--page { font-size: clamp(2rem, 4vw, 2.9rem); }
+.site .display--sub { font-size: 1.7rem; }
+.site .display--sub .ital { color: var(--teal-deep); }
+.site .eyebrow { display: inline-block; font-size: .74rem; font-weight: 700; letter-spacing: .02em; color: var(--teal-deep); margin-bottom: 18px; }
+.site .eyebrow.light { color: #fff; }
+.site .lead { font-size: 1.16rem; color: var(--ink-soft); max-width: 34em; margin-top: 22px; }
+.site .section-lead { font-size: 1.12rem; color: var(--ink-soft); }
+.site .section-lead--intro { margin-top: 16px; max-width: 56ch; }
+.site .section-note { margin-top: 22px; color: var(--ink-soft); }
+.site .btn-dark, .site .btn-cream { display: inline-flex; align-items: center; justify-content: center; font: inherit; font-weight: 600; white-space: nowrap; border-radius: 999px; padding: 11px 22px; border: 1.5px solid transparent; transition: transform .16s ease, background .2s ease; }
+.site .btn-dark { background: var(--dark); color: #f6f3ec; }
+.site .btn-dark:hover { background: var(--teal-deep); transform: translateY(-2px); }
+.site .btn-cream { background: var(--cream); color: var(--dark); }
+.site .btn-cream:hover { transform: translateY(-2px); }
+.site .lg { padding: 15px 30px; font-size: 1.02rem; }
+.site .hero-link { font-weight: 600; color: var(--teal-deep); border-bottom: 1px solid rgba(10,93,90,.35); padding-bottom: 2px; }
+
+/* nav */
+.site .nav { background: rgba(247,245,239,.92); border-bottom: 1px solid var(--line); }
+.site .nav-pill { display: flex; align-items: center; gap: 24px; padding: 9px 0; }
+.site .brand-logo { display: block; height: 36px; width: auto; }
+.site .nav-links { display: flex; gap: 22px; flex: 1; justify-content: center; flex-wrap: wrap; }
+.site .nav-links a { color: var(--ink-soft); font-weight: 500; font-size: .93rem; }
+.site .nav-links a[aria-current] { color: var(--teal-deep); font-weight: 600; }
+.site .nav-links a:hover { color: var(--teal-deep); }
+
+/* hero */
+.site .hero { position: relative; overflow: hidden; padding: 64px 0 56px; background:
+  radial-gradient(closest-side at 80% 10%, rgba(20,184,166,.18), transparent 70%),
+  radial-gradient(closest-side at 20% 90%, rgba(20,184,166,.14), transparent 70%),
+  linear-gradient(120deg, #f7f5ef 35%, #cfe9e4 75%, #9fd3cb); }
+.site .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+.site .hero-actions, .site .page-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+.site .browser { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-lg); overflow: hidden; max-width: 380px; margin: 0 auto; }
+.site .browser-bar { display: flex; gap: 7px; padding: 12px 16px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
+.site .browser-bar span { width: 11px; height: 11px; border-radius: 50%; background: #cdbfa8; }
+.site .browser-bar span:nth-child(1){background:#e6a19a}.site .browser-bar span:nth-child(2){background:#e8ca8f}.site .browser-bar span:nth-child(3){background:#a7c7a0}
+
+/* sections */
+.site .section { padding: 70px 0; }
+.site .section.alt { background: var(--cream-2); }
+.site .section--tail { padding-block-end: 80px; }
+.site .page-head { padding-block: 64px 36px; }
+.site .section-head { max-width: 760px; margin: 0 auto 48px; text-align: center; }
+.site .section-head--start { text-align: start; margin-inline: 0; }
+.site .section-divider { height: 1px; background: var(--line); max-width: 220px; margin: 0 auto 40px; }
+.site .check-list { list-style: none; padding: 0; margin: 22px 0 0; display: grid; gap: 11px; }
+.site .check-list li { padding-inline-start: 28px; position: relative; color: var(--ink-soft); }
+.site .check-list li::before { content: "✓"; position: absolute; inset-inline-start: 0; color: var(--teal); font-weight: 800; }
+.site .check-list--center { justify-items: center; }
+.site .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.site .two > * { min-width: 0; }
+.site .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.site .four { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.site .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm); min-width: 0; }
+.site .card h3 { font-weight: 600; font-size: 1.1rem; margin-bottom: 8px; }
+.site .card p { color: var(--ink-soft); font-size: .94rem; margin: 0; }
+.site .card .more { display: inline-block; margin-top: 12px; font-weight: 600; color: var(--teal-deep); font-size: .9rem; }
+.site .card--teal { border-top: 4px solid var(--teal); }
+.site .card .ico { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: rgba(15,138,134,.12); color: var(--teal-deep); margin-bottom: 14px; }
+.site .card .ico svg { width: 20px; height: 20px; }
+.site .tag { display: inline-block; font-size: .68rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: rgba(15,138,134,.15); color: var(--teal-deep); margin-bottom: 10px; }
+.site .tag--soon { background: var(--cream-2); color: var(--ink-soft); border: 1px dashed var(--line); }
+
+/* comparison */
+.site .cmp-table { max-width: 900px; margin: 0 auto; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow); }
+.site .cmp-thead, .site .cmp-rows { display: grid; grid-template-columns: 1fr 1fr; }
+.site .cmp-th { padding: 16px 26px; text-align: center; font-size: .72rem; font-weight: 800; color: var(--ink-soft); }
+.site .cmp-th--with { color: var(--teal-deep); background: rgba(15,138,134,.06); border-inline-start: 1px solid var(--line); }
+.site .cmp-cell { display: flex; gap: 12px; padding: 16px 26px; border-top: 1px solid var(--line); font-size: .96rem; color: var(--ink-soft); }
+.site .cmp-cell.with { background: rgba(15,138,134,.06); border-inline-start: 1px solid var(--line); color: var(--ink); font-weight: 500; }
+.site .cmp-mark { font-weight: 800; }
+.site .cmp-cell.without .cmp-mark { color: #a8503f; } .site .cmp-cell.with .cmp-mark { color: var(--teal-deep); }
+
+/* ladder / roadmap */
+.site .ladder { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.site .rung { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; border-top: 4px solid var(--line); }
+.site .rung.done { border-top-color: var(--teal); }
+.site .rung.next { border-top-style: dashed; }
+.site .rung-tag { display: inline-block; font-size: .7rem; font-weight: 800; padding: 3px 11px; border-radius: 999px; margin-bottom: 14px; }
+.site .rung.done .rung-tag { background: rgba(15,138,134,.15); color: var(--teal-deep); }
+.site .rung.next .rung-tag { background: var(--cream-2); color: var(--ink-soft); border: 1px dashed var(--line); }
+.site .rung h3 { font-weight: 500; font-size: 1.15rem; }
+.site .rung p { color: var(--ink-soft); font-size: .93rem; margin: 0; }
+.site .ladder-note { text-align: center; max-width: 64ch; margin: 36px auto 0; color: var(--ink-soft); font-size: 1.08rem; }
+
+/* faq */
+.site .faq { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.site .faq-item { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-sm); overflow: hidden; }
+.site .faq-btn { width: 100%; display: flex; align-items: flex-start; gap: 16px; padding: 18px 22px; background: none; border: 0; text-align: start; }
+.site .faq-plus { flex: 0 0 auto; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--cream-2); font-size: 1.35rem; font-weight: 300; line-height: 1; transition: transform .4s; }
+.site .faq-item.open .faq-plus { transform: rotate(45deg); }
+.site .faq-q { flex: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding-top: 7px; }
+.site .faq-q > span:first-child { font-weight: 600; font-size: 1.02rem; }
+.site .faq-tag { margin-inline-start: auto; font-size: .64rem; font-weight: 700; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+.site .faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+.site .faq-item.open .faq-panel { grid-template-rows: 1fr; }
+.site .faq-panel-inner { overflow: hidden; }
+.site .faq-panel-inner p { color: var(--ink-soft); font-size: .96rem; max-width: 62ch; margin: 0; padding: 0 76px 20px 22px; }
+
+/* cta band + footer */
+.site .cta-band { background: linear-gradient(155deg, var(--teal-deep), #0e817d); color: #fff; padding: 74px 0; }
+.site .cta-band .display { color: #fff; } .site .cta-band .display .ital { color: #bff3ec; }
+.site .cta-lead { font-size: 1.14rem; max-width: 46ch; margin-inline: auto; }
+.site .cta-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 30px; }
+.site .footer { border-top: 1px solid var(--line); background: var(--cream-2); padding: 60px 0 30px; }
+.site .footer-inner { display: flex; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+.site .footer-brand { max-width: 300px; } .site .footer-brand p { color: var(--ink-soft); font-size: .94rem; margin-top: 12px; }
+.site .footer-cols { display: flex; gap: 48px; flex-wrap: wrap; }
+.site .footer-col { display: flex; flex-direction: column; gap: 10px; }
+.site .footer-col-h { font-size: .74rem; font-weight: 700; color: var(--ink-soft); margin: 0 0 4px; }
+.site .footer-col a { font-size: .94rem; }
+.site .footer-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
+
+/* ---- mocks shared by several sections ---- */
+.site .video-slot { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--dark); box-shadow: var(--shadow-lg); border: 1px solid #1c332f; }
+.site .video-slot video { display: block; width: 100%; height: auto; max-height: 560px; background: #000; }
+.site .video-slot .vs-cap { position: absolute; top: 10px; inset-inline-start: 10px; background: rgba(22,33,31,.85); color: #fff; font-size: .72rem; padding: 3px 10px; border-radius: 999px; }
+.site .video-slot--tall { max-width: 320px; margin-inline: auto; }
+.site .video-slot--tall video { max-height: none; }
+.site .video-empty { aspect-ratio: 16/9; display: grid; place-items: center; color: #9fb8b2; text-align: center; padding: 20px; background: repeating-linear-gradient(135deg, #16211f 0 16px, #1c2a27 16px 32px); }
+.site .video-empty b { display: block; color: #fff; font-size: 1.1rem; margin-bottom: 4px; }
+
+/* widget (patient side) mock, after the real widget's confirm step */
+.site .wg { padding: 20px 18px 18px; }
+.site .wg-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.site .wg-prog { display: flex; gap: 4px; } .site .wg-prog span { width: 22px; height: 4px; border-radius: 2px; background: var(--line); }
+.site .wg-prog span.on { background: var(--teal); }
+.site .wg-lang { font-size: .72rem; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--ink-soft); }
+.site .wg-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; }
+.site .wg-sum { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0 0 14px; font-size: .9rem; }
+.site .wg-sum dt { color: var(--ink-soft); } .site .wg-sum dd { margin: 0; font-weight: 600; }
+.site .wg-btn { background: var(--teal-deep); color: #fff; text-align: center; border-radius: 999px; padding: 11px; font-weight: 600; font-size: .95rem; }
+.site .wg-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0 14px; }
+.site .wg-slots span { text-align: center; padding: 8px 4px; border: 1px solid var(--line); border-radius: 999px; font-weight: 600; font-size: .9rem; background: var(--cream); font-variant-numeric: tabular-nums; }
+.site .wg-slots span.on { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+.site .wg-list { display: grid; gap: 8px; margin-bottom: 14px; }
+.site .wg-list div { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-weight: 600; font-size: .92rem; display: flex; justify-content: space-between; }
+.site .wg-list div small { color: var(--ink-soft); font-weight: 400; }
+.site .wg-list div.on { border-color: var(--teal); background: rgba(15,138,134,.08); }
+
+/* admin mock: sidebar + screen */
+.site .admin { display: grid; grid-template-columns: 200px 1fr; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg); min-height: 420px; font-size: .86rem; }
+.site .admin-side { background: #f1eee6; border-inline-end: 1px solid var(--line); padding: 14px 10px; }
+.site .admin-side .grp { font-size: .66rem; font-weight: 700; color: var(--ink-soft); margin: 12px 8px 4px; letter-spacing: .02em; }
+.site .admin-side a { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; color: var(--ink); font-size: .84rem; }
+.site .admin-side a.on { background: var(--teal-deep); color: #fff; }
+.site .admin-side a .soon { margin-inline-start: auto; font-size: .6rem; border: 1px dashed currentColor; border-radius: 999px; padding: 0 6px; opacity: .7; }
+.site .admin-main { padding: 18px 20px; min-width: 0; }
+.site .admin-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.site .admin-head h4 { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.site .admin-head .pills { display: flex; gap: 6px; }
+.site .pill { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: .74rem; background: var(--cream); }
+.site .pill.on { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
+.site .pill.ok { color: var(--teal-deep); border-color: rgba(15,138,134,.4); background: rgba(15,138,134,.08); }
+.site .pill.warn { color: #8a3b2c; border-color: #e3b1a6; background: #fbe6e1; }
+.site .pill.off { color: var(--ink-soft); }
+.site .dot-ok { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin-inline-end: 5px; }
+.site .dot-warn { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d9823f; margin-inline-end: 5px; }
+.site .admin-main .form { display: grid; gap: 10px; }
+.site .fld { display: grid; gap: 4px; }
+.site .fld label { font-size: .74rem; color: var(--ink-soft); font-weight: 600; }
+.site .fld .in { border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; background: var(--cream); font-size: .86rem; }
+.site .fld .in.ltr { direction: ltr; text-align: left; font-family: ui-monospace, Consolas, monospace; font-size: .8rem; }
+.site .sw { display: inline-flex; align-items: center; gap: 8px; font-size: .84rem; }
+.site .sw i { width: 30px; height: 17px; border-radius: 999px; background: #cfcabd; position: relative; display: inline-block; }
+.site .sw i::after { content: ""; position: absolute; top: 2px; inset-inline-start: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+.site .sw.on i { background: var(--teal); } .site .sw.on i::after { inset-inline-start: auto; inset-inline-end: 2px; }
+.site .tbl { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.site .tbl th { text-align: start; font-size: .7rem; color: var(--ink-soft); font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.site .tbl td { padding: 8px; border-bottom: 1px solid var(--cream-2); vertical-align: middle; }
+.site .tbl .num { font-variant-numeric: tabular-nums; text-align: end; }
+
+/* calendar week mock */
+.site .cal { display: grid; grid-template-columns: 44px repeat(5, 1fr); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: .72rem; background: #fff; }
+.site .cal > div { border-inline-end: 1px solid var(--cream-2); border-bottom: 1px solid var(--cream-2); min-height: 30px; position: relative; }
+.site .cal .h { background: var(--cream); font-weight: 700; text-align: center; padding: 5px 0; font-size: .74rem; }
+.site .cal .t { color: var(--ink-soft); text-align: center; font-variant-numeric: tabular-nums; padding-top: 4px; background: var(--cream); }
+.site .cal .ev { position: absolute; inset: 2px 3px; border-radius: 6px; padding: 2px 6px; background: #dcecea; border-inline-start: 3px solid var(--teal); font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.site .cal .ev.p2 { background: #efe3f7; border-inline-start-color: #8b5fbf; }
+.site .cal .ev.p3 { background: #fbe9d7; border-inline-start-color: #d9823f; }
+.site .cal .ev.queued { background: #fff3c4; border-inline-start-color: #c9982f; outline: 1px dashed #c9982f; }
+.site .cal .ev.span2 { bottom: -30px; }
+.site .cal .ev.drag { box-shadow: 0 8px 18px -8px rgba(0,0,0,.4); transform: rotate(-1.5deg); outline: 2px solid var(--teal); }
+
+/* chat mock (agent) */
+.site .chat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-lg); max-width: 400px; margin-inline: auto; overflow: hidden; }
+.site .chat-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--cream-2); border-bottom: 1px solid var(--line); }
+.site .chat-head img { width: 30px; height: 30px; border-radius: 50%; }
+.site .chat-head b { font-size: .92rem; } .site .chat-head small { display: block; color: var(--ink-soft); font-size: .72rem; }
+.site .chat-body { padding: 16px; display: grid; gap: 10px; font-size: .9rem; }
+.site .msg { max-width: 86%; padding: 9px 13px; border-radius: 14px; line-height: 1.45; }
+.site .msg.bot { background: var(--cream-2); border-start-start-radius: 4px; justify-self: start; }
+.site .msg.me { background: var(--teal-deep); color: #fff; border-start-end-radius: 4px; justify-self: end; }
+.site .msg .src { display: block; font-size: .68rem; color: var(--teal-deep); margin-top: 4px; }
+.site .msg.bot .cardlet { margin-top: 8px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: .84rem; }
+.site .msg.bot .cardlet b { display: block; }
+.site .chat-slots { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.site .chat-slots span { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; font-size: .8rem; background: #fff; font-variant-numeric: tabular-nums; }
+.site .chat-slots span.on { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
+.site .chat-in { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.site .chat-in span { flex: 1; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; color: var(--ink-soft); font-size: .86rem; }
+.site .chat-in i { width: 34px; height: 34px; border-radius: 50%; background: var(--teal-deep); }
+
+/* knowledge facts */
+.site .facts { display: grid; gap: 8px; }
+.site .fact { display: flex; align-items: flex-start; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: .88rem; }
+.site .fact .st { flex: 0 0 auto; font-size: .66rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; margin-top: 3px; }
+.site .fact .st.ok { background: rgba(15,138,134,.15); color: var(--teal-deep); }
+.site .fact .st.pend { background: #fbf1cf; color: #6d4a10; }
+.site .fact .st.no { background: #fbe6e1; color: #8a3b2c; text-decoration: none; }
+.site .fact.no span:last-child { text-decoration: line-through; color: var(--ink-soft); }
+.site .fact small { display: block; color: var(--ink-soft); font-size: .74rem; }
+
+/* email preview */
+.site .mail { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); max-width: 460px; margin-inline: auto; font-size: .9rem; }
+.site .mail-top { padding: 10px 16px; background: var(--cream); border-bottom: 1px solid var(--line); font-size: .78rem; color: var(--ink-soft); display: grid; gap: 2px; }
+.site .mail-top b { color: var(--ink); }
+.site .mail-body { padding: 20px 22px; }
+.site .mail-body .logo { height: 22px; margin-bottom: 14px; }
+.site .mail-body .mbtn { display: inline-block; background: var(--teal-deep); color: #fff; border-radius: 999px; padding: 9px 18px; font-weight: 600; font-size: .9rem; margin-top: 6px; }
+.site .mail-body .chipv { display: inline-block; background: #e7f1ef; color: var(--teal-deep); border-radius: 6px; padding: 0 6px; font-weight: 600; }
+.site .mail-foot { padding: 10px 22px; font-size: .74rem; color: var(--ink-soft); border-top: 1px solid var(--cream-2); }
+
+/* automation rule + sequence */
+.site .rule { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+.site .rule-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: .95rem; }
+.site .rule-row .in { border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; background: var(--cream); font-weight: 600; }
+.site .rule-meta { display: flex; gap: 14px; margin-top: 12px; font-size: .78rem; color: var(--ink-soft); flex-wrap: wrap; }
+.site .seq { display: grid; gap: 0; position: relative; margin-top: 10px; }
+.site .seq-step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; padding-bottom: 16px; position: relative; }
+.site .seq-step::before { content: ""; position: absolute; inset-inline-start: 16px; top: 34px; bottom: 0; width: 2px; background: var(--line); }
+.site .seq-step:last-child::before { display: none; }
+.site .seq-step .n { width: 34px; height: 34px; border-radius: 50%; background: var(--teal-deep); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: .84rem; }
+.site .seq-step .n.wait { background: var(--cream-2); color: var(--ink-soft); border: 1px dashed var(--ink-soft); font-size: .7rem; }
+.site .seq-step b { display: block; } .site .seq-step small { color: var(--ink-soft); }
+.site .timeline { display: flex; align-items: center; gap: 0; margin: 20px 0 6px; }
+.site .timeline .tl { flex: 1; text-align: center; position: relative; font-size: .8rem; }
+.site .timeline .tl::before { content: ""; display: block; height: 3px; background: var(--line); margin-bottom: 10px; }
+.site .timeline .tl i { position: absolute; top: -5px; inset-inline-start: calc(50% - 7px); width: 13px; height: 13px; border-radius: 50%; background: var(--surface); border: 3px solid var(--teal); }
+.site .timeline .tl.mail i { background: var(--teal); }
+.site .timeline .tl b { display: block; }
+
+/* analytics */
+.site .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.site .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+.site .kpi .l { font-size: .74rem; color: var(--ink-soft); font-weight: 600; }
+.site .kpi .v { font-size: 1.7rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.site .kpi .d { font-size: .74rem; font-variant-numeric: tabular-nums; } .site .kpi .d.up { color: var(--teal-deep); } .site .kpi .d.down { color: #8a3b2c; }
+.site .charts { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; margin-top: 14px; }
+.site .chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+.site .chart h5 { margin: 0 0 10px; font-size: .84rem; font-weight: 700; }
+.site .chart svg { width: 100%; height: auto; display: block; }
+.site .chart .lg { display: flex; gap: 12px; font-size: .72rem; color: var(--ink-soft); padding: 0; margin-top: 6px; }
+.site .chart .lg i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-inline-end: 4px; vertical-align: -1px; }
+.site .bars { display: grid; gap: 7px; font-size: .8rem; }
+.site .bars div { display: grid; grid-template-columns: 9em 1fr 2.5em; align-items: center; gap: 8px; }
+.site .bars div i { display: block; height: 10px; border-radius: 0 4px 4px 0; background: var(--teal); }
+.site .bars div span:last-child { text-align: end; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+.site .heat { display: grid; grid-template-columns: 2.2em repeat(12, 1fr); gap: 3px; font-size: .66rem; color: var(--ink-soft); }
+.site .heat .hh { text-align: center; } .site .heat .hd { line-height: 14px; }
+.site .heat .c { height: 14px; border-radius: 3px; background: var(--teal); }
+.site .illus { font-size: .74rem; color: var(--ink-soft); margin-top: 12px; }
+
+/* process steps */
+.site .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: s; }
+.site .steps li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; counter-increment: s; position: relative; min-width: 0; }
+.site .steps li::before { content: counter(s, decimal-leading-zero); display: inline-block; font-size: .72rem; font-weight: 800; color: var(--teal-deep); margin-bottom: 8px; }
+.site .steps li h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+.site .steps li p { color: var(--ink-soft); font-size: .92rem; margin: 0; }
+.site .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.site .flow .st { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; position: relative; min-width: 0; }
+.site .flow .st b { display: block; margin-bottom: 4px; }
+.site .flow .st small { color: var(--ink-soft); font-size: .84rem; display: block; }
+.site .flow .st .ic { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; margin-bottom: 10px; background: rgba(15,138,134,.12); color: var(--teal-deep); font-weight: 800; }
+.site .flow .st.bad .ic { background: #fbe6e1; color: #8a3b2c; }
+.site .code { background: #0c1a17; color: #d6e8e3; border-radius: var(--radius); padding: 18px 22px; direction: ltr; text-align: left; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .86rem; line-height: 1.7; overflow-x: auto; border: 1px solid #1c332f; }
+.site .code .c-tag { color: #f5a3b0; } .site .code .c-attr { color: #4fd6c6; } .site .code .c-str { color: #f2cf7a; } .site .code .c-com { color: #6a8a84; }
+.site .swatches { display: flex; gap: 10px; margin: 14px 0; }
+.site .swatches span { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); box-shadow: var(--shadow-sm); }
+.site .bell { position: relative; display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--cream-2); border: 1px solid var(--line); }
+.site .bell i { position: absolute; top: -4px; inset-inline-end: -4px; min-width: 18px; height: 18px; border-radius: 999px; background: #c9412a; color: #fff; font-size: .68rem; font-weight: 800; display: grid; place-items: center; padding: 0 5px; font-style: normal; }
+.site .notif { display: grid; gap: 6px; }
+.site .notif div { display: flex; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: .84rem; }
+.site .notif div small { margin-inline-start: auto; color: var(--ink-soft); white-space: nowrap; font-size: .72rem; }
+.site .notif .k { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--teal); }
+.site .notif .k.cb { background: #d9823f; } .site .notif .k.q { background: #c9982f; } .site .notif .k.x { background: #a8503f; }
+.site .legal-todo { font-size: .88em; font-weight: 600; background: #fdf1d8; color: #6d4a10; border: 1px dashed #9d7524; border-radius: 6px; padding: 1px 8px; white-space: nowrap; }
+.site .notice-banner { background: var(--cream-2); border: 1px dashed var(--ink-soft); border-radius: var(--radius); padding: 16px 20px; margin: 0 0 32px; font-size: .92rem; }
+.site .quote { font-size: 1.3rem; line-height: 1.4; color: var(--ink); max-width: 30ch; }
+.site .quote::before { content: "״"; color: var(--teal); }
+.site .stat-line { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 24px; }
+.site .stat-line div b { display: block; font-size: 1.6rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.site .stat-line div small { color: var(--ink-soft); font-size: .84rem; }
+
+@media (max-width: 920px) {
+  .site .hero-grid, .site .two, .site .three, .site .four, .site .charts, .site .flow { grid-template-columns: 1fr; }
+  .site .kpis, .site .ladder { grid-template-columns: 1fr 1fr; }
+  .site .steps { grid-template-columns: 1fr; }
+  .site .admin { grid-template-columns: 1fr; } .site .admin-side { display: flex; flex-wrap: wrap; gap: 4px; } .site .admin-side .grp { display: none; }
+  .site .cmp-thead { display: none; } .site .cmp-rows { grid-template-columns: 1fr; }
+  .site .section { padding: 48px 0; }
+  .site .nav-links { display: none; }
+  .site .hero-actions { display: none; }
+  .site .heat { grid-template-columns: 2.2em repeat(12, 1fr); }
+  .site .faq-panel-inner p { padding-inline: 22px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<div class="app" dir="rtl" lang="he">
+  <div class="topbar">
+    <img class="mark" src="media/orli-wordmark-he.png" alt="אורלי">
+    <div><h1>תוכנית האתר</h1><div class="sub">הצעה לעמודים ולסקשנים של orliclinic.com · גררו, הזיזו, הסתירו, כתבו הערות</div></div>
+    <span class="grow"></span>
+    <button class="tb-btn side-toggle" type="button" id="sideToggle">מפת האתר</button>
+    <div class="seg" role="group" aria-label="מצב תצוגה"><button type="button" id="modeEdit" class="is-on">עריכה</button><button type="button" id="modeView">תצוגה כאתר</button></div>
+    <button class="tb-btn" type="button" id="exportBtn">ייצוא</button>
+    <button class="tb-btn" type="button" id="resetBtn">איפוס להצעה</button>
+    <span class="save is-saving" id="save"><i></i><span>טוען…</span></span>
+  </div>
+  <div class="body">
+    <aside class="side" id="side" aria-label="מפת האתר">
+      <h2>מפת האתר</h2>
+      <p class="hint">כל קבוצה היא עמוד. גררו שורה כדי לשנות את הסדר או להעביר לעמוד אחר, או השתמשו בחיצים. סימון "תפריט" קובע אם העמוד מופיע בניווט הראשי. הצבע: <span class="chip exists">קיים</span> באתר היום, <span class="chip new">חדש</span> מוצע, <span class="chip changed">לעדכן</span> קיים אבל משתנה.</p>
+      <div id="pages"></div>
+    </aside>
+    <main class="main" id="main">
+      <div class="frame">
+        <div class="frame-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url" id="frameUrl">orliclinic.com/</span></div>
+        <div id="page"></div>
+      </div>
+    </main>
+  </div>
+</div>
+<!-- ============ index.html ============ -->
+<template data-sec="hero" data-title="פתיח (Hero)" data-status="changed" data-why="הכותרת והמנגנון נשארים: ׳קביעת פגישה באתר, בלחיצת כפתור׳. מה שמשתנה: שורת הלֶד מזכירה בחצי משפט שאורלי גם עונה וגם מזכירה, ושורת אמון קצרה מתחת לכפתורים (אופטימה, שתי שפות, עובד גם בתקלה). הסיפור הראשי נשאר קביעה עצמית, כי זה מה שמרפאה קונה קודם.">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">תוסף למרפאות שעובדות עם אופטימה</p>
+      <h1 class="display">קביעת פגישה באתר, <span class="ital">בלחיצת כפתור.</span></h1>
+      <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את הפגישה ישר באופטימה. ואם הוא שואל קודם, או שוכח לחזור, אורלי עונה ומזכירה. אותו יומן, עכשיו עובד גם כשהמרפאה סגורה.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-dark lg">לקביעת דמו</a>
+        <a href="#" class="hero-link">צפו איך זה עובד</a>
+      </div>
+      <ul class="check-list" style="display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:26px;font-size:.88rem">
+        <li>נכתב ישר לאופטימה</li>
+        <li>עברית ואנגלית</li>
+        <li>עובד גם כשאופטימה לא זמינה</li>
+        <li>קל להטמעה</li>
+      </ul>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="browser">
+        <div class="browser-bar"><span></span><span></span><span></span></div>
+        <div class="wg">
+          <div class="wg-top"><span class="wg-lang">עב</span><div class="wg-prog"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div></div>
+          <div class="wg-title">אישור הפגישה</div>
+          <dl class="wg-sum">
+            <dt>טיפול</dt><dd>ייעוץ</dd>
+            <dt>מטפל/ת</dt><dd>ד"ר כהן</dd>
+            <dt>תאריך ושעה</dt><dd>יום ראשון, 6 בספטמבר · 10:30</dd>
+            <dt>שם מלא</dt><dd>ישראל ישראלי</dd>
+            <dt>טלפון</dt><dd>050-123-4567</dd>
+            <dt>אימייל</dt><dd>demo@orliclinic.com</dd>
+          </dl>
+          <div class="wg-btn">שלח קוד לאימות</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bridge" data-title="מהאתר ישר ליומן (הסרטון הקצר)" data-status="exists" data-why="הסקשן הקיים: המסע של המטופל מהכפתור באתר ועד הפגישה ביומן האופטימה, בפריים אחד שמתנגן. נשאר כמו שהוא. כאן מצויר סטטי.">
+<section class="section" style="padding-bottom:0">
+  <div class="wrap narrow">
+    <div class="section-head" style="margin-bottom:22px">
+      <h2 class="display">מהאתר של המרפאה, <span class="ital">ישר ליומן.</span></h2>
+      <p class="section-lead">הווידג׳ט יושב באתר המרפאה, בפינה, כמו כפתור צ׳אט. המטופל לוחץ, בוחר שעה, ואצלכם זה פשוט מופיע באופטימה.</p>
+    </div>
+  </div>
+  <div class="wrap two" style="max-width:900px;align-items:stretch">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="browser-bar" style="display:flex;gap:7px;padding:10px 14px;background:var(--cream-2);border-bottom:1px solid var(--line)"><span style="width:9px;height:9px;border-radius:50%;background:#c9c2b2"></span><span style="width:9px;height:9px;border-radius:50%;background:#c9c2b2"></span><span style="width:9px;height:9px;border-radius:50%;background:#c9c2b2"></span><i style="margin-inline-start:auto;font-style:normal;font-size:.74rem;color:var(--ink-soft);direction:ltr">clinic.co.il · 22:40</i></div>
+      <div style="padding:16px;display:grid;gap:9px;position:relative;min-height:300px">
+        <div style="height:16px;width:50%;border-radius:999px;background:var(--cream-2)"></div>
+        <div style="height:9px;width:70%;border-radius:999px;background:var(--cream-2)"></div>
+        <div style="height:64px;border-radius:10px;background:linear-gradient(135deg,var(--cream-2),#d4e8e4)"></div>
+        <div style="height:9px;width:70%;border-radius:999px;background:var(--cream-2)"></div>
+        <div style="height:9px;width:40%;border-radius:999px;background:var(--cream-2)"></div>
+        <div style="position:absolute;inset-inline-end:14px;bottom:70px;width:220px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)">
+          <div class="wg-title" style="font-size:.95rem;margin-bottom:2px">בחרו שעה</div>
+          <div style="font-size:.76rem;color:var(--ink-soft)">יום ראשון, 6 בספטמבר</div>
+          <div class="wg-slots" style="grid-template-columns:1fr 1fr;margin:8px 0"><span>09:30</span><span class="on">10:30</span><span>12:00</span><span>14:00</span></div>
+          <div class="wg-btn" style="padding:8px;font-size:.84rem">אישור הזמנה</div>
+        </div>
+        <div style="position:absolute;inset-inline-end:14px;bottom:14px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e0e0e0;border-radius:999px;padding:7px 14px;box-shadow:0 6px 20px rgba(0,0,0,.12);font-size:.84rem;font-weight:600"><span style="color:var(--teal)">▣</span>לקביעת פגישה</div>
+      </div>
+    </div>
+    <div class="card" style="padding:16px">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:6px"><strong>היומן באופטימה</strong><span style="color:var(--ink-soft);font-size:.86rem">יום ראשון 6.9 · ד"ר כהן</span></div>
+      <div class="cal" style="grid-template-columns:44px 1fr;border:0">
+        <div class="t">09:00</div><div><span class="ev" style="position:static;display:block">ניקוי שיניים · רונית לוי</span></div>
+        <div class="t">09:30</div><div></div>
+        <div class="t">10:00</div><div><span class="ev" style="position:static;display:block">ייעוץ · יוסי מזרחי</span></div>
+        <div class="t">10:30</div><div><span class="ev" style="position:static;display:block;background:rgba(15,138,134,.18);border-inline-start-color:var(--teal-deep);color:var(--teal-deep)">⊕ ייעוץ · ישראל ישראלי</span></div>
+        <div class="t">11:00</div><div><span class="ev p3" style="position:static;display:block">ביקורת · דנה כהן</span></div>
+        <div class="t">11:30</div><div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="demo" data-title="דמו: הווידג׳ט החי (6 שלבים)" data-status="exists" data-why="הסקשן הקיים עם הווידג׳ט האמיתי שנגלל שלב-שלב. נשאר. כאן מצוירים השלבים ליד פריים אחד (שלב 3, בחירת שעה).">
+<section class="section">
+  <div class="wrap">
+    <div class="section-divider"></div>
+    <div class="section-head">
+      <p class="eyebrow">דמו מהיר</p>
+      <h2 class="display">צפו בפגישה נקבעת <span class="ital">תוך שניות.</span></h2>
+      <p class="section-lead">נסו את התוסף בעצמכם. בדיוק כמו שהמטופלים שלכם היו עושים.</p>
+    </div>
+    <div class="two" style="align-items:start">
+      <ol class="steps" style="grid-template-columns:1fr;gap:10px">
+        <li><h3>בחירת מטפל וטיפול</h3><p>המטופל נכנס לאתר שלכם, בוחר מטפל ואז טיפול. הרשימה מגיעה בזמן אמת מאופטימה.</p></li>
+        <li><h3>בחירת יום</h3><p>אורלי מציגה רק ימים עם זמינות אמיתית, לפי השעות והימים החופשיים של כל רופא.</p></li>
+        <li style="border-color:var(--teal)"><h3>בחירת שעה</h3><p>השעות הפנויות לאותו יום מופיעות מיד, ישירות מהיומן המעודכן.</p></li>
+        <li><h3>מי קובע את הפגישה</h3><p>שם, טלפון ואימייל, פעם אחת. מטופל חוזר מזוהה לפי האימייל ורואה את הכרטיס שלו.</p></li>
+        <li><h3>אימות בקוד</h3><p>קוד מהיר לאימייל מאמת את המטופל ממש לפני שאורלי קובעת משהו.</p></li>
+        <li><h3>נכתב לאופטימה</h3><p>הפגישה נוחתת ביומן האמיתי שלכם והמטופל מקבל אישור עם קישור לשינוי או ביטול.</p></li>
+      </ol>
+      <div class="browser" style="max-width:420px;position:sticky;top:12px">
+        <div class="wg">
+          <div class="wg-top"><span class="wg-lang">EN</span><div class="wg-prog"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div></div>
+          <div class="wg-title">בחרו שעה</div>
+          <div style="font-size:.84rem;color:var(--ink-soft);margin-bottom:6px">יום ראשון, 6 בספטמבר · ד"ר כהן · ייעוץ</div>
+          <div class="wg-slots"><span>09:00</span><span>09:30</span><span class="on">10:30</span><span>12:00</span><span>14:00</span><span>16:30</span></div>
+          <div class="wg-btn">המשך</div>
+          <p style="font-size:.74rem;color:var(--ink-soft);margin:12px 0 0;text-align:center">‹ חזרה · השעות מגיעות מהיומן באופטימה</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="overview" data-title="מה אורלי כוללת (8 כרטיסים)" data-status="new" data-why="הצומת של האתר: אחרי שהמבקר הבין את המנגנון, כרטיס אחד לכל יכולת, כל אחד מוביל לעמוד העומק שלו. היום האתר מראה רק קביעה עצמית; סעיפים 1–11 ב-product/features.md (v1.7.0) נותנים הרבה יותר.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">מה בפנים</p>
+      <h2 class="display">שמונה דברים שאורלי עושה <span class="ital">בשבילכם.</span></h2>
+      <p class="section-lead">אורלי יושבת על היומן שכבר עובד אצלכם, ומוסיפה לו את מה שחסר למרפאה שרוצה שהמטופלים יסתדרו לבד.</p>
+    </div>
+    <div class="four">
+      <div class="card card--teal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><h3>קביעת פגישות באתר</h3><p>מטפל, טיפול, יום, שעה, קוד לאימייל. פחות מדקה, בכל שעה, ישר לאופטימה.</p><a href="#" class="more">צפו בדמו ›</a></div>
+      <div class="card card--teal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z"/></svg></div><h3>סוכן AI שעונה וקובע, 24/7</h3><p>יודע את מה שהמרפאה יודעת, ומעביר את המטופל משאלה לפגישה ביומן.</p><a href="#" class="more" data-goto="chatbot">לעמוד הסוכן ›</a></div>
+      <div class="card card--teal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg></div><h3>תזכורות שמחזירות מטופלים</h3><p>כל N חודשים לכל טיפול, או סדרת טיפול שלב אחרי שלב. במייל, עם קישור לקביעה בלחיצה.</p><a href="#" class="more" data-goto="automations">לעמוד האוטומציות ›</a></div>
+      <div class="card card--teal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><h3>נתונים על המרפאה</h3><p>פגישות, ביטולים, הגעה, ביקוש לפי יום ושעה, הטיפולים המבוקשים, מול התקופה הקודמת.</p><a href="#" class="more" data-goto="analytics">לעמוד הנתונים ›</a></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><h3>מסך ניהול למרפאה</h3><p>יומן שבועי, מטפלים ושעות, טיפולים ומחירים, משתמשים. הכול במקום אחד, בלי מתכנת.</p><a href="#" class="more" data-goto="panel">למסך הניהול ›</a></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M8 12h8"/></svg></div><h3>בעיצוב שלכם</h3><p>צבעים, לוגו, גופן ופינות, ומיילים בנוסח שלכם, עם תצוגה מקדימה. בלי לגעת בקוד.</p><a href="#" class="more" data-goto="integration">להתאמה אישית ›</a></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><h3>עדכונים לצוות</h3><p>פעמון במסך הניהול ומייל למרפאה: פגישות חדשות, ביטולים, פניות שמחכות, ומה שאופטימה עוד לא קלטה.</p><a href="#" class="more" data-goto="panel">איך זה נראה ›</a></div>
+      <div class="card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>אמינות מול אופטימה</h3><p>כותבת ישר ליומן, לא מכפילה מטופלים, ומחזיקה עותק של היומן כך שגם בתקלה קובעים.</p><a href="#" class="more" data-goto="reliability">לעמוד האמינות ›</a></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="film" data-title="סרטון המכירה (25 שניות)" data-status="video" data-why="הסרטון הקיים מ-orli-outreach/videos/booking-film: מרפאה שמפסידה מטופלים, מטופל שקובע לבד, הפגישה נוחתת באופטימה, ׳פחות טלפונים, יותר מטופלים׳. אנכי, 1080×1920. מתאים גם לשיתוף. מנגן כאן בפועל.">
+<section class="section">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">25 שניות</p>
+      <h2 class="display">פחות טלפונים, <span class="ital">יותר מטופלים.</span></h2>
+      <p class="section-lead">כמה מטופלים ניסו לקבוע אצלכם השבוע, ולא הצליחו? עם אורלי הם קובעים בעצמם מהאתר שלכם, בכל שעה, והפגישה נכנסת ישר לאופטימה. בלי הקלדה, בלי טלפונים חוזרים.</p>
+      <ul class="check-list">
+        <li>שעות אמיתיות מהיומן, לא טופס ״נחזור אליכם״</li>
+        <li>פגישה מהאתר נראית באופטימה כמו פגישה מהטלפון</li>
+        <li>המטופל מקבל אישור, ומשנה או מבטל בעצמו</li>
+      </ul>
+    </div>
+    <div class="video-slot video-slot--tall">
+      <span class="vs-cap">orli-booking-film.mp4</span>
+      <video controls preload="metadata" poster="media/orli-booking-film-poster.jpg" src="media/orli-booking-film.mp4"></video>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="agent-teaser" data-title="טיזר: סוכן ה-AI" data-status="new" data-why="הסוכן עובר מ׳בקרוב׳ ל׳זמין׳ (features.md §2, חבילת ai). בדף הבית: שיחה אחת קצרה ושלוש נקודות; העומק בעמוד סוכן AI. ברגע שהסוכן חי, זה הטיעון החזק ביותר של אורלי מול ׳עוד יומן אונליין׳.">
+<section class="section alt">
+  <div class="wrap two">
+    <div class="chat">
+      <div class="chat-head"><img src="media/favicon-64.png" alt=""><div><b>אורלי · העוזרת של המרפאה</b><small>עונה מתוך המידע שהמרפאה אישרה</small></div></div>
+      <div class="chat-body">
+        <div class="msg bot">שלום! אני אורלי, העוזרת של המרפאה. איך אפשר לעזור?</div>
+        <div class="msg me">מה כולל ייעוץ ראשוני?</div>
+        <div class="msg bot">פגישת היכרות של כחצי שעה: בודקים, שומעים מה חשוב לכם, ובסוף מקבלים תוכנית טיפול והצעת מחיר.<span class="src">מתוך דף ״ייעוץ ראשוני״ באתר המרפאה</span><div class="cardlet"><b>ייעוץ ראשוני · 30 דק׳</b>ד"ר כהן</div>רוצים שאבדוק מתי יש מקום פנוי השבוע?</div>
+        <div class="msg me">כן, אחרי 16:00 אם אפשר</div>
+        <div class="msg bot">אלה השעות הפנויות אצל ד"ר כהן ביום רביעי, 23 בספטמבר:<div class="chat-slots"><span>16:00</span><span class="on">16:30</span><span>17:30</span></div></div>
+        <div class="msg bot">הפגישה נקבעה. אישור נשלח לאימייל.</div>
+      </div>
+      <div class="chat-in"><span>כתבו הודעה…</span><i></i></div>
+    </div>
+    <div>
+      <p class="eyebrow">סוכן AI</p>
+      <h2 class="display">שאלה שנענית, <span class="ital">פגישה שנקבעת.</span></h2>
+      <p class="section-lead">מטופל ששואל מה כולל הטיפול או כמה הוא עולה לא תמיד מרים טלפון. אורלי עונה לו במילים של המרפאה, מציעה מועד פנוי באותה שיחה, וכשהרשיתם לה, קובעת.</p>
+      <ul class="check-list">
+        <li>עונה רק ממה שאישרתם. לא ממציאה מחיר, שעה או כתובת</li>
+        <li>מעבירה לצוות בנושאים שסימנתם, עם שם, טלפון והשיחה כולה</li>
+        <li>פגישה מהצ׳אט עוברת אותו אימות בקוד ונכנסת לאופטימה כמו כל פגישה</li>
+      </ul>
+      <p class="page-actions"><a href="#" class="btn-dark" data-goto="chatbot">איך הסוכן עובד</a></p>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="auto-teaser" data-title="טיזר: תזכורות ואוטומציות" data-status="new" data-why="features.md §6: תזכורות ׳כל N חודשים לטיפול X׳ וסדרות טיפול, במייל עם קישור לקביעה בלחיצה. זה הערך שמביא הכנסה חוזרת, אז הוא מקבל מקום בדף הבית ועמוד משלו.">
+<section class="section">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">אוטומציות</p>
+      <h2 class="display">המטופלים חוזרים <span class="ital">בדיוק בזמן.</span></h2>
+      <p class="section-lead">לכל טיפול יש קצב משלו. אורלי יודעת מתי הגיע הזמן לביקור הבא ושולחת למטופל מייל בנוסח שלכם, עם קישור שפותח את היומן כבר מסונן לטיפול הנכון. בלי שמישהו במרפאה צריך לזכור.</p>
+      <ul class="check-list">
+        <li>כלל פשוט: כל 6 חודשים, למי שעבר ניקוי שיניים</li>
+        <li>סדרת טיפול: אחרי 4 שבועות הזמנה לשלב הבא, ואחרי 6 שבועות לשלב שאחריו</li>
+        <li>נשלח רק למי שביקש תזכורת בקביעה, עם קישור להסרה בכל מייל. בעמוד הנתונים רואים כמה נשלחו וכמה קבעו</li>
+      </ul>
+      <p class="page-actions"><a href="#" class="btn-dark" data-goto="automations">איך מגדירים תזכורת</a></p>
+    </div>
+    <div>
+      <div class="rule">
+        <div class="rule-row">לתזכר לגבי <span class="in">ניקוי שיניים</span> כל <span class="in">6</span> <span class="in">חודשים</span></div>
+        <div class="rule-meta"><span class="dot-ok"></span><span>פעיל</span><span>ניקוי שיניים כל 6 חודשים</span><span>עריכת תבנית המייל</span></div>
+        <div class="timeline">
+          <div class="tl"><i></i><b>ביקור</b>12 במרץ</div>
+          <div class="tl"><i></i>3 חודשים</div>
+          <div class="tl mail"><i></i><b>מייל</b>12 בספטמבר</div>
+          <div class="tl"><i></i><b>פגישה</b>נקבעה מהקישור</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="data-teaser" data-title="טיזר: נתונים (תצוגה מקדימה של הדשבורד)" data-status="new" data-why="features.md §9: עמוד נתונים במסך הניהול. בדף הבית: שלושה מספרים ובר אחד, כולם מסומנים כנתוני הדגמה. היום panel.html מצייר ׳נתונים׳ ככרטיס בקרוב; צריך להחליף.">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi"><div class="l">פגישות שנקבעו</div><div class="v">184</div><div class="d">▲ 23% לעומת 30 הימים שלפני</div></div>
+        <div class="kpi"><div class="l">שעות יומן שמולאו</div><div class="v">112</div><div class="d">▲ 18% לעומת 30 הימים שלפני</div></div>
+        <div class="kpi"><div class="l">ביטולים</div><div class="v">7</div><div class="d">▼ 36% לעומת 30 הימים שלפני</div></div>
+      </div>
+      <div class="chart" style="margin-top:14px"><h5>מאיפה הגיעו ההזמנות</h5>
+        <div class="bars">
+          <div><span>טופס הזמנה באתר</span><i style="width:88%"></i><span>121</span></div>
+          <div><span>צ׳אטבוט</span><i style="width:34%"></i><span>47</span></div>
+          <div><span>הצוות ביומן</span><i style="width:12%"></i><span>16</span></div>
+        </div>
+        <p class="illus">נתוני הדגמה, לא של מרפאה אמיתית.</p>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow">נתונים</p>
+      <h2 class="display">רואים מה קורה, <span class="ital">לא מנחשים.</span></h2>
+      <p class="section-lead">כמה פגישות נקבעו מהאתר, באילו שעות המטופלים באמת קובעים, אילו טיפולים מבוקשים, וכמה מהשאלות לסוכן הפכו לפגישה. כל מספר מול התקופה הקודמת.</p>
+      <p class="page-actions"><a href="#" class="btn-dark" data-goto="analytics">לעמוד הנתונים</a></p>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="compare" data-title="לפני ואחרי (טבלת השוואה)" data-status="changed" data-why="הטבלה הקיימת עם שלוש השורות, ועוד שתיים: שאלות בערב (הסוכן) ומטופלים שלא חוזרים (התזכורות). כל שורה עדיין חוזרת לאותה עובדה: אורלי קוראת וכותבת את היומן שהצוות כבר עובד בו.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">לפני ואחרי</p>
+      <h2 class="display">אותה מרפאה, <span class="ital">אותו יומן.</span></h2>
+    </div>
+    <div class="cmp-table">
+      <div class="cmp-thead"><div class="cmp-th">בלי אורלי</div><div class="cmp-th cmp-th--with">עם אורלי</div></div>
+      <div class="cmp-rows">
+        <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>מתקשרים רק בשעות הפעילות, ואחריהן תא קולי</span></div>
+        <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>קובעים אונליין בפחות מדקה, בכל שעה</span></div>
+        <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>המזכירה רושמת כל פגישה ומקלידה אותה ידנית</span></div>
+        <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>הפגישה נכנסת ישירות לאופטימה, בלי הקלדה</span></div>
+        <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>כל שינוי מועד = עוד שיחה ועוד עריכה ידנית</span></div>
+        <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>מטופלים משנים ומבטלים בעצמם</span></div>
+        <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>״כמה עולה?״ ב-22:00 נשאר בלי תשובה, והמטופל ממשיך לחפש</span></div>
+        <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>סוכן AI שעונה על שאלות וקובע פגישות</span></div>
+        <div class="cmp-cell without"><span class="cmp-mark">✕</span><span>מטופל שסיים טיפול נעלם עד שייזכר בעצמו</span></div>
+        <div class="cmp-cell with"><span class="cmp-mark">✓</span><span>תזכורת בזמן הנכון, עם קישור לקביעה בלחיצה</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="outage-teaser" data-title="עובד גם כשאופטימה לא" data-status="new" data-why="features.md §1 ו-§11: בתקלה באופטימה אורלי ממשיכה להציע שעות מהעותק שלה, שומרת את הפגישה וכותבת אותה כשאופטימה חוזרת. זו תשובה לחשש אמיתי של מרפאות, וראויה לארבעה צעדים בדף הבית ועמוד אמינות משלה.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">אמינות</p>
+      <h2 class="display">עובד גם כשאופטימה <span class="ital">לא.</span></h2>
+      <p class="section-lead">אופטימה לפעמים לא זמינה. המטופלים שלכם לא צריכים לדעת את זה.</p>
+    </div>
+    <div class="flow">
+      <div class="st bad"><div class="ic">!</div><b>אופטימה נופלת</b><small>אורלי מזהה את התקלה אוטומטית ועוברת למצב המתנה.</small></div>
+      <div class="st"><div class="ic">1</div><b>השעות עדיין מוצגות</b><small>מהעותק של היומן שאורלי שומרת כל שעה וכל לילה.</small></div>
+      <div class="st"><div class="ic">2</div><b>הפגישה נשמרת</b><small>המטופל מקבל אישור כרגיל. הפגישה מחכה בתור, מסומנת במסך הניהול.</small></div>
+      <div class="st"><div class="ic">3</div><b>נכתבת כשאופטימה חוזרת</b><small>הקרובה קודם. אם השעה נתפסה בינתיים, המרפאה מקבלת הודעה.</small></div>
+    </div>
+    <p class="ladder-note"><a href="#" data-goto="reliability" style="color:var(--teal-deep);font-weight:600">איך זה עובד מאחורי הקלעים ›</a></p>
+  </div>
+</section>
+</template>
+
+<template data-sec="start-teaser" data-title="מתחילים ביום אחד (3 צעדים)" data-status="new" data-why="features.md §12: אנחנו מקימים את המרפאה, אין הרשמה עצמית. מותר להגיד: שיחה קצרה, אופטימה מחוברת, מטפלים מיובאים, הווידג׳ט באוויר באותו יום. אסור להגיד: ניסיון חינם, הרשמה, תשלום אונליין.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">איך מתחילים</p>
+      <h2 class="display">שיחה אחת, <span class="ital">ובאותו יום זה באוויר.</span></h2>
+      <p class="section-lead">אנחנו מקימים אתכם. לא צריך ללמוד מערכת חדשה ולא להעביר שום דבר מאופטימה.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>שיחה קצרה</h3><p>רואים את אורלי על יומן אמיתי, ומחליטים על חבילה: קביעה, או קביעה עם סוכן AI.</p></li>
+      <li><h3>מחברים את אופטימה</h3><p>פרטי החיבור של המרפאה נשמרים מוצפנים. המטפלים מיובאים בלחיצה, השעות והטיפולים מוגדרים במסך הניהול.</p></li>
+      <li><h3>שורה אחת לאתר</h3><p>מי שאחראי על האתר מדביק את קטע ההטמעה. צבעים, לוגו ונוסח המיילים נבחרים במסך הניהול.</p></li>
+    </ol>
+    <p class="ladder-note"><a href="#" data-goto="start" style="color:var(--teal-deep);font-weight:600">מה צריך להכין, ומה קורה אחר כך ›</a></p>
+  </div>
+</section>
+</template>
+
+<template data-sec="roadmap" data-title="מפת דרכים → ׳מה חדש׳" data-status="changed" data-why="הסקשן הקיים מציג את הסוכן והתזכורות כ׳בקרוב׳. לפי features.md (v1.7.0) שניהם, וגם הנתונים, זמינים. ההצעה: אותו סולם, ארבעה שלבים שכולם ׳זמין׳, והערה שהשלב הבא נקבע עם המרפאות. לא להמציא שלב הבא (SMS, תשלומים, טפסים לא נבנו).">
+<section class="section">
+  <div class="wrap">
+    <div class="section-divider"></div>
+    <div class="section-head">
+      <p class="eyebrow">מה חדש</p>
+      <h2 class="display">אורלי <span class="ital">ממשיכה לגדול.</span></h2>
+      <p class="section-lead">התחלנו מקביעה עצמית שנוחתת באופטימה. מאז נוספו הסוכן, התזכורות והנתונים, כולם באותו מסך ניהול ובלי ללמוד מערכת חדשה.</p>
+    </div>
+    <ol class="ladder">
+      <li class="rung done"><span class="rung-tag">זמין</span><h3>המטופלים קובעים בעצמם</h3><p>שעות פנויות אמיתיות מהאתר, ישר לאופטימה. הבסיס שכל השאר נבנה עליו.</p></li>
+      <li class="rung done"><span class="rung-tag">זמין</span><h3>שינוי מועד וביטול</h3><p>המטופלים משנים או מבטלים בעצמם, מהקישור במייל האישור, עם אימות בקוד.</p></li>
+      <li class="rung done"><span class="rung-tag">חדש</span><h3>סוכן AI שעונה וקובע</h3><p>עונה רק ממה שאישרתם, מציע מועדים, קובע כשמותר לו, ומעביר לצוות כשצריך.</p></li>
+      <li class="rung done"><span class="rung-tag">חדש</span><h3>תזכורות וסדרות טיפול</h3><p>הזמנה לביקור הבא בזמן הנכון, במייל בנוסח שלכם, עם קישור לקביעה בלחיצה.</p></li>
+    </ol>
+    <p class="ladder-note">מה הלאה? את השלב הבא אנחנו קובעים יחד עם המרפאות שעובדות איתנו. <a href="#" style="color:var(--teal-deep);font-weight:600">ספרו לנו מה חסר לכם.</a></p>
+  </div>
+</section>
+</template>
+
+<template data-sec="faq" data-title="שאלות ותשובות" data-status="changed" data-why="שש השאלות הקיימות, ועוד ארבע שהעמודים החדשים מעלים: מה הסוכן יודע, מה קורה בתקלה, איך מטופל מפסיק תזכורות, ומי רואה את הנתונים. התשובות מ-features.md.">
+<section class="section alt">
+  <div class="wrap narrow">
+    <div class="section-head"><h2 class="display">שאלות <span class="ital">ותשובות.</span></h2></div>
+    <ul class="faq">
+      <li class="faq-item open"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>יש לנו כבר אופטימה, בשביל מה צריך את אורלי?</span><span class="faq-tag">למה אורלי</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>אופטימה מנהלת את היומן ואת המרפאה, וזה בדיוק מה שהיא עושה טוב. אורלי מוסיפה לה ערוץ נוסף: <strong>המטופלים קובעים בעצמם מהאתר שלכם, בכל שעה, והפגישה נכנסת ישר לאופטימה.</strong></p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>כמה זמן לוקח להתחיל?</span><span class="faq-tag">הטמעה</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>בדרך כלל יום אחד. אנחנו מחברים את אורלי לאופטימה שלכם, אתם מייבאים את המטפלים ומגדירים שעות וטיפולים במסך הניהול, ומוסיפים שורה אחת לאתר. מהרגע הזה המטופלים קובעים.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>המזכירה מאבדת שליטה על היומן?</span><span class="faq-tag">שליטה</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>לא. מטופלים קובעים רק לתוך שעות פנויות שאתם פתחתם לקביעה, אצל הרופאים ובשירותים שבחרתם. כל פגישה כזו נכנסת לאופטימה כמו פגישה שנקבעה בטלפון, והצוות ממשיך לעבוד שם כרגיל.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>מה הסוכן יודע, ומה הוא לא יגיד?</span><span class="faq-tag">סוכן AI</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>הסוכן עונה רק מתוך עובדות שאישרתם במסך הניהול: מה שאורלי קראה מהאתר שלכם ואישרתם, ומה שהוספתם ידנית. הוא לא ממציא מחיר, שעת פתיחה, טלפון או כתובת, לא מאבחן לפי תסמינים, ובנושאים שסימנתם הוא אוסף שם וטלפון ומעביר לצוות.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>מה קורה כשאופטימה לא זמינה?</span><span class="faq-tag">אמינות</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>אורלי שומרת עותק של היומן כל שעה וכל לילה, אז השעות הפנויות ממשיכות להופיע. הפגישה נשמרת אצל אורלי, המטופל מקבל אישור כרגיל, וברגע שאופטימה חוזרת הפגישה נכתבת אליה. אם השעה נתפסה בינתיים, המרפאה מקבלת הודעה ורואה את הפגישה מסומנת במסך הניהול.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>איך מטופל מפסיק לקבל תזכורות?</span><span class="faq-tag">אוטומציות</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>תזכורות נשלחות רק למי שסימן בקביעת הפגישה ״תזכירו לי כשמגיע הזמן לפגישה הבאה״. בכל מייל יש קישור להסרה: לחיצה אחת, ואורלי לא שולחת לו יותר. בעמוד הנתונים רואים כמה הזמנות נשלחו, כמה מהן הפכו לפגישה וכמה מטופלים הסכימו לקבל אותן.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>מה המזכירה צריכה ללמוד?</span><span class="faq-tag">לצוות</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>כלום חדש. פגישה שנקבעת באתר או בצ׳אט נכנסת לאופטימה כמו פגישה שנקבעה בטלפון, והצוות ממשיך לעבוד שם כרגיל. מה שמשתנה: פחות שיחות, פחות הקלדה, ויומן שמתמלא גם אחרי שעות הפעילות.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>נתוני המטופלים בטוחים?</span><span class="faq-tag">אבטחה</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>כן. האתר שלכם לא מציג ולא שומר פרטי מטופלים: הווידג׳ט אוסף את פרטי הפגישה ומעביר אותם לאורלי ולאופטימה בלבד. כל קביעה מאושרת בקוד חד־פעמי שנשלח לאימייל של המטופל. פרטי החיבור לאופטימה נשמרים מוצפנים, וכל מסך במערכת רואה רק את המרפאה שלו.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>מי רואה את הנתונים?</span><span class="faq-tag">נתונים</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>רק משתמשי המרפאה במסך הניהול, לפי ההרשאה שלהם. עמוד הנתונים מציג מספרים מצטברים על הפגישות והשיחות של המרפאה שלכם בלבד. שיחות עם הסוכן נמחקות אוטומטית אחרי 90 יום, וטלפונים, אימיילים ומספרי זהות מוסתרים מתמלילים שהצוות קורא.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>מה אם שני מטופלים תופסים אותה פגישה?</span><span class="faq-tag">אמינות</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>אורלי כותבת את הפגישה לאופטימה ברגע האישור, ואם השעה נתפסה בינתיים, המטופל מקבל הודעה מיד ובוחר שעה אחרת. גם המטופל וגם המרפאה מקבלים אישור במייל על כל פגישה שכן נקבעה.</p></div></div></li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<template data-sec="cta" data-title="פס קריאה לפעולה (דמו)" data-status="exists" data-why="הפס הטורקיז הקיים: בחירת שעה להדגמה (Cal.com) או השארת פרטים. סוגר כל עמוד.">
+<section class="cta-band">
+  <div class="wrap narrow center">
+    <p class="eyebrow light">כשתהיו מוכנים</p>
+    <h2 class="display">הפכו את יומן האופטימה <span class="ital">למנוע קביעת פגישות.</span></h2>
+    <p class="cta-lead">ראו את אורלי קובעת פגישה אמיתית ליומן פעיל בפחות מדקה. בחרו שעה שנוחה לכם, או השאירו פרטים ונחזור אליכם.</p>
+    <div class="cta-actions"><a href="#" class="btn-cream lg">בחרו שעה להדגמה</a><a href="#" class="btn-cream lg">צרו קשר</a></div>
+  </div>
+</section>
+</template>
+<!-- ============ panel.html ============ -->
+<template data-sec="panel-head" data-title="פתיח: אתם קובעים את הכללים" data-status="exists" data-why="הכותרת והלֶד הקיימים. נשארים.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">מסך הניהול</p>
+    <h1 class="display display--page">אתם קובעים את הכללים. <span class="ital">אורלי אוכפת אותם.</span></h1>
+    <p class="section-lead section-lead--intro">המטופלים קובעים תור באתר, ואתם שולטים בכל פרט: אילו טיפולים, אצל מי, באילו שעות ואיך זה נראה. מגדירים פעם אחת במסך הניהול, ומכאן המערכת עובדת לבד.</p>
+  </div>
+</section>
+</template>
+
+<template data-sec="panel-walk" data-title="סיור במסכים (לפי התפריט האמיתי)" data-status="changed" data-why="הסיור הקיים בתשעה מסכים, מעודכן לתפריט של מסך הניהול v1.7.0: שתי קבוצות (׳עבודה שוטפת׳, ׳מה שהמטופלים רואים׳) וההגדרות. הסימונים ׳בקרוב׳ יורדים: האוטומציות, הסוכן והנתונים קיימים. התוויות מועתקות מ-i18n.ts של המערכת.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="display">המסכים, <span class="ital">אחד אחד.</span></h2>
+      <p class="section-lead">כל מה שמרפאה מגדירה, במקום אחד. בלי מתכנת, והשינויים נשמרים לבד.</p>
+    </div>
+    <div class="two" style="grid-template-columns:.8fr 1.2fr;align-items:start">
+      <ol class="steps" style="grid-template-columns:1fr;gap:8px;font-size:.92rem">
+        <li><h3>יומן</h3><p>שבוע, יום או רשימה. גוררים פגישה להזזה, מקלידים פגישה חדשה, מסמנים הגעה.</p></li>
+        <li><h3>סוכן AI</h3><p>הרשאות, התנהגות, ידע, פניות, שיחות ובדיקה. אתם מחליטים אם הוא רק עונה, מציע מועדים או גם קובע.</p></li>
+        <li><h3>נתונים וביצועים</h3><p>כמה פגישות נקבעו מהאתר, באילו טיפולים, ומה הסוכן עשה.</p></li>
+        <li style="border-color:var(--teal)"><h3>מטפלים ושירותים</h3><p>מיובאים מאופטימה בלחיצה. שעות עבודה לכל מטפל, הפסקות, היעדרויות, והטיפולים שלו עם משך ומחיר.</p></li>
+        <li><h3>אוטומציות ומעקב</h3><p>תזכורת חוזרת לכל טיפול, או רצף טיפולים שלב אחרי שלב.</p></li>
+        <li><h3>עיצוב קביעת פגישה</h3><p>לוגו, צבעים, גופן, ומיקום הכפתור באתר, עם תצוגה מקדימה חיה.</p></li>
+        <li><h3>תבניות אימייל</h3><p>אישור, שינוי, ביטול וקוד אימות, בנוסח שלכם, עם שדות שנשתלים בטקסט.</p></li>
+        <li><h3>הגדרות מרפאה</h3><p>טווח קביעה, סגירות וחגים, התראות, חיבור לאופטימה, קוד ההטמעה, משתמשים.</p></li>
+        <li><h3>עזרה ותמיכה</h3><p>תקלה, שאלה או רעיון נשלחים ישירות מהמסך, עם צילום מסך, לצוות אורלי.</p></li>
+      </ol>
+      <div class="admin" style="position:sticky;top:12px">
+        <div class="admin-side">
+          <div class="grp">עבודה שוטפת</div>
+          <a href="#">יומן</a><a href="#">סוכן AI</a><a href="#">נתונים וביצועים</a><a href="#" class="on">מטפלים ושירותים</a><a href="#">אוטומציות ומעקב</a>
+          <div class="grp">מה שהמטופלים רואים</div>
+          <a href="#">עיצוב קביעת פגישה</a><a href="#">תבניות אימייל</a>
+        </div>
+        <div class="admin-main">
+          <div class="admin-head"><h4>ד"ר כהן</h4><div class="pills"><span class="pill on">שעות עבודה</span><span class="pill">שירותים</span><span class="pill">היעדרויות</span></div></div>
+          <table class="tbl">
+            <thead><tr><th>יום</th><th>שעות</th><th>הפסקה</th><th>פתוח לקביעה</th></tr></thead>
+            <tbody>
+              <tr><td>ראשון</td><td>09:00–18:00</td><td>13:00–13:30</td><td><span class="sw on"><i></i></span></td></tr>
+              <tr><td>שני</td><td>09:00–18:00</td><td>13:00–13:30</td><td><span class="sw on"><i></i></span></td></tr>
+              <tr><td>שלישי</td><td>12:00–20:00</td><td>—</td><td><span class="sw on"><i></i></span></td></tr>
+              <tr><td>רביעי</td><td>09:00–18:00</td><td>13:00–13:30</td><td><span class="sw on"><i></i></span></td></tr>
+              <tr><td>חמישי</td><td>09:00–14:00</td><td>—</td><td><span class="sw on"><i></i></span></td></tr>
+              <tr><td>שישי</td><td>—</td><td>—</td><td><span class="sw"><i></i></span></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:.74rem;color:var(--ink-soft);margin:12px 0 0"><span class="dot-ok"></span>נשמר · המטפלים מיובאים מאופטימה · <b>ייבוא מטפלים</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="panel-calendar" data-title="היומן: גרירה, סימון, והחיבור לאופטימה" data-status="new" data-why="features.md §3 ו-CalendarView.vue: תצוגות שבוע/יום/רשימה, גרירה להזזה, פגישה חדשה מהמזכירה בלי אימייל, חיפוש לפי שם או טלפון, סימון הגעה, וסימן ⚠ על פגישה שאופטימה עוד לא קלטה. לא היה בסיור הקיים.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">יומן</p>
+      <h2 class="display">היומן של אורלי <span class="ital">לצד זה של אופטימה.</span></h2>
+      <p class="section-lead">כל הפגישות שנקבעו דרך אורלי, בשבוע, ביום או ברשימה, ולידן מה שאופטימה כבר מחזיקה. נקודה ירוקה אומרת שהחיבור חי.</p>
+    </div>
+    <div class="admin" style="grid-template-columns:1fr">
+      <div class="admin-main">
+        <div class="admin-head">
+          <h4>יומן · 6–10 בספטמבר</h4>
+          <div class="pills"><span class="pill">יום</span><span class="pill on">שבוע</span><span class="pill">רשימה</span><span class="pill">כל המטפלים ▾</span><span class="pill ok"><span class="dot-ok"></span>מחובר לאופטימה</span><span class="pill on">פגישה חדשה</span></div>
+        </div>
+        <div class="cal">
+          <div class="h"></div><div class="h">ראשון 6</div><div class="h">שני 7</div><div class="h">שלישי 8</div><div class="h">רביעי 9</div><div class="h">חמישי 10</div>
+          <div class="t">09:00</div><div><span class="ev">ניקוי · רונית לוי</span></div><div></div><div></div><div><span class="ev p2">ייעוץ · גל אבני</span></div><div><span class="ev">ביקורת · נועה בר</span></div>
+          <div class="t">10:00</div><div><span class="ev">ייעוץ · יוסי מזרחי</span></div><div><span class="ev p3 queued">⚠ ייעוץ · טל שדה</span></div><div></div><div></div><div></div>
+          <div class="t">11:00</div><div><span class="ev drag">● ייעוץ · ישראל ישראלי</span></div><div></div><div><span class="ev p2">הלבנה · מאיה רז</span></div><div></div><div><span class="ev">ניקוי · עמית כץ</span></div>
+          <div class="t">12:00</div><div></div><div><span class="ev">ביקורת · דנה כהן</span></div><div></div><div></div><div></div>
+          <div class="t">13:00</div><div></div><div></div><div></div><div><span class="ev p3">ייעוץ · ליאור פז</span></div><div></div>
+        </div>
+        <div class="two" style="margin-top:14px;gap:14px;align-items:start">
+          <div class="card" style="padding:14px 16px;font-size:.84rem">
+            <b>ישראל ישראלי</b> · ייעוץ · ד"ר כהן<br><span style="color:var(--ink-soft)">ראשון 6.9 · 11:00 · 050-123-4567 · נקבע דרך: אורלי, אונליין</span>
+            <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="pill">שינוי מועד</span><span class="pill">עריכת פרטים</span><span class="pill">ביטול הפגישה</span><span class="pill ok">☑ הגיע/ה</span><span class="pill off">☐ לא הגיע/ה</span></div>
+          </div>
+          <ul class="check-list" style="margin:0;font-size:.92rem">
+            <li>גוררים פגישה למועד אחר, ואופטימה מתעדכנת</li>
+            <li>המזכירה מקלידה פגישה חדשה בלי אימייל של המטופל</li>
+            <li>חיפוש לפי שם או טלפון, סינון לפי מטפל</li>
+            <li>⚠ מסמן פגישה שאופטימה עוד לא קלטה. מזיזים אותה, והיא נרשמת</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="panel-bell" data-title="הפעמון: מה מחכה לטיפול" data-status="new" data-why="features.md §8 ו-NotificationBell.vue: שתי רשימות, ׳מחכה לטיפול׳ ו׳עדכונים׳, חמישה סוגי התראות, כל שורה קישור לדבר עצמו, וכל סוג ניתן לכיבוי. הטיעון: הצוות לא צריך לשבת מול היומן.">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">התראות</p>
+      <h2 class="display">הצוות יודע, <span class="ital">בלי לשבת מול היומן.</span></h2>
+      <p class="section-lead">פעמון בראש כל מסך, ומייל לכתובות שבחרתם. פנייה מהצ׳אט ותור שלא נרשם מחכים עד שמסמנים שטופלו. הזמנות, ביטולים ושינויים מתועדים שבועיים אחורה.</p>
+      <ul class="check-list">
+        <li>כל שורה היא קישור: ליום ביומן, לפנייה, לבקשת התמיכה</li>
+        <li>סוג שכבוי בהגדרות לא מופיע בפעמון. המיילים ממשיכים כרגיל</li>
+        <li>בלי כתובת מייל? הכול עדיין מופיע בפעמון</li>
+      </ul>
+    </div>
+    <div class="card" style="padding:18px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span class="bell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><i>3</i></span><b>התראות</b><span style="color:var(--ink-soft);font-size:.8rem">3 חדשות</span></div>
+      <div class="grp" style="font-size:.7rem;font-weight:700;color:var(--ink-soft);margin:6px 0">מחכה לטיפול</div>
+      <div class="notif">
+        <div><span class="k cb"></span>פנייה מהצ׳אט: מאיה רז<small>לפני 12 דק׳ · טופל</small></div>
+        <div><span class="k q"></span>תור לא נרשם ביומן: טל שדה<small>השעה נתפסה — להתקשר למטופל</small></div>
+      </div>
+      <div class="grp" style="font-size:.7rem;font-weight:700;color:var(--ink-soft);margin:12px 0 6px">עדכונים</div>
+      <div class="notif">
+        <div><span class="k"></span>הזמנה חדשה: ישראל ישראלי<small>נרשמה ביומן · 22:41</small></div>
+        <div><span class="k x"></span>תור בוטל: עמית כץ<small>אתמול</small></div>
+        <div><span class="k"></span>תור הועבר: נועה בר<small>אתמול</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="panel-users" data-title="הגדרות: טווח, חגים, חיבור, משתמשים" data-status="new" data-why="features.md §10 ו-SettingsView.vue: שש לשוניות הגדרות. הדברים שמרפאה שואלת עליהם בדמו: כמה זמן קדימה קובעים, חגים, מי נכנס למערכת ובאיזו הרשאה.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">הגדרות מרפאה</p>
+      <h2 class="display">מגדירים פעם אחת. <span class="ital">משנים כשצריך.</span></h2>
+    </div>
+    <div class="three">
+      <div class="card"><h3>הזמנות וסגירות</h3><p>טווח קביעת פגישות של 1 עד 24 חודשים קדימה. סגירות מרפאה לפי תאריך, וחגים לאומיים שמסונכרנים אוטומטית, עם אפשרות להחריג חג בודד.</p><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill">פרטי המרפאה</span><span class="pill on">סגירות וחגים</span><span class="pill">הזמנות</span></div></div>
+      <div class="card"><h3>חיבור לאופטימה וההטמעה</h3><p>שם משתמש וסיסמה לאופטימה, עם ״בדיקת חיבור״ לפני השמירה. קוד ההטמעה לאתר נוצר כאן, להעתקה. פרטי החיבור נשמרים מוצפנים.</p><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill on">הגדרות מתקדמות</span><span class="pill ok">החיבור תקין</span></div></div>
+      <div class="card"><h3>משתמשים והרשאות</h3><p>מזמינים משתמש במייל, בתפקיד ״מנהל/ת מרפאה״ או ״חבר/ת צוות״. רק מנהל/ת משנה הרשאות של הסוכן, התראות וחיבורים. לכל משתמש פרופיל, סיסמה, והתנתקות.</p><div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap"><span class="pill on">משתמשים</span><span class="pill">הזמנה ממתינה</span></div></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="panel-support" data-title="תמיכה מתוך המסך" data-status="new" data-why="features.md §10 ו-SupportRequestForm.vue: תקלה, שאלה או רעיון, עם צילומי מסך, מגיעים אלינו לסלאק ונענים תוך יום עסקים. למרפאה קטנה זה הבדל בין ׳מי התמיכה׳ ל׳יש למי לפנות׳.">
+<section class="section alt">
+  <div class="wrap two">
+    <div class="card" style="padding:18px 20px;font-size:.88rem">
+      <b>שליחת פנייה</b>
+      <div class="form" style="margin-top:10px">
+        <div class="fld"><label>סוג הפנייה</label><div style="display:flex;gap:6px"><span class="pill on">תקלה</span><span class="pill">שאלה</span><span class="pill">רעיון</span></div></div>
+        <div class="fld"><label>תיאור</label><div class="in" style="min-height:56px;color:var(--ink-soft)">המייל של ד"ר כהן לא מופיע ברשימת המטפלים אחרי הייבוא…</div></div>
+        <div class="fld"><label>האם זה חוסם אתכם כרגע?</label><div style="display:flex;gap:6px"><span class="pill">כן, אי אפשר לעבוד</span><span class="pill on">לא, אפשר להמשיך</span></div></div>
+        <div class="fld"><label>צילומי מסך</label><div class="in" style="border-style:dashed;color:var(--ink-soft);text-align:center">אפשר להדביק (Ctrl+V), לגרור לכאן או לבחור קובץ. עד 5 תמונות.</div></div>
+        <div class="wg-btn" style="width:max-content;padding:8px 18px;font-size:.86rem">שליחת הפנייה</div>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow">עזרה ותמיכה</p>
+      <h2 class="display">נתקעתם? <span class="ital">אנחנו במסך הבא.</span></h2>
+      <p class="section-lead">תקלה, שאלה או רעיון נשלחים ישירות מתוך מסך הניהול, עם צילומי מסך ופרטים טכניים שמצורפים לבד. הפנייה מקבלת מספר, ואנחנו חוזרים במייל תוך יום עסקים.</p>
+      <ul class="check-list"><li>היסטוריית הפניות נשמרת במערכת</li><li>פנייה שמסומנת כחוסמת מקבלת עדיפות</li></ul>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="panel-value" data-title="מה זה נותן למרפאה" data-status="exists" data-why="הסיכום הקיים בשלוש שורות. נשאר.">
+<section class="section">
+  <div class="wrap narrow">
+    <div class="section-head" style="margin-bottom:22px"><h2 class="display">מה זה נותן <span class="ital">למרפאה.</span></h2></div>
+    <ul class="check-list check-list--center">
+      <li>פחות שיחות טלפון: התור נרשם באופטימה והאישור נשלח אוטומטית.</li>
+      <li>שליטה מלאה: המטופלים קובעים רק במה שפתחתם לקביעה.</li>
+      <li>בלי מתכנת: כל שינוי בעיצוב או בנוסח עושים לבד, בכמה לחיצות.</li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<!-- ============ chatbot.html ============ -->
+<template data-sec="bot-head" data-title="פתיח: הסוכן עונה, אתם מחליטים" data-status="changed" data-why="הכותרת הקיימת, בלי תגית ׳בקרוב׳: הסוכן על main (v1.7.0). שמו בתפריט נשאר ׳סוכן AI׳ (החלטה מ-2026-09-21), והמטופל רואה ׳שאלו את אורלי׳.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">סוכן AI לאתר המרפאה · בחבילת ה-AI</p>
+    <h1 class="display display--page">הסוכן עונה. <span class="ital">אתם מחליטים מה.</span></h1>
+    <p class="section-lead section-lead--intro">צ׳אט לצד כפתור קביעת הפגישה שבאתר שלכם. המטופלים שואלים על טיפולים, שעות ומחירים, ואורלי עונה מתוך המידע שאישרתם, מציעה מועדים פנויים מהיומן, וכשמותר לה, גם קובעת את הפגישה ישר באופטימה. כך ששאלה על טיפול הופכת לפגישה, באותה שיחה.</p>
+    <div class="page-actions"><a href="#" class="btn-dark lg">לקביעת דמו</a><a href="#" class="hero-link">איך היא יודעת מה לענות</a></div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-how" data-title="השיחה (שאלה שנענית, פגישה שנקבעת)" data-status="exists" data-why="הסקשן הקיים: שיחה אחת שמתנגנת מעצמה, בסימון הצ׳אט האמיתי. מרגע שהסוכן חי אפשר להחליף אותה בצ׳אט אמיתי לניסיון (CLAUDE.md מתאר את המעבר).">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <h2 class="display display--sub">שאלה שנענית, <span class="ital">פגישה שנקבעת.</span></h2>
+      <p class="section-lead">מטופל ששואל מה כולל הטיפול, כמה זמן הוא לוקח או כמה הוא עולה, לא תמיד מרים טלפון כדי לברר. אורלי עונה לו במילים של המרפאה, ומציעה מועד פנוי באותה שיחה.</p>
+      <ul class="check-list">
+        <li>מסבירה את הטיפול מתוך המידע שאישרתם, בלי להמציא ובלי להבטיח</li>
+        <li>מציעה מועד פנוי מהיומן ברגע שהשאלה נענתה, בלי לחץ ובלי מרדף</li>
+        <li>המטופל בוחר אם להמשיך, והפגישה נקבעת בשיחה עצמה ונכנסת לאופטימה</li>
+        <li>התשובות מגיעות תוך כדי כתיבה, בעברית או באנגלית, לפי השפה שבה המטופל כותב</li>
+      </ul>
+    </div>
+    <div class="chat">
+      <div class="chat-head"><img src="media/favicon-64.png" alt=""><div><b>אורלי</b><small>מקלידה…</small></div></div>
+      <div class="chat-body">
+        <div class="msg bot">היי, אני אורלי, העוזרת של מרפאת כהן 👋 אני כאן לכל שאלה על הטיפולים, על המרפאה או על קביעת תור.</div>
+        <div class="msg me">מה כולל ייעוץ ראשוני?</div>
+        <div class="msg bot">פגישת היכרות של כחצי שעה: בודקים, שומעים מה חשוב לכם, ובסוף מקבלים תוכנית טיפול והצעת מחיר.<div class="cardlet"><b>ייעוץ ראשוני · 30 דק׳</b>פגישת היכרות ובדיקה, שבסופה תוכנית טיפול מותאמת. · ד"ר כהן<div style="margin-top:6px;color:var(--teal-deep);font-weight:600">לקביעת הפגישה הזו ›</div></div>רוצים שאבדוק מתי יש מקום פנוי השבוע?</div>
+        <div class="msg me">כן, אחרי 16:00 אם אפשר</div>
+        <div class="msg bot">אלה השעות הפנויות אצל ד"ר כהן ביום רביעי, 23 בספטמבר:<div class="chat-slots"><span>16:00</span><span class="on">16:30</span><span>17:30</span><span>18:00</span></div></div>
+        <div class="msg me">16:30. ישראל ישראלי, israel@gmail.com</div>
+        <div class="msg bot">שלחתי קוד לאימייל. כתבו אותו כאן ואקבע.</div>
+        <div class="msg me">482913</div>
+        <div class="msg bot">הפגישה נקבעה. אישור נשלח לאימייל.<div class="cardlet"><b>הפגישה נקבעה</b>ייעוץ ראשוני · ד"ר כהן<br>יום רביעי, 23 בספטמבר · 16:30</div></div>
+      </div>
+      <div class="chat-in"><span>תשאלו כל שאלה…</span><i></i></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-knowledge" data-title="הידע: לומד מהאתר, אתם מאשרים" data-status="exists" data-why="הסקשן הקיים עם מסך הידע של מסך הניהול. התוויות מהמערכת: סרוק אתר, ממתין לאישור / מאושר / נדחה, אשר / ערוך / דחה, סוג טיפול מקושר.">
+<section class="section">
+  <div class="wrap two">
+    <div>
+      <h2 class="display display--sub">לומד מהאתר שלכם. <span class="ital">אתם בוחרים מה הוא יודע.</span></h2>
+      <ol class="steps" style="grid-template-columns:1fr;gap:10px;margin-top:10px">
+        <li><h3>מזינים את כתובת האתר</h3><p>במסך הניהול, בלשונית ״ידע״, מדביקים את כתובת האתר של המרפאה ולוחצים על ״סרוק אתר״.</p></li>
+        <li><h3>אורלי קוראת ומסדרת</h3><p>עוברת על הדפים הציבוריים ומאחדת את מה שמצאה לעובדות קצרות לפי נושא: המרפאה עצמה, וכל טיפול בנפרד. ליד כל עובדה, קישור לדף שממנו נלקחה.</p></li>
+        <li><h3>אתם מאשרים</h3><p>מאשרים, עורכים או דוחים, אחת אחת או נושא שלם בלחיצה. אפשר להוסיף מידע ידנית ולקשר נושא לסוג טיפול, ואז העובדות שלו מופיעות בכרטיס הטיפול בצ׳אט.</p></li>
+      </ol>
+      <p class="section-note">הסוכן עונה רק ממה שאישרתם. עובדה שממתינה לאישור או שנדחתה לא מגיעה אליו, וסריקה חדשה מציעה רק תוספות.</p>
+    </div>
+    <div class="admin" style="grid-template-columns:1fr;min-height:0">
+      <div class="admin-main">
+        <div class="admin-head"><h4>סוכן AI · ידע</h4><div class="pills"><span class="pill">הרשאות</span><span class="pill">התנהגות</span><span class="pill on">ידע</span><span class="pill">פניות</span><span class="pill">שיחות</span><span class="pill">בדיקה</span></div></div>
+        <div class="fld"><label>כתובת האתר</label><div style="display:flex;gap:8px"><div class="in ltr" style="flex:1">https://www.clinic.co.il</div><span class="pill on">סרוק אתר</span></div></div>
+        <p style="font-size:.76rem;color:var(--ink-soft);margin:8px 0 12px">מצב: <b>הסריקה הושלמה</b> · דפים שנמצאו: <b>14</b> · ממתין לאישור: 2 · מאושר: 9</p>
+        <div class="facts">
+          <div class="fact"><span class="st pend">ממתין</span><span><b>שעות פתיחה</b> · המרפאה<small>ראשון עד חמישי 9:00–18:00. · לדף המקור</small></span><span style="margin-inline-start:auto;font-size:.74rem;color:var(--teal-deep);white-space:nowrap">אשר · ערוך · דחה</span></div>
+          <div class="fact"><span class="st pend">ממתין</span><span><b>הכנה לטיפול</b> · ייעוץ ראשוני · סוג טיפול מקושר<small>כדאי להביא צילומים קודמים, אם יש.</small></span><span style="margin-inline-start:auto;font-size:.74rem;color:var(--teal-deep);white-space:nowrap">אשר · ערוך · דחה</span></div>
+          <div class="fact"><span class="st ok">מאושר</span><span><b>מחירים</b> · הלבנת שיניים<small>הלבנה במרפאה: 1,200 ₪. · נכתב במרפאה</small></span></div>
+          <div class="fact no"><span class="st no">נדחה</span><span><b>מבצע</b> · המרפאה · ״20% הנחה לחודש מאי״</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-control" data-title="הרשאות והתנהגות (המתגים)" data-status="exists" data-why="הסקשן הקיים: ארבע הרשאות וארבע הגדרות התנהגות, במילים של מסך הניהול. כברירת מחדל הכול כבוי, ורק מנהל/ת משנה הרשאות.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="display display--sub">אתם קובעים <span class="ital">מה מותר לה.</span></h2>
+      <p class="section-lead">כל יכולת נפתחת במתג נפרד במסך הניהול, וכברירת מחדל הכול כבוי. את ההרשאות משנה רק מנהל/ת המרפאה.</p>
+    </div>
+    <div class="two" style="align-items:start">
+      <div class="card">
+        <h3>הרשאות</h3><p style="margin-bottom:12px">מה מותר לסוכן לעשות.</p>
+        <div class="form">
+          <div class="sw on"><i></i><span><b>הפעלת הסוכן</b><br><small style="color:var(--ink-soft)">כל עוד המתג כבוי, המטופלים לא רואים שום צ׳אט.</small></span></div>
+          <div class="sw on"><i></i><span><b>קריאת היומן</b><br><small style="color:var(--ink-soft)">מציע מועדים פנויים. לעולם לא שומר מועד ולא מבטיח שיישאר פנוי.</small></span></div>
+          <div class="sw on"><i></i><span><b>קביעת פגישות באופן עצמאי</b><br><small style="color:var(--ink-soft)">מאשר עם המטופל כל פרט, ומדווח על פגישה רק אחרי שאופטימה קלטה אותה. בלי המתג, המטופל מקבל קישור לחלון הקביעה עם המועד כבר בחור.</small></span></div>
+          <div class="sw"><i></i><span><b>טיפולים שהסוכן רשאי לקבוע</b><br><small style="color:var(--ink-soft)">בלי בחירה, כל הטיפולים הפעילים. מסמנים טיפולים כדי להגביל אותו רק אליהם.</small></span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>התנהגות</h3><p style="margin-bottom:12px">איך הוא מדבר, ומתי הוא מעביר לצוות.</p>
+        <div class="form">
+          <div class="fld"><label>סגנון</label><div style="display:flex;gap:6px"><span class="pill on">ידידותי</span><span class="pill">מקצועי</span><span class="pill">תמציתי</span></div></div>
+          <div class="fld"><label>שפות</label><div style="display:flex;gap:6px"><span class="pill on">עברית</span><span class="pill on">אנגלית</span></div></div>
+          <div class="fld"><label>נושאים להעברה לצוות (אחד בכל שורה)</label><div class="in" style="min-height:48px">כאבים אחרי טיפול<br>תלונות<br>ביטוח ופיצויים</div></div>
+          <div class="fld"><label>הנחיות למרפאה</label><div class="in" style="color:var(--ink-soft)">לפנות בלשון רבים. לא לציין מחירי מבצע.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-handoff" data-title="מתי היא מעבירה לצוות (פניות)" data-status="changed" data-why="הסקשן הקיים ׳יודע מתי להעביר לצוות׳, ועכשיו גם טבלת הפניות של מסך הניהול (AgentHandoffsPanel.vue): שם, סיבה, התקבלה, יצירת קשר, סטטוס, והשיחה מאחורי כל פנייה.">
+<section class="section">
+  <div class="wrap two">
+    <div>
+      <h2 class="display display--sub">יודעת מתי <span class="ital">להעביר לצוות.</span></h2>
+      <ul class="check-list">
+        <li>עונה רק מתוך המידע של המרפאה, ולא מנחשת או ממציאה מחיר, שעת פתיחה, מטפל או טיפול</li>
+        <li>לא מאבחנת ולא ממליצה על טיפול לפי תסמינים. במקום זה, מציעה לקבוע ייעוץ במרפאה</li>
+        <li>מעבירה לאדם כשהמטופל מבקש, בנושאים שסימנתם, או כשמטופל מספר על סיבוך או תופעת לוואי</li>
+        <li>בהעברה היא אוספת שם וטלפון או אימייל. הפנייה מחכה בלשונית ״פניות״ עם השיחה כולה, ונשלחת במייל למרפאה</li>
+        <li>מאותו רגע היא כבר לא עונה בעצמה, רק מעדכנת שהצוות יחזור</li>
+      </ul>
+    </div>
+    <div class="admin" style="grid-template-columns:1fr;min-height:0">
+      <div class="admin-main">
+        <div class="admin-head"><h4>פניות · 2 ממתינות</h4></div>
+        <table class="tbl">
+          <thead><tr><th>שם</th><th>סיבה</th><th>התקבלה</th><th>יצירת קשר</th><th>סטטוס</th></tr></thead>
+          <tbody>
+            <tr><td>מאיה רז</td><td>כאבים אחרי טיפול</td><td>היום 09:12</td><td style="color:var(--teal-deep)">חיוג · הצגת השיחה</td><td><span class="pill warn">ממתינה</span></td></tr>
+            <tr><td>דני לב</td><td>ביקש לדבר עם אדם</td><td>אתמול 20:40</td><td style="color:var(--teal-deep)">אימייל · הצגת השיחה</td><td><span class="pill warn">ממתינה</span></td></tr>
+            <tr><td>נועה בר</td><td>ביטוח ופיצויים</td><td>שני 11:05</td><td style="color:var(--teal-deep)">חיוג · הצגת השיחה</td><td><span class="pill ok">טופלה</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-myappt" data-title="״יש לי כבר פגישה״" data-status="new" data-why="features.md §2: הסוכן מאמת את האימייל של המטופל ומקריא את הפגישות הקרובות שלו. עונה לשאלה שהמזכירה מקבלת הכי הרבה: ״מתי התור שלי?״">
+<section class="section alt">
+  <div class="wrap two">
+    <div class="chat">
+      <div class="chat-head"><img src="media/favicon-64.png" alt=""><div><b>אורלי</b><small>העוזרת של מרפאת כהן</small></div></div>
+      <div class="chat-body">
+        <div class="msg me">יש לי כבר פגישה, מתי היא?</div>
+        <div class="msg bot">בשמחה. מה האימייל שאיתו נקבעה הפגישה?</div>
+        <div class="msg me">israel@gmail.com</div>
+        <div class="msg bot">שלחתי קוד לאימייל הזה. כתבו אותו כאן.</div>
+        <div class="msg me">731204</div>
+        <div class="msg bot">הפגישות הקרובות שלכם:<div class="cardlet"><b>ייעוץ ראשוני · ד"ר כהן</b>יום רביעי, 23 בספטמבר · 16:30<div style="margin-top:6px;color:var(--teal-deep);font-weight:600">שינוי מועד · ביטול הפגישה</div></div></div>
+      </div>
+      <div class="chat-in"><span>תשאלו כל שאלה…</span><i></i></div>
+    </div>
+    <div>
+      <p class="eyebrow">הפגישה שלכם</p>
+      <h2 class="display display--sub">״מתי התור שלי?״ <span class="ital">בלי להתקשר.</span></h2>
+      <p class="section-lead">מטופל שכבר קבע כותב ״יש לי כבר פגישה״. אורלי מבקשת את האימייל שאיתו נקבעה, שולחת אליו קוד, ורק אז מציגה את הפגישות הקרובות, לראות, לשנות או לבטל. בלי אימות, שום פרט לא נחשף.</p>
+      <ul class="check-list"><li>אותו קוד חד־פעמי שמאמת כל קביעה</li><li>שינוי וביטול עוברים דרך הקישור שבמייל האישור, כמו היום</li></ul>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-privacy" data-title="פרטיות השיחות וגבולות" data-status="new" data-why="features.md §2: תשובות בסטרימינג, הגבלת קצב לשיחה ולמרפאה, מחיקה אוטומטית אחרי 90 יום, טלפונים ואימיילים מוסתרים מתמלילים. ההודעה למטופל בצ׳אט: ״השיחה נשמרת 90 יום לצורכי אבטחה ובקרה״. חשוב גם ל-privacy.html.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">פרטיות</p>
+      <h2 class="display display--sub">מה נשמר מהשיחה, <span class="ital">ולכמה זמן.</span></h2>
+    </div>
+    <div class="four">
+      <div class="card"><h3>90 יום</h3><p>תוכן השיחות נמחק אוטומטית אחרי 90 יום. נשארת רק הספירה לנתונים. המטופל רואה את זה בצ׳אט עצמו.</p></div>
+      <div class="card"><h3>בלי פרטים מזהים</h3><p>בלשונית ״שיחות״ הצוות קורא את השיחות בלי שם: טלפונים, אימיילים ומספרי זהות שנכתבו בשיחה מוסתרים מהתמליל, אלא אם המטופל ביקש שיחזרו אליו.</p></div>
+      <div class="card"><h3>הגבלת קצב</h3><p>מספר ההודעות מוגבל לכל שיחה ולכל מרפאה, כך שאי אפשר להציף את הסוכן או להעמיס על המרפאה.</p></div>
+      <div class="card"><h3>רק המרפאה שלכם</h3><p>הסוכן של כל מרפאה מכיר רק את הידע שלה ואת היומן שלה. כל מסך וכל קריאה במערכת תחומים למרפאה אחת.</p></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-test" data-title="לשונית הבדיקה" data-status="new" data-why="features.md §2: ׳שיחה עם הסוכן, כמו שמטופל מנהל אותה׳ מתוך מסך הניהול, אחרי כל שינוי בהגדרות. מוריד את החשש ׳איך אדע מה הוא אומר למטופלים שלי׳.">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">בדיקה</p>
+      <h2 class="display display--sub">נסו אותה בעצמכם, <span class="ital">לפני המטופלים.</span></h2>
+      <p class="section-lead">בלשונית ״בדיקה״ במסך הניהול משוחחים עם הסוכן של המרפאה שלכם כמו שמטופל היה עושה. שיניתם סגנון, הוספתם עובדה, סימנתם נושא להעברה? בודקים מיד, בעברית או באנגלית.</p>
+    </div>
+    <div class="admin" style="grid-template-columns:1fr;min-height:0">
+      <div class="admin-main">
+        <div class="admin-head"><h4>סוכן AI · בדיקה</h4><div class="pills"><span class="pill">שיחה חדשה</span><span class="pill">שפת השיחה: עברית ▾</span></div></div>
+        <div class="chat" style="box-shadow:none;max-width:none">
+          <div class="chat-body">
+            <div class="msg me">יש חנייה ליד המרפאה?</div>
+            <div class="msg bot">כן, חניון ציבורי ברחוב הרצל 12, שתי דקות הליכה. בשבת החניון סגור.<span class="src">מתוך: מיקום · מאושר</span></div>
+          </div>
+          <div class="chat-in"><span>כתבו כמו מטופל…</span><i></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-film" data-title="טיזר הסוכן (31 שניות)" data-status="video" data-why="הסרטון הקיים מ-orli-outreach/videos/ai-agent-teaser: שיחה אמיתית, מסך הידע, ו׳סוכן AI · בקרוב׳. לפני פרסום צריך לרנדר מחדש בלי ה׳בקרוב׳ (videos/README.md מציין את זה). רוחבי, 1920×1080.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><h2 class="display display--sub">31 שניות <span class="ital">על אורלי.</span></h2><p class="section-lead">שיחה אחת, מסך הידע, והפגישה ביומן.</p></div>
+    <div class="video-slot" style="max-width:860px;margin-inline:auto">
+      <span class="vs-cap">orli-ai-agent-teaser.mp4 · לרנדר מחדש בלי ״בקרוב״</span>
+      <video controls preload="metadata" poster="media/orli-ai-agent-teaser-poster.jpg" src="media/orli-ai-agent-teaser.mp4"></video>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-numbers" data-title="מה אורלי עשתה (נתוני הסוכן)" data-status="new" data-why="features.md §9 ו-AgentSection.vue: שיחות, הסתיימו בפגישה, שיעור קביעת פגישה, פניות לצוות, ואיך הסתיימו השיחות. מקשר את עמוד הסוכן לעמוד הנתונים. מספרים להדגמה בלבד.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head"><p class="eyebrow">נתוני סוכן ה-AI</p><h2 class="display display--sub">מה אורלי עשתה בשביל המרפאה <span class="ital">החודש.</span></h2></div>
+    <div class="kpis">
+      <div class="kpi"><div class="l">שיחות</div><div class="v">312</div><div class="d">▲ 41% לעומת 30 הימים שלפני</div></div>
+      <div class="kpi"><div class="l">הסתיימו בפגישה</div><div class="v">47</div><div class="d">מתוך השיחות</div></div>
+      <div class="kpi"><div class="l">שיעור קביעת פגישה</div><div class="v">15%</div><div class="d">▲ 3 נק׳</div></div>
+      <div class="kpi"><div class="l">פניות לצוות</div><div class="v">19</div><div class="d">17 טופלו · 2 ממתינות</div></div>
+    </div>
+    <div class="charts">
+      <div class="chart"><h5>שיחות לפי יום</h5>
+        <svg viewBox="0 0 420 120" role="img" aria-label="שיחות לפי יום, 14 ימים">
+          <g fill="#0f8a86">
+            <rect x="12" y="78" width="22" height="34" rx="3"/><rect x="40" y="60" width="22" height="52" rx="3"/><rect x="68" y="70" width="22" height="42" rx="3"/><rect x="96" y="48" width="22" height="64" rx="3"/><rect x="124" y="56" width="22" height="56" rx="3"/><rect x="152" y="96" width="22" height="16" rx="3"/><rect x="180" y="104" width="22" height="8" rx="3"/><rect x="208" y="64" width="22" height="48" rx="3"/><rect x="236" y="40" width="22" height="72" rx="3"/><rect x="264" y="52" width="22" height="60" rx="3"/><rect x="292" y="30" width="22" height="82" rx="3"/><rect x="320" y="44" width="22" height="68" rx="3"/><rect x="348" y="92" width="22" height="20" rx="3"/><rect x="376" y="100" width="22" height="12" rx="3"/>
+          </g>
+          <line x1="8" y1="112" x2="412" y2="112" stroke="#e4ddcf"/>
+          <text x="23" y="10" font-size="9" fill="#5d6763">8.9</text><text x="387" y="10" font-size="9" fill="#5d6763">21.9</text>
+        </svg>
+        <p class="illus">שישי ושבת נמוכים: המרפאה סגורה, אבל השיחות לא נפסקות.</p>
+      </div>
+      <div class="chart"><h5>איך הסתיימו השיחות</h5>
+        <div class="bars">
+          <div><span>תשובה בלבד</span><i style="width:100%"></i><span>246</span></div>
+          <div><span>נקבעה פגישה</span><i style="width:19%"></i><span>47</span></div>
+          <div><span>פנייה לצוות</span><i style="width:8%"></i><span>19</span></div>
+        </div>
+        <p class="illus">נתוני הדגמה, לא של מרפאה אמיתית.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="bot-optima" data-title="בלי לגעת באתר (״שאלו את אורלי״)" data-status="changed" data-why="הסקשן הקיים, מתוקן לפי embed.js: הכפתור באתר מתפצל לשניים, ׳לקביעת פגישה׳ ו׳שאלו את אורלי׳, רק כשהסוכן מופעל. שורת ההטמעה לא משתנה.">
+<section class="section">
+  <div class="wrap narrow center">
+    <h2 class="display display--sub">בלי לגעת <span class="ital">באתר.</span></h2>
+    <p class="section-lead">כשמפעילים את הסוכן, הכפתור שכבר יושב באתר מתפצל לשניים: ״לקביעת פגישה״ ו״שאלו את אורלי״. שורת ההטמעה לא משתנה, ומרפאה שלא הפעילה אותו רואה את הכפתור בדיוק כמו היום.</p>
+    <div style="display:inline-flex;border:1px solid #e0e0e0;border-radius:999px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.12);overflow:hidden;font-weight:600;font-size:.9rem;margin:6px 0 18px">
+      <span style="padding:12px 18px;display:flex;align-items:center;gap:8px"><span style="color:var(--teal)">▣</span>לקביעת פגישה</span>
+      <span style="padding:12px 18px;border-inline-start:1px solid #e0e0e0;display:flex;align-items:center;gap:8px;background:var(--cream)"><span style="color:var(--teal)">💬</span>שאלו את אורלי</span>
+    </div>
+    <p class="section-lead">פגישה מהצ׳אט עוברת את אותה דרך כמו בחלון קביעת הפגישה: אותו אימות בקוד לאימייל, אותו טווח קביעה ואותם מיילים. הצוות רואה אותה באופטימה כמו כל פגישה אחרת.</p>
+  </div>
+</section>
+</template>
+<!-- ============ automations.html (new page) ============ -->
+<template data-sec="auto-head" data-title="פתיח: המטופלים חוזרים בזמן" data-status="new" data-why="עמוד חדש. הלֶד הוא משפט הפתיחה של מסך האוטומציות עצמו (automationsLead ב-i18n.ts). הכותרת מוכרת תוצאה: הכנסה חוזרת בלי עבודת מזכירות.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">אוטומציות ומעקב</p>
+    <h1 class="display display--page">המטופלים חוזרים <span class="ital">בדיוק בזמן.</span></h1>
+    <p class="section-lead section-lead--intro">המטופלים מקבלים הזמנה במייל לקבוע את הפגישה הבאה, בדיוק בזמן, בלי שמישהו במרפאה יצטרך לזכור. שני סוגים: תזכורת חוזרת לאותו טיפול, ורצף טיפולים שלב אחרי שלב. כל הזמנה בנוסח ובעיצוב שלכם, עם קישור שפותח את היומן כבר מסונן לטיפול הנכון.</p>
+    <div class="page-actions"><a href="#" class="btn-dark lg">לקביעת דמו</a></div>
+  </div>
+</section>
+</template>
+
+<template data-sec="auto-rule" data-title="תזכורת חוזרת (״כל 6 חודשים״)" data-status="new" data-why="AutomationReminderFields.vue: הכלל נכתב כמשפט, ׳לתזכר לגבי [טיפול] כל [N] [ימים/שבועות/חודשים]׳, והשם נוצר לבד (׳הזרקת בוטוקס כל 4 חודשים׳). הדוגמאות כאן הן הפלייסהולדרים של המסך עצמו.">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">תזכורת חוזרת</p>
+      <h2 class="display display--sub">אותו טיפול, <span class="ital">שוב ושוב.</span></h2>
+      <p class="section-lead">לכל טיפול יש קצב משלו: הלבנה פעם בשנה, ניקוי אבנית כל חצי שנה, בוטוקס כל ארבעה חודשים. כותבים את הכלל כמשפט, והוא רץ לבד על כל מטופל שעבר את הטיפול וביקש תזכורת.</p>
+      <ul class="check-list">
+        <li>ימים, שבועות או חודשים, מיום אחד ועד שנה</li>
+        <li>השם נוצר לבד מהבחירות, ואפשר לשנות אותו</li>
+        <li>כל כלל נדלק ונכבה במתג, והעריכה נשמרת מעצמה</li>
+      </ul>
+    </div>
+    <div style="display:grid;gap:12px">
+      <div class="rule">
+        <div style="font-size:.72rem;color:var(--ink-soft);margin-bottom:8px">תזכורת חוזרת · <b style="color:var(--ink)">הזרקת בוטוקס כל 4 חודשים</b></div>
+        <div class="rule-row">לתזכר לגבי <span class="in">הזרקת בוטוקס ▾</span> כל <span class="in">4</span> <span class="in">חודשים ▾</span></div>
+        <div class="rule-meta"><span class="sw on"><i></i>פעיל</span><span>עריכת תבנית המייל</span><span>נשמר</span></div>
+      </div>
+      <div class="rule" style="opacity:.85">
+        <div style="font-size:.72rem;color:var(--ink-soft);margin-bottom:8px">תזכורת חוזרת · <b style="color:var(--ink)">ניקוי אבנית כל 6 חודשים</b></div>
+        <div class="rule-row">לתזכר לגבי <span class="in">ניקוי אבנית ▾</span> כל <span class="in">6</span> <span class="in">חודשים ▾</span></div>
+        <div class="rule-meta"><span class="sw on"><i></i>פעיל</span></div>
+      </div>
+      <div class="rule" style="opacity:.7">
+        <div style="font-size:.72rem;color:var(--ink-soft);margin-bottom:8px">תזכורת חוזרת · <b style="color:var(--ink)">הלבנת שיניים כל שנה</b></div>
+        <div class="rule-row">לתזכר לגבי <span class="in">הלבנת שיניים ▾</span> כל <span class="in">12</span> <span class="in">חודשים ▾</span></div>
+        <div class="rule-meta"><span class="sw"><i></i>כבוי</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="auto-seq" data-title="רצף טיפולים (שלב אחרי שלב)" data-status="new" data-why="AutomationStepsFields.vue: ׳טיפול ראשון׳, ואז לכל שלב ׳כעבור [N] [יחידה] תישלח הזמנה ל[טיפול]׳, ׳ואז, הזמנה נוספת׳, גרירה לשינוי הסדר. הדוגמה: קורס 3 טיפולי IPL, הפלייסהולדר של המסך.">
+<section class="section">
+  <div class="wrap two">
+    <div class="rule">
+      <div style="font-size:.72rem;color:var(--ink-soft);margin-bottom:10px">רצף טיפולים · <b style="color:var(--ink)">קורס 3 טיפולי IPL</b> · 3 שלבים</div>
+      <div class="seq">
+        <div class="seq-step"><span class="n">1</span><div><b>טיפול ראשון <span class="in" style="border:1px solid var(--line);border-radius:8px;padding:2px 8px;background:var(--cream)">IPL ▾</span></b><small>המטופל עבר את הטיפול במרפאה</small></div></div>
+        <div class="seq-step"><span class="n wait">4 שב׳</span><div><b>כעבור 4 שבועות תישלח הזמנה ל-IPL, טיפול שני</b><small>מייל ״הגיע הזמן לקבוע את הפגישה הבאה״ עם קישור לקביעה</small></div></div>
+        <div class="seq-step"><span class="n wait">6 שב׳</span><div><b>כעבור 6 שבועות תישלח הזמנה ל-IPL, טיפול שלישי</b><small>נספר מהטיפול הקודם, לא מהראשון</small></div></div>
+        <div class="seq-step"><span class="n" style="background:var(--cream-2);color:var(--teal-deep)">+</span><div><b style="color:var(--teal-deep)">ואז, הזמנה נוספת</b><small>גררו לשינוי הסדר, או השתמשו בחצים למעלה/למטה</small></div></div>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow">רצף טיפולים</p>
+      <h2 class="display display--sub">טיפול אחרי טיפול, <span class="ital">לפי סדר.</span></h2>
+      <p class="section-lead">קורס של כמה מפגשים, הכנה ואז טיפול, ביקורת אחרי טיפול. מגדירים את השלבים פעם אחת, ואורלי מזמינה כל מטופל לשלב הבא כשמגיע זמנו.</p>
+      <ul class="check-list">
+        <li>כל שלב נספר מהטיפול שלפניו</li>
+        <li>מטופל שכבר קבע את השלב הבא לא מקבל הזמנה</li>
+        <li>השלבים נגררים לשינוי הסדר</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="auto-mail" data-title="המייל, במראה שלכם" data-status="new" data-why="features.md §5, §7: שתי תבניות (׳הזמנה לשלב הבא ברצף׳, ׳תזכורת חוזרת׳) בעורך הבלוקים, עם השדות ׳הטיפול הבא׳, ׳קישור לקביעת פגישה׳ ו׳קישור להסרה׳ (חובה). הקישור פותח את הווידג׳ט כבר מסונן לטיפול (deep link).">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">המייל</p>
+      <h2 class="display display--sub">בנוסח שלכם, <span class="ital">עם קישור שכבר יודע מה לקבוע.</span></h2>
+      <p class="section-lead">שתי תבניות, ״תזכורת חוזרת״ ו״הזמנה לשלב הבא ברצף״, בעורך של תבניות האימייל: כותבים חופשי ושותלים שדות כמו <span class="pill">שם המטופל/ת</span> <span class="pill">הטיפול הבא</span> <span class="pill">קישור לקביעת פגישה</span>. הלוגו, הצבעים והחתימה מגיעים מהעיצוב שכבר בחרתם.</p>
+      <ul class="check-list">
+        <li>הקישור פותח את חלון הקביעה באתר שלכם, כבר מסונן לטיפול או למטפל הנכון</li>
+        <li>קישור ההסרה הוא שדה חובה בכל מייל תזכורת</li>
+        <li>תצוגה מקדימה לפני שמירה, ואיפוס לנוסח ברירת המחדל בלחיצה</li>
+      </ul>
+    </div>
+    <div class="mail">
+      <div class="mail-top"><span>מאת: <b>מרפאת כהן</b></span><span>אל: israel@gmail.com</span><span>נושא: <b>הגיע הזמן לקבוע שוב פגישה</b></span></div>
+      <div class="mail-body">
+        <img class="logo" src="media/orli-wordmark-he.png" alt="">
+        <p>שלום <span class="chipv">ישראל</span>,</p>
+        <p>עברו שישה חודשים מאז <span class="chipv">ניקוי האבנית</span> האחרון שלך אצל <span class="chipv">ד"ר כהן</span>. זה הזמן לביקור הבא. בחרו שעה שנוחה לכם, ונתראה במרפאה.</p>
+        <span class="mbtn">לקביעת פגישה</span>
+        <p style="margin-top:16px;font-size:.84rem;color:var(--ink-soft)">צוות מרפאת כהן · רחוב הרצל 12, תל אביב</p>
+      </div>
+      <div class="mail-foot">לא רוצים לקבל תזכורות? <u>להסרה מרשימת התפוצה</u></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="auto-optout" data-title="המטופל מסכים, והמטופל מסיר" data-status="new" data-why="הסכמה: תיבת סימון בשלב האישור בווידג׳ט, לא מסומנת כברירת מחדל (v1.6.7, מטופל חוזר יכול לשנות). הסרה: קישור בכל מייל ועמוד הסרה. בלי זה ההבטחה של התזכורות לא עומדת מול חוק הספאם ותיקון 13.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">הסכמה</p>
+      <h2 class="display display--sub">רק למי שביקש, <span class="ital">ורק עד שביקש להפסיק.</span></h2>
+    </div>
+    <div class="three">
+      <div class="card">
+        <h3>בקביעת הפגישה</h3>
+        <p>תיבת סימון בשלב האישור, לא מסומנת מראש. מטופל חוזר יכול לשנות את הבחירה בכל קביעה.</p>
+        <div style="margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.86rem;background:var(--cream)"><b>☑ תזכירו לי כשמגיע הזמן לפגישה הבאה</b><br><small style="color:var(--ink-soft)">אני מסכים לקבל עדכונים ותזכורות לגבי פגישות</small></div>
+      </div>
+      <div class="card">
+        <h3>בכל מייל</h3>
+        <p>״להסרה מרשימת התפוצה״ בתחתית כל תזכורת. לחיצה אחת, ואורלי מפסיקה.</p>
+        <div style="margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.86rem;background:var(--cream)"><b>להפסיק לקבל תזכורות מהמרפאה?</b><br><small style="color:var(--ink-soft)">לא נזכיר לכם יותר מתי לקבוע את הפגישה הבאה.</small><br><span class="pill" style="margin-top:6px;display:inline-block">הסרה מרשימת התפוצה · Unsubscribe</span></div>
+      </div>
+      <div class="card">
+        <h3>במספרים</h3>
+        <p>בעמוד הנתונים: כמה הזמנות נשלחו, כמה מהן הפכו לפגישה, וכמה מהמטופלים הסכימו לקבל אותן.</p>
+        <div class="kpis" style="grid-template-columns:1fr 1fr;gap:8px;margin-top:12px"><div class="kpi" style="padding:10px"><div class="l">הזמנות שנשלחו</div><div class="v" style="font-size:1.3rem">142</div></div><div class="kpi" style="padding:10px"><div class="l">קבעו מההזמנות</div><div class="v" style="font-size:1.3rem">31%</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="auto-run" data-title="איך זה רץ (ומה לא נשלח)" data-status="new" data-why="follow_up_service.py: נשלח ב-10:00 שעון המרפאה, רק עם הסכמה, מדלג על מי שכבר קבע, בודק שהפגישה המקורית עדיין ביומן, ושולח עד 7 ימים באיחור. הכללים האלה הם מה שמונע מייל מביך.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2 class="display display--sub">שולח בזמן, <span class="ital">ולא כשלא צריך.</span></h2></div>
+    <div class="flow">
+      <div class="st"><div class="ic">10:00</div><b>בבוקר, בשעון המרפאה</b><small>ההזמנות יוצאות ב-10:00 ביום שהגיע, לא באמצע הלילה.</small></div>
+      <div class="st"><div class="ic">✓</div><b>רק עם הסכמה</b><small>מי שלא סימן ״תזכירו לי״ לא מקבל כלום.</small></div>
+      <div class="st"><div class="ic">↷</div><b>לא למי שכבר קבע</b><small>מטופל שכבר קבע את הטיפול הבא לא מקבל הזמנה אליו.</small></div>
+      <div class="st"><div class="ic">⌂</div><b>רק על פגישה שהתקיימה</b><small>הפגישה המקורית נבדקת מול היומן. בוטלה? אין תזכורת.</small></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="auto-faq" data-title="שאלות על האוטומציות" data-status="new" data-why="שלוש שאלות שעולות בדמו. התשובות אומרות גם מה אין: לא SMS ולא וואטסאפ, ולא תזכורת יום-לפני (לא נבנו, features.md ׳Not built׳).">
+<section class="section">
+  <div class="wrap narrow">
+    <ul class="faq">
+      <li class="faq-item open"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>זה נשלח ב-SMS או בוואטסאפ?</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>במייל. אותו אימייל שהמטופל אימת בקוד כשקבע, כך שהכתובת נכונה ושייכת לו. SMS ווואטסאפ לא נתמכים כרגע.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>זו גם תזכורת יום לפני הפגישה?</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>לא. האוטומציות מזמינות לביקור הבא אחרי טיפול. אישור הפגישה עצמו, עם קישור לשינוי או ביטול, נשלח ברגע הקביעה.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>מה אם מטופל קבע בטלפון, לא דרך האתר?</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>ההזמנות יוצאות למטופלים שקבעו דרך אורלי וביקשו תזכורת. פגישה שהוקלדה באופטימה ללא אימייל אין למי לשלוח.</p></div></div></li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<!-- ============ analytics.html (new page) ============ -->
+<template data-sec="data-head" data-title="פתיח: רואים מה קורה" data-status="new" data-why="עמוד חדש לעמוד ׳נתונים וביצועים׳ של מסך הניהול (v1.7.0). היום panel.html מצייר ׳נתונים׳ ככרטיס ׳בקרוב׳; זה כבר לא נכון.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">נתונים וביצועים</p>
+    <h1 class="display display--page">רואים מה קורה, <span class="ital">לא מנחשים.</span></h1>
+    <p class="section-lead section-lead--intro">כמה פגישות נקבעו מהאתר, באילו שעות המטופלים באמת רוצים להגיע ומתי הם קובעים, אילו טיפולים מבוקשים, מי מבטל ומתי, ומה הסוכן עשה. כל מספר מול התקופה שלפניו, לכל המרפאה או למטפל אחד.</p>
+  </div>
+</section>
+</template>
+
+<template data-sec="data-dash" data-title="הדשבורד (תצוגה מקדימה)" data-status="new" data-why="AnalyticsView.vue: טווחי זמן (היום / 7 ימים / 30 יום / 90 יום / חצי שנה / שנה), ארבעה אריחים (פגישות שנקבעו, שעות יומן שמולאו, ביטולים, שינויי מועד) מול התקופה הקודמת, ׳פגישות לפי יום׳ עם ממוצע 7 ימים, ו׳מאיפה הגיעו ההזמנות׳. מספרים להדגמה, מסומנים.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="admin" style="grid-template-columns:1fr">
+      <div class="admin-main">
+        <div class="admin-head"><h4>נתונים וביצועים · 1–30 בספטמבר</h4><div class="pills"><span class="pill">היום</span><span class="pill">7 ימים</span><span class="pill on">30 יום</span><span class="pill">90 יום</span><span class="pill">חצי שנה</span><span class="pill">שנה</span><span class="pill">כל המטפלים ▾</span></div></div>
+        <div class="kpis">
+          <div class="kpi"><div class="l">פגישות שנקבעו</div><div class="v">184</div><div class="d">▲ 23% לעומת 30 הימים שלפני</div></div>
+          <div class="kpi"><div class="l">שעות יומן שמולאו</div><div class="v">112</div><div class="d">▲ 18% לעומת 30 הימים שלפני</div></div>
+          <div class="kpi"><div class="l">ביטולים</div><div class="v">7</div><div class="d">▼ 36% לעומת 30 הימים שלפני</div></div>
+          <div class="kpi"><div class="l">שינויי מועד</div><div class="v">15</div><div class="d">ללא שינוי לעומת 30 הימים שלפני</div></div>
+        </div>
+        <div class="charts">
+          <div class="chart"><h5>פגישות לפי יום</h5>
+            <svg viewBox="0 0 520 140" role="img" aria-label="פגישות לפי יום, 30 יום, עם ממוצע 7 ימים">
+              <g fill="#0f8a86">
+                <rect x="10" y="92" width="12" height="36" rx="2"/><rect x="26" y="80" width="12" height="48" rx="2"/><rect x="42" y="98" width="12" height="30" rx="2"/><rect x="58" y="74" width="12" height="54" rx="2"/><rect x="74" y="86" width="12" height="42" rx="2"/><rect x="90" y="122" width="12" height="6" rx="2"/><rect x="106" y="116" width="12" height="12" rx="2"/>
+                <rect x="122" y="84" width="12" height="44" rx="2"/><rect x="138" y="70" width="12" height="58" rx="2"/><rect x="154" y="90" width="12" height="38" rx="2"/><rect x="170" y="64" width="12" height="64" rx="2"/><rect x="186" y="78" width="12" height="50" rx="2"/><rect x="202" y="120" width="12" height="8" rx="2"/><rect x="218" y="118" width="12" height="10" rx="2"/>
+                <rect x="234" y="76" width="12" height="52" rx="2"/><rect x="250" y="58" width="12" height="70" rx="2"/><rect x="266" y="82" width="12" height="46" rx="2"/><rect x="282" y="52" width="12" height="76" rx="2"/><rect x="298" y="68" width="12" height="60" rx="2"/><rect x="314" y="118" width="12" height="10" rx="2"/><rect x="330" y="114" width="12" height="14" rx="2"/>
+                <rect x="346" y="66" width="12" height="62" rx="2"/><rect x="362" y="48" width="12" height="80" rx="2"/><rect x="378" y="72" width="12" height="56" rx="2"/><rect x="394" y="40" width="12" height="88" rx="2"/><rect x="410" y="60" width="12" height="68" rx="2"/><rect x="426" y="116" width="12" height="12" rx="2"/><rect x="442" y="112" width="12" height="16" rx="2"/><rect x="458" y="62" width="12" height="66" rx="2"/><rect x="474" y="44" width="12" height="84" rx="2"/>
+              </g>
+              <polyline points="16,98 60,96 110,94 160,92 210,88 260,84 310,80 360,76 410,72 480,68" fill="none" stroke="#1b2523" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <line x1="6" y1="128" x2="514" y2="128" stroke="#e4ddcf"/>
+              <text x="10" y="12" font-size="9" fill="#5d6763">1.9</text><text x="470" y="12" font-size="9" fill="#5d6763">30.9</text>
+            </svg>
+            <div class="lg"><span><i style="background:#0f8a86"></i>פגישות</span><span><i style="background:#1b2523;height:2px;vertical-align:3px"></i>ממוצע 7 ימים</span></div>
+          </div>
+          <div class="chart"><h5>מאיפה הגיעו ההזמנות</h5>
+            <div style="display:flex;align-items:center;gap:16px">
+              <svg viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="טופס הזמנה באתר 66%, צ׳אטבוט 26%, הצוות ביומן 8%">
+                <circle cx="60" cy="60" r="44" fill="none" stroke="#119a95" stroke-width="22" stroke-dasharray="182.4 276.5" transform="rotate(-90 60 60)"/>
+                <circle cx="60" cy="60" r="44" fill="none" stroke="#c9712b" stroke-width="22" stroke-dasharray="71.9 276.5" stroke-dashoffset="-184.4" transform="rotate(-90 60 60)"/>
+                <circle cx="60" cy="60" r="44" fill="none" stroke="#5a6fb5" stroke-width="22" stroke-dasharray="20.2 276.5" stroke-dashoffset="-258.3" transform="rotate(-90 60 60)"/>
+              </svg>
+              <div class="bars" style="flex:1">
+                <div style="grid-template-columns:1fr 2.5em"><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#119a95;margin-inline-end:6px"></i>טופס הזמנה באתר</span><span>121</span></div>
+                <div style="grid-template-columns:1fr 2.5em"><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#c9712b;margin-inline-end:6px"></i>צ׳אטבוט</span><span>47</span></div>
+                <div style="grid-template-columns:1fr 2.5em"><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#5a6fb5;margin-inline-end:6px"></i>הצוות ביומן</span><span>16</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="illus">נתוני הדגמה, לא של מרפאה אמיתית. לחיצה על יום בגרף מצמצמת את כל העמוד לאותו יום.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="data-demand" data-title="ביקוש, טיפולים, ביטולים והגעה" data-status="new" data-why="שלושת המקטעים של העמוד האמיתי: ׳ביקוש׳ (שעות וימים מבוקשים, ומתי מטופלים קובעים), ׳טיפולים ומטפלים׳, ו׳ביטולים והגעה׳ (כמה התראה נתן ביטול, מי הגיע). הכותרות והרמזים מועתקים מהמסך.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><p class="eyebrow">ביקוש</p><h2 class="display display--sub">מתי מטופלים רוצים להגיע, <span class="ital">ומתי הם קובעים.</span></h2></div>
+    <div class="charts" style="grid-template-columns:1fr 1fr">
+      <div class="chart"><h5>שעות מבוקשות</h5><p class="illus" style="margin:0 0 8px">השעות שבהן מטופלים רוצים להגיע</p>
+        <svg viewBox="0 0 420 110" role="img" aria-label="פגישות לפי שעת הפגישה, 08:00 עד 20:00">
+          <g fill="#0f8a86"><rect x="10" y="70" width="26" height="30" rx="3"/><rect x="42" y="40" width="26" height="60" rx="3"/><rect x="74" y="30" width="26" height="70" rx="3"/><rect x="106" y="44" width="26" height="56" rx="3"/><rect x="138" y="62" width="26" height="38" rx="3"/><rect x="170" y="80" width="26" height="20" rx="3"/><rect x="202" y="66" width="26" height="34" rx="3"/><rect x="234" y="50" width="26" height="50" rx="3"/><rect x="266" y="36" width="26" height="64" rx="3"/><rect x="298" y="26" width="26" height="74" rx="3"/><rect x="330" y="48" width="26" height="52" rx="3"/><rect x="362" y="84" width="26" height="16" rx="3"/></g>
+          <line x1="6" y1="100" x2="414" y2="100" stroke="#e4ddcf"/>
+          <text x="16" y="109" font-size="8" fill="#5d6763">08</text><text x="112" y="109" font-size="8" fill="#5d6763">11</text><text x="208" y="109" font-size="8" fill="#5d6763">14</text><text x="304" y="109" font-size="8" fill="#5d6763">17</text><text x="368" y="109" font-size="8" fill="#5d6763">19</text>
+        </svg>
+      </div>
+      <div class="chart"><h5>באיזו שעה מטופלים קובעים</h5><p class="illus" style="margin:0 0 8px">השעה ביממה שבה מטופלים נכנסים וקובעים פגישה, לא שעת הפגישה</p>
+        <svg viewBox="0 0 420 110" role="img" aria-label="הזמנות לפי שעת הקביעה, 24 שעות">
+          <g fill="#0f8a86"><rect x="10" y="94" width="12" height="6" rx="2"/><rect x="26" y="96" width="12" height="4" rx="2"/><rect x="42" y="98" width="12" height="2" rx="2"/><rect x="58" y="98" width="12" height="2" rx="2"/><rect x="74" y="98" width="12" height="2" rx="2"/><rect x="90" y="96" width="12" height="4" rx="2"/><rect x="106" y="90" width="12" height="10" rx="2"/><rect x="122" y="80" width="12" height="20" rx="2"/><rect x="138" y="66" width="12" height="34" rx="2"/><rect x="154" y="62" width="12" height="38" rx="2"/><rect x="170" y="68" width="12" height="32" rx="2"/><rect x="186" y="72" width="12" height="28" rx="2"/><rect x="202" y="70" width="12" height="30" rx="2"/><rect x="218" y="74" width="12" height="26" rx="2"/><rect x="234" y="76" width="12" height="24" rx="2"/><rect x="250" y="72" width="12" height="28" rx="2"/><rect x="266" y="66" width="12" height="34" rx="2"/><rect x="282" y="58" width="12" height="42" rx="2"/><rect x="298" y="50" width="12" height="50" rx="2"/><rect x="314" y="40" width="12" height="60" rx="2"/><rect x="330" y="34" width="12" height="66" rx="2"/><rect x="346" y="36" width="12" height="64" rx="2"/><rect x="362" y="48" width="12" height="52" rx="2"/><rect x="378" y="74" width="12" height="26" rx="2"/></g>
+          <line x1="6" y1="100" x2="414" y2="100" stroke="#e4ddcf"/>
+          <text x="12" y="109" font-size="8" fill="#5d6763">00</text><text x="108" y="109" font-size="8" fill="#5d6763">06</text><text x="204" y="109" font-size="8" fill="#5d6763">12</text><text x="300" y="109" font-size="8" fill="#5d6763">18</text><text x="378" y="109" font-size="8" fill="#5d6763">23</text>
+        </svg>
+        <p class="illus">השיא בערב: אחרי שהמרפאה כבר סגורה.</p>
+      </div>
+      <div class="chart"><h5>סוגי טיפולים</h5><p class="illus" style="margin:0 0 8px">הטיפולים המבוקשים ביותר</p>
+        <div class="bars">
+          <div><span>ניקוי אבנית</span><i style="width:100%"></i><span>61</span></div>
+          <div><span>ייעוץ ראשוני</span><i style="width:72%"></i><span>44</span></div>
+          <div><span>ביקורת</span><i style="width:54%"></i><span>33</span></div>
+          <div><span>הלבנת שיניים</span><i style="width:38%"></i><span>23</span></div>
+          <div><span>אחר</span><i style="width:38%;background:#9fb3ae"></i><span>23</span></div>
+        </div>
+      </div>
+      <div class="chart"><h5>ביטולים והגעה</h5><p class="illus" style="margin:0 0 8px">כמה התראה נתן ביטול, ומי הגיע בפועל</p>
+        <div class="bars">
+          <div><span>יותר משבוע מראש</span><i style="width:60%"></i><span>3</span></div>
+          <div><span>עד שבוע מראש</span><i style="width:40%"></i><span>2</span></div>
+          <div><span>יום מראש</span><i style="width:20%"></i><span>1</span></div>
+          <div><span>באותו יום</span><i style="width:20%"></i><span>1</span></div>
+        </div>
+        <div class="bars" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--cream-2)">
+          <div><span>הגיעו</span><i style="width:100%"></i><span>128</span></div>
+          <div><span>לא הגיעו</span><i style="width:5%;background:#a8503f"></i><span>6</span></div>
+          <div><span>לא סומן</span><i style="width:16%;background:#9fb3ae"></i><span>21</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="illus">נתוני הדגמה. ״לפי מטפל״ ו״ימים מבוקשים״ קיימים גם הם; לא צוירו כאן.</p>
+  </div>
+</section>
+</template>
+
+<template data-sec="data-agent" data-title="אוטומציות והסוכן, במספרים" data-status="new" data-why="שני המקטעים האחרונים של העמוד האמיתי: ׳אוטומציות ומעקב׳ (הזמנות שנשלחו, קבעו מההזמנות, הסכימו לקבל עדכונים) ו׳נתוני סוכן ה-AI׳ (למרפאות בחבילת ה-AI). בחבילת הקביעה המקטע של הסוכן מוצג נעול עם נתוני דוגמה.">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">אוטומציות ומעקב</p>
+      <h2 class="display display--sub">כמה הזמנות יצאו, <span class="ital">וכמה חזרו כפגישה.</span></h2>
+      <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-top:14px">
+        <div class="kpi"><div class="l">הזמנות שנשלחו</div><div class="v">142</div></div>
+        <div class="kpi"><div class="l">קבעו מההזמנות</div><div class="v">31%</div><div class="d">44 פגישות נקבעו דרך ההזמנה</div></div>
+        <div class="kpi"><div class="l">הסכימו לקבל עדכונים</div><div class="v">68%</div><div class="d">212 מתוך 311 מטופלים</div></div>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow">נתוני סוכן ה-AI</p>
+      <h2 class="display display--sub">מה אורלי עשתה <span class="ital">בשביל המרפאה.</span></h2>
+      <div class="kpis" style="margin-top:14px">
+        <div class="kpi"><div class="l">שיחות</div><div class="v">312</div></div>
+        <div class="kpi"><div class="l">הסתיימו בפגישה</div><div class="v">47</div></div>
+        <div class="kpi"><div class="l">שיעור קביעת פגישה</div><div class="v">15%</div></div>
+        <div class="kpi"><div class="l">פניות לצוות</div><div class="v">19</div></div>
+      </div>
+      <p class="illus">בחבילת הקביעה בלבד המקטע הזה מוצג נעול, עם דוגמה. <a href="#" data-goto="chatbot" style="color:var(--teal-deep);font-weight:600">על הסוכן ›</a></p>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="data-use" data-title="מה עושים עם זה (3 דוגמאות)" data-status="new" data-why="המספרים לבד לא מוכרים. שלוש החלטות שמרפאה מקבלת מהעמוד: שעות קבלה, איזה טיפול לקדם, ומתי להוסיף מטפל. כל דוגמה נשענת על גרף שקיים.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><h2 class="display display--sub">שלוש החלטות <span class="ital">שהעמוד הזה עוזר לקבל.</span></h2></div>
+    <div class="three">
+      <div class="card"><h3>לפתוח ערב אחד בשבוע?</h3><p>״שעות מבוקשות״ מראה שהשעות 17:00–19:00 מתמלאות ראשונות, ו״באיזו שעה מטופלים קובעים״ מראה שהם קובעים ב-21:00. הביקוש קיים גם כשהמרפאה סגורה.</p></div>
+      <div class="card"><h3>איזה טיפול לקדם?</h3><p>״סוגי טיפולים״ מראה מה המטופלים מבקשים לבד. טיפול שנמצא נמוך ברשימה אבל חשוב למרפאה הוא מועמד לתזכורת חוזרת.</p></div>
+      <div class="card"><h3>מתי להוסיף מטפל?</h3><p>״לפי מטפל״ ו״ימים מבוקשים״ מראים על מי העומס נופל ובאיזה יום. ״שעות יומן שמולאו״ מול התקופה הקודמת אומר אם המגמה מחזיקה.</p></div>
+    </div>
+  </div>
+</section>
+</template>
+<!-- ============ reliability.html (new page) ============ -->
+<template data-sec="rel-head" data-title="פתיח: עובד גם כשאופטימה לא" data-status="new" data-why="עמוד חדש לסעיף 11 ב-features.md. מרפאות שעובדות עם אופטימה מכירות את התקלות שלה; זו ההזדמנות להגיד שאורלי לא נופלת איתה.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">אמינות והחיבור לאופטימה</p>
+    <h1 class="display display--page">עובד גם כשאופטימה <span class="ital">לא.</span></h1>
+    <p class="section-lead section-lead--intro">אורלי כותבת ישר ליומן האופטימה של המרפאה, בזמן אמת. וכשאופטימה לא זמינה, היא ממשיכה לעבוד מעותק של היומן, שומרת כל פגישה, וכותבת אותה ברגע שאופטימה חוזרת. המטופלים לא מרגישים כלום. המרפאה רואה הכול.</p>
+  </div>
+</section>
+</template>
+
+<template data-sec="rel-outage" data-title="מה קורה בתקלה (ארבעה שלבים)" data-status="new" data-why="CalendarView.vue ו-features.md §11: מפסק זרם מזהה את התקלה, פגישות נכנסות לתור, נכתבות כשאופטימה חוזרת (הקרובה קודם, בקצב), והתנגשויות מדווחות. מה שהצוות רואה: ׳אין חיבור לאופטימה׳, ׳פגישות אופטימה מוצגות מעותק מ־׳, סימן ⚠.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2 class="display display--sub">תקלה באופטימה, <span class="ital">צעד אחרי צעד.</span></h2></div>
+    <div class="flow">
+      <div class="st bad"><div class="ic">!</div><b>אורלי מזהה</b><small>אחרי כמה קריאות שלא נענות, אורלי מפסיקה לנסות ומסמנת: ״אין חיבור לאופטימה״.</small></div>
+      <div class="st"><div class="ic">1</div><b>השעות מהעותק</b><small>היומן של אורלי מראה ״פגישות אופטימה מוצגות מעותק מ־12:00״. המטופלים רואים שעות פנויות כרגיל.</small></div>
+      <div class="st"><div class="ic">2</div><b>הפגישה בתור</b><small>המטופל מקבל אישור. ביומן של אורלי הפגישה מסומנת ⚠ ״טרם נרשם ביומן אופטימה״.</small></div>
+      <div class="st"><div class="ic">3</div><b>נכתבת כשחוזרים</b><small>הקרובות קודם, בקצב שאופטימה עומדת בו. נתפסה השעה? הפעמון והמייל אומרים ״השעה נתפסה — להתקשר למטופל״.</small></div>
+    </div>
+    <div class="two" style="margin-top:28px;align-items:start">
+      <div class="admin" style="grid-template-columns:1fr;min-height:0">
+        <div class="admin-main">
+          <div class="admin-head"><h4>יומן · שני 7.9</h4><div class="pills"><span class="pill warn"><span class="dot-warn"></span>אין חיבור לאופטימה</span></div></div>
+          <p style="font-size:.76rem;color:var(--ink-soft);margin:0 0 10px">פגישות אופטימה מוצגות מעותק מ־7.9 12:00</p>
+          <div class="cal" style="grid-template-columns:44px 1fr">
+            <div class="t">09:00</div><div><span class="ev" style="position:static;display:block">ניקוי · רונית לוי</span></div>
+            <div class="t">10:00</div><div><span class="ev queued" style="position:static;display:block">⚠ ייעוץ · טל שדה · טרם נרשם ביומן אופטימה</span></div>
+            <div class="t">11:00</div><div><span class="ev p2" style="position:static;display:block">הלבנה · מאיה רז</span></div>
+          </div>
+        </div>
+      </div>
+      <ul class="check-list" style="margin:0">
+        <li>המטופל לא רואה הודעת תקלה. ההזמנה שלו נשמרת והאישור נשלח</li>
+        <li>הצוות רואה נקודה אדומה, את זמן העותק, וסימן ⚠ על כל פגישה שמחכה</li>
+        <li>מייל ״הזמנה חדשה״ למרפאה נשלח רק אחרי שהפגישה באמת נרשמה באופטימה</li>
+        <li>פגישה שלא נרשמה מחכה בפעמון ב״מחכה לטיפול״ עד שמסמנים שטופלה</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="rel-copy" data-title="העותק של היומן (כל שעה, כל לילה)" data-status="new" data-why="features.md §11: עותקים שעתיים ולילִיים של היומן, כדי שהזמינות ידועה גם בתקלה. הסבר קצר שמסביר למה השלב הקודם אפשרי בכלל.">
+<section class="section">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">העותק</p>
+      <h2 class="display display--sub">אורלי זוכרת את היומן <span class="ital">גם כשאופטימה שותקת.</span></h2>
+      <p class="section-lead">כל שעה אורלי מעתיקה את הפגישות הקרובות מאופטימה, וכל לילה את כל טווח הקביעה. זה מה שמאפשר לה להציע שעות פנויות אמיתיות גם בתקלה, ולסמן אחר כך בדיוק מה השתנה.</p>
+    </div>
+    <div class="card">
+      <div class="timeline" style="margin-top:6px">
+        <div class="tl"><i></i><b>כל שעה</b>הימים הקרובים</div>
+        <div class="tl"><i></i><b>כל לילה</b>כל טווח הקביעה</div>
+        <div class="tl mail"><i></i><b>בתקלה</b>השעות מהעותק</div>
+        <div class="tl"><i></i><b>כשחוזרים</b>השוואה וכתיבה</div>
+      </div>
+      <p class="illus">יום שאין לו עותק לא נפתח לקביעה בתקלה: ״אין חיבור לאופטימה ואין לנו עותק של היום הזה״.</p>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="rel-native" data-title="נכתב לאופטימה כמו כל פגישה" data-status="new" data-why="features.md §11: אינטגרציה מקורית, יצירה/הזזה/ביטול ביומן האמיתי, רשומות מטופלים קיימות נשמרות ולא מוכפלות, בזמן אמת ולא סנכרון לילי. זו התשובה ל׳זה עוד מערכת שתתנגש עם אופטימה?׳">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2 class="display display--sub">לא עוד יומן. <span class="ital">אותו יומן.</span></h2></div>
+    <div class="four">
+      <div class="card"><h3>בזמן אמת</h3><p>הפגישה נכתבת לאופטימה ברגע האישור, לא בסנכרון לילי. המזכירה רואה אותה מיד.</p></div>
+      <div class="card"><h3>יצירה, הזזה, ביטול</h3><p>שינוי מהאתר, מהצ׳אט או מהיומן של אורלי מגיע לאופטימה. ביטול מהקישור במייל מבטל גם שם.</p></div>
+      <div class="card"><h3>בלי כפילויות</h3><p>מטופל שכבר קיים באופטימה מזוהה, והפגישה נרשמת על הרשומה שלו. לא נוצרת רשומה חדשה.</p></div>
+      <div class="card"><h3>הפגישות של אופטימה נשארות שלה</h3><p>פגישות שנקבעו בטלפון מוצגות ביומן של אורלי לקריאה בלבד. אורלי נוגעת רק במה שנקבע דרכה.</p></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="rel-security" data-title="אבטחה ופרטיות (חמש עובדות)" data-status="new" data-why="features.md §11, §2 ו-integration.html הקיים: פרטי אופטימה מוצפנים, כל מסך תחום למרפאה, קוד חד-פעמי לכל קביעה, iframe מבודד, שיחות נמחקות אחרי 90 יום. מאחד את הטענות הפזורות באתר.">
+<section class="section">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">מה שומר על המטופלים, <span class="ital">ועל המרפאה.</span></h2>
+    <ul class="check-list">
+      <li>פרטי החיבור לאופטימה של כל מרפאה נשמרים מוצפנים, וכל מסך וכל קריאה במערכת תחומים למרפאה אחת</li>
+      <li>כל קביעה, שינוי וביטול מאושרים בקוד חד־פעמי לאימייל של המטופל. אין חשבונות ואין סיסמאות למטופלים</li>
+      <li>הווידג׳ט רץ ב-iframe מבודד באתר שלכם. פרטי מטופלים לא עוברים דרך העמוד הציבורי ולא נשמרים בו</li>
+      <li>מזהה המרפאה בקטע ההטמעה הוא ציבורי, לא מפתח. אין מה לחשוף בטעות</li>
+      <li>שיחות עם הסוכן נמחקות אוטומטית אחרי 90 יום, ופרטים מזהים מוסתרים מהתמלילים שהצוות קורא</li>
+    </ul>
+    <p class="section-note">הפרטים המשפטיים המלאים: <a href="#" data-goto="privacy" style="color:var(--teal-deep);font-weight:600">מדיניות הפרטיות</a>.</p>
+  </div>
+</section>
+</template>
+
+<!-- ============ integration.html ============ -->
+<template data-sec="int-head" data-title="פתיח: אורלי, בעיצוב שלכם" data-status="exists" data-why="הכותרת הקיימת. העמוד נשאר מחוץ לתפריט הראשי: הוא מגיע למי שאחראי על האתר דרך קישור.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">התאמה אישית ומדריך טכני</p>
+    <h1 class="display display--page">אורלי, <span class="ital">בעיצוב שלכם.</span></h1>
+    <p class="section-lead section-lead--intro">הכול כאן: איך להתאים את המראה והמיילים לאורלי בלי לגעת בקוד, ואיך מי שאחראי על האתר מוסיף את קטע ההטמעה. סקרנים? תמשיכו לקרוא. רק רוצים לשלוח את זה למישהו? יש קישור למטה.</p>
+  </div>
+</section>
+</template>
+
+<template data-sec="int-theme" data-title="סטודיו העיצוב (לוגו, צבעים, גופן, מיקום)" data-status="changed" data-why="הסקשן הקיים ׳עיצוב אישי, בלי קוד׳, ועכשיו עם מסך הסטודיו עצמו (WidgetThemeSection.vue): ארבע לשוניות, שש ערכות (ברירת מחדל, חמים, ירוק, ורוד, ענבר, אפור), צבע מדויק, חמישה גופנים, פינה ומרחקים, ותצוגה מקדימה חיה שמראה גם את המיילים.">
+<section class="section alt">
+  <div class="wrap two">
+    <div>
+      <h2 class="display display--sub">עיצוב אישי, <span class="ital">בלי קוד.</span></h2>
+      <p class="section-lead">במסך ״עיצוב קביעת פגישה״ בוחרים איך הווידג׳ט נראה, ורואים אותו משתנה בתצוגה מקדימה חיה. אותו עיצוב עובר גם למיילים שהמטופלים מקבלים.</p>
+      <ul class="check-list">
+        <li>שש ערכות צבע מוכנות, או צבע ראשי, רקע וטקסט מדויקים של המרפאה</li>
+        <li>לוגו שמופיע בווידג׳ט ובכל מייל, וגופן מתוך חמישה</li>
+        <li>פינה ומרחק מהקצה, כדי שהכפתור לא יסתיר את כפתור הנגישות</li>
+        <li>איפוס צבעים וגופן בלחיצה</li>
+      </ul>
+    </div>
+    <div class="admin" style="grid-template-columns:1fr;min-height:0">
+      <div class="admin-main">
+        <div class="admin-head"><h4>עיצוב קביעת פגישה</h4><div class="pills"><span class="pill">לוגו</span><span class="pill on">צבעים</span><span class="pill">גופן</span><span class="pill">מיקום הכפתור באתר</span></div></div>
+        <div class="fld"><label>ערכות מוכנות</label><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="pill on">ברירת מחדל</span><span class="pill">חמים</span><span class="pill">ירוק</span><span class="pill">ורוד</span><span class="pill">ענבר</span><span class="pill">אפור</span></div></div>
+        <div class="swatches"><span style="background:#0f8a86"></span><span style="background:#c2612f"></span><span style="background:#2f6b45"></span><span style="background:#b2456e"></span><span style="background:#c9982f"></span><span style="background:#4a5560"></span></div>
+        <div class="two" style="gap:10px;align-items:start">
+          <div class="form">
+            <div class="fld"><label>צבע ראשי</label><div class="in ltr">#0f8a86</div></div>
+            <div class="fld"><label>צבע רקע</label><div class="in ltr">#fffdf8</div></div>
+            <div class="fld"><label>צבע טקסט</label><div class="in ltr">#1b2523</div></div>
+          </div>
+          <div class="browser" style="max-width:none;box-shadow:var(--shadow-sm)"><div class="wg" style="padding:12px"><div class="wg-title" style="font-size:.9rem">תצוגה מקדימה חיה</div><div class="wg-slots" style="margin:6px 0 8px"><span>09:30</span><span class="on">10:30</span><span>12:00</span></div><div class="wg-btn" style="padding:7px;font-size:.8rem">המשך</div><p class="illus" style="margin-top:8px">כך ייראו גם האימיילים</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="int-mail" data-title="תבניות האימייל (עורך הבלוקים)" data-status="new" data-why="EmailTemplateWorkspace.vue: תשע תבניות (שש למטופל, שלוש לצוות), עורך עם 19 שדות שנשתלים כצ׳יפים, תצוגה מקדימה, איפוס לנוסח ברירת המחדל, ותוכן משותף (חתימה, כותרת תחתונה, מפה). היום מוזכר במשפט אחד בלבד.">
+<section class="section">
+  <div class="wrap two">
+    <div class="admin" style="grid-template-columns:1fr;min-height:0">
+      <div class="admin-main">
+        <div class="admin-head"><h4>תבניות אימייל · מייל אישור הזמנה</h4><div class="pills"><span class="pill on">עריכה</span><span class="pill">תצוגה מקדימה</span></div></div>
+        <div class="fld"><label>נושא המייל</label><div class="in">הפגישה שלכם ב<span class="pill" style="padding:0 6px">שם המרפאה</span> נקבעה</div></div>
+        <div class="fld" style="margin-top:8px"><label>תוכן המייל</label><div class="in" style="line-height:2">שלום <span class="pill" style="padding:0 6px">שם המטופל/ת</span>, הפגישה שלכם ל<span class="pill" style="padding:0 6px">סוג הטיפול</span> אצל <span class="pill" style="padding:0 6px">שם המטפל/ת</span> נקבעה ל<span class="pill" style="padding:0 6px">תאריך</span> בשעה <span class="pill" style="padding:0 6px">שעה</span>. לשינוי או ביטול: <span class="pill" style="padding:0 6px">קישור לניהול הפגישה</span></div></div>
+        <div class="fld" style="margin-top:8px"><label>שדות שאפשר לשתול בטקסט</label><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="pill">מחיר</span><span class="pill">כתובת המרפאה</span><span class="pill">תיאור הטיפול</span><span class="pill">טלפון</span><span class="pill">לוגו</span><span class="pill">חתימה</span><span class="pill">כותרת תחתונה</span><span class="pill">+ הוספת שדה</span></div></div>
+        <p style="font-size:.74rem;color:var(--ink-soft);margin:10px 0 0">איפוס לנוסח ברירת המחדל · 1,412 תווים נותרו · נשמר</p>
+      </div>
+    </div>
+    <div>
+      <h2 class="display display--sub">כל מייל, <span class="ital">במילים שלכם.</span></h2>
+      <p class="section-lead">תשע תבניות: אישור, שינוי מועד, ביטול וקוד אימות למטופל, הזמנה לשלב הבא ותזכורת חוזרת, ושלוש התראות לצוות. כותבים חופשי ושותלים שדות שמתמלאים לבד.</p>
+      <ul class="check-list">
+        <li>חתימה, כותרת תחתונה וקישור למפה משותפים לכל המיילים</li>
+        <li>שדות חובה, כמו קוד האימות או קישור ההסרה, לא נעלמים בטעות</li>
+        <li>ביטול וביצוע מחדש, תצוגה מקדימה, ואיפוס לנוסח המקורי</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="int-embed" data-title="קטע ההטמעה" data-status="exists" data-why="הסקשן הקיים עם שורת הקוד. נשאר. במסך הניהול הקוד נוצר ב׳הגדרות מתקדמות › הטמעה באתר׳.">
+<section class="section alt">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">קטע ההטמעה</h2>
+    <p class="section-lead">שורת קוד אחת, בכל מקום בעמוד. כפתור צף בפינת המסך, שנפתח לחלון קביעת פגישה מרחף. מעתיקים אותה מ״הגדרות מתקדמות״ במסך הניהול.</p>
+    <div class="code"><span class="c-com">&lt;!-- Orli booking widget --&gt;</span><br><span class="c-tag">&lt;script</span> <span class="c-attr">src</span>=<span class="c-str">"https://cdn.orliclinic.com/embed.js"</span> <span class="c-attr">data-clinic-id</span>=<span class="c-str">"your-clinic"</span><span class="c-tag">&gt;&lt;/script&gt;</span></div>
+    <p class="section-note">המראה של הווידג׳ט והמיקום שלו נקבעים במסך הניהול, לא בקוד. שורת ההטמעה נשארת בדיוק כפי שהיא, גם אחרי שמשנים צבע, לוגו, גופן או פינה, וגם כשמפעילים את הסוכן.</p>
+    <ul class="check-list">
+      <li>עובד עם כל אתר מרפאה, בלי תהליך בנייה ובלי תלות בפריימוורק</li>
+      <li>מזהה המרפאה נעול למרפאה שלכם בלבד ולא חושף שום מידע רגיש</li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<template data-sec="int-scope" data-title="מה זה נוגע, ומה לא" data-status="exists" data-why="הסקשן הקיים. נשאר.">
+<section class="section">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">מה זה נוגע, <span class="ital">ומה לא.</span></h2>
+    <ul class="check-list">
+      <li>שורת קוד אחת, שום דבר להתקין ושום דבר לתחזק בצד שלכם</li>
+      <li>רץ בתוך iframe מבודד עם ההרשאות המינימליות הדרושות לו בלבד</li>
+      <li>לא נוגע בעיצוב, בסקריפטים או בשאר האתר שלכם, מעבר לכפתור או לאזור שבו הוא מוטמע</li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<template data-sec="int-data" data-title="נתונים ופרטיות" data-status="exists" data-why="הסקשן הקיים. נשאר.">
+<section class="section alt">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">נתונים <span class="ital">ופרטיות.</span></h2>
+    <p class="section-lead">פרטי מטופלים לעולם לא נחשפים בעמוד הציבורי שלכם. הם עוברים ישירות בין המטופל לאורלי, בתוך ה-iframe המבודד.</p>
+    <ul class="check-list">
+      <li>אימות מתבצע בקוד חד־פעמי שנשלח לאימייל של המטופל, לפני שנקבעת פגישה</li>
+      <li>אין למטופלים חשבון או סיסמה לניהול, ואין מה לדלוף מהם</li>
+      <li>מזהה המרפאה בקטע ההטמעה הוא ציבורי, לא מפתח סודי</li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<template data-sec="int-optima" data-title="חיבור לאופטימה (קישור לעמוד האמינות)" data-status="changed" data-why="הסקשן הקיים, בשני משפטים, ועכשיו מוביל לעמוד האמינות החדש במקום להסתיים כאן.">
+<section class="section">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">חיבור <span class="ital">לאופטימה.</span></h2>
+    <p class="section-lead">אורלי כותבת ישירות ליומן האופטימה שלכם ברגע שפגישה נקבעת, בזמן אמת ולא כסנכרון לילי. הפגישה פשוט מופיעה אצלכם. וכשאופטימה לא זמינה, הפגישה מחכה ונכתבת כשהיא חוזרת.</p>
+    <p><a href="#" data-goto="reliability" style="color:var(--teal-deep);font-weight:600">מה קורה בתקלה, צעד אחרי צעד ›</a></p>
+  </div>
+</section>
+</template>
+
+<template data-sec="int-multi" data-title="יותר מסניף אחד?" data-status="exists" data-why="הסקשן הקיים. features.md מציין שמרפאה מרובת-סניפים לא נבנתה; הנוסח הקיים מדבר על הטמעה נפרדת לכל סניף, שזה נכון.">
+<section class="section alt">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">יותר מסניף <span class="ital">אחד?</span></h2>
+    <p class="section-lead">כל מרפאה מקבלת יומן משלה מאותה התקנה, לפי מזהה המרפאה בקטע ההטמעה. אם יש לכם כמה סניפים, כל אחד מהם מוטמע בנפרד עם המזהה שלו.</p>
+  </div>
+</section>
+</template>
+
+<!-- ============ start.html (new page) ============ -->
+<template data-sec="start-head" data-title="פתיח: שיחה אחת, ובאותו יום באוויר" data-status="new" data-why="עמוד חדש לסעיף 12 ב-features.md (onboarding). הנוסח המותר: ׳אנחנו מקימים אתכם׳. אסור: הרשמה עצמית, ניסיון, תשלום אונליין, אשף אחרי הכניסה.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">איך מתחילים</p>
+    <h1 class="display display--page">שיחה אחת, <span class="ital">ובאותו יום זה באוויר.</span></h1>
+    <p class="section-lead section-lead--intro">אנחנו מקימים אתכם: שיחה קצרה, אופטימה מחוברת, המטפלים מיובאים, והווידג׳ט חי באתר באותו יום. לא צריך ללמוד מערכת חדשה, ולא להעביר שום דבר מאופטימה.</p>
+    <div class="page-actions"><a href="#" class="btn-dark lg">לקביעת שיחה</a></div>
+  </div>
+</section>
+</template>
+
+<template data-sec="start-steps" data-title="שישה צעדים (מה אנחנו, מה אתם)" data-status="new" data-why="הצעדים המדויקים מ-features.md §12: אנחנו פותחים את המרפאה וקובעים חבילה, מנהל/ת מוזמן במייל, מייבאים מטפלים ומגדירים שעות, מדביקים את ההטמעה ובוחרים עיצוב, ובחבילת ה-AI מלמדים את הסוכן.">
+<section class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2 class="display display--sub">מה קורה <span class="ital">אחרי השיחה.</span></h2></div>
+    <ol class="steps">
+      <li><h3>אנחנו פותחים את המרפאה</h3><p>שם, חיבור לאופטימה והחבילה שבחרתם. זה הצד שלנו.</p></li>
+      <li><h3>אתם מקבלים הזמנה במייל</h3><p>מנהל/ת המרפאה נכנס/ת מהקישור, בוחר/ת סיסמה, ומזמין/ה את שאר הצוות.</p></li>
+      <li><h3>מייבאים את המטפלים</h3><p>בלחיצה אחת מאופטימה. מגדירים שעות עבודה והיעדרויות, מוסיפים טיפולים עם מחירים, ומסנכרנים את החגים.</p></li>
+      <li><h3>שורה אחת לאתר</h3><p>מי שאחראי על האתר מדביק את קטע ההטמעה. אתם בוחרים צבעים, לוגו ונוסח למיילים.</p></li>
+      <li><h3>בחבילת ה-AI: מלמדים את אורלי</h3><p>מדביקים את כתובת האתר, מאשרים את העובדות שמצאה, קובעים סגנון ונושאים להעברה, ומנסים בלשונית הבדיקה.</p></li>
+      <li><h3>נתקעתם? אנחנו במסך הבא</h3><p>תמיכה מתוך מסך הניהול, עם צילומי מסך. תשובה במייל תוך יום עסקים.</p></li>
+    </ol>
+  </div>
+</section>
+</template>
+
+<template data-sec="start-packages" data-title="שתי חבילות: קביעה, או קביעה + AI" data-status="new" data-why="features.md: שתי חבילות, booking ו-ai, והמחיר החודשי נקבע למרפאה. המחיר לא מפורסם באתר (אין מחירון), אז הכרטיס אומר ׳בשיחה׳. במסך הניהול השמות הם ׳קביעת תורים׳ ו׳קביעת תורים + AI׳.">
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><h2 class="display display--sub">שתי חבילות. <span class="ital">אותו יומן.</span></h2><p class="section-lead">מתחילים מקביעה, ומוסיפים את הסוכן כשמוכנים. בלי להתקין מחדש ובלי לשנות את האתר.</p></div>
+    <div class="two" style="max-width:900px;margin-inline:auto;align-items:stretch">
+      <div class="card card--teal"><span class="tag">קביעת תורים</span><h3>הכול חוץ מהסוכן</h3>
+        <ul class="check-list" style="margin-top:10px;font-size:.92rem"><li>קביעה, שינוי וביטול מהאתר, ישר לאופטימה</li><li>מסך ניהול: יומן, מטפלים, טיפולים, משתמשים</li><li>תזכורות חוזרות ורצפי טיפול</li><li>עיצוב ומיילים בנוסח שלכם</li><li>נתונים וביצועים</li><li>התראות לצוות, תמיכה מתוך המסך</li></ul>
+        <p style="margin-top:16px"><b>מחיר חודשי:</b> נקבע בשיחה, לפי המרפאה.</p></div>
+      <div class="card card--teal"><span class="tag">קביעת תורים + AI</span><h3>הכול, ואורלי עונה</h3>
+        <ul class="check-list" style="margin-top:10px;font-size:.92rem"><li>כל מה שבחבילת הקביעה</li><li>סוכן AI באתר: עונה, מציע מועדים, קובע</li><li>ידע מהאתר שלכם, באישורכם</li><li>פניות לצוות עם השיחה מאחוריהן</li><li>נתוני הסוכן בעמוד הנתונים</li><li>לשונית בדיקה לנסות לפני המטופלים</li></ul>
+        <p style="margin-top:16px"><b>מחיר חודשי:</b> נקבע בשיחה, לפי המרפאה.</p></div>
+    </div>
+  </div>
+</section>
+</template>
+
+<template data-sec="start-need" data-title="מה צריך להכין" data-status="new" data-why="רשימה קצרה שמקצרת את שיחת ההקמה: פרטי אופטימה, מי אחראי על האתר, לוגו וצבעים, כתובת האתר לסוכן, מיילים להתראות.">
+<section class="section alt">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">מה כדאי להכין <span class="ital">לשיחה.</span></h2>
+    <ul class="check-list">
+      <li>שם המשתמש והסיסמה של המרפאה באופטימה (אנחנו בודקים את החיבור יחד)</li>
+      <li>מי אחראי על אתר המרפאה, כדי להדביק שורה אחת</li>
+      <li>לוגו, וצבע או שניים של המרפאה</li>
+      <li>כתובות מייל שיקבלו התראות על הזמנות ופניות</li>
+      <li>בחבילת ה-AI: כתובת האתר, ומי במרפאה מאשר את העובדות</li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<template data-sec="start-faq" data-title="שאלות על ההתחלה" data-status="new" data-why="שלוש שאלות שעולות לפני הסכמה: צריך מתכנת, אפשר להתחיל בלי AI, ומה אם נפסיק.">
+<section class="section">
+  <div class="wrap narrow">
+    <ul class="faq">
+      <li class="faq-item open"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>צריך מתכנת?</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>לא. מי שמתחזק את האתר מדביק שורה אחת פעם אחת. כל השאר, מהצבעים ועד נוסח המיילים והסוכן, נעשה במסך הניהול.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>אפשר להתחיל מקביעה ולהוסיף את הסוכן אחר כך?</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>כן. החבילה משתנה אצלנו, והסוכן מופיע במסך הניהול שלכם. הכפתור באתר מתפצל ל״לקביעת פגישה״ ו״שאלו את אורלי״ ברגע שמפעילים אותו, בלי לגעת בשורת ההטמעה.</p></div></div></li>
+      <li class="faq-item"><button class="faq-btn" type="button"><span class="faq-plus">+</span><span class="faq-q"><span>ומה אם נרצה להפסיק?</span></span></button><div class="faq-panel"><div class="faq-panel-inner"><p>מורידים את השורה מהאתר, והכפתור נעלם. כל הפגישות שנקבעו כבר יושבות באופטימה, כמו כל פגישה אחרת, ונשארות שם.</p></div></div></li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<!-- ============ about.html ============ -->
+<template data-sec="about-head" data-title="פתיח: למה בנינו את אורלי" data-status="exists" data-why="הקיים. אין צוות, מימון או מספר לקוחות להציג (PRODUCT.md), ולא ממציאים.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <p class="eyebrow">אודות</p>
+    <h1 class="display display--page">למה בנינו <span class="ital">את אורלי.</span></h1>
+    <p class="section-lead section-lead--intro">אופטימה מנהלת את היומן של המרפאה ועושה את זה טוב. מה שחיפשנו היה ערוץ נוסף לצידה, כזה שמאפשר גם למטופלים לקבוע בעצמם, בלי לעבור דרך הטלפון. בנינו את אורלי כדי להרחיב את אותו יומן גם לאתר המרפאה: תוספת לצד מה שכבר עובד, לא החלפה שלו.</p>
+  </div>
+</section>
+</template>
+
+<template data-sec="about-how" data-title="איך אנחנו עובדים" data-status="exists" data-why="הקיים. העיקרון ׳אומרים רק מה שכבר קיים׳ הוא גם הכלל של כל העמודים החדשים כאן.">
+<section class="section alt">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">איך אנחנו <span class="ital">עובדים.</span></h2>
+    <ul class="check-list">
+      <li>אורלי עובדת יחד עם אופטימה ומרחיבה אותה לאתר. שום דבר לא משתנה לצוות שכבר יודע לעבוד שם</li>
+      <li>אומרים רק מה שכבר קיים. יכולות שבדרך מסומנות ככאלה, ולא מוצגות כאילו הן זמינות היום</li>
+      <li>המנגנון הוא הטענה, לא רשימת פיצ׳רים: אותו יומן שיש למרפאה כבר, פתוח למטופלים</li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<!-- ============ privacy.html ============ -->
+<template data-sec="priv-head" data-title="מדיניות פרטיות (טיוטה)" data-status="exists" data-why="הטיוטה הקיימת, עם הבאנר והסימונים ׳להשלמה משפטית׳. נשארת מחוץ לאינדקס עד ייעוץ משפטי.">
+<section class="section page-head">
+  <div class="wrap narrow">
+    <div class="notice-banner"><strong>טיוטה.</strong> העמוד הזה הוא מבנה בלבד. הסעיפים המסומנים <span class="legal-todo">[להשלמה משפטית]</span> ממתינים לייעוץ משפטי, ובעיקר לשאלה אם נתוני פגישה וסוג טיפול של מטופל מזוהה הם ״מידע רגיש״ לפי תיקון 13 לחוק הגנת הפרטיות.</div>
+    <p class="eyebrow">אמון</p>
+    <h1 class="display display--page">מדיניות <span class="ital">פרטיות.</span></h1>
+  </div>
+</section>
+</template>
+
+<template data-sec="priv-agent" data-title="סעיף חדש: שיחות עם הסוכן" data-status="new" data-why="CLAUDE.md: הסוכן שומר כל תור בשיחה ושולח את הודעות המטופלים למודל שפה ב-Amazon Bedrock. חייב סעיף משלו במדיניות לפני שמטופלים מגיעים אליו, באותה בדיקה משפטית כמו השאר.">
+<section class="section alt">
+  <div class="wrap narrow">
+    <h2 class="display display--sub">שיחות עם <span class="ital">הסוכן.</span></h2>
+    <ul class="check-list" style="list-style:none">
+      <li>תוכן השיחה נשמר 90 יום לצורכי אבטחה ובקרה, ונמחק אוטומטית. נשארת ספירה בלבד</li>
+      <li>הודעות המטופל נשלחות למודל שפה (Amazon Bedrock) כדי לנסח תשובה. <span class="legal-todo">[להשלמה משפטית: מעבד, מיקום, הסכם עיבוד]</span></li>
+      <li>טלפונים, אימיילים ומספרי זהות מוסתרים מהתמלילים שצוות המרפאה קורא, אלא אם המטופל ביקש שיחזרו אליו</li>
+      <li>בסיס משפטי לעיבוד: <span class="legal-todo">[להשלמה משפטית]</span></li>
+    </ul>
+  </div>
+</section>
+</template>
+
+<template data-sec="priv-body" data-title="גוף המדיניות (קטגוריות תיקון 13)" data-status="exists" data-why="הקיים: מי אוספים, מה, למה, למי מועבר, כמה זמן, זכויות, Google Fonts ו-Cal.com. לא ממלאים פלייסהולדרים בלי החלטה משפטית.">
+<section class="section">
+  <div class="wrap narrow">
+    <ul class="check-list" style="list-style:none">
+      <li>מי אנחנו ואיך פונים: <span class="legal-todo">[להשלמה משפטית]</span></li>
+      <li>איזה מידע נאסף: שם, טלפון, אימייל, מועד וסוג הפגישה, הסכמה לתזכורות</li>
+      <li>למה: קביעת הפגישה באופטימה, אישור וקוד אימות, תזכורות רק בהסכמה</li>
+      <li>למי מועבר: המרפאה שבה נקבעה הפגישה, אופטימה, ספק המייל, Google Fonts ו-Cal.com באתר הזה</li>
+      <li>כמה זמן נשמר: <span class="legal-todo">[להשלמה משפטית]</span></li>
+      <li>הזכויות שלכם: עיון, תיקון, מחיקה, הסרה מתזכורות</li>
+      <li>ממונה על הגנת הפרטיות: <span class="legal-todo">[להשלמה משפטית: האם נדרש]</span></li>
+    </ul>
+  </div>
+</section>
+</template>
+<div class="toast" id="toast" role="status"></div>
+<dialog class="export" id="exportDlg">
+  <div class="exp-head"><h2>ייצוא התוכנית</h2><button class="btn-plain" type="button" data-close>סגירה</button></div>
+  <div class="exp-body"><textarea id="exportText" readonly aria-label="התוכנית כטקסט"></textarea></div>
+  <div class="exp-actions"><button class="btn-teal" type="button" id="copyExport">העתקה</button></div>
+</dialog>
+<script>
+(function () {
+  'use strict';
+  /* ---------- registry: every section is a <template data-sec> ---------- */
+  var SECTIONS = {};
+  Array.prototype.forEach.call(document.querySelectorAll('template[data-sec]'), function (t) {
+    SECTIONS[t.dataset.sec] = { id: t.dataset.sec, title: t.dataset.title || t.dataset.sec, status: t.dataset.status || 'exists', why: t.dataset.why || '', tpl: t };
+  });
+  var STATUS_LABEL = { exists: 'קיים', 'new': 'חדש', changed: 'לעדכן', video: 'וידאו' };
+
+  /* The proposal: pages in nav order, sections in page order. */
+  var DEFAULT_PLAN = {
+    pages: [
+      { id: 'index', title: 'ראשי', file: 'index.html', nav: true, sections: ['hero', 'bridge', 'demo', 'overview', 'film', 'agent-teaser', 'auto-teaser', 'data-teaser', 'compare', 'outage-teaser', 'start-teaser', 'roadmap', 'faq', 'cta'] },
+      { id: 'panel', title: 'מסך הניהול', file: 'panel.html', nav: true, sections: ['panel-head', 'panel-walk', 'panel-calendar', 'panel-bell', 'panel-users', 'panel-support', 'panel-value', 'cta'] },
+      { id: 'chatbot', title: 'סוכן AI', file: 'chatbot.html', nav: true, sections: ['bot-head', 'bot-how', 'bot-knowledge', 'bot-control', 'bot-handoff', 'bot-myappt', 'bot-privacy', 'bot-test', 'bot-film', 'bot-numbers', 'bot-optima', 'cta'] },
+      { id: 'automations', title: 'אוטומציות', file: 'automations.html', nav: true, sections: ['auto-head', 'auto-rule', 'auto-seq', 'auto-mail', 'auto-optout', 'auto-run', 'auto-faq', 'cta'] },
+      { id: 'analytics', title: 'נתונים', file: 'analytics.html', nav: true, sections: ['data-head', 'data-dash', 'data-demand', 'data-agent', 'data-use', 'cta'] },
+      { id: 'reliability', title: 'אמינות', file: 'reliability.html', nav: false, sections: ['rel-head', 'rel-outage', 'rel-copy', 'rel-native', 'rel-security', 'cta'] },
+      { id: 'integration', title: 'התאמה אישית', file: 'integration.html', nav: false, sections: ['int-head', 'int-theme', 'int-mail', 'int-embed', 'int-scope', 'int-data', 'int-optima', 'int-multi', 'cta'] },
+      { id: 'start', title: 'איך מתחילים', file: 'start.html', nav: false, sections: ['start-head', 'start-steps', 'start-packages', 'start-need', 'start-faq', 'cta'] },
+      { id: 'about', title: 'אודות', file: 'about.html', nav: true, sections: ['about-head', 'about-how', 'cta'] },
+      { id: 'privacy', title: 'מדיניות פרטיות', file: 'privacy.html', nav: false, sections: ['priv-head', 'priv-agent', 'priv-body'] }
+    ],
+    hidden: {},
+    notes: {}
+  };
+
+  var plan = clone(DEFAULT_PLAN);
+  var current = { page: 'index', sec: null };
+  var mode = 'edit';
+  var db = null, saveTimer = null, dbReady = false;
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function toast(msg) { var t = $('#toast'); t.textContent = msg; t.classList.add('is-on'); clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove('is-on'); }, 1800); }
+
+  /* ---------- plan helpers ---------- */
+  function pageOf(sid) { for (var i = 0; i < plan.pages.length; i++) if (plan.pages[i].sections.indexOf(sid) > -1) return plan.pages[i]; return null; }
+  function page(pid) { for (var i = 0; i < plan.pages.length; i++) if (plan.pages[i].id === pid) return plan.pages[i]; return null; }
+  /* 'cta' is shared by many pages: it is keyed per page as "cta" in the list,
+     so moving it moves only that page's copy. Section ids are unique per page. */
+  function moveSec(pid, sid, dir) {
+    var p = page(pid), i = p.sections.indexOf(sid), j = i + dir;
+    if (i < 0 || j < 0 || j >= p.sections.length) return;
+    p.sections.splice(i, 1); p.sections.splice(j, 0, sid);
+    current.sec = sid; commit();
+  }
+  function moveSecTo(fromPid, sid, toPid, index) {
+    var from = page(fromPid), to = page(toPid);
+    if (!from || !to) return;
+    if (from === to) {
+      var i = from.sections.indexOf(sid); if (i < 0) return;
+      from.sections.splice(i, 1);
+      if (index > i) index--;
+      from.sections.splice(Math.max(0, Math.min(index, from.sections.length)), 0, sid);
+    } else {
+      from.sections.splice(from.sections.indexOf(sid), 1);
+      if (to.sections.indexOf(sid) > -1) { from.sections.push(sid); toast('הסקשן כבר קיים בעמוד הזה'); return; }
+      to.sections.splice(Math.max(0, Math.min(index, to.sections.length)), 0, sid);
+    }
+    current.page = toPid; current.sec = sid; commit();
+  }
+  function movePage(pid, dir) {
+    var i = plan.pages.indexOf(page(pid)), j = i + dir;
+    if (j < 0 || j >= plan.pages.length) return;
+    var p = plan.pages.splice(i, 1)[0]; plan.pages.splice(j, 0, p); commit();
+  }
+  function toggleHidden(pid, sid) { var k = pid + '/' + sid; if (plan.hidden[k]) delete plan.hidden[k]; else plan.hidden[k] = true; commit(); }
+  function isHidden(pid, sid) { return !!plan.hidden[pid + '/' + sid]; }
+
+  /* ---------- rendering: sidebar ---------- */
+  function renderSide() {
+    var host = $('#pages'); host.innerHTML = '';
+    plan.pages.forEach(function (p, pi) {
+      var g = document.createElement('div'); g.className = 'pg' + (p.id === current.page ? ' is-current' : ''); g.dataset.page = p.id;
+      var visible = p.sections.filter(function (s) { return !isHidden(p.id, s); }).length;
+      g.innerHTML = '<div class="pg-head" draggable="true"><span class="grip" title="גררו לשינוי סדר העמודים">⋮⋮</span>' +
+        '<span class="t"><b>' + esc(p.title) + '</b><small>' + esc(p.file) + '</small></span>' +
+        '<label class="nav-ck" title="מופיע בתפריט הראשי"><input type="checkbox" ' + (p.nav ? 'checked' : '') + '> תפריט</label>' +
+        '<span class="n">' + visible + '</span>' +
+        '<span class="ar" style="display:inline-flex;gap:2px"><button type="button" data-pup title="למעלה">▲</button><button type="button" data-pdn title="למטה">▼</button></span></div>';
+      var ul = document.createElement('ul'); ul.className = 'pg-list';
+      p.sections.forEach(function (sid) {
+        var s = SECTIONS[sid]; if (!s) return;
+        var li = document.createElement('li');
+        li.className = 'row' + (isHidden(p.id, sid) ? ' is-hidden' : '') + (p.id === current.page && sid === current.sec ? ' is-current' : '');
+        li.draggable = true; li.dataset.sec = sid; li.dataset.page = p.id;
+        li.innerHTML = '<span class="grip">⋮⋮</span><span class="label">' + esc(s.title) + '</span><span class="chip ' + s.status + '">' + STATUS_LABEL[s.status] + '</span>' +
+          '<span class="ar"><button type="button" data-up title="למעלה">▲</button><button type="button" data-dn title="למטה">▼</button></span>';
+        ul.appendChild(li);
+      });
+      g.appendChild(ul); host.appendChild(g);
+    });
+  }
+
+  /* ---------- rendering: the page replica ---------- */
+  function navHtml(cur) {
+    var links = plan.pages.filter(function (p) { return p.nav; }).map(function (p) {
+      return '<a href="#" data-goto="' + p.id + '"' + (p.id === cur ? ' aria-current="page"' : '') + '>' + esc(p.title) + '</a>';
+    }).join('');
+    return '<header class="nav"><div class="wrap"><div class="nav-pill"><a href="#" data-goto="index" class="brand"><img class="brand-logo" src="media/orli-wordmark-he.png" alt="אורלי"></a>' +
+      '<nav class="nav-links" aria-label="ניווט ראשי">' + links + '</nav><div class="nav-cta"><a href="#" class="btn-dark">לקביעת דמו</a></div></div></div></header>';
+  }
+  function footerHtml() {
+    var all = plan.pages.map(function (p) { return '<a href="#" data-goto="' + p.id + '">' + esc(p.title) + '</a>'; });
+    return '<footer class="footer"><div class="wrap footer-inner"><div class="footer-brand"><img class="brand-logo" src="media/orli-wordmark-he.png" alt="אורלי" style="height:44px"><p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p></div>' +
+      '<nav class="footer-cols"><div class="footer-col"><h3 class="footer-col-h">מוצר</h3>' + all.slice(1, 6).join('') + '</div><div class="footer-col"><h3 class="footer-col-h">הטמעה ואמון</h3>' + all.slice(6, 8).join('') + '<a href="#">שאלות נפוצות</a><a href="#" data-goto="privacy">מדיניות פרטיות</a></div><div class="footer-col"><h3 class="footer-col-h">חברה</h3><a href="#" data-goto="about">אודות</a><a href="#">צרו קשר</a></div><div class="footer-col"><h3 class="footer-col-h">בואו נתחיל</h3><a href="#">לקביעת דמו</a><a href="#" data-goto="start">איך מתחילים</a></div></nav></div>' +
+      '<div class="wrap footer-bottom"><span>© 2026 אורלי.</span><span>נבנה למרפאות בישראל · מגשרים על הישן, בעדינות.</span></div></footer>';
+  }
+  function renderPage() {
+    var p = page(current.page) || plan.pages[0]; current.page = p.id;
+    var host = $('#page'); host.innerHTML = '';
+    $('#frameUrl').textContent = 'orliclinic.com/' + (p.file === 'index.html' ? '' : p.file);
+    var site = document.createElement('div'); site.className = 'site';
+    site.innerHTML = navHtml(p.id);
+    var others = plan.pages.map(function (q) { return '<option value="' + q.id + '"' + (q.id === p.id ? ' selected' : '') + '>' + esc(q.title) + '</option>'; }).join('');
+    p.sections.forEach(function (sid, i) {
+      var s = SECTIONS[sid]; if (!s) return;
+      var w = document.createElement('div');
+      w.className = 'sec' + (isHidden(p.id, sid) ? ' is-hidden' : '') + (sid === current.sec ? ' is-current' : '');
+      w.dataset.sec = sid; w.id = 'sec-' + sid;
+      var note = plan.notes[p.id + '/' + sid] || '';
+      w.innerHTML = '<div class="sec-tools"><span class="chip ' + s.status + '">' + STATUS_LABEL[s.status] + '</span><span class="nm">' + esc(s.title) + '</span>' +
+        '<button type="button" class="grip" title="גררו בסרגל הצד">⋮⋮</button>' +
+        '<button type="button" data-up title="הזזה למעלה"' + (i === 0 ? ' disabled' : '') + '>▲</button><button type="button" data-dn title="הזזה למטה"' + (i === p.sections.length - 1 ? ' disabled' : '') + '>▼</button>' +
+        '<select data-moveto title="העברה לעמוד אחר">' + others + '</select>' +
+        '<button type="button" data-hide title="הסתרה / החזרה">' + (isHidden(p.id, sid) ? 'הצגה' : 'הסתרה') + '</button>' +
+        '<button type="button" data-note title="הערה">הערה</button></div>' +
+        (s.why ? '<p class="sec-why"><b>למה:</b> ' + esc(s.why) + '</p>' : '') +
+        '<div class="sec-note"' + (note ? '' : ' hidden') + '><span>הערה:</span><input type="text" id="note-' + p.id + '-' + sid + '" value="' + esc(note) + '" placeholder="מה לשנות כאן, מה חסר, מה לא נכון…"></div>' +
+        '<div class="site-sec"></div>';
+      w.querySelector('.site-sec').appendChild(s.tpl.content.cloneNode(true));
+      site.appendChild(w);
+    });
+    site.insertAdjacentHTML('beforeend', footerHtml());
+    host.appendChild(site);
+    $$('video', host).forEach(function (v) { v.muted = true; v.playsInline = true; });
+  }
+  function render() { renderSide(); renderPage(); }
+  function commit() { render(); scheduleSave(); }
+
+  /* ---------- persistence: db (shared, readable by Claude) + localStorage ---------- */
+  function setSave(state, text) { var el = $('#save'); el.className = 'save ' + state; el.querySelector('span').textContent = text; }
+  function scheduleSave() {
+    try { localStorage.setItem('orli-site-plan', JSON.stringify(plan)); } catch (e) {}
+    clearTimeout(saveTimer);
+    if (!db) { setSave('is-local', 'נשמר בדפדפן בלבד'); return; }
+    setSave('is-saving', 'שומר…');
+    saveTimer = setTimeout(function () {
+      db.doc('plan/current').set({ plan: plan, updatedAt: new Date().toISOString() }).then(function () { setSave('is-saved', 'נשמר'); })
+        .catch(function () { setSave('is-local', 'נשמר בדפדפן בלבד'); });
+    }, 700);
+  }
+  /* Accept a saved plan only if it still fits the registry: unknown sections
+     are dropped, sections added since are appended to their proposed page. */
+  function adopt(saved) {
+    if (!saved || !saved.pages) return false;
+    var seen = {}, next = { pages: [], hidden: saved.hidden || {}, notes: saved.notes || {} };
+    saved.pages.forEach(function (p) {
+      var d = null; DEFAULT_PLAN.pages.forEach(function (q) { if (q.id === p.id) d = q; });
+      if (!d) return;
+      next.pages.push({ id: d.id, title: d.title, file: d.file, nav: typeof p.nav === 'boolean' ? p.nav : d.nav, sections: (p.sections || []).filter(function (s) { if (!SECTIONS[s] || (seen[s] && s !== 'cta')) return false; seen[s] = true; return true; }) });
+    });
+    DEFAULT_PLAN.pages.forEach(function (d) {
+      var p = null; next.pages.forEach(function (q) { if (q.id === d.id) p = q; });
+      if (!p) { p = clone(d); next.pages.push(p); return; }
+      d.sections.forEach(function (s) { if (s === 'cta' ? p.sections.indexOf('cta') < 0 : !seen[s]) { p.sections.push(s); seen[s] = true; } });
+    });
+    plan = next; return true;
+  }
+  function boot() {
+    try { var l = localStorage.getItem('orli-site-plan'); if (l) adopt(JSON.parse(l)); } catch (e) {}
+    render();
+    var use = window.claude && window.claude.use;
+    if (!use) { setSave('is-local', 'נשמר בדפדפן בלבד'); return; }
+    window.claude.use('db').then(function (ns) {
+      db = ns; if (!db) { setSave('is-local', 'נשמר בדפדפן בלבד'); return; }
+      return db.doc('plan/current').get().then(function (snap) {
+        if (snap.exists) { var d = snap.data(); if (d && adopt(d.plan)) render(); }
+        dbReady = true; setSave('is-saved', 'נשמר');
+      });
+    }).catch(function () { setSave('is-local', 'נשמר בדפדפן בלבד'); });
+  }
+
+  /* ---------- export ---------- */
+  function exportText() {
+    var out = ['# תוכנית האתר של אורלי · ' + new Date().toLocaleDateString('he-IL'), '', 'תפריט ראשי: ' + plan.pages.filter(function (p) { return p.nav; }).map(function (p) { return p.title; }).join(' · '), ''];
+    plan.pages.forEach(function (p, i) {
+      out.push('## ' + (i + 1) + '. ' + p.title + ' (' + p.file + ')' + (p.nav ? '' : ' — לא בתפריט'));
+      p.sections.forEach(function (sid, j) {
+        var s = SECTIONS[sid]; if (!s) return;
+        var line = (j + 1) + '. [' + STATUS_LABEL[s.status] + '] ' + s.title;
+        if (isHidden(p.id, sid)) line = '~~' + line + '~~ (מוסתר)';
+        var n = plan.notes[p.id + '/' + sid]; if (n) line += ' — הערה: ' + n;
+        out.push(line);
+      });
+      out.push('');
+    });
+    return out.join('\n');
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    var go = t.closest('[data-goto]'); if (go) { e.preventDefault(); current.page = go.dataset.goto; current.sec = null; render(); $('#main').scrollTop = 0; return; }
+    if (t.closest('a[href="#"]')) e.preventDefault();
+    var faq = t.closest('.faq-btn'); if (faq) { faq.closest('.faq-item').classList.toggle('open'); return; }
+    var sec = t.closest('.sec'); var pid = current.page;
+    if (sec) {
+      var sid = sec.dataset.sec;
+      if (t.closest('[data-up]')) return moveSec(pid, sid, -1);
+      if (t.closest('[data-dn]')) return moveSec(pid, sid, 1);
+      if (t.closest('[data-hide]')) return toggleHidden(pid, sid);
+      if (t.closest('[data-note]')) { var n = sec.querySelector('.sec-note'); n.hidden = !n.hidden; if (!n.hidden) n.querySelector('input').focus(); return; }
+      if (!t.closest('.sec-tools') && !t.closest('.sec-note')) { current.sec = sid; $$('.sec.is-current').forEach(function (x) { x.classList.remove('is-current'); }); sec.classList.add('is-current'); renderSide(); }
+    }
+    var row = t.closest('.row');
+    if (row) {
+      var rp = row.dataset.page, rs = row.dataset.sec;
+      if (t.closest('[data-up]')) return moveSec(rp, rs, -1);
+      if (t.closest('[data-dn]')) return moveSec(rp, rs, 1);
+      current.page = rp; current.sec = rs; render();
+      var el = $('#sec-' + rs); if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      if (window.innerWidth <= 980) $('#side').classList.remove('is-open');
+      return;
+    }
+    var head = t.closest('.pg-head');
+    if (head) {
+      var hp = head.parentNode.dataset.page;
+      if (t.closest('[data-pup]')) return movePage(hp, -1);
+      if (t.closest('[data-pdn]')) return movePage(hp, 1);
+      if (t.closest('.nav-ck')) return;
+      current.page = hp; current.sec = null; render(); $('#main').scrollTop = 0;
+      if (window.innerWidth <= 980) $('#side').classList.remove('is-open');
+    }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.matches('.nav-ck input')) { var p = page(t.closest('.pg').dataset.page); p.nav = t.checked; commit(); return; }
+    if (t.matches('[data-moveto]')) { var sec = t.closest('.sec'); moveSecTo(current.page, sec.dataset.sec, t.value, 0); $('#main').scrollTop = 0; return; }
+  });
+  document.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t.closest('.sec-note')) { var sec = t.closest('.sec'); plan.notes[current.page + '/' + sec.dataset.sec] = t.value; scheduleSave(); }
+  });
+
+  /* drag and drop in the sidebar: section rows between and within pages, page groups by their head */
+  var drag = null;
+  document.addEventListener('dragstart', function (e) {
+    var row = e.target.closest && e.target.closest('.row');
+    var head = e.target.closest && e.target.closest('.pg-head');
+    if (row) { drag = { kind: 'sec', sec: row.dataset.sec, page: row.dataset.page }; row.classList.add('is-dragging'); }
+    else if (head) { drag = { kind: 'page', page: head.parentNode.dataset.page }; }
+    else return;
+    e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', 'x'); } catch (err) {}
+  });
+  document.addEventListener('dragover', function (e) {
+    if (!drag) return;
+    var row = e.target.closest && e.target.closest('.row'), g = e.target.closest && e.target.closest('.pg');
+    $$('.drop-before,.drop-after').forEach(function (x) { x.classList.remove('drop-before', 'drop-after'); });
+    $$('.pg.is-over').forEach(function (x) { x.classList.remove('is-over'); });
+    if (drag.kind === 'sec' && row) { e.preventDefault(); var r = row.getBoundingClientRect(); row.classList.add(e.clientY < r.top + r.height / 2 ? 'drop-before' : 'drop-after'); }
+    else if (g) { e.preventDefault(); g.classList.add('is-over'); }
+  });
+  document.addEventListener('drop', function (e) {
+    if (!drag) return;
+    var row = e.target.closest && e.target.closest('.row'), g = e.target.closest && e.target.closest('.pg');
+    $$('.drop-before,.drop-after').forEach(function (x) { x.classList.remove('drop-before', 'drop-after'); });
+    $$('.pg.is-over').forEach(function (x) { x.classList.remove('is-over'); });
+    if (!g) { drag = null; return; }
+    e.preventDefault();
+    var toPid = g.dataset.page;
+    if (drag.kind === 'sec') {
+      var idx = page(toPid).sections.length;
+      if (row) { var r = row.getBoundingClientRect(); idx = page(toPid).sections.indexOf(row.dataset.sec) + (e.clientY < r.top + r.height / 2 ? 0 : 1); }
+      if (!(drag.page === toPid && drag.sec === row?.dataset.sec)) moveSecTo(drag.page, drag.sec, toPid, idx);
+    } else if (drag.kind === 'page' && drag.page !== toPid) {
+      var from = plan.pages.indexOf(page(drag.page)), to = plan.pages.indexOf(page(toPid));
+      var p = plan.pages.splice(from, 1)[0]; plan.pages.splice(to, 0, p); commit();
+    }
+    drag = null;
+  });
+  document.addEventListener('dragend', function () { drag = null; $$('.is-dragging,.drop-before,.drop-after,.is-over').forEach(function (x) { x.classList.remove('is-dragging', 'drop-before', 'drop-after', 'is-over'); }); });
+
+  /* top bar */
+  $('#modeEdit').addEventListener('click', function () { mode = 'edit'; document.body.classList.remove('view-mode'); $('#modeEdit').classList.add('is-on'); $('#modeView').classList.remove('is-on'); });
+  $('#modeView').addEventListener('click', function () { mode = 'view'; document.body.classList.add('view-mode'); $('#modeView').classList.add('is-on'); $('#modeEdit').classList.remove('is-on'); });
+  $('#exportBtn').addEventListener('click', function () { $('#exportText').value = exportText(); $('#exportDlg').showModal(); });
+  $('#copyExport').addEventListener('click', function () {
+    var ta = $('#exportText');
+    var done = function () { toast('הועתק'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); done(); });
+    else { ta.select(); try { document.execCommand('copy'); } catch (e) {} done(); }
+  });
+  $$('[data-close]').forEach(function (b) { b.addEventListener('click', function () { b.closest('dialog').close(); }); });
+  $('#resetBtn').addEventListener('click', function () {
+    var b = $('#resetBtn');
+    if (b.dataset.armed) { plan = clone(DEFAULT_PLAN); delete b.dataset.armed; b.textContent = 'איפוס להצעה'; commit(); toast('חזרנו להצעה המקורית'); return; }
+    b.dataset.armed = '1'; b.textContent = 'בטוח? לחצו שוב'; setTimeout(function () { delete b.dataset.armed; b.textContent = 'איפוס להצעה'; }, 3000);
+  });
+  $('#sideToggle').addEventListener('click', function () { $('#side').classList.toggle('is-open'); });
+
+  boot();
+})();
+</script>
