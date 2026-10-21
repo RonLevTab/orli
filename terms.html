@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script>
+    document.documentElement.classList.add('js');
+    // styles.css hides every reveal target behind this class, and only
+    // script.js ever unhides them. If that file does not arrive — a 404, a
+    // dropped connection, a blocked request — the class would leave each
+    // page's headlines, leads and lists at opacity 0 with nothing coming to
+    // reveal them. script.js sets data-reveal-ready the moment it takes over;
+    // if it hasn't, give up the effect and show the page as plain text.
+    setTimeout(function () {
+      var d = document.documentElement;
+      if (!d.hasAttribute('data-reveal-ready')) d.classList.remove('js');
+    }, 3000);
+  </script>
+  <meta name="description" content="טיוטת תנאי השימוש של אורלי, כולל הסכם עיבוד המידע עם המרפאה. טרם עברה בדיקה משפטית." />
+  <title>אורלי · תנאי שימוש (טיוטה)</title>
+
+  <!-- Heebo, self-hosted (styles.css @font-face). Both subsets: every page
+       sets Hebrew and Latin (spaces, digits) in it. -->
+  <link rel="preload" href="assets/fonts/heebo-v28-hebrew.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/heebo-v28-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="styles.css?v=20261022l" />
+  <link rel="stylesheet" href="a11y.css?v=20261022e" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
+
+  <link rel="canonical" href="https://orliclinic.com/terms" />
+  <meta name="theme-color" content="#0f8a86" />
+
+  <!-- Link previews. PRODUCT.md's second audience reaches this site because
+       the decision-maker sends them a link, so a bare URL in WhatsApp or
+       email is a lost handoff. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="אורלי" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:url" content="https://orliclinic.com/terms" />
+  <meta property="og:title" content="אורלי · תנאי שימוש (טיוטה)" />
+  <meta property="og:description" content="טיוטת תנאי השימוש של אורלי, כולל הסכם עיבוד המידע עם המרפאה. טרם עברה בדיקה משפטית." />
+  <meta property="og:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="אורלי · קביעת פגישה באתר המרפאה, ישר ליומן האופטימה" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="אורלי · תנאי שימוש (טיוטה)" />
+  <meta name="twitter:description" content="טיוטת תנאי השימוש של אורלי, כולל הסכם עיבוד המידע עם המרפאה. טרם עברה בדיקה משפטית." />
+  <meta name="twitter:image" content="https://orliclinic.com/assets/brand/orli-og.png" />
+  <meta name="robots" content="noindex" />
+  <!-- Accessibility menu. In the head so the visitor's saved settings are
+       applied before the first paint, and before the scripts that animate. -->
+  <script src="a11y.js?v=20261019h"></script>
+</head>
+<body>
+  <span id="top" aria-hidden="true"></span>
+
+  <!-- TOP NAV -->
+  <header class="nav">
+    <div class="wrap">
+      <div class="nav-pill">
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he" src="assets/brand/orli-wordmark-he.png?v=20261019h" width="480" height="151" alt="אורלי" />
+        </a>
+        <nav class="nav-links" id="navMenu" aria-label="ניווט ראשי">
+          <a href="index.html">ראשי</a>
+          <a href="features.html">היכולות</a>
+          <a href="panel.html">מסך הניהול</a>
+          <a href="pricing.html">מחירים</a>
+          <a href="about.html">אודות</a>
+        </nav>
+        <button class="nav-toggle" type="button" id="navToggle"
+                aria-expanded="false" aria-controls="navMenu" aria-label="תפריט">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+        <div class="nav-cta">
+          <a data-start-cta data-demo-cta href="index.html#contact" class="btn-dark">להתחיל בחינם</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section page-head page-head--short">
+      <div class="wrap narrow">
+        <h1 class="display display--page display--page-sm">תנאי שימוש <span class="ital">(טיוטה).</span></h1>
+      </div>
+    </section>
+
+    <section class="section section--flush-top">
+      <div class="wrap narrow">
+        <div class="notice-banner">
+          <strong>זו טיוטת עבודה, לא מסמך משפטי סופי.</strong> העמוד בנוי לפי מה שהחוק דורש מספק שירות שמחזיק מידע של מטופלים בשביל מרפאות: חוק הגנת הפרטיות ותיקון 13 שלו, ותקנות הגנת הפרטיות (אבטחת מידע) התשע״ז־2017, ובפרט תקנה 15 על מסירת מידע לגורם חיצוני. מקומות שמסומנים <code class="legal-todo">[להשלמה משפטית]</code> מחכים לעורך/ת דין. גרסה: 2026-10-21.
+        </div>
+
+        <h2 class="display display--sub-sm">מי אנחנו, ועל מה ההסכם</h2>
+        <p class="section-lead">אורלי (<code class="legal-todo">[שם החברה, ח״פ וכתובת יתווספו עם רישום החברה]</code>) מפעילה שירות שמאפשר למטופלים לקבוע תורים באתר של המרפאה, ישר ליומן האופטימה שלה, ועוזר למרפאה לנהל אותם. המרפאה שפותחת חשבון היא ״הלקוח״. פתיחת החשבון וסימון התיבה בטופס ההרשמה הם הסכמה לתנאים האלה ולמדיניות הפרטיות. אנחנו שומרים אצלנו איזו גרסה אושרה, מתי ובאיזו כתובת אימייל.</p>
+
+        <h2 class="display display--sub-sm display--spaced">פתיחת החשבון</h2>
+        <ul class="check-list check-list--plain">
+          <li>מי שפותח את החשבון מצהיר שהוא רשאי לפעול בשם המרפאה ולהתקשר בשמה</li>
+          <li>הפרטים בהרשמה צריכים להיות נכונים, וכתובת האימייל צריכה להיות מאושרת דרך הקישור שנשלח אליה</li>
+          <li>פרטי הכניסה לאופטימה שהמרפאה מוסרת לנו הם שלה, והיא מאשרת לנו להשתמש בהם כדי לקרוא את היומן ולקבוע בו תורים. אנחנו שומרים אותם מוצפנים</li>
+          <li>שמירה על הסיסמה, ועל מי שמקבל גישה לחשבון מטעם המרפאה, באחריות המרפאה. על חשד לשימוש לא מורשה מודיעים לנו מיד</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">תקופת הניסיון והתשלום</h2>
+        <ul class="check-list check-list--plain">
+          <li>לרגל ההשקה, כל החבילות בחינם ל־30 יום מפתיחת החשבון, כולל סוכן ה־AI. לא מבקשים פרטי תשלום כדי להתחיל</li>
+          <li>לפני שתקופת הניסיון נגמרת נודיע במייל מה המחיר של החבילה שנבחרה ואיך ממשיכים. בלי הסכמה מפורשת לא גובים כלום</li>
+          <li>המחירים מופיעים בעמוד המחירים, לחודש ולא כוללים מע״מ. אין התחייבות לתקופה, ואפשר להפסיק בסוף כל חודש</li>
+          <li>אמצעי התשלום והחשבוניות יפורסמו כאן לפני שנתחיל לגבות. עד אז לא גובים כלום</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">מה אורלי עושה, ומה לא</h2>
+        <ul class="check-list check-list--plain">
+          <li>אורלי מציגה למטופלים את הזמנים הפנויים מהיומן של המרפאה, קובעת בו את התור ושולחת אישורים ותזכורות</li>
+          <li>אורלי לא נותנת ייעוץ רפואי ולא מחליפה שיקול דעת רפואי. סוכן ה־AI עונה רק מתוך מה שהמרפאה אישרה, ואומר למטופל שהוא סוכן ממוחשב</li>
+          <li>היומן באופטימה נשאר היומן של המרפאה. אנחנו עושים מאמץ סביר שהשירות יעבוד כל הזמן, וכשאופטימה לא זמינה התורים נשמרים אצלנו ונכתבים ליומן כשהיא חוזרת. אין התחייבות לזמינות מלאה</li>
+          <li>התוכן שהמרפאה מכניסה (שירותים, מחירים, תיאורים, הוראות לסוכן) הוא באחריותה, ועליה לוודא שהוא נכון</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">שירות בשלב השקה (בטא)</h2>
+        <ul class="check-list check-list--plain">
+          <li>אורלי נמצאת בשלב השקה ופיתוח פעיל. השירות ניתן כמו שהוא (AS IS) וכפי שהוא זמין, בלי התחייבות שיתאים לצורך מסוים</li>
+          <li>יכולות עשויות להשתנות, להתווסף או להיות מוסרות, ומדי פעם ייתכנו תקלות, שגיאות או זמן שבו השירות לא זמין, כולל במעבר של תורים בין אורלי לאופטימה</li>
+          <li>על שינוי מהותי ביכולות שהמרפאה משתמשת בהן נודיע מראש ככל האפשר</li>
+          <li>בזמן הבטא נשמח לכל הערה. תקלה מדווחים מתוך מסך הניהול, בעמוד התמיכה, או באימייל</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">אחריות המרפאה</h2>
+        <ul class="check-list check-list--plain">
+          <li>היומן באופטימה הוא המקור הקובע. המרפאה בודקת ביומן את התורים שנקבעו דרך אורלי, ולא מסתמכת על אורלי כגיבוי של היומן או של המידע שלה</li>
+          <li>המרפאה היא בעלת המאגר של המטופלים שלה, ולכן אחראית לשימוש החוקי במידע: יידוע המטופלים, הסכמה לקבלת תזכורות ומיילי מעקב, וסודיות רפואית לפי חוק זכויות החולה וחוק הגנת הפרטיות</li>
+          <li>מכניסים לשירות רק את מה שצריך כדי לקבוע תור. לא מכניסים אבחנות, סיכומי ביקור או מידע רפואי אחר, גם לא בהוראות לסוכן ובתיאורי השירותים</li>
+          <li>התוכן שהמרפאה מכניסה, והתשובות שסוכן ה־AI נותן על בסיסו, באחריות המרפאה. כדאי לעבור על הידע שהסוכן מציע לפני שמאשרים אותו, ולבדוק אותו בלשונית הבדיקה</li>
+          <li>כל פעולה שנעשית מחשבון של המרפאה נחשבת כפעולה שלה. נותנים גישה רק למי שצריך, ומסירים גישה ממי שעזב</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">שימוש מותר</h2>
+        <ul class="check-list check-list--plain">
+          <li>משתמשים בשירות רק כדי לקבוע ולנהל תורים של המרפאה ולתקשר עם המטופלים שלה</li>
+          <li>תזכורות ומיילי מעקב נשלחים רק למטופלים שהסכימו לקבל אותם, וכל מייל כזה כולל דרך להסיר את עצמם</li>
+          <li>אסור לנסות לעקוף את מנגנוני האבטחה, לגשת למידע של מרפאה אחרת, או להשתמש בשירות לשליחת דברי פרסומת שלא התבקשו</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">מידע של מטופלים: הסכם עיבוד מידע</h2>
+        <p class="section-lead">המידע על המטופלים שייך למרפאה. המרפאה היא בעלת המאגר, ואורלי מחזיקה ומעבדת את המידע בשבילה בלבד. הסעיף הזה הוא ההסכם בכתב שתקנה 15 לתקנות אבטחת המידע דורשת.</p>
+        <ul class="check-list check-list--plain">
+          <li><strong>איזה מידע:</strong> שם, טלפון ואימייל של מטופלים, התורים שלהם (מטפל, סוג טיפול, מועד), נוכחות, הסכמה לקבלת מיילים, ותוכן שיחות עם סוכן ה־AI</li>
+          <li><strong>לאיזו מטרה:</strong> רק כדי לתת למרפאה את השירות: קביעת תורים, שינוי וביטול, אישורים ותזכורות, מענה של הסוכן, ונתונים למרפאה עצמה. לא מוכרים מידע, לא משתמשים בו לפרסום שלנו, ולא מאמנים עליו מודלים</li>
+          <li><strong>מי ניגש:</strong> רק אנשי צוות של אורלי שצריכים את זה כדי לתפעל את השירות או לטפל בפנייה של המרפאה, והם מחויבים בסודיות</li>
+          <li><strong>אבטחה:</strong> הצפנה בתעבורה, פרטי הכניסה לאופטימה מוצפנים גם באחסון, הפרדה מלאה בין מרפאות והרשאות לפי תפקיד. השרתים באיחוד האירופי, ואבטחת המידע נעשית לפי תקנות הגנת הפרטיות (אבטחת מידע)</li>
+          <li><strong>ספקי משנה:</strong> Amazon Web Services (שרתים ומודל ה־AI, באזור שטוקהולם, האיחוד האירופי), Brevo (שליחת מיילים, צרפת). פנייה לתמיכה עוברת לצוות דרך Slack אחרי שמוחקים ממנה טלפונים, מיילים ומספרי זהות. על ספק משנה חדש נודיע מראש</li>
+          <li><strong>אירוע אבטחה:</strong> אם יהיה חשד לדליפה או לגישה לא מורשית למידע של המרפאה, נודיע לה בלי דיחוי, נפרט מה קרה ומה עשינו, ונעזור לה לדווח לרשות להגנת הפרטיות כשנדרש</li>
+          <li><strong>זכויות המטופלים:</strong> מטופל שמבקש לעיין במידע עליו, לתקן או למחוק אותו פונה למרפאה. אנחנו נעזור למרפאה לענות, ומה שיגיע אלינו ישירות נעביר אליה</li>
+          <li><strong>כמה זמן נשמר:</strong> שיחות עם סוכן ה־AI נמחקות אחרי 90 יום. שאר המידע נשמר כל עוד המרפאה משתמשת בשירות</li>
+          <li><strong>בסוף ההתקשרות:</strong> המרפאה יכולה לבקש עותק של המידע שלה. 30 יום אחרי סגירת החשבון נמחק את המידע, חוץ ממה שהחוק מחייב לשמור</li>
+          <li><strong>בקרה:</strong> נמסור למרפאה, לפי בקשה, דיווח על אמצעי האבטחה שלנו ועל עמידה בהסכם הזה</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">קניין רוחני</h2>
+        <p class="section-lead">השירות, הקוד והעיצוב שייכים לאורלי. המרפאה מקבלת רשות שימוש בשירות כל עוד החשבון פעיל. התוכן והמידע של המרפאה נשארים שלה.</p>
+
+        <h2 class="display display--sub-sm display--spaced">אחריות</h2>
+        <ul class="check-list check-list--plain">
+          <li>במידה המרבית שהדין מתיר, אורלי לא תהיה אחראית לנזק עקיף או תוצאתי, לאובדן הכנסות, רווחים או מוניטין, לתור שהוחמץ, נקבע פעמיים או לא נרשם ביומן, או לנזק שנגרם מתקלה באופטימה, אצל ספקי משנה, ברשת או בתוכן שהמרפאה הכניסה</li>
+          <li>בכל מקרה, האחריות הכוללת של אורלי כלפי המרפאה מוגבלת לסכום ששולם לאורלי ב־12 החודשים שלפני האירוע. בתקופת הניסיון, כשלא שולם דבר, השירות ניתן בלי אחריות כספית</li>
+          <li>ההגבלה לא חלה על נזק שנגרם בכוונה, או במקרה שהדין לא מאפשר להגביל בו אחריות</li>
+          <li>המרפאה תשפה את אורלי על תביעה של צד שלישי, כולל מטופל, שנובעת מהפרת התנאים על ידה, מהתוכן שהכניסה, או משימוש לא חוקי במידע של המטופלים שלה</li>
+          <li>אף צד לא יהיה אחראי לעיכוב או לתקלה שנגרמו מנסיבות שאינן בשליטתו, כמו הפסקת שירות של ספק תשתית, תקלה באופטימה, מלחמה או אסון טבע</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">סיום ההתקשרות</h2>
+        <ul class="check-list check-list--plain">
+          <li>המרפאה יכולה לסגור את החשבון מתי שהיא רוצה, דרך פנייה אלינו מתוך מסך הניהול</li>
+          <li>אנחנו רשאים להשעות או לסגור חשבון שמפר את התנאים או שלא שולם, אחרי הודעה מראש, חוץ ממקרה שבו צריך לעצור מיד כדי להגן על מידע של מטופלים</li>
+          <li>חשבון שנפתח ולא אושרה בו כתובת האימייל ולא חובר ליומן תוך שבוע נמחק מעצמו</li>
+        </ul>
+
+        <h2 class="display display--sub-sm display--spaced">שינויים בתנאים</h2>
+        <p class="section-lead">כשהתנאים משתנים בדבר מהותי נודיע במייל ובמסך הניהול לפחות 30 יום מראש, ונבקש לאשר את הגרסה החדשה. גרסת התנאים מופיעה בראש העמוד.</p>
+
+        <h2 class="display display--sub-sm display--spaced">דין וסמכות שיפוט</h2>
+        <p class="section-lead">על ההסכם חל הדין הישראלי. סמכות השיפוט הבלעדית לבתי המשפט המוסמכים בתל אביב־יפו.</p>
+
+        <h2 class="display display--sub-sm display--spaced">יצירת קשר</h2>
+        <p class="section-lead">שאלות על התנאים או על המידע: באימייל ל־<a href="mailto:ron@orliclinic.com" dir="ltr">ron@orliclinic.com</a> או ל־<a href="mailto:daniel@orliclinic.com" dir="ltr">daniel@orliclinic.com</a>, דרך <a href="index.html#contact" data-contact-open>טופס יצירת הקשר</a>, או מתוך מסך הניהול בעמוד התמיכה. כתובת למשלוח דואר תתווסף עם רישום החברה.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <a href="index.html#top" class="brand" aria-label="אורלי, לדף הבית">
+          <img class="brand-logo brand-logo--he brand-logo--footer" loading="lazy" decoding="async" src="assets/brand/orli-wordmark-he.png?v=20261019h" width="480" height="151" alt="אורלי" />
+        </a>
+        <p>קביעת פגישות אונליין קלה למרפאות שמריצות אופטימה. מהאתר שלכם, ישר ליומן.</p>
+      </div>
+      <nav class="footer-cols" aria-label="ניווט תחתון">
+        <div class="footer-col">
+          <h3 class="footer-col-h">מוצר</h3>
+          <a href="features.html">היכולות</a>
+          <a href="panel.html">מסך הניהול</a>
+          <a href="integration.html">מדריך טכני להטמעה</a>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-h">אמון</h3>
+          <a href="index.html#faq">שאלות נפוצות</a>
+          <a href="privacy.html">מדיניות פרטיות</a>
+          <a href="terms.html">תנאי שימוש</a>
+          <a href="index.html#contact" data-contact-open>צרו קשר</a>
+          <a href="mailto:ron@orliclinic.com" class="footer-mail" dir="ltr">ron@orliclinic.com</a>
+          <a href="mailto:daniel@orliclinic.com" class="footer-mail" dir="ltr">daniel@orliclinic.com</a>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-h">חברה</h3>
+          <a href="about.html">אודות</a>
+        </div>
+        <div class="footer-col">
+          <h3 class="footer-col-h">בואו נתחיל</h3>
+          <a data-start-cta data-demo-cta href="index.html#contact">להתחיל בחינם</a>
+          <a href="pricing.html">מחירים</a>
+          <a href="index.html#compare">למה אורלי</a>
+        </div>
+      </nav>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>© <span id="year"></span> אורלי.</span>
+      <span>נבנה למרפאות בישראל · מגשרים על הישן, בעדינות.</span>
+    </div>
+  </footer>
+
+  <script src="script.js?v=20261022l"></script>
+</body>
+</html>

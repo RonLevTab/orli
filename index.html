@@ -23,7 +23,7 @@
        sets Hebrew and Latin (spaces, digits) in it. -->
   <link rel="preload" href="assets/fonts/heebo-v28-hebrew.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/heebo-v28-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=20261022g" />
+  <link rel="stylesheet" href="styles.css?v=20261022l" />
   <link rel="stylesheet" href="a11y.css?v=20261022e" />
   <link rel="stylesheet" href="widget.css?v=20261019h" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -273,7 +273,7 @@
           <span class="nav-toggle-bar"></span>
         </button>
         <div class="nav-cta">
-          <a data-demo-cta href="#contact" class="btn-dark">לקביעת דמו</a>
+          <a data-start-cta data-demo-cta href="#contact" class="btn-dark">להתחיל בחינם</a>
         </div>
       </div>
     </div>
@@ -289,7 +289,7 @@
           <h1 class="display">קביעת פגישה באתר, <span class="ital">בלחיצת כפתור.</span></h1>
           <p class="lead">בלי טלפונים, בלי המתנה למזכירה. המטופל בוחר שעה פנויה באתר שלכם, ואורלי קובעת את הפגישה ישר באופטימה.</p>
           <div class="hero-actions">
-            <a data-demo-cta href="#contact" class="btn-dark lg">לקביעת דמו</a>
+            <a data-start-cta data-demo-cta href="#contact" class="btn-dark lg">להתחיל בחינם</a>
             <a href="#demo" class="hero-link">צפו איך זה עובד</a>
           </div>
         </div>
@@ -734,16 +734,17 @@
         <div class="cta-box" data-cta-box>
           <div class="cta-bg" aria-hidden="true"></div>
           <div class="cta-inner narrow center">
-            <h2 class="display">מתחבר לאתר שלכם. <span class="ital">בדרך כלל ביום אחד.</span></h2>
-            <p class="cta-lead">ראו את אורלי קובעת פגישה אמיתית ליומן פעיל בפחות מדקה. בחרו שעה שנוחה לכם, או השאירו פרטים ונחזור אליכם.</p>
-            <!-- Two ways in. The Cal.com button is filled in from CAL_LINK by
-                 script.js and stays hidden until Cal's script has actually loaded
-                 (a button onto nothing would be a lie). The other opens the
-                 contact dialog below. -->
+            <h2 class="display">מתחבר לאתר שלכם. <span class="ital">תוך כמה דקות.</span></h2>
+            <p class="cta-lead">נרשמים, מחברים את אופטימה ומדביקים שורה אחת באתר. 30 יום בחינם, בלי התחייבות ובלי פרטי תשלום. שאלה לפני? השאירו פרטים ונחזור אליכם.</p>
+            <!-- Two ways in: the sign-up (script.js SIGNUP_URL) and the
+                 contact dialog below. Under them, the site's one Cal.com
+                 link, for someone who wants a person first; hidden until
+                 Cal's script has actually loaded (script.js "Cal.com"). -->
             <div class="cta-actions">
-              <button type="button" class="btn-dark lg" id="calDemoBtn" hidden>בחרו שעה להדגמה</button>
+              <a data-start-cta data-demo-cta href="#contact" class="btn-dark lg">להתחיל בחינם</a>
               <button type="button" class="btn-outline-light lg" data-contact-open>צרו קשר</button>
             </div>
+            <p class="cta-alt"><button type="button" class="cta-alt-link" id="calDemoBtn" hidden>רוצים לדבר איתנו קודם? בחרו זמן לשיחה</button></p>
           </div>
         </div>
       </div>
@@ -804,7 +805,10 @@
           <h3 class="footer-col-h">אמון</h3>
           <a href="#faq">שאלות נפוצות</a>
           <a href="privacy.html">מדיניות פרטיות</a>
+          <a href="terms.html">תנאי שימוש</a>
           <a href="#contact" data-contact-open>צרו קשר</a>
+          <a href="mailto:ron@orliclinic.com" class="footer-mail" dir="ltr">ron@orliclinic.com</a>
+          <a href="mailto:daniel@orliclinic.com" class="footer-mail" dir="ltr">daniel@orliclinic.com</a>
         </div>
         <div class="footer-col">
           <h3 class="footer-col-h">חברה</h3>
@@ -812,7 +816,7 @@
         </div>
         <div class="footer-col">
           <h3 class="footer-col-h">בואו נתחיל</h3>
-          <a data-demo-cta href="#contact">לקביעת דמו</a>
+          <a data-start-cta data-demo-cta href="#contact">להתחיל בחינם</a>
           <a href="pricing.html">מחירים</a>
           <a href="#compare">למה אורלי</a>
         </div>
@@ -824,7 +828,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20261019h"></script>
+  <script src="script.js?v=20261022l"></script>
   <script src="hero-gradient.js?v=20261019h"></script>
   <!-- widget.js before scrolly.js: scrolly.js drives the widget through the
        el.__orli handle widget.js installs. -->

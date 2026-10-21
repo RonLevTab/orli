@@ -23,7 +23,7 @@
        sets Hebrew and Latin (spaces, digits) in it. -->
   <link rel="preload" href="assets/fonts/heebo-v28-hebrew.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/heebo-v28-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=20261022g" />
+  <link rel="stylesheet" href="styles.css?v=20261022l" />
   <link rel="stylesheet" href="a11y.css?v=20261022e" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
@@ -78,7 +78,7 @@
           <span class="nav-toggle-bar"></span>
         </button>
         <div class="nav-cta">
-          <a data-demo-cta href="index.html#contact" class="btn-dark">לקביעת דמו</a>
+          <a data-start-cta data-demo-cta href="index.html#contact" class="btn-dark">להתחיל בחינם</a>
         </div>
       </div>
     </div>
@@ -97,15 +97,23 @@
           <strong>זו טיוטת עבודה, לא מסמך משפטי סופי.</strong> העמוד הזה בנוי לפי קטגוריות הגילוי הנדרשות בתיקון 13 לחוק הגנת הפרטיות (בתוקף מ־14 באוגוסט 2025), עם המידע העובדתי שידוע לנו על המוצר. מקומות שמסומנים <code class="legal-todo">[להשלמה משפטית]</code> דורשים החלטה של עורך/ת דין לפני פרסום, לא ניחוש שלנו.
         </div>
 
-        <h2 class="display display--sub-sm">איזה מידע נאסף, ולמה</h2>
+        <h2 class="display display--sub-sm">מי אחראי על המידע</h2>
+        <p class="section-lead">מידע של מטופלים שייך למרפאה שבה קובעים את התור. המרפאה היא בעלת המאגר, ואורלי מחזיקה ומעבדת אותו בשבילה בלבד, לפי הסכם עיבוד המידע שב<a href="terms.html">תנאי השימוש</a>. מידע על המרפאות עצמן ועל מי שנכנס למסך הניהול שייך לאורלי. <code class="legal-todo">[שם החברה, ח״פ וכתובת יתווספו עם רישום החברה]</code></p>
+
+        <h2 class="display display--sub-sm display--spaced">איזה מידע נאסף, ולמה</h2>
+        <p class="section-lead">אין חובה חוקית למסור את המידע. בלי שם, אימייל וטלפון אי אפשר לקבוע תור, ובלי אישור של כתובת האימייל אי אפשר לפתוח חשבון למרפאה.</p>
         <ul class="check-list check-list--plain">
           <li>שם, טלפון ואימייל של המטופל, כדי לקבוע ולאשר את הפגישה</li>
           <li>סוג הטיפול והמטפל/ת שנבחרו, כדי להעביר את הפגישה לאופטימה של המרפאה</li>
           <li>קוד אימות חד־פעמי שנשלח לאימייל, כדי לוודא שהמטופל הוא אכן מי שהוא טוען</li>
           <!-- SOURCE: orli-calendar AGENT_CHAT_RETENTION_DAYS (default 90),
                docs/environment-variables.md; the model runs on Amazon Bedrock. -->
-          <li>שיחות עם סוכן ה־AI: תוכן ההודעות מעובד במודל שפה (Amazon Bedrock) ונמחק אוטומטית אחרי 90 יום. <code class="legal-todo">[להשלמה משפטית]</code></li>
+          <li>שיחות עם סוכן ה־AI: תוכן ההודעות מעובד במודל שפה (Amazon Bedrock) ונמחק אוטומטית אחרי 90 יום</li>
+          <li>מרפאה שפותחת חשבון: שם המרפאה, האימייל והסיסמה של מי שפותח אותו (הסיסמה נשמרת מוצפנת בגיבוב), ופרטי הכניסה לאופטימה (נשמרים מוצפנים), כדי להפעיל את השירות</li>
         </ul>
+
+        <h2 class="display display--sub-sm display--spaced">סוכן ה־AI</h2>
+        <p class="section-lead">כשמדברים עם אורלי בצ׳אט באתר של מרפאה, מדברים עם סוכן ממוחשב ולא עם אדם, והוא אומר את זה. הסוכן עונה מתוך המידע שהמרפאה אישרה, ומה שכותבים לו נשלח למודל השפה רק כדי לענות באותה שיחה. לא מאמנים מודלים על השיחות. מי שמבקש שיחזרו אליו משאיר שם וטלפון או אימייל, והמרפאה רואה אותם כדי לחזור.</p>
 
         <h2 class="display display--sub-sm display--spaced">עוגיות ומעקב</h2>
         <!-- Facts only, verified against what the pages actually load
@@ -116,30 +124,35 @@
              so "stores nothing in the browser" went too. The font (Heebo)
              was loaded from Google Fonts until it moved to assets/fonts/;
              a page that links fonts.googleapis.com again makes this untrue. -->
-        <p class="section-lead">האתר הזה לא משתמש בעוגיות ולא בכלי אנליטיקס. הדבר היחיד שנשמר בדפדפן הוא הגדרות הנגישות שבחרתם, והן לא נשלחות לשום מקום. הגופן של האתר מוגש מהאתר עצמו, לא מ־Google Fonts. עם זאת, כל עמוד באתר טוען משאבים מספק חיצוני אחד, וכל טעינה כזו חושפת לו את כתובת ה־IP של המבקר, את סוג הדפדפן ואת העמוד שממנו הגיע:</p>
+        <p class="section-lead">האתר הזה לא משתמש בעוגיות ולא בכלי אנליטיקס. הדבר היחיד שנשמר בדפדפן הוא הגדרות הנגישות שבחרתם, והן לא נשלחות לשום מקום. הגופן של האתר מוגש מהאתר עצמו, לא מ־Google Fonts. עם זאת, עמוד הבית טוען משאבים מספק חיצוני אחד, וטעינה כזו חושפת לו את כתובת ה־IP של המבקר, את סוג הדפדפן ואת העמוד שממנו הגיע:</p>
         <ul class="check-list check-list--plain">
-          <li>Cal.com, שמפעיל את חלון קביעת הדמו. פרטים שמזינים בחלון הזה מועברים ל־Cal.com ומטופלים לפי מדיניות הפרטיות שלהם</li>
+          <li>Cal.com, שמפעיל את חלון קביעת השיחה בעמוד הבית. פרטים שמזינים בחלון הזה מועברים ל־Cal.com ומטופלים לפי מדיניות הפרטיות שלהם</li>
         </ul>
 
         <h2 class="display display--sub-sm display--spaced">הבסיס החוקי לאיסוף</h2>
-        <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: ניסוח הבסיס החוקי (הסכמה מול צורך לביצוע ההזמנה) צריך להיקבע מול עורך/ת דין, ובפרט לאור סיווג מידע על טיפול רפואי כ״מידע רגיש״ לפי החוק.</p>
+        <p class="section-lead">מידע של מטופל נאסף כדי לעשות את מה שהוא ביקש: לקבוע, לשנות או לבטל תור, ולענות לו בצ׳אט. תזכורות ומיילי מעקב נשלחים רק למי שהסכים לקבל אותם, ואפשר לבטל את ההסכמה בכל מייל כזה. מידע על טיפול רפואי הוא מידע רגיש לפי החוק, ולכן הוא מוצג רק למרפאה עצמה ולא משמש לשום מטרה אחרת: לא לפרסום, לא למכירה ולא לאימון מודלים. מידע של מרפאה שפותחת חשבון נאסף כדי לתת לה את השירות שהיא נרשמה אליו.</p>
 
         <h2 class="display display--sub-sm display--spaced">למי מועבר המידע</h2>
         <ul class="check-list check-list--plain">
           <li>לאורלי, שמקבלת את פרטי הפגישה מהווידג׳ט ושולחת לאימייל של המטופל את קוד האימות ואת אישור הפגישה</li>
           <li>ליומן האופטימה של המרפאה שבה נקבעת הפגישה, כדי שהפגישה תופיע אצלה</li>
           <li>המידע לעולם לא מוצג בעמוד הציבורי של אתר המרפאה</li>
-          <li>באתר הזה: פנייה מטופס יצירת הקשר (שם, אימייל והודעה) מועברת לצוות אורלי דרך Slack, וקביעת הדגמה מהחלון מתבצעת אצל Cal.com (ראו ״עוגיות ומעקב״ למעלה)</li>
+          <li>לספקים שמפעילים את השירות בשבילנו, רק במה שהם צריכים: Amazon Web Services (שרתים ומודל ה־AI, באזור שטוקהולם שבאיחוד האירופי) ו־Brevo (שליחת מיילים, צרפת). פנייה לתמיכה מתוך מסך הניהול מגיעה לצוות דרך Slack אחרי שמוחקים ממנה טלפונים, מיילים ומספרי זהות</li>
+          <li>באתר הזה: פנייה מטופס יצירת הקשר (שם, אימייל והודעה) מועברת לצוות אורלי דרך Slack, וקביעת שיחה מהחלון בעמוד הבית מתבצעת אצל Cal.com (ראו ״עוגיות ומעקב״ למעלה)</li>
         </ul>
 
         <h2 class="display display--sub-sm display--spaced">כמה זמן המידע נשמר</h2>
-        <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: תקופת השמירה ומדיניות המחיקה טרם נקבעו רשמית.</p>
+        <ul class="check-list check-list--plain">
+          <li>שיחות עם סוכן ה־AI נמחקות אחרי 90 יום. נשאר רק מספר השיחות, בלי תוכן ובלי פרטים</li>
+          <li>חשבון מרפאה שנפתח ולא אושר ולא חובר ליומן נמחק אחרי שבוע</li>
+          <li>שאר המידע נשמר כל עוד המרפאה משתמשת בשירות, ונמחק 30 יום אחרי שהיא עוזבת, חוץ ממה שהחוק מחייב לשמור</li>
+        </ul>
 
         <h2 class="display display--sub-sm display--spaced">זכויות המטופל</h2>
-        <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: פירוט זכות העיון, התיקון, המחיקה והניוד, ואיך לממש אותן בפועל.</p>
+        <p class="section-lead">מטופל רשאי לעיין במידע עליו, לבקש לתקן אותו, ולבקש למחוק אותו כשהוא לא נדרש עוד. פונים למרפאה שבה נקבע התור, או אלינו באימייל ל־<a href="mailto:ron@orliclinic.com" dir="ltr">ron@orliclinic.com</a> ונעביר למרפאה. בקשה כזו נענית תוך 30 יום. הסרה מתזכורות ומיילי מעקב אפשרית בכל מייל כזה, בלחיצה אחת. מי שחושב שזכויותיו לא כובדו יכול לפנות גם לרשות להגנת הפרטיות.</p>
 
-        <h2 class="display display--sub-sm display--spaced">ממונה הגנת פרטיות</h2>
-        <p class="section-lead"><code class="legal-todo">[להשלמה משפטית]</code>: לפי תיקון 13, מינוי ממונה הגנת פרטיות עשוי להיות חובה לארגון שעיסוקו העיקרי הוא עיבוד מידע רגיש. זה שיקול שצריך להיבדק ספציפית עבור אורלי, לא רק עבור המרפאות הלקוחות.</p>
+        <h2 class="display display--sub-sm display--spaced">פנייה בנושא פרטיות</h2>
+        <p class="section-lead">כל שאלה, בקשה או תלונה על המידע: <a href="mailto:ron@orliclinic.com" dir="ltr">ron@orliclinic.com</a> או <a href="mailto:daniel@orliclinic.com" dir="ltr">daniel@orliclinic.com</a>. בשלב הזה הנושא מטופל ישירות על ידי מייסדי אורלי, וממונה הגנת פרטיות ימונה כשהיקף הפעילות יחייב זאת.</p>
       </div>
     </section>
   </main>
@@ -164,7 +177,10 @@
           <h3 class="footer-col-h">אמון</h3>
           <a href="index.html#faq">שאלות נפוצות</a>
           <a href="privacy.html">מדיניות פרטיות</a>
+          <a href="terms.html">תנאי שימוש</a>
           <a href="index.html#contact" data-contact-open>צרו קשר</a>
+          <a href="mailto:ron@orliclinic.com" class="footer-mail" dir="ltr">ron@orliclinic.com</a>
+          <a href="mailto:daniel@orliclinic.com" class="footer-mail" dir="ltr">daniel@orliclinic.com</a>
         </div>
         <div class="footer-col">
           <h3 class="footer-col-h">חברה</h3>
@@ -172,7 +188,7 @@
         </div>
         <div class="footer-col">
           <h3 class="footer-col-h">בואו נתחיל</h3>
-          <a data-demo-cta href="index.html#contact">לקביעת דמו</a>
+          <a data-start-cta data-demo-cta href="index.html#contact">להתחיל בחינם</a>
           <a href="pricing.html">מחירים</a>
           <a href="index.html#compare">למה אורלי</a>
         </div>
@@ -184,6 +200,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20261019h"></script>
+  <script src="script.js?v=20261022l"></script>
 </body>
 </html>

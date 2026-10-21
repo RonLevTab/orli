@@ -587,6 +587,8 @@ html[dir="rtl"] .hero-veil {
 .footer-col-h { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-soft); margin: 0 0 4px; }
 .footer-col a { color: var(--ink); font-size: .94rem; }
 .footer-col a:hover { color: var(--teal-deep); }
+/* An address reads left to right but lines up with the Hebrew links above it. */
+.footer-col .footer-mail { text-align: right; font-size: .9rem; }
 .footer-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
 
 /* ---------- responsive ---------- */
@@ -1745,7 +1747,7 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .pt-wrap { position: relative; max-width: 1040px; margin-inline: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); overflow-x: auto; }
 .pt { width: 100%; min-width: 620px; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
 .pt th, .pt td { padding: 14px 18px; text-align: center; vertical-align: middle; border-bottom: 1px solid var(--line); }
-.pt tbody th[scope="row"], .pt tfoot th[scope="row"] { width: 38%; text-align: start; font-weight: 500; font-size: .95rem; color: var(--ink); }
+.pt tbody th[scope="row"] { width: 38%; text-align: start; font-weight: 500; font-size: .95rem; color: var(--ink); }
 .pt thead th { padding: 22px 14px 18px; vertical-align: bottom; border-bottom: 1px solid var(--line); }
 .pt-corner { width: 34%; border-bottom: 1px solid var(--line); }
 .pt-name { display: block; font-family: var(--serif); font-weight: 600; font-size: 1.15rem; color: var(--ink); }
@@ -1761,9 +1763,8 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .pt-no { display: inline-grid; place-items: center; width: 26px; height: 26px; color: color-mix(in srgb, var(--ink-soft) 55%, transparent); }
 .pt-no svg { width: 16px; height: 16px; }
 .pt-val { font-size: .88rem; font-weight: 700; color: var(--teal-deep); }
-.pt tfoot th, .pt tfoot td { border-bottom: 0; padding-block: 20px; }
-.pt-foot-note { font-size: .85rem; color: var(--ink-soft); }
-.pt .pt-btn { padding: 10px 12px; font-size: .92rem; }
+/* The last row ends on the frame's own border, not a second hairline. */
+.pt tbody tr:last-child th, .pt tbody tr:last-child td { border-bottom: 0; }
 @media (max-width: 720px) {
   /* All three packages fit on a phone: a narrower name column, small
      heads, and the buttons left to the cards above. */
@@ -1779,7 +1780,6 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
   .pt-group th { padding: 16px 12px 6px; }
   .pt-val { font-size: .74rem; }
   .pt-yes, .pt-no { width: 22px; height: 22px; }
-  .pt tfoot { display: none; }
 }
 
 /* ===== Pricing: the launch price =====
@@ -1808,10 +1808,13 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 
 /* The offer band under the cards: the same space above it and below it. */
 .pc-top .plans-foot { margin-bottom: 0; }
-.cta-band--offer { padding: 56px 0; }
+.cta-band--offer { padding: 64px 0 56px; }
+/* First on the page while the cards are hidden: as wide as the table under
+   it, so the two line up, with the cream showing round it. */
+.cta-band--offer .cta-box { max-width: 1040px; margin-inline: auto; }
 .cta-band--offer + .section { padding-top: 0; }
 .cta-band--offer .cta-lead { max-width: 52ch; }
-@media (max-width: 920px) { .cta-band--offer { padding: 32px 0; } }
+@media (max-width: 920px) { .cta-band--offer { padding: 32px 0 28px; } }
 
 /* Pricing steps (pricing.html #start): a numbered line, not cards. Each
    number sits in a green dot, a hairline joins a dot to the one before. */
@@ -1882,5 +1885,15 @@ html.a11y-still [data-steps] li::before { animation: none !important; }
 html.a11y-still .steps--line li::before, html.a11y-still .steps--line li + li::after, html.a11y-still .steps--line li h3, html.a11y-still .steps--line li p { transition: none !important; }
 
 /* The closing band sits 56px under the section before it, on every page. */
-main > .section:not(.alt):has(+ .cta-band--tail) { padding-bottom: 56px; }
-main > .section:not(.alt) + .cta-band--tail { padding-top: 0; }
+main > .section:not(.alt):not([hidden]):has(+ .cta-band--tail) { padding-bottom: 56px; }
+main > .section:not(.alt):not([hidden]) + .cta-band--tail { padding-top: 0; }
+
+/* The steps end on the one button that starts them (pricing.html #start). */
+.steps-cta { display: flex; justify-content: center; margin-top: 44px; }
+@media (max-width: 720px) { .steps-cta { margin-top: 32px; } .steps-cta .btn-teal { width: 100%; text-align: center; } }
+
+/* The home band's one Cal.com link (index.html #calDemoBtn): a quiet line under the buttons. */
+.cta-alt { margin: 18px 0 0; text-align: center; }
+.cta-alt-link { padding: 6px 4px; border: 0; background: none; color: inherit; font: inherit; font-size: .98rem; opacity: .9; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.cta-alt-link:hover { opacity: 1; }
+.cta-alt-link[hidden] { display: none; }

@@ -45,9 +45,10 @@
 
   // Cal.com's own embed loader, verbatim from their "popup via element click"
   // snippet, so a booking opens in a modal instead of sending the visitor
-  // off-site. Runs on every page: the nav's "book a demo" button is on all
-  // five, and each one opens the popup rather than scrolling to the form.
-  if (CAL_LINK) {
+  // off-site. Loaded only on a page that has the one Cal.com link
+  // (#calDemoBtn, the home page's closing band): every other button on the
+  // site is the sign-up, so no other page talks to app.cal.com.
+  if (CAL_LINK && document.getElementById('calDemoBtn')) {
     (function (C, A, L) {
       const p = (a, ar) => { a.q.push(ar); };
       const d = C.document;
