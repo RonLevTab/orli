@@ -1844,3 +1844,11 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .price-proof blockquote { max-width: none; }
 @media (max-width: 720px) { .pp-br { display: none; } }
 .pc-now + .pc-billed { margin-top: 10px; font-size: .85rem; }
+
+/* Table heads: each name centred in its box; the AI badge sits on the
+   box's top edge so it does not push that name off the line. */
+.pt thead th { vertical-align: middle; padding-block: 38px; }
+.pt thead th.is-hi { position: relative; }
+.pt thead th.is-hi .pt-badge { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; }
+@media (max-width: 720px) { .pt thead th { padding-block: 22px; } }
+
