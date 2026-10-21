@@ -45,10 +45,12 @@
 
   // Cal.com's own embed loader, verbatim from their "popup via element click"
   // snippet, so a booking opens in a modal instead of sending the visitor
-  // off-site. Loaded only on a page that has the one Cal.com link
-  // (#calDemoBtn, the home page's closing band): every other button on the
-  // site is the sign-up, so no other page talks to app.cal.com.
-  if (CAL_LINK && document.getElementById('calDemoBtn')) {
+  // off-site. Loaded only on a page with a call link: the home page's
+  // closing band (#calDemoBtn) and its FAQ's "book a call" links (a
+  // [data-demo-cta] left after the sign-up buttons above dropped theirs).
+  // Every other button on the site is the sign-up, so no other page talks
+  // to app.cal.com.
+  if (CAL_LINK && document.querySelector('#calDemoBtn, [data-demo-cta]')) {
     (function (C, A, L) {
       const p = (a, ar) => { a.q.push(ar); };
       const d = C.document;

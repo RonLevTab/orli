@@ -15,7 +15,7 @@ What a clinic gets (all live in production):
 - Setup is self-service, in minutes: sign up, connect Optima, paste one line into the website. Launch offer: free for the first 30 days, no commitment, no payment details.
 - Three monthly plans, prices in Israeli shekels plus VAT: Booking ₪299, Growth ₪499, AI receptionist ₪599. Details on the pricing page.
 
-Not offered today: SMS or WhatsApp messages, payments, online intake forms, patient accounts, multi-location clinics, calendars other than Optima.
+Not offered today: payments, online intake forms, patient accounts, multi-location clinics. SMS and WhatsApp messages are coming soon. Orli connects to Optima today; a clinic on another calendar or software can book a call to talk about connecting it.
 
 ## בעברית
 
@@ -30,7 +30,7 @@ Not offered today: SMS or WhatsApp messages, payments, online intake forms, pati
 - הקמה עצמית בכמה דקות: נרשמים, מחברים את אופטימה, ומדביקים שורה אחת באתר. מבצע השקה: 30 יום בחינם, בלי התחייבות ובלי פרטי תשלום.
 - שלוש חבילות חודשיות, לפני מע״מ: זימון תורים ₪299, צמיחה ₪499, סוכן AI ‏₪599.
 
-אורלי מתחברת לאופטימה בלבד. אין כרגע הודעות SMS או וואטסאפ, תשלומים, טפסי קליטה, חשבונות מטופלים או ניהול כמה סניפים.
+היום אורלי מתחברת לאופטימה. הודעות SMS ווואטסאפ יגיעו בקרוב. מרפאה שעובדת עם יומן או תוכנה אחרת יכולה לקבוע איתנו שיחה, ונבדוק איך לחבר גם אותם. אין כרגע תשלומים, טפסי קליטה, חשבונות מטופלים או ניהול כמה סניפים.
 
 ## Pages
 

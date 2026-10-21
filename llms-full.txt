@@ -86,18 +86,18 @@ Monthly, in Israeli shekels, plus VAT (מע״מ), as listed on https://orliclini
 
 ### Not offered today
 
-SMS or WhatsApp messages, payments, online intake forms, patient accounts, multi-location clinics, and calendars other than Optima.
+Payments, online intake forms, patient accounts and multi-location clinics. SMS and WhatsApp messages are coming soon. Orli connects to Optima today; a clinic on another calendar or software can book a call to talk about connecting it.
 
 ### Getting in touch
 
-Book a demo or send a message from https://orliclinic.com/#contact.
+Start free at https://orliclinic.com/pricing, book a call or send a message from https://orliclinic.com/#contact, or write to ron@orliclinic.com or daniel@orliclinic.com.
 
 ## עברית
 
 ### מה זה אורלי
 
 - אורלי היא תוסף לקביעת תורים אונליין למרפאות שעובדות עם אופטימה. היא לא מחליפה את אופטימה: אופטימה ממשיכה לנהל את המרפאה ואת היומן, ואורלי פותחת את אותו יומן גם למטופלים, באתר של המרפאה, כערוץ נוסף לקביעת פגישות.
-- אורלי מתחברת לאופטימה בלבד. מרפאה שעובדת עם מערכת אחרת לא יכולה להשתמש באורלי כרגע.
+- היום אורלי מתחברת לאופטימה. מרפאה שעובדת עם יומן או תוכנה אחרת יכולה לקבוע איתנו שיחה, ונבדוק איך לחבר גם אותם.
 - למי זה מתאים: בעלי מרפאות ומנהלות משרד במרפאות בישראל שעובדות עם אופטימה, ורוצות שהמטופלים יקבעו תור באתר בכל שעה, בלי טלפונים, בלי המתנה למזכירה ובלי הקלדה ידנית של כל פגישה.
 - לצוות לא משתנה כלום: פגישה שנקבעת באתר נכנסת לאופטימה כמו פגישה שנקבעה בטלפון, והמזכירה ממשיכה לעבוד באופטימה כרגיל.
 
@@ -156,7 +156,7 @@ Book a demo or send a message from https://orliclinic.com/#contact.
 
 ### מה אין כרגע
 
-הודעות SMS או וואטסאפ, תשלומים, טפסי קליטה אונליין, חשבונות מטופלים, ניהול כמה סניפים, ויומנים שאינם אופטימה.
+תשלומים, טפסי קליטה אונליין, חשבונות מטופלים וניהול כמה סניפים. הודעות SMS ווואטסאפ יגיעו בקרוב.
 
 ### יצירת קשר
 
