@@ -1880,3 +1880,7 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 html.a11y-still [data-steps] li::before { animation: none !important; }
 
 html.a11y-still .steps--line li::before, html.a11y-still .steps--line li + li::after, html.a11y-still .steps--line li h3, html.a11y-still .steps--line li p { transition: none !important; }
+
+/* The closing band sits 56px under the section before it, on every page. */
+main > .section:not(.alt):has(+ .cta-band--tail) { padding-bottom: 56px; }
+main > .section:not(.alt) + .cta-band--tail { padding-top: 0; }
