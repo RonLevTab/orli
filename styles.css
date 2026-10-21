@@ -1726,3 +1726,15 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
   .price-head { padding-block: 36px 28px; }
   .price-cta { display: block; width: 100%; text-align: center; }
 }
+/* The rows show the real price; the offer sits under it as a tag. */
+.tier-buy .plan-price + .plan-after { margin: 4px 0 0; }
+.tier-offer {
+  margin: 12px 0 14px; padding: 8px 12px; border-radius: 12px; line-height: 1.35;
+  background: color-mix(in srgb, var(--teal-bright) 16%, transparent); color: var(--teal-deep);
+}
+.tier-offer b { display: block; font-size: .95rem; }
+.tier-offer span { display: block; font-size: .78rem; font-weight: 600; opacity: .85; }
+.tier--hi .tier-offer { background: color-mix(in srgb, var(--teal-bright) 18%, transparent); color: #bff3ec; }
+
+.tier-buy .plan-price { flex-wrap: wrap; }
+.tier-buy .plan-price small { white-space: nowrap; }

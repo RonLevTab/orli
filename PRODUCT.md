@@ -149,8 +149,8 @@ something is signed.
   logos, or usage/performance metrics. Reconfirmed 2026-09-07: still
   one customer, still not nameable.
 - **Pricing is set by Ron, not invented:** three monthly plans on
-  `pricing.html` — Booking ₪299 (up to five practitioners, one follow-up
-  rule), Growth ₪499 (all follow-ups, full analytics), AI receptionist ₪599
+  `pricing.html` — Booking ₪299 (unlimited practitioners and users, one
+  follow-up rule), Growth ₪499 (all follow-ups, full analytics), AI receptionist ₪599
   (Growth plus the agent, unlimited conversations). Change the
   numbers only on his word. orli-calendar knows only `booking` and `ai`
   plans; the Growth tier and the caps are not enforced in the product.
