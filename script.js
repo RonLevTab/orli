@@ -25,7 +25,7 @@
   // 'https://booking.orliclinic.com/admin/signup'. While it is empty the
   // buttons stay demo CTAs: Cal's booking popup, or the contact form.
   // ---------------------------------------------------------------------
-  const SIGNUP_URL = '';
+  const SIGNUP_URL = 'https://booking.orliclinic.com/admin/signup';
   if (SIGNUP_URL) {
     document.querySelectorAll('[data-start-cta]').forEach((el) => {
       el.setAttribute('href', SIGNUP_URL);

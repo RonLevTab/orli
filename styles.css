@@ -1659,3 +1659,78 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
   .testimonial-body { padding: 18px 0 30px; gap: 14px; }
   .testimonial-by a { margin-inline-start: 0; }
 }
+
+/* ===== Pricing: the page (pricing.html) =====
+   The hero as the home page's, with the sign-up frozen in the browser
+   frame; then the three packages as rows, cheapest first, the AI row dark
+   at the end; the clinic that runs Orli as the home page's dark band. */
+.hero--pricing { min-height: 0; padding: 72px 0 56px; }
+.hero--pricing .hero-note { margin: 16px 0 0; }
+.hero--pricing .display .ital { white-space: nowrap; }
+/* The phone hero keeps its button here: the offer is the page. */
+.hero--pricing .hero-actions { display: flex; }
+@media (max-width: 720px) {
+  .hero--pricing .hero-actions { margin-top: 22px; gap: 16px; }
+  .hero--pricing .hero-actions .btn-teal { width: 100%; text-align: center; }
+  .hero--pricing .hero-note { margin-top: 12px; }
+}
+.hero--pricing .hero-actions .btn-teal { padding: 17px 40px; font-size: 1.06rem; }
+.signup-mock { padding: 24px 22px 22px; }
+.signup-mock-offer {
+  display: inline-block; font-size: .76rem; font-weight: 800; letter-spacing: .01em;
+  padding: 5px 12px; border-radius: 999px; background: color-mix(in srgb, var(--teal-bright) 22%, transparent); color: var(--teal-deep);
+}
+.signup-mock-title { font-family: var(--serif); font-weight: 600; font-size: 1.35rem; margin: 14px 0 2px; color: var(--ink); }
+.signup-mock-sub { color: var(--ink-soft); font-size: .9rem; margin: 0 0 18px; }
+.signup-mock-field { border: 1px solid var(--line); border-radius: 12px; padding: 9px 14px 10px; margin-bottom: 10px; background: var(--cream); }
+.signup-mock-field span { display: block; font-size: .72rem; color: var(--ink-soft); margin-bottom: 2px; }
+.signup-mock-field b { display: block; font-weight: 600; font-size: .96rem; color: var(--ink); }
+.signup-mock-ltr { unicode-bidi: plaintext; }
+.signup-mock-field.is-focus { border-color: var(--teal); box-shadow: 0 0 0 2px color-mix(in srgb, var(--teal) 22%, transparent); background: var(--surface); }
+.signup-mock-caret { display: inline-block; width: 1.5px; height: 1em; background: var(--teal-deep); vertical-align: -2px; margin-inline-start: 1px; }
+.signup-mock-btn { margin-top: 16px; text-align: center; font-weight: 700; padding: 13px; border-radius: 999px; background: var(--teal-bright); color: var(--dark); }
+.signup-mock-note { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 12px 0 0; font-size: .8rem; color: var(--ink-soft); }
+.signup-mock-note svg { color: var(--teal); }
+
+.tiers { display: grid; gap: 16px; }
+.tier {
+  display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr) 232px; gap: 28px 40px; align-items: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 34px;
+}
+.tier > * { min-width: 0; }
+.tier h3 { font-family: var(--serif); font-weight: 500; font-size: 1.5rem; margin: 6px 0 6px; }
+.tier-for { color: var(--ink-soft); font-size: .95rem; margin: 0; }
+.tier .plan-note { margin: 0 0 10px; }
+.tier .tier-list { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px 18px; font-size: .95rem; }
+.tier .tier-list li { color: var(--ink); }
+.tier .tier-list--one { grid-template-columns: 1fr; }
+.tier .tier-list li.plan-plus { font-weight: 600; }
+.tier .tier-list li.plan-plus::before { content: "+"; }
+.tier-buy { text-align: center; border-inline-start: 1px solid var(--line); padding-inline-start: 36px; }
+.tier-buy .plan-price { justify-content: center; }
+.tier-buy .plan-after { margin: 2px 0 14px; line-height: 1.45; }
+.tier-buy .btn-teal { width: 100%; text-align: center; }
+.tier-buy .plan-sure { margin: 10px 0 0; }
+.tier--hi { background: var(--dark); color: #f6f3ec; border-color: transparent; }
+.tier--hi .tier-for, .tier--hi .plan-note, .tier--hi .plan-after, .tier--hi .plan-sure, .tier--hi .plan-price small { color: rgba(246, 243, 236, .72); }
+.tier--hi .plan-after b { color: #f6f3ec; }
+.tier--hi .plan-name { color: #7fd8c9; }
+.tier--hi .tier-list li { color: #f6f3ec; }
+.tier--hi .tier-list li::before { color: var(--teal-bright); }
+.tier--hi .tier-buy { border-color: rgba(246, 243, 236, .16); }
+.tier--hi :where(a, button):focus-visible { outline-color: var(--teal-bright); }
+.plan-tag--inline { position: static; transform: none; display: inline-block; margin-bottom: 12px; box-shadow: none; }
+.testimonial--pricing { margin-top: 0; }
+@media (max-width: 1080px) {
+  .tier { grid-template-columns: minmax(0, 1fr) 220px; }
+  .tier-head { grid-column: 1 / -1; }
+  .tier-buy { padding-inline-start: 28px; }
+}
+@media (max-width: 720px) {
+  .hero--pricing { padding: 44px 0 40px; }
+  .tier { grid-template-columns: 1fr; gap: 20px; padding: 22px 20px; }
+  .tier-head { grid-column: auto; }
+  .tier .tier-list { grid-template-columns: 1fr; }
+  .tier-buy { border-inline-start: 0; padding-inline-start: 0; border-top: 1px solid var(--line); padding-top: 20px; }
+  .tier--hi .tier-buy { border-color: rgba(246, 243, 236, .16); }
+}
