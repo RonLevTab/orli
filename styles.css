@@ -1789,3 +1789,28 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
   .pt-yes, .pt-no { width: 22px; height: 22px; }
   .pt tfoot { display: none; }
 }
+
+/* ===== Pricing: the launch price =====
+   ₪0 for the first 30 days, and the real price under it with a red stroke
+   drawn across it, right to left, once the cards have settled (after the
+   cards' own spring; without the script it is simply drawn). */
+.pc-offer { margin-top: 18px; }
+.pc-now { margin-top: 14px; display: flex; align-items: baseline; justify-content: center; gap: 8px; }
+.pc-now b { font-size: 3.4rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; color: var(--teal-deep); font-variant-numeric: tabular-nums; }
+.pc-now span { font-size: .95rem; font-weight: 700; color: var(--teal-deep); }
+.pc-card .pc-price { margin-top: 10px; align-items: center; }
+.pc-was { position: relative; display: inline-block; text-decoration: none; font-size: 1.7rem; font-weight: 700; line-height: 1; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.pc-was::after {
+  content: ""; position: absolute; inset-inline: -6px; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 3px;
+  background: #d9534a; transform-origin: right center; transform: rotate(-12deg) scaleX(1);
+  transition: transform .55s cubic-bezier(.6, 0, .2, 1) 1.5s;
+}
+.js .pc-grid:not(.is-in) .pc-was::after { transform: rotate(-12deg) scaleX(0); }
+.pt-now { display: block; margin-top: 4px; font-size: 1.3rem; font-weight: 800; color: var(--teal-deep); }
+.pt-now small { font-size: .78rem; font-weight: 700; }
+.pt thead th.is-hi .pt-now, .pt thead th.is-hi .pt-was { color: var(--dark); }
+.pt-was { position: relative; text-decoration: none; font-weight: 700; color: var(--ink); }
+.pt-was::after { content: ""; position: absolute; inset-inline: -3px; top: 50%; height: 2px; margin-top: -1px; border-radius: 2px; background: #d9534a; transform: rotate(-12deg); }
+@media (max-width: 720px) { .pt-now { font-size: 1rem; } .pt-now small { display: block; font-size: .66rem; } }
+@media (prefers-reduced-motion: reduce) { .pc-was::after { transition: none; } }
+
