@@ -1774,7 +1774,6 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .pt tfoot th, .pt tfoot td { border-bottom: 0; padding-block: 20px; }
 .pt-foot-note { font-size: .85rem; color: var(--ink-soft); }
 .pt .pt-btn { padding: 10px 12px; font-size: .92rem; }
-@media (hover: hover) { .pt tbody tr:not(.pt-group):hover th, .pt tbody tr:not(.pt-group):hover td { background-color: color-mix(in srgb, var(--teal-bright) 5%, var(--surface)); } }
 @media (max-width: 720px) {
   /* All three packages fit on a phone: a narrower name column, small
      heads, and the buttons left to the cards above. */
