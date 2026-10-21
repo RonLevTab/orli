@@ -71,7 +71,7 @@ Everything described here is live in production. Last reviewed: 2026-10-18.
 
 ### Setup
 
-- Done with the Orli team, not self-service: one short call, Optima connected, practitioners imported, working hours and services set in the admin, the snippet pasted into the website. Usually live within a day.
+- Self-service, in minutes: sign up with the clinic name and an email, connect Optima (practitioners import in one click), set working hours and services in the admin, paste one line into the website. Free until December 2026, no commitment, no payment details.
 - On the AI package: give the website address, let Orli read it, approve the facts, set the tone and handoff topics, try it in the test tab.
 
 ### Pricing
@@ -81,7 +81,7 @@ Monthly, in Israeli shekels, plus VAT (מע״מ), as listed on https://orliclini
 - Booking (זימון תורים), ₪299 a month: up to 5 practitioners, online booking into Optima, patient rescheduling and cancelling with code verification, one follow-up reminder rule, the admin panel, branding and emails, staff notifications and in-panel support.
 - Growth (צמיחה), ₪499 a month: everything in Booking, plus all reminders and treatment sequences without limit, and full analytics.
 - AI receptionist (סוכן AI), ₪599 a month: everything in Growth, plus the AI agent on the website (answers, offers times and books), unlimited conversations, learning from the clinic's website and answering only from what the clinic approved, handoff requests to the staff, and the agent's figures in analytics.
-- Every plan includes setup by the Orli team, writing straight into Optima, working through Optima outages, and support from inside the admin.
+- Every plan includes self-service setup in minutes, writing straight into Optima, working through Optima outages, and support from inside the admin.
 - Larger clinics: contact Orli to fit the plan.
 
 ### Not offered today
@@ -144,7 +144,7 @@ Book a demo or send a message from https://orliclinic.com/#contact.
 
 ### הקמה
 
-- על ידי צוות אורלי: שיחה קצרה, חיבור לאופטימה, ייבוא המטפלים, הגדרת שעות וטיפולים, והדבקת שורה אחת באתר. בדרך כלל תוך יום הכול באוויר.
+- עצמית, בכמה דקות: נרשמים עם שם המרפאה ואימייל, מחברים את אופטימה (המטפלים מיובאים בלחיצה), מגדירים שעות וטיפולים במסך הניהול, ומדביקים שורה אחת באתר. בחינם עד דצמבר 2026, בלי התחייבות ובלי פרטי תשלום.
 
 ### מחירים
 

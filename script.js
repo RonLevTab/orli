@@ -20,6 +20,20 @@
   const FORM_ENDPOINT = '/api/demo';
 
   // ---------------------------------------------------------------------
+  // Sign-up: where "להתחיל בחינם" goes (pricing.html, every [data-start-cta]).
+  // Set it to the admin's sign-up page once that page is live, e.g.
+  // 'https://booking.orliclinic.com/admin/signup'. While it is empty the
+  // buttons stay demo CTAs: Cal's booking popup, or the contact form.
+  // ---------------------------------------------------------------------
+  const SIGNUP_URL = '';
+  if (SIGNUP_URL) {
+    document.querySelectorAll('[data-start-cta]').forEach((el) => {
+      el.setAttribute('href', SIGNUP_URL);
+      el.removeAttribute('data-demo-cta');
+    });
+  }
+
+  // ---------------------------------------------------------------------
   // Cal.com: the part of the booking URL after https://cal.com/. Empty it to
   // switch the booking button off (see #calDemo in index.html): a booking
   // button that opens onto nothing would be the same lie as an unconnected
