@@ -1843,3 +1843,4 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 }
 .price-proof blockquote { max-width: none; }
 @media (max-width: 720px) { .pp-br { display: none; } }
+.pc-now + .pc-billed { margin-top: 10px; font-size: .85rem; }
