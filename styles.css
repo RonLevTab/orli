@@ -838,7 +838,9 @@ html[dir="rtl"] .hero-veil {
 .js .cmp-table,
 .js .swatches,
 .js .notice-banner,
-.js .section-divider {
+.js .section-divider,
+.js .tier,
+.js .price-proof {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity .7s ease, transform .7s ease;
@@ -1664,34 +1666,6 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
    The hero as the home page's, with the sign-up frozen in the browser
    frame; then the three packages as rows, cheapest first, the AI row dark
    at the end; the clinic that runs Orli as the home page's dark band. */
-.hero--pricing { min-height: 0; padding: 72px 0 56px; }
-.hero--pricing .hero-note { margin: 16px 0 0; }
-.hero--pricing .display .ital { white-space: nowrap; }
-/* The phone hero keeps its button here: the offer is the page. */
-.hero--pricing .hero-actions { display: flex; }
-@media (max-width: 720px) {
-  .hero--pricing .hero-actions { margin-top: 22px; gap: 16px; }
-  .hero--pricing .hero-actions .btn-teal { width: 100%; text-align: center; }
-  .hero--pricing .hero-note { margin-top: 12px; }
-}
-.hero--pricing .hero-actions .btn-teal { padding: 17px 40px; font-size: 1.06rem; }
-.signup-mock { padding: 24px 22px 22px; }
-.signup-mock-offer {
-  display: inline-block; font-size: .76rem; font-weight: 800; letter-spacing: .01em;
-  padding: 5px 12px; border-radius: 999px; background: color-mix(in srgb, var(--teal-bright) 22%, transparent); color: var(--teal-deep);
-}
-.signup-mock-title { font-family: var(--serif); font-weight: 600; font-size: 1.35rem; margin: 14px 0 2px; color: var(--ink); }
-.signup-mock-sub { color: var(--ink-soft); font-size: .9rem; margin: 0 0 18px; }
-.signup-mock-field { border: 1px solid var(--line); border-radius: 12px; padding: 9px 14px 10px; margin-bottom: 10px; background: var(--cream); }
-.signup-mock-field span { display: block; font-size: .72rem; color: var(--ink-soft); margin-bottom: 2px; }
-.signup-mock-field b { display: block; font-weight: 600; font-size: .96rem; color: var(--ink); }
-.signup-mock-ltr { unicode-bidi: plaintext; }
-.signup-mock-field.is-focus { border-color: var(--teal); box-shadow: 0 0 0 2px color-mix(in srgb, var(--teal) 22%, transparent); background: var(--surface); }
-.signup-mock-caret { display: inline-block; width: 1.5px; height: 1em; background: var(--teal-deep); vertical-align: -2px; margin-inline-start: 1px; }
-.signup-mock-btn { margin-top: 16px; text-align: center; font-weight: 700; padding: 13px; border-radius: 999px; background: var(--teal-bright); color: var(--dark); }
-.signup-mock-note { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 12px 0 0; font-size: .8rem; color: var(--ink-soft); }
-.signup-mock-note svg { color: var(--teal); }
-
 .tiers { display: grid; gap: 16px; }
 .tier {
   display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr) 232px; gap: 28px 40px; align-items: center;
@@ -1720,17 +1694,35 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .tier--hi .tier-buy { border-color: rgba(246, 243, 236, .16); }
 .tier--hi :where(a, button):focus-visible { outline-color: var(--teal-bright); }
 .plan-tag--inline { position: static; transform: none; display: inline-block; margin-bottom: 12px; box-shadow: none; }
-.testimonial--pricing { margin-top: 0; }
 @media (max-width: 1080px) {
   .tier { grid-template-columns: minmax(0, 1fr) 220px; }
   .tier-head { grid-column: 1 / -1; }
   .tier-buy { padding-inline-start: 28px; }
 }
 @media (max-width: 720px) {
-  .hero--pricing { padding: 44px 0 40px; }
   .tier { grid-template-columns: 1fr; gap: 20px; padding: 22px 20px; }
   .tier-head { grid-column: auto; }
   .tier .tier-list { grid-template-columns: 1fr; }
   .tier-buy { border-inline-start: 0; padding-inline-start: 0; border-top: 1px solid var(--line); padding-top: 20px; }
   .tier--hi .tier-buy { border-color: rgba(246, 243, 236, .16); }
+}
+/* Pricing head and proof: still, centred, straight to the point. */
+.price-head { padding-block: 56px 40px; }
+.price-pill {
+  display: inline-block; margin-bottom: 18px; font-size: .8rem; font-weight: 700;
+  padding: 6px 14px; border-radius: 999px; color: var(--teal-deep);
+  background: color-mix(in srgb, var(--teal-bright) 18%, transparent);
+}
+.price-lead { font-size: 1.1rem; color: var(--ink-soft); margin: 14px auto 0; max-width: 52ch; text-wrap: balance; }
+.price-cta { margin-top: 26px; padding: 17px 44px; font-size: 1.06rem; }
+.price-proof-sec { padding-block: 24px 72px; }
+.price-proof { margin: 0; text-align: center; }
+.price-proof blockquote { margin: 0 auto; max-width: 46ch; font-family: var(--serif); font-size: clamp(1.2rem, 2.2vw, 1.5rem); line-height: 1.5; color: var(--ink); }
+.price-proof blockquote em { font-style: normal; color: var(--teal-deep); }
+.price-proof figcaption { display: inline-flex; align-items: center; gap: 12px; margin-top: 20px; text-align: start; font-size: .9rem; color: var(--ink-soft); }
+.price-proof figcaption img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.price-proof figcaption b { display: block; color: var(--ink); }
+@media (max-width: 720px) {
+  .price-head { padding-block: 36px 28px; }
+  .price-cta { display: block; width: 100%; text-align: center; }
 }

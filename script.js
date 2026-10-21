@@ -464,7 +464,7 @@
     '.section-lead', '.cta-lead', '.ladder-note', '.check-list li',
   ].join(', '));
   const blockRevealTargets = document.querySelectorAll([
-    '.rung', '.feat-card', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider',
+    '.rung', '.feat-card', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider', '.tier', '.price-proof',
   ].join(', '));
 
   // Tells the watchdog in each page's <head> that this file arrived and the

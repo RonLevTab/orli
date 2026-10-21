@@ -23,7 +23,7 @@
        sets Hebrew and Latin (spaces, digits) in it. -->
   <link rel="preload" href="assets/fonts/heebo-v28-hebrew.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/heebo-v28-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=20261021h" />
+  <link rel="stylesheet" href="styles.css?v=20261021i" />
   <link rel="stylesheet" href="a11y.css?v=20261019h" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
@@ -211,39 +211,13 @@
   </header>
 
   <main>
-    <!-- HERO: the offer, the way the home page opens. The gradient and the
-         copy on the right; on the left, the sign-up as a clinic sees it,
-         frozen (hero-gradient.js draws the canvas; styles.css "Pricing"). -->
-    <section class="hero hero--pricing">
-      <canvas class="hero-canvas" id="heroGradient" aria-hidden="true"></canvas>
-      <div class="hero-veil" aria-hidden="true"></div>
-      <div class="wrap hero-grid">
-        <div class="hero-copy">
-          <h1 class="display">בחינם עד דצמבר. <span class="ital">בלי התחייבות.</span></h1>
-          <p class="lead">נרשמים, מחברים את אופטימה, והמטופלים קובעים תור מהאתר שלכם. בלי פרטי תשלום. מדצמבר, מחיר אחד לחודש, בלי הפתעות.</p>
-          <div class="hero-actions">
-            <a data-start-cta data-demo-cta href="index.html#contact" class="btn-teal lg">להתחיל בחינם</a>
-            <a href="#plans" class="hero-link">מה כלול בכל חבילה</a>
-          </div>
-          <p class="start-note hero-note">כל חבילה. בלי התחייבות ובלי פרטי תשלום.</p>
-        </div>
-
-        <!-- The sign-up, frozen on its filled-in state. Decorative: aria-hidden
-             and inert, nothing here is live. -->
-        <div class="hero-visual" aria-hidden="true" inert>
-          <div class="browser">
-            <div class="browser-bar"></div>
-            <div class="signup-mock" dir="rtl">
-              <span class="signup-mock-offer">₪0 עד דצמבר · בלי התחייבות</span>
-              <p class="signup-mock-title">פותחים חשבון באורלי</p>
-              <p class="signup-mock-sub">כמה דקות, וזה באוויר.</p>
-              <div class="signup-mock-field"><span>שם המרפאה</span><b>מרפאת ד״ר כהן</b></div>
-              <div class="signup-mock-field is-focus"><span>אימייל</span><b class="signup-mock-ltr">clinic@drcohen.co.il<i class="signup-mock-caret"></i></b></div>
-              <div class="signup-mock-btn">להתחיל בחינם</div>
-              <p class="signup-mock-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>בלי פרטי תשלום</p>
-            </div>
-          </div>
-        </div>
+    <!-- HEAD: the offer and one button, nothing moving. -->
+    <section class="section page-head price-head">
+      <div class="wrap narrow center">
+        <span class="price-pill">₪0 עד דצמבר · בלי פרטי תשלום</span>
+        <h1 class="display display--page">בחינם עד דצמבר. <span class="ital">בלי התחייבות.</span></h1>
+        <p class="price-lead">נרשמים לבד, מחברים את אופטימה, ומתחילים. מדצמבר משלמים לפי החבילה.</p>
+        <a data-start-cta data-demo-cta href="index.html#contact" class="btn-teal lg price-cta">להתחיל בחינם</a>
       </div>
     </section>
 
@@ -251,12 +225,8 @@
          each row reads as the one above it plus more. The AI row, the one to
          choose, is the dark one at the end. Every row carries its own
          button, the real price from December beside it. -->
-    <section class="section" id="plans">
+    <section class="section section--flush-top" id="plans">
       <div class="wrap">
-        <div class="section-head">
-          <h2 class="display">בוחרים חבילה. <span class="ital">משלמים רק מדצמבר.</span></h2>
-          <p class="section-lead">שלוש חבילות, כולן בחינם עד דצמבר. מתחילים בקטנה ועולים מדרגה מתי שרוצים.</p>
-        </div>
         <div class="tiers">
           <article class="tier">
             <div class="tier-head">
@@ -330,20 +300,16 @@
       </div>
     </section>
 
-    <!-- PROOF: the clinic that runs Orli, as the home page's dark band. -->
-    <section class="testimonial testimonial--pricing" id="clinic">
-      <div class="wrap testimonial-grid">
-        <figure class="testimonial-body">
-          <h2 class="display">הם כבר קובעים תורים <span class="ital">עם אורלי.</span></h2>
-          <blockquote class="testimonial-quote">״תוך יום אחד זה עבד אצלנו, ומאז זה פשוט עובד. אף אחד לא היה צריך ללמוד שום דבר חדש, והמטופלים קובעים תורים גם כשהמרפאה סגורה. <em>בבוקר הם כבר מחכים ביומן.</em>״</blockquote>
-          <figcaption class="testimonial-by">
-            <span><b>ד״ר אינס ורנר</b>ורנר קליניק · רפואת עור, אסתטיקה ולייזר · קרית אונו</span>
-            <a href="https://www.vernerclinic.com/" target="_blank" rel="noopener">לאתר המרפאה ↗</a>
+    <!-- PROOF: the clinic that runs Orli, in one quiet block. -->
+    <section class="section price-proof-sec">
+      <div class="wrap narrow">
+        <figure class="price-proof">
+          <blockquote>״תוך יום אחד זה עבד אצלנו, ומאז זה פשוט עובד. המטופלים קובעים תורים גם כשהמרפאה סגורה, <em>ובבוקר הם כבר מחכים ביומן.</em>״</blockquote>
+          <figcaption>
+            <img src="assets/customers/ines-verner.webp?v=20261019h" width="48" height="48" loading="lazy" decoding="async" alt="" />
+            <span><b>ד״ר אינס ורנר</b>ורנר קליניק, קרית אונו</span>
           </figcaption>
         </figure>
-        <div class="testimonial-photo" aria-hidden="true">
-          <img src="assets/customers/ines-verner.webp?v=20261019h" width="720" height="718" loading="lazy" decoding="async" alt="" />
-        </div>
       </div>
     </section>
 
@@ -451,7 +417,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=20261021h"></script>
-  <script src="hero-gradient.js?v=20261019h"></script>
+  <script src="script.js?v=20261021i"></script>
 </body>
 </html>
