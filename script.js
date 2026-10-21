@@ -149,6 +149,25 @@
     }
   }
 
+  // Pricing cards (pricing.html [data-pc-grid]): once the cards come into
+  // view, the side ones settle a touch smaller and toward the middle and
+  // the chosen one rises. The resting state lives in styles.css; without
+  // this script the cards simply stand at rest.
+  const pcGrid = document.querySelector('[data-pc-grid]');
+  if (pcGrid) {
+    if ('IntersectionObserver' in window) {
+      const pcIo = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          pcGrid.classList.add('is-in');
+          pcIo.disconnect();
+        }
+      }, { threshold: 0.2 });
+      pcIo.observe(pcGrid);
+    } else {
+      pcGrid.classList.add('is-in');
+    }
+  }
+
   // Pricing promo. A <dialog> on pricing.html (#promoDialog) that opens on
   // its own a moment after the page lands, once per visit (sessionStorage),
   // and closes on its buttons, Escape or the backdrop. Its demo button is a
@@ -464,7 +483,7 @@
     '.section-lead', '.cta-lead', '.ladder-note', '.check-list li',
   ].join(', '));
   const blockRevealTargets = document.querySelectorAll([
-    '.rung', '.feat-card', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider', '.tier', '.price-proof',
+    '.rung', '.feat-card', '.code-card', '.cmp-table', '.swatches', '.notice-banner', '.section-divider', '.price-proof', '.pt-wrap',
   ].join(', '));
 
   // Tells the watchdog in each page's <head> that this file arrived and the

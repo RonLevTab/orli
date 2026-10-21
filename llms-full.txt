@@ -71,7 +71,7 @@ Everything described here is live in production. Last reviewed: 2026-10-18.
 
 ### Setup
 
-- Self-service, in minutes: sign up with the clinic name and an email, connect Optima (practitioners import in one click), set working hours and services in the admin, paste one line into the website. Free until December 2026, no commitment, no payment details.
+- Self-service, in minutes: sign up with the clinic name and an email, connect Optima (practitioners import in one click), set working hours and services in the admin, paste one line into the website. Launch offer: free for the first 30 days, no commitment, no payment details.
 - On the AI package: give the website address, let Orli read it, approve the facts, set the tone and handoff topics, try it in the test tab.
 
 ### Pricing
@@ -144,7 +144,7 @@ Book a demo or send a message from https://orliclinic.com/#contact.
 
 ### הקמה
 
-- עצמית, בכמה דקות: נרשמים עם שם המרפאה ואימייל, מחברים את אופטימה (המטפלים מיובאים בלחיצה), מגדירים שעות וטיפולים במסך הניהול, ומדביקים שורה אחת באתר. בחינם עד דצמבר 2026, בלי התחייבות ובלי פרטי תשלום.
+- עצמית, בכמה דקות: נרשמים עם שם המרפאה ואימייל, מחברים את אופטימה (המטפלים מיובאים בלחיצה), מגדירים שעות וטיפולים במסך הניהול, ומדביקים שורה אחת באתר. מבצע השקה: 30 יום בחינם, בלי התחייבות ובלי פרטי תשלום.
 
 ### מחירים
 
