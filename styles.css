@@ -978,35 +978,26 @@ html[dir="rtl"] .hero-veil {
   .ladder-note a, .faq-panel-inner a { padding-block: 10px; }
 }
 
-/* ===== Section stepping (desktop) =====
-   On a wide, tall screen the page reads one section at a time: every
-   top-level section fills the screen under the nav and is a snap stop with
-   its content centred, and each step of the demo is a stop of its own.
-   lock.js moves the wheel and the scrolling keys one stop at a time.
-   Nothing holds the page: it rests on a section until the visitor moves
-   it. Off on phones, short screens and under reduced motion — the page then
-   scrolls as it always did (phones get a lighter snap; see the phone block). */
+/* ===== Sections fill the screen (desktop) =====
+   On a wide, tall screen every top-level section fills the screen under
+   the nav with its content centred, and each step of the demo is one
+   screen of scroll. Nothing snaps: the page scrolls freely, as it does on
+   a phone. Off on short screens and under reduced motion. */
 @media (min-width: 921px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
   /* The nav is a sticky block above main, so every stop rests under it:
      the hero's own rest is scroll position 0. */
-  html { scroll-snap-type: y mandatory; scroll-padding-top: var(--nav-h); }
-  [data-lock-stop="start"] { scroll-snap-align: start; scroll-snap-stop: always; }
+  html { scroll-padding-top: var(--nav-h); }
   main > section[data-lock-stop] {
     min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box;
     display: flex; flex-direction: column; justify-content: safe center;
     padding-top: 24px; padding-bottom: 32px;
-    /* A section that outgrows a short screen (an opened FAQ answer, the
-       roadmap at the 700px floor) scrolls inside itself rather than break
-       the snap; lock.js hands the wheel to it while it has room. */
-    max-height: calc(100vh - var(--nav-h)); max-height: calc(100dvh - var(--nav-h)); overflow-y: auto;
   }
-  .footer[data-lock-stop] { scroll-snap-align: end; }
   /* The demo: its head is one stop, then the pinned widget with one step
      per screen. The section is a long narrative, so it is neither centred
      nor capped (a scroll container would unpin the widget). */
   #demo[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; justify-content: flex-start; padding-bottom: 0; }
   .scrolly-steps { padding-block: 0 0; }
-  .scrolly-step[data-lock-stop] { scroll-snap-align: center; scroll-snap-stop: always; min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
+  .scrolly-step[data-lock-stop] { min-height: calc(100vh - var(--nav-h)); min-height: calc(100dvh - var(--nav-h)); box-sizing: border-box; }
 }
 
 /* ===== Desktop: a section fits the screen it stops on =====
@@ -1095,7 +1086,6 @@ html[dir="rtl"] .hero-veil {
      ones do by necessity; a short one centred on its screen read as too
      low. The hero and the contact band keep their centred stage. */
   #compare[data-lock-stop] .section-head { margin-bottom: 20px; }
-  .footer[data-lock-stop] { scroll-snap-align: end; }
   #demo[data-lock-stop] { min-height: 0; max-height: none; overflow: visible; justify-content: flex-start; padding-bottom: 0; }
   /* No tail: the pinned block leaves with the demo, and with the steps no
      longer snapping there is nothing to jump over. */

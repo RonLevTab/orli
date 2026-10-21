@@ -157,14 +157,6 @@ drives `widget.js` through a controller handle):
   whole card (CSS `zoom`) until its tallest step fits the frame with nothing
   scrolling inside it; a swipe over the widget then always moves the page. `widget.js` also exposes
   `window.OrliWidget.mount()` for widgets created after load.
-- **`lock.js`** — desktop section stepping for `index.html`: styles.css makes every
-  top-level section (and each demo step) a full-viewport `scroll-snap` stop on wide,
-  tall screens without reduced motion; this script moves the wheel and the scrolling
-  keys one stop per gesture and waits for each scroll to land before the next
-  counts. No hold: the page rests until the visitor moves it. Off on phones (which
-  get a `proximity` snap from styles.css alone), never while the contact dialog is
-  open; Space on a focused button, keys inside a scrolling section and the widget's
-  own scroll area are left to the browser.
 - **`hero-gradient.js`** — dependency-free vanilla-WebGL animated gradient (simplex
   noise, GLSL inline as JS strings) for the hero `<canvas id="heroGradient">`. Falls
   back to a static CSS gradient (`.hero--nogl` class) when WebGL is unavailable, and

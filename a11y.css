@@ -103,7 +103,6 @@ html.a11y-space :where(h1, h2, h3, .display) { line-height: 1.4 !important; lett
 /* Bigger or wider text needs room the one-screen layouts do not have: the
    pinned sections are released and the snap goes quiet, so nothing is cut
    off at a fold and the page simply scrolls. */
-html.a11y-loose { scroll-snap-type: none !important; }
 html.a11y-loose .hero[data-lock-stop],
 html.a11y-loose main > section[data-lock-stop],
 html.a11y-loose .section[data-lock-stop] {
