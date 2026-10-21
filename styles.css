@@ -1676,7 +1676,7 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .price-cta { margin-top: 26px; padding: 17px 44px; font-size: 1.06rem; }
 .price-proof-sec { padding-block: 24px 72px; }
 .price-proof { margin: 0; text-align: center; }
-.price-proof blockquote { margin: 0 auto; max-width: 46ch; font-family: var(--serif); font-size: clamp(1.2rem, 2.2vw, 1.5rem); line-height: 1.5; color: var(--ink); }
+.price-proof blockquote { text-wrap: balance; margin: 0 auto; max-width: 64ch; font-family: var(--serif); font-size: clamp(1.2rem, 2.2vw, 1.5rem); line-height: 1.5; color: var(--ink); }
 .price-proof blockquote em { font-style: normal; color: var(--teal-deep); }
 .price-proof figcaption { display: inline-flex; align-items: center; gap: 12px; margin-top: 20px; text-align: start; font-size: .9rem; color: var(--ink-soft); }
 .price-proof figcaption img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
@@ -1823,3 +1823,23 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .cta-band--offer .cta-lead { max-width: 52ch; }
 @media (max-width: 920px) { .cta-band--offer { padding: 32px 0; } }
 
+/* Pricing steps (pricing.html #start): a numbered line, not cards. Each
+   number sits in a green dot, a hairline joins a dot to the one before. */
+.steps--line { gap: 0; max-width: 960px; margin-inline: auto; }
+.steps--line li { position: relative; background: none; border: 0; border-radius: 0; padding: 0 18px; text-align: center; }
+.steps--line li::before {
+  content: counter(s); position: relative; z-index: 1; display: grid; place-items: center;
+  width: 44px; height: 44px; margin: 0 auto 14px; border-radius: 50%;
+  background: var(--teal-bright); color: var(--dark); font-size: 1.05rem; font-weight: 800; letter-spacing: 0;
+}
+.steps--line li + li::after {
+  content: ""; position: absolute; top: 21px; inset-inline-start: calc(-50% + 30px); width: calc(100% - 60px);
+  height: 2px; background: var(--line);
+}
+.steps--line li h3 { font-size: 1.1rem; }
+@media (max-width: 920px) {
+  .steps--line { gap: 26px; }
+  .steps--line li + li::after { display: none; }
+}
+.price-proof blockquote { max-width: none; }
+@media (max-width: 720px) { .pp-br { display: none; } }
