@@ -1224,23 +1224,36 @@ html:has(dialog[open]) { overflow: hidden; }
   .contact-dialog[open] { animation: none; }
 }
 
-/* ===== Launch offer band (pricing.html, under the cards) =====
-   Full width of the cards above it: the tag and the offer at the start,
-   the green button at the end; stacked and centred on a phone. */
-.start-cta {
-  margin-top: 28px; padding: 26px 34px;
-  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
-  border: 1px solid var(--line); border-radius: var(--radius);
-  background: color-mix(in srgb, var(--teal-bright) 9%, var(--surface));
+/* ===== Pricing: the offer (pricing.html) =====
+   The page head carries the offer and one green button; each card puts its
+   button right under the price, with the real price and a line of
+   reassurance beside it; under the cards, the clinic that runs Orli beside
+   the button once more. */
+.page-head .promo-tag { margin-bottom: 14px; }
+.hero-start { margin: 26px 0 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.hero-start .btn-teal { padding: 17px 44px; font-size: 1.08rem; }
+.start-note { margin: 0; font-size: .92rem; color: var(--ink-soft); }
+.plan-after { margin: 0 0 18px; font-size: .9rem; color: var(--ink-soft); }
+.plan-after b { color: var(--ink); font-weight: 700; }
+.plan--hi .plan-after { color: rgba(246, 243, 236, .72); }
+.plan--hi .plan-after b { color: #f6f3ec; }
+.plan .plan-start { width: 100%; text-align: center; }
+.plan-sure { margin: 10px 0 22px; font-size: .82rem; color: var(--ink-soft); text-align: center; }
+.plan--hi .plan-sure { color: rgba(246, 243, 236, .72); }
+.plans-proof {
+  margin: 28px 0 0; padding: 24px 30px;
+  display: flex; align-items: center; justify-content: space-between; gap: 28px; flex-wrap: wrap;
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface);
 }
-.start-text { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-.start-line { margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--ink); line-height: 1.25; }
-.start-cta .btn-teal { flex: none; }
+.plans-proof-text { flex: 1 1 420px; min-width: 0; }
+.plans-proof blockquote { margin: 0; font-size: 1.05rem; line-height: 1.55; color: var(--ink); max-width: 60ch; }
+.plans-proof figcaption { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: .88rem; color: var(--ink-soft); }
+.plans-proof figcaption img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.plans-proof figcaption b { color: var(--ink); }
+.plans-proof .btn-teal { flex: none; }
 @media (max-width: 720px) {
-  .start-cta { flex-direction: column; align-items: stretch; padding: 22px 18px; gap: 18px; }
-  .start-text { align-items: center; text-align: center; }
-  .start-line { font-size: 1.22rem; }
-  .start-cta .btn-teal { text-align: center; }
+  .plans-proof { padding: 20px 18px; }
+  .plans-proof .btn-teal { width: 100%; text-align: center; }
 }
 
 /* ===== Pricing promo (pricing.html #promoDialog) =====
