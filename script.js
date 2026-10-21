@@ -153,20 +153,18 @@
   // view, the side ones settle a touch smaller and toward the middle and
   // the chosen one rises. The resting state lives in styles.css; without
   // this script the cards simply stand at rest.
-  const pcGrid = document.querySelector('[data-pc-grid]');
-  if (pcGrid) {
-    if ('IntersectionObserver' in window) {
-      const pcIo = new IntersectionObserver((entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          pcGrid.classList.add('is-in');
-          pcIo.disconnect();
-        }
-      }, { threshold: 0.2 });
-      pcIo.observe(pcGrid);
-    } else {
-      pcGrid.classList.add('is-in');
-    }
-  }
+  // The sign-up steps (pricing.html [data-steps]) play the same way: once in
+  // view, each dot lights in turn and the line to the next one fills.
+  document.querySelectorAll('[data-pc-grid], [data-steps]').forEach((el) => {
+    if (!('IntersectionObserver' in window)) { el.classList.add('is-in'); return; }
+    const once = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        el.classList.add('is-in');
+        once.disconnect();
+      }
+    }, { threshold: el.hasAttribute('data-steps') ? 0.5 : 0.2 });
+    once.observe(el);
+  });
 
   // Pricing promo. A <dialog> on pricing.html (#promoDialog) that opens on
   // its own a moment after the page lands, once per visit (sessionStorage),

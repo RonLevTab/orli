@@ -1674,7 +1674,7 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 }
 .price-lead { font-size: 1.1rem; color: var(--ink-soft); margin: 14px auto 0; max-width: 52ch; text-wrap: balance; }
 .price-cta { margin-top: 26px; padding: 17px 44px; font-size: 1.06rem; }
-.price-proof-sec { padding-block: 24px 72px; }
+.price-proof-sec { padding-block: 64px; }
 .price-proof { margin: 0; text-align: center; }
 .price-proof blockquote { text-wrap: balance; margin: 0 auto; max-width: 64ch; font-family: var(--serif); font-size: clamp(1.2rem, 2.2vw, 1.5rem); line-height: 1.5; color: var(--ink); }
 .price-proof blockquote em { font-style: normal; color: var(--teal-deep); }
@@ -1852,3 +1852,41 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 .pt thead th.is-hi .pt-badge { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; }
 @media (max-width: 720px) { .pt thead th { padding-block: 22px; } }
 
+/* ===== Pricing steps play once (pricing.html [data-steps]) =====
+   Like a progress bar: the first dot lights and pulses, the line to the
+   next fills right to left, the next dot lights, and so on; each step's
+   words rise in with its dot. script.js adds .is-in when the steps come
+   into view. Without the script, or under reduced motion, all is lit. */
+.steps--line li::before { border: 2px solid transparent; transition: background-color .35s ease, color .35s ease, border-color .35s ease; }
+.steps--line li + li::after {
+  background: linear-gradient(var(--teal-bright), var(--teal-bright)) no-repeat right center / 100% 100%, var(--line);
+  transition: background-size .6s cubic-bezier(.65, 0, .35, 1);
+}
+.steps--line li h3, .steps--line li p { transition: opacity .5s ease, transform .5s cubic-bezier(.22, 1, .36, 1); }
+.js [data-steps]:not(.is-in) li::before { background: var(--surface); color: var(--ink-soft); border-color: var(--line); }
+.js [data-steps]:not(.is-in) li + li::after { background-size: 0% 100%, auto; }
+.js [data-steps]:not(.is-in) li h3, .js [data-steps]:not(.is-in) li p { opacity: 0; transform: translateY(10px); }
+[data-steps] li:nth-child(1)::before { transition-delay: .1s; }
+[data-steps] li:nth-child(1) h3, [data-steps] li:nth-child(1) p { transition-delay: .2s; }
+[data-steps] li:nth-child(2)::after { transition-delay: .45s; }
+[data-steps] li:nth-child(2)::before { transition-delay: 1.05s; }
+[data-steps] li:nth-child(2) h3, [data-steps] li:nth-child(2) p { transition-delay: 1.15s; }
+[data-steps] li:nth-child(3)::after { transition-delay: 1.4s; }
+[data-steps] li:nth-child(3)::before { transition-delay: 2s; }
+[data-steps] li:nth-child(3) h3, [data-steps] li:nth-child(3) p { transition-delay: 2.1s; }
+[data-steps].is-in li::before { animation: step-pop .6s ease-out both; }
+[data-steps].is-in li:nth-child(1)::before { animation-delay: .1s; }
+[data-steps].is-in li:nth-child(2)::before { animation-delay: 1.05s; }
+[data-steps].is-in li:nth-child(3)::before { animation-delay: 2s; }
+@keyframes step-pop {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(20, 184, 166, .45); }
+  35% { transform: scale(1.18); }
+  100% { transform: scale(1); box-shadow: 0 0 0 16px rgba(20, 184, 166, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .steps--line li::before, .steps--line li + li::after, .steps--line li h3, .steps--line li p { transition: none; }
+  [data-steps].is-in li::before { animation: none; }
+}
+html.a11y-still [data-steps] li::before { animation: none !important; }
+
+html.a11y-still .steps--line li::before, html.a11y-still .steps--line li + li::after, html.a11y-still .steps--line li h3, html.a11y-still .steps--line li p { transition: none !important; }
