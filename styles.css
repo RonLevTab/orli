@@ -1229,7 +1229,7 @@ html:has(dialog[open]) { overflow: hidden; }
    button right under the price, with the real price and a line of
    reassurance beside it; under the cards, the clinic that runs Orli beside
    the button once more. */
-.page-head .promo-tag { margin-bottom: 14px; }
+.contact-head--close-only { justify-content: flex-end; margin-bottom: -26px; }
 .hero-start { margin: 26px 0 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .hero-start .btn-teal { padding: 17px 44px; font-size: 1.08rem; }
 .start-note { margin: 0; font-size: .92rem; color: var(--ink-soft); }
