@@ -23,7 +23,7 @@
        sets Hebrew and Latin (spaces, digits) in it. -->
   <link rel="preload" href="assets/fonts/heebo-v28-hebrew.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/heebo-v28-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=20261021r" />
+  <link rel="stylesheet" href="styles.css?v=20261021t" />
   <link rel="stylesheet" href="a11y.css?v=20261019h" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
@@ -211,21 +211,11 @@
   </header>
 
   <main>
-    <!-- HEAD: the offer and one button, nothing moving. -->
-    <section class="section page-head price-head">
-      <div class="wrap narrow center">
-        <span class="price-pill">מבצע השקה לזמן מוגבל</span>
-        <h1 class="display display--page">30 יום בחינם. <span class="ital">בכל החבילות.</span></h1>
-        <p class="price-lead">לרגל ההשקה, כל החבילות בחינם ל-30 יום. נרשמים לבד, מחברים את אופטימה, ומתחילים. בלי התחייבות ובלי פרטי תשלום.</p>
-        <a data-start-cta data-demo-cta href="index.html#contact" class="btn-teal lg price-cta">להתחיל בחינם</a>
-      </div>
-    </section>
-
     <!-- THE PACKAGES: three cards. The AI one in the middle is the one to
          choose: it rises and carries the tag; the two beside it settle a
          touch smaller and toward it as the cards come into view (script.js
          "pricing cards", styles.css "Pricing cards"). -->
-    <section class="section section--flush-top" id="plans">
+    <section class="section pc-top" id="plans">
       <div class="wrap">
         <div class="pc-grid" data-pc-grid>
           <article class="pc-card pc-card--a">
@@ -286,6 +276,14 @@
       </div>
     </section>
 
+    <!-- THE OFFER, in words, under the cards: the cards come first. -->
+    <section class="section price-head">
+      <div class="wrap narrow center">
+        <h1 class="display display--page">30 יום בחינם. <span class="ital">בכל החבילות.</span></h1>
+        <p class="price-lead">לרגל ההשקה, כל החבילות בחינם ל-30 יום. נרשמים לבד, מחברים את אופטימה, ומתחילים. בלי התחייבות ובלי פרטי תשלום.</p>
+      </div>
+    </section>
+
     <!-- WHAT EACH PACKAGE GIVES: one table, grouped, the AI column lit.
          A real <table>; on a phone it scrolls sideways inside its frame with
          the feature names pinned (styles.css "Pricing table"). -->
@@ -293,7 +291,7 @@
       <div class="wrap">
         <div class="section-head">
           <h2 class="display">מה כלול <span class="ital">בכל חבילה.</span></h2>
-          <p class="section-lead">כל החבילות בחינם ל-30 יום. בוחרים לפי מה שהמרפאה צריכה, ועולים מדרגה מתי שרוצים.</p>
+          <p class="section-lead">בוחרים לפי מה שהמרפאה צריכה, ועולים מדרגה מתי שרוצים.</p>
         </div>
         <div class="pt-wrap">
           <table class="pt">

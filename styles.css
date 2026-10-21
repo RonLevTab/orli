@@ -1663,7 +1663,10 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 }
 
 /* Pricing head and proof: still, centred, straight to the point. */
-.price-head { padding-block: 56px 40px; }
+.price-head { padding-block: 56px 16px; }
+/* The cards open the page: room for the raised card and its tag under the nav. */
+.pc-top { padding-block: 64px 0; }
+@media (max-width: 920px) { .pc-top { padding-block-start: 28px; } }
 .price-pill {
   display: inline-block; margin-bottom: 18px; font-size: .8rem; font-weight: 700;
   padding: 6px 14px; border-radius: 999px; color: var(--teal-deep);
