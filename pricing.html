@@ -23,7 +23,7 @@
        sets Hebrew and Latin (spaces, digits) in it. -->
   <link rel="preload" href="assets/fonts/heebo-v28-hebrew.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/heebo-v28-latin.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=20261021t" />
+  <link rel="stylesheet" href="styles.css?v=20261021u" />
   <link rel="stylesheet" href="a11y.css?v=20261019h" />
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="64x64" href="assets/brand/favicon-64.png" />
@@ -276,11 +276,21 @@
       </div>
     </section>
 
-    <!-- THE OFFER, in words, under the cards: the cards come first. -->
-    <section class="section price-head">
-      <div class="wrap narrow center">
-        <h1 class="display display--page">30 יום בחינם. <span class="ital">בכל החבילות.</span></h1>
-        <p class="price-lead">לרגל ההשקה, כל החבילות בחינם ל-30 יום. נרשמים לבד, מחברים את אופטימה, ומתחילים. בלי התחייבות ובלי פרטי תשלום.</p>
+    <!-- THE OFFER, under the cards: the home page's green band, which grows
+         from a small tile to full width as it comes into view (script.js
+         "closing band", styles.css .cta-box). -->
+    <section class="cta-band cta-band--tail cta-band--offer">
+      <div class="wrap">
+        <div class="cta-box" data-cta-box>
+          <div class="cta-bg" aria-hidden="true"></div>
+          <div class="cta-inner narrow center">
+            <h1 class="display">30 יום בחינם. <span class="ital">בכל החבילות.</span></h1>
+            <p class="cta-lead">לרגל ההשקה, כל החבילות בחינם ל-30 יום. נרשמים לבד, מחברים את אופטימה, ומתחילים. בלי התחייבות ובלי פרטי תשלום.</p>
+            <div class="cta-actions">
+              <a data-start-cta data-demo-cta href="index.html#contact" class="btn-dark lg">להתחיל בחינם</a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -377,22 +387,6 @@
       </div>
     </section>
 
-    <!-- The closing band, as on the home page: teal, opens once as it
-         comes into view (script.js "closing band", styles.css .cta-box). -->
-    <section class="cta-band cta-band--tail">
-      <div class="wrap">
-        <div class="cta-box" data-cta-box>
-          <div class="cta-bg" aria-hidden="true"></div>
-          <div class="cta-inner narrow center">
-            <h2 class="display">30 יום בחינם. <span class="ital">בכל חבילה.</span></h2>
-            <p class="cta-lead cta-lead--tail">לא בטוחים איזו חבילה? מתחילים בחינם ל-30 יום, בלי התחייבות ובלי פרטי תשלום, ועולים מדרגה מתי שרוצים.</p>
-            <div class="cta-actions">
-              <a data-start-cta data-demo-cta href="index.html#contact" class="btn-dark lg">להתחיל בחינם</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
     <!-- Launch offer. A native <dialog>, styled like the home page's contact
          card, that opens on its own a moment after the page lands, once per
          visit (script.js "pricing promo"). Escape, the backdrop and both

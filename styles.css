@@ -1817,3 +1817,10 @@ main > .testimonial[data-lock-stop] { min-height: 0; max-height: none; justify-c
 @media (max-width: 720px) { .pt-now { font-size: 1rem; } .pt-now small { display: block; font-size: .66rem; } }
 @media (prefers-reduced-motion: reduce) { .pc-was::after { transition: none; } }
 
+/* The offer band under the cards: the same space above it and below it. */
+.pc-top .plans-foot { margin-bottom: 0; }
+.cta-band--offer { padding: 56px 0; }
+.cta-band--offer + .section { padding-top: 0; }
+.cta-band--offer .cta-lead { max-width: 52ch; }
+@media (max-width: 920px) { .cta-band--offer { padding: 32px 0; } }
+
