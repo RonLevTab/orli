@@ -78,9 +78,9 @@ Everything described here is live in production. Last reviewed: 2026-10-18.
 
 Monthly, in Israeli shekels, plus VAT (מע״מ), as listed on https://orliclinic.com/pricing:
 
-- Booking (זימון תורים), ₪499 a month: up to 5 practitioners, online booking into Optima, patient rescheduling and cancelling with code verification, one follow-up reminder rule, the admin panel, branding and emails, staff notifications and in-panel support.
-- Growth (צמיחה), ₪699 a month: everything in Booking, plus all reminders and treatment sequences without limit, and full analytics.
-- AI receptionist (סוכן AI), ₪899 a month: everything in Growth, plus the AI agent on the website (answers, offers times and books), about 250 conversations a month, learning from the clinic's website and answering only from what the clinic approved, handoff requests to the staff, and the agent's figures in analytics.
+- Booking (זימון תורים), ₪299 a month: up to 5 practitioners, online booking into Optima, patient rescheduling and cancelling with code verification, one follow-up reminder rule, the admin panel, branding and emails, staff notifications and in-panel support.
+- Growth (צמיחה), ₪499 a month: everything in Booking, plus all reminders and treatment sequences without limit, and full analytics.
+- AI receptionist (סוכן AI), ₪599 a month: everything in Growth, plus the AI agent on the website (answers, offers times and books), unlimited conversations, learning from the clinic's website and answering only from what the clinic approved, handoff requests to the staff, and the agent's figures in analytics.
 - Every plan includes setup by the Orli team, writing straight into Optima, working through Optima outages, and support from inside the admin.
 - Larger clinics: contact Orli to fit the plan.
 
@@ -150,9 +150,9 @@ Book a demo or send a message from https://orliclinic.com/#contact.
 
 לחודש, בש״ח, לפני מע״מ:
 
-- זימון תורים (Booking): ‏₪499. עד 5 מטפלים, זימון תורים מהאתר ישר לאופטימה, שינוי וביטול על ידי המטופל, תזכורת חוזרת אחת, מסך ניהול, עיצוב ומיילים, התראות ותמיכה.
-- צמיחה (Growth): ‏₪699. כל מה שבזימון תורים, וגם כל התזכורות ורצפי הטיפול ללא הגבלה, ונתונים ותובנות מלאים.
-- סוכן AI (AI receptionist): ‏₪899. כל מה שבצמיחה, וגם סוכן AI באתר שעונה, מציע מועדים וקובע, כ־250 שיחות בחודש, ופניות לצוות עם השיחה מאחוריהן.
+- זימון תורים (Booking): ‏₪299. עד 5 מטפלים, זימון תורים מהאתר ישר לאופטימה, שינוי וביטול על ידי המטופל, תזכורת חוזרת אחת, מסך ניהול, עיצוב ומיילים, התראות ותמיכה.
+- צמיחה (Growth): ‏₪499. כל מה שבזימון תורים, וגם כל התזכורות ורצפי הטיפול ללא הגבלה, ונתונים ותובנות מלאים.
+- סוכן AI (AI receptionist): ‏₪599. כל מה שבצמיחה, וגם סוכן AI באתר שעונה, מציע מועדים וקובע, שיחות ללא הגבלה, ופניות לצוות עם השיחה מאחוריהן.
 
 ### מה אין כרגע
 
