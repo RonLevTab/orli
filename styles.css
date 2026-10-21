@@ -1223,6 +1223,13 @@ html:has(dialog[open]) { overflow: hidden; }
   .contact-dialog[open] { animation: none; }
 }
 
+/* ===== Start button (pricing.html page head) =====
+   The offer's own button under the page's lead, with the terms in one
+   quiet line beneath it, so the page sells the trial before the cards. */
+.start-cta { margin-top: 26px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.start-note { margin: 0; font-size: .92rem; color: var(--ink-soft); }
+@media (max-width: 560px) { .start-cta .btn-dark { width: 100%; text-align: center; } }
+
 /* ===== Pricing promo (pricing.html #promoDialog) =====
    The launch offer, on the contact dialog's card: a small tag, the offer as
    a display line, one demo button and a quiet way to say not now. */
