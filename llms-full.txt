@@ -29,7 +29,7 @@ Everything described here is live in production. Last reviewed: 2026-10-18.
 - It knows the clinic: Orli reads the clinic's website and extracts facts, and the clinic approves, edits or rejects each one before it is used. Facts can also be typed in by hand and tied to specific treatments.
 - It answers only from approved knowledge and never invents a price, an opening hour, a phone number or an address.
 - The clinic sets its tone, languages and instructions, and a list of topics that always go to a person.
-- It reads the calendar, offers real free times and books the appointment inside the chat, with the same email code check as the booking widget.
+- On the full package it reads the calendar, offers real free times and books the appointment inside the chat, with the same email code check as the booking widget. On the AI agent package it answers and takes callbacks only.
 - A patient can ask about an existing appointment: the agent verifies their email and reads back their upcoming bookings.
 - Handoff to a person: it takes a name and a phone number or email, emails the clinic, and queues the callback in the admin with the conversation behind it.
 - A test tab in the admin lets the clinic chat with its own agent, as a patient would, after changing its settings.
@@ -78,9 +78,11 @@ Everything described here is live in production. Last reviewed: 2026-10-18.
 
 Monthly, in Israeli shekels, plus VAT (מע״מ), as listed on https://orliclinic.com/pricing:
 
-- Booking (זימון תורים), ₪299 a month: unlimited practitioners and users, online booking into Optima, patient rescheduling and cancelling with code verification, one follow-up reminder rule, the admin panel, branding and emails, staff notifications and in-panel support.
-- Growth (צמיחה), ₪499 a month: everything in Booking, plus all reminders and treatment sequences without limit, and full analytics.
-- AI receptionist (סוכן AI), ₪599 a month: everything in Growth, plus the AI agent on the website (answers, offers times and books), unlimited conversations, learning from the clinic's website and answering only from what the clinic approved, handoff requests to the staff, and the agent's figures in analytics.
+The packages are by what sits on the clinic's site. Every package has unlimited practitioners and users, the admin panel, branding and emails, reminders and treatment sequences without limit, staff notifications and in-panel support.
+
+- Booking (זימון תורים), ₪299 a month: the booking button on the site, straight into Optima, patient rescheduling and cancelling with code verification, working through Optima outages, and the booking figures in analytics.
+- AI agent (סוכן AI), ₪399 a month: the chat on the site. The agent answers only from what the clinic approved, learns from the clinic's website, hands callbacks to the staff with the conversation behind them, unlimited conversations, and the agent's figures in analytics. No booking button, and the agent does not book.
+- Full (אורלי המלאה), ₪599 a month: both on the site, and the agent also offers real free times and books inside the chat. All the figures in one place.
 - Every plan includes self-service setup in minutes, writing straight into Optima, working through Optima outages, and support from inside the admin.
 - Larger clinics: contact Orli to fit the plan.
 
@@ -150,9 +152,11 @@ Start free at https://orliclinic.com/pricing, book a call or send a message from
 
 לחודש, בש״ח, לפני מע״מ:
 
-- זימון תורים (Booking): ‏₪299. מטפלים ומשתמשים ללא הגבלה, זימון תורים מהאתר ישר לאופטימה, שינוי וביטול על ידי המטופל, תזכורת חוזרת אחת, מסך ניהול, עיצוב ומיילים, התראות ותמיכה.
-- צמיחה (Growth): ‏₪499. כל מה שבזימון תורים, וגם כל התזכורות ורצפי הטיפול ללא הגבלה, ונתונים ותובנות מלאים.
-- סוכן AI (AI receptionist): ‏₪599. כל מה שבצמיחה, וגם סוכן AI באתר שעונה, מציע מועדים וקובע, שיחות ללא הגבלה, ופניות לצוות עם השיחה מאחוריהן.
+החבילות הן לפי מה שיושב באתר המרפאה. בכל חבילה: מטפלים ומשתמשים ללא הגבלה, מסך ניהול, עיצוב ומיילים, תזכורות ורצפי טיפול ללא הגבלה, התראות ותמיכה.
+
+- זימון תורים (Booking): ‏₪299. כפתור זימון תורים באתר, ישר לאופטימה, שינוי וביטול על ידי המטופל עם אימות בקוד, עובד גם כשאופטימה לא זמינה, ונתוני קביעת התורים.
+- סוכן AI (AI agent): ‏₪399. סוכן AI באתר שעונה רק ממה שאישרתם, לומד מהאתר שלכם, מעביר פניות לצוות עם השיחה מאחוריהן, שיחות ללא הגבלה, ונתוני הסוכן. בלי כפתור זימון תורים, והסוכן לא קובע.
+- אורלי המלאה (Full): ‏₪599. שניהם באתר, והסוכן גם מציע מועדים פנויים וקובע תור בתוך השיחה. כל הנתונים במקום אחד.
 
 ### מה אין כרגע
 
