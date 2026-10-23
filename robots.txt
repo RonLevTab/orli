@@ -3,8 +3,9 @@
 # This is a public marketing site. We want search engines and AI assistants
 # to read it, cite it and recommend it, so every crawler is allowed. The only
 # path kept out is /api/ (the contact form and the Cal.com webhook, never
-# pages). privacy.html and 404.html are not disallowed on purpose: they carry
-# <meta name="robots" content="noindex">, and a crawler has to fetch a page to
+# pages). privacy.html, terms.html, pricing.html and 404.html are not
+# disallowed on purpose: they carry <meta name="robots" content="noindex">
+# (pricing.html: "noindex, nofollow"), and a crawler has to fetch a page to
 # see that tag.
 #
 # Cloudflare may put its own managed block above this file (the

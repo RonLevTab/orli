@@ -169,30 +169,6 @@
     once.observe(el);
   });
 
-  // Pricing promo. A <dialog> on pricing.html (#promoDialog) that opens on
-  // its own a moment after the page lands, once per visit (sessionStorage),
-  // and closes on its buttons, Escape or the backdrop. Its demo button is a
-  // regular demo CTA; the dialog closes first (capture), so Cal's popup is
-  // never left under the top layer. Guarded like the contact form: absent
-  // on every other page.
-  const promo = document.getElementById('promoDialog');
-  if (promo) {
-    const PROMO_KEY = 'orli-promo-seen';
-    let promoSeen = false;
-    try { promoSeen = sessionStorage.getItem(PROMO_KEY) === '1'; } catch (err) { /* storage off */ }
-    const closePromo = () => { if (promo.open) promo.close(); else promo.removeAttribute('open'); };
-    promo.querySelectorAll('[data-promo-close]').forEach((el) => el.addEventListener('click', closePromo));
-    promo.querySelectorAll('[data-demo-cta]').forEach((el) => el.addEventListener('click', closePromo, true));
-    promo.addEventListener('click', (e) => { if (e.target === promo) closePromo(); });
-    if (!promoSeen) {
-      setTimeout(() => {
-        try { sessionStorage.setItem(PROMO_KEY, '1'); } catch (err) { /* storage off */ }
-        if (typeof promo.showModal === 'function') promo.showModal();
-        else promo.setAttribute('open', '');
-      }, 900);
-    }
-  }
-
   // Contact form. Lives in a <dialog> on index.html (#contactDialog), opened
   // from the CTA band's "צרו קשר" and from the footer link on that page. On
   // the other pages the same footer link carries no dialog to open, so it is
