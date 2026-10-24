@@ -26,8 +26,8 @@ Everything described here is live in production. Last reviewed: 2026-10-18.
 ### Orli, the AI receptionist (AI package)
 
 - A chat beside the booking button on the clinic's website: a real conversation, not menus.
-- It knows the clinic: Orli reads the clinic's website and extracts facts, and the clinic approves, edits or rejects each one before it is used. Facts can also be typed in by hand and tied to specific treatments.
-- It answers only from approved knowledge and never invents a price, an opening hour, a phone number or an address.
+- It knows the clinic: Orli reads the clinic's website and extracts facts, which are used at once; the clinic corrects or hides any of them. Facts can also be typed in by hand and tied to specific treatments.
+- It answers only from the clinic's own information and never invents a price, an opening hour, a phone number or an address.
 - The clinic sets its tone, languages and instructions, and a list of topics that always go to a person.
 - On the AI Booking package it reads the calendar, offers real free times and books the appointment inside the chat, with the same email code check as the booking widget. On the AI agent package it answers and takes callbacks only.
 - A patient can ask about an existing appointment: the agent verifies their email and reads back their upcoming bookings.
@@ -72,14 +72,14 @@ Everything described here is live in production. Last reviewed: 2026-10-18.
 ### Setup
 
 - Self-service, in minutes: sign up with the clinic name and an email, connect Optima (practitioners import in one click), set working hours and services in the admin, paste one line into the website. Launch offer: Orli is free, no commitment, no payment details.
-- On the AI package: give the website address, let Orli read it, approve the facts, set the tone and handoff topics, try it in the test tab.
+- On the AI package: give the website address, let Orli read it, check the facts, set the tone and handoff topics, try it in the test tab.
 
 ### Packages
 
 The packages are by what sits on the clinic's site. Every package has unlimited practitioners and users, the admin panel, branding and emails, reminders and treatment sequences without limit, staff notifications and in-panel support.
 
 - Booking: online booking from the clinic's site, straight into Optima, patient rescheduling and cancelling with code verification, working through Optima outages, and the booking figures in analytics.
-- AI agent (סוכן AI): the chat on the site. The agent answers only from what the clinic approved, learns from the clinic's website, hands callbacks to the staff with the conversation behind them, unlimited conversations, and the agent's figures in analytics. No online booking on the site, and the agent does not book.
+- AI agent (סוכן AI): the chat on the site. The agent answers only from the clinic's own information, learns from the clinic's website, hands callbacks to the staff with the conversation behind them, unlimited conversations, and the agent's figures in analytics. No online booking on the site, and the agent does not book.
 - AI Booking: both on the site, and the agent also offers real free times and books inside the chat. All the figures in one place.
 - Every plan includes self-service setup in minutes, writing straight into Optima, working through Optima outages, and support from inside the admin.
 - Larger clinics: contact Orli to fit the plan.
@@ -114,7 +114,7 @@ Start free, book a call or send a message from https://orliclinic.com/#contact, 
 
 - צ׳אט באתר המרפאה, לצד כפתור קביעת התור: שיחה אמיתית, לא תפריטים.
 - הסוכן לומד מהאתר של המרפאה, וכל עובדה מחכה לאישור של המרפאה לפני שהוא משתמש בה. אפשר גם להוסיף מידע ידנית.
-- הוא עונה רק ממה שהמרפאה אישרה, ולא ממציא מחיר, שעה, טלפון או כתובת.
+- הוא עונה רק מהמידע של המרפאה, ולא ממציא מחיר, שעה, טלפון או כתובת.
 - המרפאה קובעת את הטון, השפות וההנחיות, ואת הנושאים שתמיד עוברים לאדם מהצוות.
 - הוא מציע מועד פנוי מהיומן וקובע את התור בתוך השיחה, עם אותו אימות בקוד לאימייל.
 - מטופל ששואל על פגישה קיימת מאמת את האימייל, והסוכן מקריא לו את הפגישות הקרובות.
@@ -151,7 +151,7 @@ Start free, book a call or send a message from https://orliclinic.com/#contact, 
 החבילות הן לפי מה שיושב באתר המרפאה. בכל חבילה: מטפלים ומשתמשים ללא הגבלה, מסך ניהול, עיצוב ומיילים, תזכורות ורצפי טיפול ללא הגבלה, התראות ותמיכה.
 
 - Booking: קביעת תורים אונליין מהאתר, ישר לאופטימה, שינוי וביטול על ידי המטופל עם אימות בקוד, עובד גם כשאופטימה לא זמינה, ונתוני קביעת התורים.
-- סוכן AI (AI agent): סוכן AI באתר שעונה רק ממה שאישרתם, לומד מהאתר שלכם, מעביר פניות לצוות עם השיחה מאחוריהן, שיחות ללא הגבלה, ונתוני הסוכן. בלי קביעת תורים אונליין מהאתר, והסוכן לא קובע.
+- סוכן AI (AI agent): סוכן AI באתר שעונה רק מהמידע של המרפאה, לומד מהאתר שלכם, מעביר פניות לצוות עם השיחה מאחוריהן, שיחות ללא הגבלה, ונתוני הסוכן. בלי קביעת תורים אונליין מהאתר, והסוכן לא קובע.
 - AI Booking: שניהם באתר, והסוכן גם מציע מועדים פנויים וקובע תור בתוך השיחה. כל הנתונים במקום אחד.
 
 ### מה אין כרגע
