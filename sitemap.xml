@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Every public, indexable page, at the address Cloudflare serves with a 200:
      /features, not /features.html (that one 307-redirects here). Leave out
-     privacy.html, terms.html, pricing.html and 404.html, which are noindex. Update <lastmod> when a
+     privacy.html, terms.html and 404.html, which are noindex. Update <lastmod> when a
      page's content changes, and add a new page here and to llms.txt. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -15,6 +15,10 @@
   <url>
     <loc>https://orliclinic.com/panel</loc>
     <lastmod>2026-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://orliclinic.com/pricing</loc>
+    <lastmod>2026-10-24</lastmod>
   </url>
   <url>
     <loc>https://orliclinic.com/integration</loc>

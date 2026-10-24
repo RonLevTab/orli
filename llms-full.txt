@@ -167,5 +167,6 @@ Start free, book a call or send a message from https://orliclinic.com/#contact, 
 - [Home / ראשי](https://orliclinic.com/): what Orli is, the booking flow with a live widget demo, with/without comparison, FAQ.
 - [Features / היכולות](https://orliclinic.com/features): booking, the AI receptionist, reminders, analytics, outages, admin.
 - [Admin panel / מסך הניהול](https://orliclinic.com/panel): a tour of the clinic's admin, screen by screen.
+- [Packages / חבילות](https://orliclinic.com/pricing): the packages and what each includes.
 - [Embedding and customisation / מדריך טכני להטמעה](https://orliclinic.com/integration): branding, the embed snippet, data handling, the Optima connection.
 - [About / אודות](https://orliclinic.com/about): why Orli was built.
